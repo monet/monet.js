@@ -4,7 +4,7 @@ function None() {
 
 function Some(val) {
     if (val == null) {
-        throw "Illegal state expection"
+        throw "Illegal state exception"
     }
     this.val = val
 }
@@ -33,3 +33,10 @@ Some.prototype.isNone = function () {
     return false
 }
 
+None.prototype.bind = function (bindFn) {
+    return this
+}
+
+Some.prototype.bind = function (bindFn) {
+    return bindFn(this.val)
+}
