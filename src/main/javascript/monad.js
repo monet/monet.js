@@ -40,3 +40,11 @@ None.prototype.bind = function (bindFn) {
 Some.prototype.bind = function (bindFn) {
     return bindFn(this.val)
 }
+
+None.prototype.some = function() {
+    throw "Illegal state exception"
+}
+
+Some.prototype.some = function() {
+    return this.val
+}
