@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="true">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file:$WEBTEST_HOME$/$MODULE_DIR$/target/classes" />
+    <output-test url="file:$WEBTEST_HOME$/$MODULE_DIR$/target/test-classes" />
     <exclude-output />
     <content url="file:$WEBTEST_HOME$/$MODULE_DIR$">
-      <sourceFolder url="file:$WEBTEST_HOME$/$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file:$WEBTEST_HOME$/$MODULE_DIR$/src/main" isTestSource="false" />
-      <sourceFolder url="file:$WEBTEST_HOME$/$MODULE_DIR$/src/test" isTestSource="true" />
+      <excludeFolder url="file:$WEBTEST_HOME$/$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
