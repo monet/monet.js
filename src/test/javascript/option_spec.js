@@ -34,6 +34,9 @@ describe('An Option', function() {
         it('will be transformed to a none on bind that returns none', function() {
             expect(someString.bind(function(val){return new None()})).toBeNoneOption()
         })
+        it ('will return the value when orSome() is called', function() {
+            expect(someString.orSome('no no!')).toBe('abcd')
+        })
     })
 
     describe('without a value', function() {
@@ -48,6 +51,13 @@ describe('An Option', function() {
         })
         it('will be false for isSome()', function(){
             expect(none.isSome()).toBeFalsy()
+        })
+        it('will always return a none on bind', function() {
+            expect(none.bind(function() { return new Some('a')})).toBeNoneOption()
+            expect(none.bind(function() { return new None()})).toBeNoneOption()
+        })
+        it ('will return the other value when orSome() is called', function() {
+            expect(none.orSome('yep')).toBe('yep')
         })
     })
 

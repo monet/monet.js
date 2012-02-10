@@ -48,3 +48,11 @@ None.prototype.some = function() {
 Some.prototype.some = function() {
     return this.val
 }
+
+None.prototype.orSome = function(otherValue) {
+    return otherValue
+}
+
+Some.prototype.orSome = function(otherValue) {
+    return this.val
+}
