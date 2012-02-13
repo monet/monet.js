@@ -30,3 +30,5 @@ Option has effectively abstract and as two concrete subtypes: `Some` and `None`.
             new Some(val)
 
             new None()
+            
+[functionalJava]: http://functionaljava.org/
