@@ -18,7 +18,7 @@ This library is inspired by those that have come before, especially the [Functio
 We are still in the early stages of development and have only implemented a few types, but stay tuned for more monadic
 goodness.
 
-### Option
+## Option
 
 The `Option` type is the most common way of represented the `null` type with making the possibilities of `NullPointer`
 issues disappear.
@@ -27,8 +27,17 @@ Option has effectively abstract and as two concrete subtypes: `Some` and `None`.
 
 #### Creating an Option
 
-            new Some(val)
+            var option = new Some(val)
 
-            new None()
+            var option = new None()
+### Functions
+
+#### map
+			option.map(function(val) { return val + 1})
+			
+#### bind
+#### isSome
+#### isNone
+
             
 [functionalJava]: http://functionaljava.org/
