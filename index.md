@@ -59,6 +59,7 @@ option.bind(function(val) {
 
 ####some()
 `some` will 'reduce' the `Option` to its value.
+
 ```
 new Some("hi").some()
 => "hi"
