@@ -26,18 +26,30 @@ issues disappear.
 Option has effectively abstract and as two concrete subtypes: `Some` and `None`.
 
 #### Creating an Option
-
             var option = new Some(val)
 
             var option = new None()
 ### Functions
+#### map(fn)
+`map` takes a function (a -> b) and applies that function to the value inside the option and returns another `Option`
+			option.map(fn) : option
+						
+#### bind(fn)
+`bind` takes a function that takes a value and returns an `Option`
+	option.bind(fn) : option
+			option.bind(function(val) {
+				if (val == "hi") {
+					return new Some("world")
+				} else {
+					return new None()
+				}
+			})
 
-#### map
-			option.map(function(val) { return val + 1})
-			
-#### bind
-#### isSome
-#### isNone
+#### isSome()
+`isSome` on a `Some` value will return `true` and `false` on a `None`
+
+#### isNone()
+`isNone` on a `None` value will return `true` and `false` on a `Some`
 
             
 [functionalJava]: http://functionaljava.org/
