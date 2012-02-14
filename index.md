@@ -33,7 +33,7 @@ Option has effectively abstract and as two concrete subtypes: `Some` and `None`.
 #### map(fn)
 `map` takes a function (a -> b) and applies that function to the value inside the option and returns another `Option`
 
-```javascript
+```
 option.map(fn) : option
 ```
 						
@@ -48,7 +48,8 @@ option.bind(function(val) {
 	} else {
 		return new None()
 	}
-})```
+})
+```
 
 #### isSome()
 `isSome` on a `Some` value will return `true` and `false` on a `None`
