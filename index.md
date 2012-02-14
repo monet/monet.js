@@ -57,5 +57,12 @@ option.bind(function(val) {
 #### isNone()
 `isNone` on a `None` value will return `true` and `false` on a `Some`
 
+####some()
+`some` will 'reduce' the `Option` to its value.
+```
+new Some("hi").some()
+=> "hi"
+```
+
             
 [functionalJava]: http://functionaljava.org/
