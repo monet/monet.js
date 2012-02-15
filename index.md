@@ -54,6 +54,11 @@ option.bind(function(val) {
 #### isSome()
 `isSome` on a `Some` value will return `true` and `false` on a `None`
 
+```
+new Some("hi").isSome()
+=> true
+```
+
 #### isNone()
 `isNone` on a `None` value will return `true` and `false` on a `Some`
 
