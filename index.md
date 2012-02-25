@@ -13,7 +13,7 @@ model all those monadic types that JavaScript (and well most languages) thoughtl
 If you know what a monad is then you are already an awesome programmer and if you don't, well... awesome is what you are
 about to become.
 
-This library is inspired by those that have come before, especially the [FunctionalJava project][functionalJava].
+This library is inspired by those that have come before, especially the [FunctionalJava][functionalJava] project.
 
 We are still in the early stages of development and have only implemented a few types, but stay tuned for more monadic
 goodness.
