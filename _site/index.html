@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+
+	<!-- Basic Page Needs
+  ================================================== -->
+	<meta charset="utf-8">
+	<title>monad.js - For when you have no choice but to use JavaScript</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- Mobile Specific Metas
+  ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- CSS
+  ================================================== -->
+	<link rel="stylesheet" href="stylesheets/base.css">
+	<link rel="stylesheet" href="stylesheets/skeleton.css">
+	<link rel="stylesheet" href="stylesheets/layout.css">
+
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Favicons
+	================================================== -->
+	<link rel="shortcut icon" href="images/favicon.ico">
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+
+    <link href="stylesheets/prettify.css" type="text/css" rel="stylesheet" />
+
+
+</head>
+<body>
+
+
+
+	<!-- Primary Page Layout
+	================================================== -->
+
+	<!-- Delete everything in this .container and get started on your own site! -->
+
+	<div class="container">
+		<div class="sixteen columns">
+			<h1 class="remove-bottom" style="margin-top: 40px">monad.js</h1>
+			<h5>Version 0.1</h5>
+			<hr />
+		</div>
+
+
+		<div class="twelve columns">
+             <h2 id='introduction'>Introduction</h2>
+
+<p>So you&#8217;ve been forced to use JavaScript, eh? Well, don&#8217;t slit your wrists just yet, this library is what you want to model all those monadic types that JavaScript (and well most languages) thoughtlessly omit.</p>
+
+<p>If you know what a monad is then you are already an awesome programmer and if you don&#8217;t, well&#8230; awesome is what you are about to become.</p>
+
+<p>This library is inspired by those that have come before, especially the <a href='http://functionaljava.org/'>FunctionalJava project</a>.</p>
+
+<p>We are still in the early stages of development and have only implemented a few types, but stay tuned for more monadic goodness.</p>
+
+<h2 id='option'>Option</h2>
+
+<p>The <code>Option</code> type is the most common way of represented the <code>null</code> type with making the possibilities of <code>NullPointer</code> issues disappear.</p>
+
+<p>Option has effectively abstract and as two concrete subtypes: <code>Some</code> and <code>None</code>.</p>
+
+<h4 id='creating_an_option'>Creating an Option</h4>
+
+<pre><code>        var option = new Some(val)
+
+        var option = new None()</code></pre>
+
+<h3 id='functions'>Functions</h3>
+
+<h4 id='mapfn'>map(fn)</h4>
+
+<p><code>map</code> takes a function (a -&gt; b) and applies that function to the value inside the option and returns another <code>Option</code></p>
+
+<pre><code>        option.map(fn) : option</code></pre>
+
+<h4 id='bindfn'>bind(fn)</h4>
+
+<p><code>bind</code> takes a function that takes a value and returns an <code>Option</code></p>
+
+<pre><code>        option.bind(fn) : option
+
+		option.bind(function(val) {
+			if (val == &quot;hi&quot;) {
+				return new Some(&quot;world&quot;)
+			} else {
+				return new None()
+			}
+		})</code></pre>
+
+<h4 id='issome'>isSome()</h4>
+
+<p><code>isSome</code> on a <code>Some</code> value will return <code>true</code> and <code>false</code> on a <code>None</code></p>
+
+<h1 id='new_somehiissome'>new Some(&#8220;hi&#8221;).isSome()</h1>
+
+<h4 id='isnone'>isNone()</h4>
+
+<p><code>isNone</code> on a <code>None</code> value will return <code>true</code> and <code>false</code> on a <code>Some</code></p>
+
+<h4 id='some'>some()</h4>
+
+<p><code>some</code> will &#8216;reduce&#8217; the <code>Option</code> to its value.</p>
+
+<h1 id='new_somehisome'>new Some(&#8220;hi&#8221;).some()</h1>
+		</div>
+
+	</div><!-- container -->
+
+
+
+	<!-- JS
+	================================================== -->
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="javascripts/tabs.js"></script>
+    <script type="text/javascript" src="javascripts/prettify.js"></script>
+    <script type="text/javascript" src="javascripts/monad-site.js"></script>
+
+<!-- End Document
+================================================== -->
+</body>
+</html>
