@@ -52,9 +52,8 @@ Option has effectively abstract and as two concrete subtypes: `Some` and `None`.
 #### isSome()
 `isSome` on a `Some` value will return `true` and `false` on a `None`
 
-
-new Some("hi").isSome()
-=> true
+				new Some("hi").isSome()
+				=> true
 
 
 #### isNone()
@@ -63,9 +62,8 @@ new Some("hi").isSome()
 ####some()
 `some` will 'reduce' the `Option` to its value.
 
-
-new Some("hi").some()
-=> "hi"
+				new Some("hi").some()
+				=> "hi"
 
 
             
