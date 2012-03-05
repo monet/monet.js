@@ -67,6 +67,10 @@
 
 <p>We are still in the early stages of development and have only implemented a few types, but stay tuned for more monadic goodness.</p>
 
+<h2 id='download'>Download</h2>
+
+<p>Download the <a href='https://github.com/cwmyers/monad.js/zipball/master' title='zip format'>zip</a> or <a href='https://github.com/cwmyers/monad.js/tarball/master' title='tar format'>tar</a> ball.</p>
+
 <h2 id='option'>Option</h2>
 
 <p>The <code>Option</code> type is the most common way of represented the <code>null</code> type with making the possibilities of <code>NullPointer</code> issues disappear.</p>
@@ -84,7 +88,7 @@ var option = new None();</code></pre>
 
 <p><code>map</code> takes a function (a -&gt; b) and applies that function to the value inside the option and returns another <code>Option</code></p>
 
-<pre><code>option.map(fn) : option</code></pre>
+<pre><code>Option.map(fn) : Option</code></pre>
 
 <p>For example:</p>
 
@@ -101,13 +105,13 @@ var option = new None();</code></pre>
 
 <p>For example:</p>
 
-<pre><code>		option.bind(function(val) {
-			if (val == &quot;hi&quot;) {
-				return new Some(&quot;world&quot;)
-			} else {
-				return new None()
-			}
-		})</code></pre>
+<pre><code>option.bind(function(val) {
+	if (val == &quot;hi&quot;) {
+		return new Some(&quot;world&quot;)
+	} else {
+		return new None()
+	}
+})</code></pre>
 
 <h4 id='issome'>isSome()</h4>
 

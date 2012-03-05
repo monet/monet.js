@@ -18,6 +18,9 @@ This library is inspired by those that have come before, especially the [Functio
 We are still in the early stages of development and have only implemented a few types, but stay tuned for more monadic
 goodness.
 
+##Download
+
+Download the [zip][gitZip] or [tar][gitTar] ball.
 ## Option
 
 The `Option` type is the most common way of represented the `null` type with making the possibilities of `NullPointer`
@@ -76,5 +79,8 @@ For example:
 	=> "hi"
 
 
+
             
 [functionalJava]: http://functionaljava.org/
+[gitZip]: https://github.com/cwmyers/monad.js/zipball/master (zip format)
+[gitTar]: https://github.com/cwmyers/monad.js/tarball/master (tar format)
