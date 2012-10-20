@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.1
-dev-version: 0.1
+version: 0.2
+dev-version: 0.2
 ---
 
 ## Introduction
