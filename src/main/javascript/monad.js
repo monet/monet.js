@@ -1,58 +1,74 @@
-function None() {
+/* Option Monad */
 
+(function(window) {
+
+var Option = window.Option = {}
+
+var Some = Option.Some = Option.some = function(val) {
+    return new Some.fn.init(val)
 }
 
-function Some(val) {
-    if (val == null) {
-        throw "Illegal state exception"
+Some.fn = Some.prototype = {
+    init: function(val) {
+        if (val == null) {
+            throw "Illegal state exception"
+        }
+        this.val = val
+    },
+
+    map : function (fn) {
+        return new Some(fn(this.val))
+    },
+    isSome: function () {
+        return true
+    },
+    isNone : function () {
+        return false
+    },
+    bind : function (bindFn) {
+        return bindFn(this.val)
+    },
+    some : function() {
+        return this.val
+    },
+    orSome: function(otherValue) {
+        return this.val
     }
-    this.val = val
+
+
 }
 
-None.prototype.map = function () {
-    return this
+Some.fn.init.prototype = Some.fn
+
+var None = Option.None = Option.none = function() {
+    return new None.fn.init()
 }
 
-Some.prototype.map = function (fn) {
-    return new Some(fn(this.val))
+None.fn = None.prototype = {
+    init: function(val) {
+    },
+
+    map: function () {
+        return this
+    },
+    isSome: function () {
+      return false
+    },
+    isNone: function () {
+        return true
+    },
+    bind: function (bindFn) {
+        return this
+    },
+    some: function() {
+        throw "Illegal state exception"
+    },
+    orSome: function(otherValue) {
+        return otherValue
+    }
 }
 
-None.prototype.isSome = function () {
-    return false
-}
+None.fn.init.prototype = None.fn
 
-Some.prototype.isSome = function () {
-    return true
-}
-
-None.prototype.isNone = function () {
-    return true
-}
-
-Some.prototype.isNone = function () {
-    return false
-}
-
-None.prototype.bind = function (bindFn) {
-    return this
-}
-
-Some.prototype.bind = function (bindFn) {
-    return bindFn(this.val)
-}
-
-None.prototype.some = function() {
-    throw "Illegal state exception"
-}
-
-Some.prototype.some = function() {
-    return this.val
-}
-
-None.prototype.orSome = function(otherValue) {
-    return otherValue
-}
-
-Some.prototype.orSome = function(otherValue) {
-    return this.val
-}
+return this
+}(window || this));

@@ -14,8 +14,8 @@ describe('An Option', function() {
       });
     });
 
-    var someString = new Some("abcd")
-    var none = new None()
+    var someString = Option.some("abcd")
+    var none = Option.none()
     describe('with a value', function() {
         it('will be transformed by a map', function() {
            expect(someString.map(function(val){
@@ -29,10 +29,10 @@ describe('An Option', function() {
             expect(someString.isNone()).toBeFalsy()
         })
         it('will be transformed by a bind', function() {
-            expect(someString.bind(function(val){return new Some('Hello')})).toBeSomeOptionWith('Hello')
+            expect(someString.bind(function(val){return Option.some('Hello')})).toBeSomeOptionWith('Hello')
         })
         it('will be transformed to a none on bind that returns none', function() {
-            expect(someString.bind(function(val){return new None()})).toBeNoneOption()
+            expect(someString.bind(function(val){return Option.none()})).toBeNoneOption()
         })
         it ('will return the value when orSome() is called', function() {
             expect(someString.orSome('no no!')).toBe('abcd')
@@ -53,8 +53,8 @@ describe('An Option', function() {
             expect(none.isSome()).toBeFalsy()
         })
         it('will always return a none on bind', function() {
-            expect(none.bind(function() { return new Some('a')})).toBeNoneOption()
-            expect(none.bind(function() { return new None()})).toBeNoneOption()
+            expect(none.bind(function() { return Option.some('a')})).toBeNoneOption()
+            expect(none.bind(function() { return Option.none()})).toBeNoneOption()
         })
         it ('will return the other value when orSome() is called', function() {
             expect(none.orSome('yep')).toBe('yep')
@@ -63,7 +63,7 @@ describe('An Option', function() {
 
     describe('Some constructed without a value', function() {
         it('will throw an exception', function(){
-            expect(function(){new Some()}).toThrow('Illegal state exception')
+            expect(function(){Option.some()}).toThrow('Illegal state exception')
         })
     })
 
