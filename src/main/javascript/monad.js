@@ -16,8 +16,8 @@ Some.fn = Some.prototype = {
         this.val = val
     },
 
-    map : function (fn) {
-        return new Some(fn(this.val))
+    map: function (fn) {
+            return new Some(fn(this.val))
     },
     isSome: function () {
         return true
@@ -70,5 +70,26 @@ None.fn = None.prototype = {
 
 None.fn.init.prototype = None.fn
 
+var Validation = window.Validation = {}
+
+var Success = Validation.Success = Validation.success = function(val) {
+    return new Success.fn.init(val)
+}
+
+Success.fn = Success.prototype = {
+    init: function(val) {
+        this.val = val
+    },
+    map: function (fn) {
+        return new Success(fn(this.val))
+    },
+    success: function() {
+        return this.val;
+    }
+}
+
+Success.fn.init.prototype = Success.fn
+
 return this
 }(window || this));
+
