@@ -79,20 +79,20 @@
 
 <h4 id='creating_an_option'>Creating an Option</h4>
 
-<pre><code>var option = new Some(val);
-var option = new None();</code></pre>
+<pre><code>var option = Option.some(val);
+var option = Option.none();</code></pre>
 
 <h3 id='functions'>Functions</h3>
 
 <h4 id='mapfn'>map(fn)</h4>
 
-<p><code>map</code> takes a function (a -&gt; b) and applies that function to the value inside the option and returns another <code>Option</code></p>
+<p><code>map</code> takes a function (a -&gt; b) and applies that function to the value inside the option and returns another <code>Option</code>.</p>
 
 <pre><code>Option.map(fn) : Option</code></pre>
 
 <p>For example:</p>
 
-<pre><code>new Some(123).map(function(val) {
+<pre><code>Option.some(123).map(function(val) {
 	return val+1
 })
 =&gt; 124</code></pre>
@@ -107,28 +107,28 @@ var option = new None();</code></pre>
 
 <pre><code>option.bind(function(val) {
 	if (val == &quot;hi&quot;) {
-		return new Some(&quot;world&quot;)
+		return Option.some(&quot;world&quot;)
 	} else {
-		return new None()
+		return Option.none()
 	}
 })</code></pre>
 
 <h4 id='issome'>isSome()</h4>
 
-<p><code>isSome</code> on a <code>Some</code> value will return <code>true</code> and <code>false</code> on a <code>None</code></p>
+<p><code>isSome</code> on a <code>Some</code> value will return <code>true</code> and will return <code>false</code> on a <code>None</code>.</p>
 
-<pre><code>new Some(&quot;hi&quot;).isSome()
+<pre><code>Option.some(&quot;hi&quot;).isSome()
 =&gt; true</code></pre>
 
 <h4 id='isnone'>isNone()</h4>
 
-<p><code>isNone</code> on a <code>None</code> value will return <code>true</code> and <code>false</code> on a <code>Some</code></p>
+<p><code>isNone</code> on a <code>None</code> value will return <code>true</code> and will return <code>false</code> on a <code>Some</code>.</p>
 
 <h4 id='some'>some()</h4>
 
 <p><code>some</code> will &#8216;reduce&#8217; the <code>Option</code> to its value.</p>
 
-<pre><code>new Some(&quot;hi&quot;).some()
+<pre><code>Option.some(&quot;hi&quot;).some()
 =&gt; &quot;hi&quot;</code></pre>
 		</div>
 

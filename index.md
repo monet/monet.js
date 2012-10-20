@@ -30,18 +30,18 @@ Option has effectively abstract and as two concrete subtypes: `Some` and `None`.
 
 #### Creating an Option
 
-	var option = new Some(val);
-	var option = new None();
+	var option = Option.some(val);
+	var option = Option.none();
 	
 ### Functions
 #### map(fn)
-`map` takes a function (a -> b) and applies that function to the value inside the option and returns another `Option`
+`map` takes a function (a -> b) and applies that function to the value inside the option and returns another `Option`.
 	
 	Option.map(fn) : Option
 
 For example:
 
-	new Some(123).map(function(val) {
+	Option.some(123).map(function(val) {
 		return val+1
 	})
 	=> 124
@@ -55,27 +55,27 @@ For example:
 
 	option.bind(function(val) {
 		if (val == "hi") {
-			return new Some("world")
+			return Option.some("world")
 		} else {
-			return new None()
+			return Option.none()
 		}
 	})
 
 
 #### isSome()
-`isSome` on a `Some` value will return `true` and `false` on a `None`
+`isSome` on a `Some` value will return `true` and will return `false` on a `None`.
 
-	new Some("hi").isSome()
+	Option.some("hi").isSome()
 	=> true
 
 
 #### isNone()
-`isNone` on a `None` value will return `true` and `false` on a `Some`
+`isNone` on a `None` value will return `true` and will return `false` on a `Some`.
 
 ####some()
 `some` will 'reduce' the `Option` to its value.
 
-	new Some("hi").some()
+	Option.some("hi").some()
 	=> "hi"
 
 
