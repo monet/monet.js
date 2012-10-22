@@ -90,6 +90,24 @@ Success.fn = Success.prototype = {
 
 Success.fn.init.prototype = Success.fn
 
+var Fail = Validation.Fail = Validation.fail = function(error) {
+    return new Fail.fn.init(error)
+}
+
+Fail.fn = Fail.prototype = {
+    init: function(error) {
+        this.error=error
+    },
+    map: function (fn) {
+        return this;
+    },
+    fail: function() {
+        return this.error
+    }
+}
+
+Fail.fn.init.prototype = Fail.fn
+
 return this
 }(window || this));
 
