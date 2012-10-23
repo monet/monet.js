@@ -18,14 +18,19 @@ describe('A Validation', function() {
     });
     var successString = Validation.success("abcd")
     describe('that is successful', function() {
-    it('will be transformed by a map', function() {
-               expect(successString.map(function(val){
-                    return val.length
-               })).toBeSuccessWith(4)
-            })
-    it('will return true when success is called',function(){
-        expect(successString.success()).toBeTruthy()
-    })
+      it('will be transformed by a map', function() {
+                 expect(successString.map(function(val){
+                      return val.length
+                 })).toBeSuccessWith(4)
+              })
+      it('will return true when success is called',function(){
+          expect(successString.success()).toBeTruthy()
+      })
+      it('will be transformed by a bind', function(){
+        expect(successString.bind(function(val){
+          return Validation.success("efgh")
+        })).toBeSuccessWith("efgh")  
+      })
     })
 
     var failString = Validation.fail("error dude")

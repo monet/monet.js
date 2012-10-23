@@ -85,6 +85,9 @@ Success.fn = Success.prototype = {
     },
     success: function() {
         return this.val;
+    },
+    bind: function(fn) {
+        return fn(this.val);
     }
 }
 
