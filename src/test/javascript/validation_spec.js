@@ -29,7 +29,10 @@ describe('A Validation', function() {
       it('will be transformed by a bind', function(){
         expect(successString.bind(function(val){
           return Validation.success("efgh")
-        })).toBeSuccessWith("efgh")  
+        })).toBeSuccessWith("efgh")
+        expect(successString.bind(function(val){
+          return Validation.fail("big fail")
+        })).toBeFailureWith("big fail")  
       })
     })
 
@@ -39,6 +42,14 @@ describe('A Validation', function() {
         expect(failString.map(function(val){
           return "butterfly"
         })).toBeFailureWith("error dude")
+      })
+      it('will not be transformed by a bind', function(){
+        expect(failString.bind(function(val){
+          return Validation.success("efgh")
+        })).toBeFailureWith("error dude")
+        expect(failString.bind(function(val){
+          return Validation.fail("big fail")
+        })).toBeFailureWith("error dude")  
       })
     })
 })

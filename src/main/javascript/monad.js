@@ -106,6 +106,9 @@ Fail.fn = Fail.prototype = {
     },
     fail: function() {
         return this.error
+    },
+    bind: function(fn) {
+        return this;
     }
 }
 
