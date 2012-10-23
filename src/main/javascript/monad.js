@@ -86,6 +86,15 @@ Success.fn = Success.prototype = {
     success: function() {
         return this.val;
     },
+    isSuccess: function() {
+        return true;
+    },
+    isFail: function() {
+        return false;
+    },
+    fail: function(){
+        throw 'Illegal state. Cannot call fail() on a Validation.success'
+    },
     bind: function(fn) {
         return fn(this.val);
     }
@@ -109,6 +118,18 @@ Fail.fn = Fail.prototype = {
     },
     bind: function(fn) {
         return this;
+    },
+    isFail: function() {
+        return true
+    },
+    isSuccess: function() {
+        return false;
+    },
+    fail: function() {
+        return this.error
+    },
+    success: function() {
+        throw 'Illegal state. Cannot call success() on a Validation.fail'
     }
 }
 
