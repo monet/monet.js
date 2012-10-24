@@ -6,4 +6,6 @@ Inspired by projects such as [FunctionalJava][functionalJava] which incorporates
 seeks to do the same for JavaScript.  There are many wonderful libraries that exist for adding functions such as map and reduce
 to lists etc, but none that I've seen that seek to implement other very useful types such as the Option monad.
 
+test
+
 [functionalJava]:http://functionaljava.org
