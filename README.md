@@ -1,6 +1,6 @@
 # monad.js
 
-For people who wish they didn't have to programme in JavaScript
+For people who wish they didn't have to programme in JavaScript. Full documentation at http://cwmyers.github.com/monad.js/
 
 Inspired by projects such as [FunctionalJava][functionalJava] which incorporates monadic functional types into Java, monad.js
 seeks to do the same for JavaScript.  There are many wonderful libraries that exist for adding functions such as map and reduce
