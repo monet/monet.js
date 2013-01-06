@@ -21,43 +21,43 @@ goodness.
 ##Download
 
 Download the [zip][gitZip] or [tar][gitTar] ball.
-## Option
+## Maybe
 
-The `Option` type is the most common way of represented the `null` type with making the possibilities of `NullPointer`
+The `Maybe` type is the most common way of represented the `null` type with making the possibilities of `NullPointer`
 issues disappear.
 
-Option has effectively abstract and as two concrete subtypes: `Some` and `None`.
+`Maybe` is effectively abstract and as two concrete subtypes: `Some` and `None`.
 
-#### Creating an Option
+#### Creating an Maybe
 
-	var option = Option.some(val);
-	var option = Option.none();
+	var maybe = Maybe.some(val);
+	var maybe = Maybe.none();
 	
 ### Functions
 #### map(fn)
-`map` takes a function (a -> b) and applies that function to the value inside the option and returns another `Option`.
+`map` takes a function (a -> b) and applies that function to the value inside the `Maybe` and returns another `Maybe`.
 	
-	Option.map(fn) : Option
+	maybe.map(fn) : Maybe
 
 For example:
 
-	Option.some(123).map(function(val) {
+	maybe.some(123).map(function(val) {
 		return val+1
 	})
 	=> 124
 
 #### bind(fn)
-`bind` takes a function that takes a value and returns an `Option`
+`bind` takes a function that takes a value and returns an `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on.
             
-	option.bind(fn) : option
+	maybe.bind(fn) : Maybe
 
 For example:
 
-	option.bind(function(val) {
+	maybe.bind(function(val) {
 		if (val == "hi") {
-			return Option.some("world")
+			return maybe.some("world")
 		} else {
-			return Option.none()
+			return maybe.none()
 		}
 	})
 
@@ -65,7 +65,7 @@ For example:
 #### isSome()
 `isSome` on a `Some` value will return `true` and will return `false` on a `None`.
 
-	Option.some("hi").isSome()
+	maybe.some("hi").isSome()
 	=> true
 
 
@@ -73,12 +73,50 @@ For example:
 `isNone` on a `None` value will return `true` and will return `false` on a `Some`.
 
 ####some()
-`some` will 'reduce' the `Option` to its value.
+`some` will 'reduce' the `Maybe` to its value.
 
-	Option.some("hi").some()
+	maybe.some("hi").some()
 	=> "hi"
 
-## Va
+## Validation
+Validation is a rather specific monad that can hold either a success value or a failure value (i.e. an error message or some other failure object).  Is is catamorphically identical to Either.
+
+#### Creating a Validation
+
+	var success = Validation.success(val);
+	var failure = Validation.fail("some error");
+
+###Functions
+####map()
+`map` takes a function (a -> b) and applies that function to the value inside the `success` side of the `Validation` and returns another `Validation`.
+
+####bind(fn)
+`bind` takes a function that takes a value and returns an `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
+            
+	validation.bind(fn) : validation
+
+For example:
+
+	validation.bind(function(val) {
+		if (val == "hi") {
+			return Validation,success("world")
+		} else {
+			return Validation.fail("wow, you really failed.")
+		}
+	})
+
+
+####isSuccess()
+Will return `true` if this is a successful validation, `false` otherwise. 
+
+####isFail()
+Will return `false` if this is a failed validation, `true` otherwise.
+
+####success()
+Will return the succesful value.
+
+####fail()
+Will return the failed value, usually an error message.
 
             
 [functionalJava]: http://functionaljava.org/
