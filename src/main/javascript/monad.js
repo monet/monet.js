@@ -1,10 +1,10 @@
-/* Option Monad */
+/* Maybe Monad */
 
 (function(window) {
 
-var Option = window.Option = {}
+var Maybe = window.Maybe = {}
 
-var Some = Option.Some = Option.some = function(val) {
+var Some = Maybe.Some = Maybe.some = function(val) {
     return new Some.fn.init(val)
 }
 
@@ -40,7 +40,7 @@ Some.fn = Some.prototype = {
 
 Some.fn.init.prototype = Some.fn
 
-var None = Option.None = Option.none = function() {
+var None = Maybe.None = Maybe.none = function() {
     return new None.fn.init()
 }
 

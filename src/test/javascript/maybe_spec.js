@@ -1,26 +1,26 @@
-describe('An Option', function() {
+describe('A Maybe', function() {
 
     beforeEach(function() {
       this.addMatchers({
-        toBeSomeOption: function(expected) {
+        toBeSomeMaybe: function(expected) {
           return this.actual.isSome();
         },
-        toBeSomeOptionWith: function(expected) {
+        toBeSomeMaybeWith: function(expected) {
             return this.actual.some() == expected
         },
-        toBeNoneOption: function() {
+        toBeNoneMaybe: function() {
             return this.actual.isNone()
         }
       });
     });
 
-    var someString = Option.some("abcd")
-    var none = Option.none()
+    var someString = Maybe.Some("abcd")
+    var none = Maybe.none()
     describe('with a value', function() {
         it('will be transformed by a map', function() {
            expect(someString.map(function(val){
                 return val.length
-           })).toBeSomeOptionWith(4)
+           })).toBeSomeMaybeWith(4)
         })
         it('will be will true for isSome()', function() {
             expect(someString.isSome()).toBeTruthy()
@@ -29,10 +29,10 @@ describe('An Option', function() {
             expect(someString.isNone()).toBeFalsy()
         })
         it('will be transformed by a bind', function() {
-            expect(someString.bind(function(val){return Option.some('Hello')})).toBeSomeOptionWith('Hello')
+            expect(someString.bind(function(val){return Maybe.some('Hello')})).toBeSomeMaybeWith('Hello')
         })
         it('will be transformed to a none on bind that returns none', function() {
-            expect(someString.bind(function(val){return Option.none()})).toBeNoneOption()
+            expect(someString.bind(function(val){return Maybe.none()})).toBeNoneMaybe()
         })
         it ('will return the value when orSome() is called', function() {
             expect(someString.orSome('no no!')).toBe('abcd')
@@ -53,8 +53,8 @@ describe('An Option', function() {
             expect(none.isSome()).toBeFalsy()
         })
         it('will always return a none on bind', function() {
-            expect(none.bind(function() { return Option.some('a')})).toBeNoneOption()
-            expect(none.bind(function() { return Option.none()})).toBeNoneOption()
+            expect(none.bind(function() { return Maybe.some('a')})).toBeNoneMaybe()
+            expect(none.bind(function() { return Maybe.none()})).toBeNoneMaybe()
         })
         it ('will return the other value when orSome() is called', function() {
             expect(none.orSome('yep')).toBe('yep')
@@ -63,7 +63,7 @@ describe('An Option', function() {
 
     describe('Some constructed without a value', function() {
         it('will throw an exception', function(){
-            expect(function(){Option.some()}).toThrow('Illegal state exception')
+            expect(function(){Maybe.some()}).toThrow('Illegal state exception')
         })
     })
 
