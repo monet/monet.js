@@ -1,5 +1,7 @@
 describe('A Maybe', function() {
 
+    Functional.install()
+
     beforeEach(function() {
       this.addMatchers({
         toBeSomeMaybe: function(expected) {
@@ -25,8 +27,12 @@ describe('A Maybe', function() {
         it('will be will true for isSome()', function() {
             expect(someString.isSome()).toBeTruthy()
         })
+        it('will be will true for isJust()', function() {
+            expect(someString.isJust()).toBeTruthy()
+        })
         it('will be false for isNone()', function() {
             expect(someString.isNone()).toBeFalsy()
+            expect(someString.isNothing()).toBeFalsy()
         })
         it('will be transformed by a bind', function() {
             expect(someString.bind(function(val){return Maybe.some('Hello')})).toBeSomeMaybeWith('Hello')
@@ -36,6 +42,7 @@ describe('A Maybe', function() {
         })
         it ('will return the value when orSome() is called', function() {
             expect(someString.orSome('no no!')).toBe('abcd')
+            expect(someString.orJust('no no!')).toBe('abcd')
         })
     })
 
@@ -48,6 +55,7 @@ describe('A Maybe', function() {
         })
         it('will be true for isNone()', function(){
             expect(none.isNone()).toBeTruthy()
+            expect(none.isNothing()).toBeTruthy()
         })
         it('will be false for isSome()', function(){
             expect(none.isSome()).toBeFalsy()
@@ -64,6 +72,26 @@ describe('A Maybe', function() {
     describe('Some constructed without a value', function() {
         it('will throw an exception', function(){
             expect(function(){Maybe.some()}).toThrow('Illegal state exception')
+            expect(function(){Maybe.just()}).toThrow('Illegal state exception')
+        })
+    })
+
+    var person = function (forename, surname, address) {
+        return forename + " " + surname + " lives at " + address
+    }.partial(_,_,_)
+
+    var maybeAddress = Maybe.just('Dulwich, London')
+    var maybeSurname = Maybe.just('Baker')
+    var maybeForename = Maybe.just('Tom')
+
+    describe('Applicative functor pattern', function() {
+        it('will produce a person object if all maybes contain values', function() {
+            var personString = maybeAddress.ap(maybeSurname.ap(maybeForename.map(person))).just()
+            expect(personString).toBe("Tom Baker lives at Dulwich, London")
+        })
+        it('will not produce a person object if any maybes do not contain values', function() {
+            var result = maybeAddress.ap(Maybe.nothing().ap(maybeForename.map(person)))
+            expect(result).toBeNoneMaybe()
         })
     })
 
