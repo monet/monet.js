@@ -78,15 +78,20 @@ describe('A Maybe', function() {
 
     var person = function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
-    }
+    }.partial(_,_,_)
+
+    var maybeAddress = Maybe.just('Dulwich, London')
+    var maybeSurname = Maybe.just('Baker')
+    var maybeForename = Maybe.just('Tom')
 
     describe('Applicative functor pattern', function() {
-        it('will produce a person object', function() {
-            var maybeAddress = Maybe.just('Dulwich, London')
-            var maybeSurname = Maybe.just('Baker')
-            var maybeForename = Maybe.just('Tom')
-            var personString = maybeAddress.ap(maybeSurname.ap(maybeForename.map(person.partial(_,_,_)))).just()
+        it('will produce a person object if all maybes contain values', function() {
+            var personString = maybeAddress.ap(maybeSurname.ap(maybeForename.map(person))).just()
             expect(personString).toBe("Tom Baker lives at Dulwich, London")
+        })
+        it('will not produce a person object if any maybes do not contain values', function() {
+            var result = maybeAddress.ap(Maybe.nothing().ap(maybeForename.map(person)))
+            expect(result).toBeNoneMaybe()
         })
     })
 

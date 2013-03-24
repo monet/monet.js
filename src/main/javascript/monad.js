@@ -61,7 +61,7 @@
 
     Some.fn.init.prototype = Some.fn;
 
-    var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = function () {
+    var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = function () {
         return new None.fn.init()
     };
 
@@ -84,7 +84,10 @@
         some:illegalStateFunction,
         just:illegalStateFunction,
         orSome:idFunction,
-        orJust:idFunction
+        orJust:idFunction,
+        ap: function(maybeWithFunction) {
+            return this;
+        }
     };
 
     None.fn.init.prototype = None.fn;
