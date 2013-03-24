@@ -78,6 +78,9 @@ For example:
 	maybe.some("hi").some()
 	=> "hi"
 
+####ap(Maybe[function])
+The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another Maybe type which contains a function. 
+
 ## Validation
 Validation is a rather specific monad that can hold either a success value or a failure value (i.e. an error message or some other failure object).  Is is catamorphically identical to Either.
 
