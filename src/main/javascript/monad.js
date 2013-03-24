@@ -1,5 +1,17 @@
 (function (window) {
 
+    var idFunction = function (value) {
+        return value
+    };
+    var trueFunction = function () {
+        return true
+    };
+    var falseFunction = function () {
+        return false
+    };
+
+
+
     /* Maybe Monad */
 
     var Maybe = window.Maybe = {};
@@ -19,22 +31,25 @@
         map:function (fn) {
             return new Some(fn(this.val))
         },
-        isSome:function () {
-            return true
-        },
-        isNone:function () {
-            return false
-        },
+        isSome:trueFunction,
+        isJust:trueFunction,
+        isNone:falseFunction,
+        isNothing:falseFunction,
         bind:function (bindFn) {
             return bindFn(this.val)
         },
         some:function () {
             return this.val
         },
+        just:function () {
+            return this.some()
+        },
         orSome:function (otherValue) {
             return this.val
+        },
+        orJust:function (otherValue) {
+            return this.orSome(otherValue)
         }
-
 
     };
 
@@ -44,6 +59,9 @@
         return new None.fn.init()
     };
 
+    var illegalStateFunction = function () {
+        throw "Illegal state exception"
+    };
     None.fn = None.prototype = {
         init:function (val) {
         },
@@ -51,21 +69,16 @@
         map:function () {
             return this
         },
-        isSome:function () {
-            return false
-        },
-        isNone:function () {
-            return true
-        },
+        isSome:falseFunction,
+        isNone:trueFunction,
+        isNothing:trueFunction,
         bind:function (bindFn) {
             return this
         },
-        some:function () {
-            throw "Illegal state exception"
-        },
-        orSome:function (otherValue) {
-            return otherValue
-        }
+        some:illegalStateFunction,
+        just:illegalStateFunction,
+        orSome:idFunction,
+        orJust:idFunction
     };
 
     None.fn.init.prototype = None.fn;
@@ -86,12 +99,8 @@
         success:function () {
             return this.val;
         },
-        isSuccess:function () {
-            return true;
-        },
-        isFail:function () {
-            return false;
-        },
+        isSuccess:trueFunction,
+        isFail:falseFunction,
         fail:function () {
             throw 'Illegal state. Cannot call fail() on a Validation.success'
         },
@@ -116,12 +125,8 @@
         bind:function (fn) {
             return this;
         },
-        isFail:function () {
-            return true
-        },
-        isSuccess:function () {
-            return false;
-        },
+        isFail:trueFunction,
+        isSuccess:falseFunction,
         fail:function () {
             return this.error
         },
