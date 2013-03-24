@@ -1,140 +1,137 @@
-/* Maybe Monad */
+(function (window) {
 
-(function(window) {
+    /* Maybe Monad */
 
-var Maybe = window.Maybe = {}
+    var Maybe = window.Maybe = {};
 
-var Some = Maybe.Some = Maybe.some = function(val) {
-    return new Some.fn.init(val)
-}
+    var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = function (val) {
+        return new Some.fn.init(val)
+    };
 
-Some.fn = Some.prototype = {
-    init: function(val) {
-        if (val == null) {
-            throw "Illegal state exception"
-        }
-        this.val = val
-    },
+    Some.fn = Some.prototype = {
+        init:function (val) {
+            if (val == null) {
+                throw "Illegal state exception"
+            }
+            this.val = val
+        },
 
-    map: function (fn) {
+        map:function (fn) {
             return new Some(fn(this.val))
-    },
-    isSome: function () {
-        return true
-    },
-    isNone : function () {
-        return false
-    },
-    bind : function (bindFn) {
-        return bindFn(this.val)
-    },
-    some : function() {
-        return this.val
-    },
-    orSome: function(otherValue) {
-        return this.val
-    }
+        },
+        isSome:function () {
+            return true
+        },
+        isNone:function () {
+            return false
+        },
+        bind:function (bindFn) {
+            return bindFn(this.val)
+        },
+        some:function () {
+            return this.val
+        },
+        orSome:function (otherValue) {
+            return this.val
+        }
 
 
-}
+    };
 
-Some.fn.init.prototype = Some.fn
+    Some.fn.init.prototype = Some.fn;
 
-var None = Maybe.None = Maybe.none = function() {
-    return new None.fn.init()
-}
+    var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = function () {
+        return new None.fn.init()
+    };
 
-None.fn = None.prototype = {
-    init: function(val) {
-    },
+    None.fn = None.prototype = {
+        init:function (val) {
+        },
 
-    map: function () {
-        return this
-    },
-    isSome: function () {
-      return false
-    },
-    isNone: function () {
-        return true
-    },
-    bind: function (bindFn) {
-        return this
-    },
-    some: function() {
-        throw "Illegal state exception"
-    },
-    orSome: function(otherValue) {
-        return otherValue
-    }
-}
+        map:function () {
+            return this
+        },
+        isSome:function () {
+            return false
+        },
+        isNone:function () {
+            return true
+        },
+        bind:function (bindFn) {
+            return this
+        },
+        some:function () {
+            throw "Illegal state exception"
+        },
+        orSome:function (otherValue) {
+            return otherValue
+        }
+    };
 
-None.fn.init.prototype = None.fn
+    None.fn.init.prototype = None.fn;
 
-var Validation = window.Validation = {}
+    var Validation = window.Validation = {};
 
-var Success = Validation.Success = Validation.success = function(val) {
-    return new Success.fn.init(val)
-}
+    var Success = Validation.Success = Validation.success = function (val) {
+        return new Success.fn.init(val)
+    };
 
-Success.fn = Success.prototype = {
-    init: function(val) {
-        this.val = val
-    },
-    map: function (fn) {
-        return new Success(fn(this.val))
-    },
-    success: function() {
-        return this.val;
-    },
-    isSuccess: function() {
-        return true;
-    },
-    isFail: function() {
-        return false;
-    },
-    fail: function(){
-        throw 'Illegal state. Cannot call fail() on a Validation.success'
-    },
-    bind: function(fn) {
-        return fn(this.val);
-    }
-}
+    Success.fn = Success.prototype = {
+        init:function (val) {
+            this.val = val
+        },
+        map:function (fn) {
+            return new Success(fn(this.val))
+        },
+        success:function () {
+            return this.val;
+        },
+        isSuccess:function () {
+            return true;
+        },
+        isFail:function () {
+            return false;
+        },
+        fail:function () {
+            throw 'Illegal state. Cannot call fail() on a Validation.success'
+        },
+        bind:function (fn) {
+            return fn(this.val);
+        }
+    };
 
-Success.fn.init.prototype = Success.fn
+    Success.fn.init.prototype = Success.fn;
 
-var Fail = Validation.Fail = Validation.fail = function(error) {
-    return new Fail.fn.init(error)
-}
+    var Fail = Validation.Fail = Validation.fail = function (error) {
+        return new Fail.fn.init(error)
+    };
 
-Fail.fn = Fail.prototype = {
-    init: function(error) {
-        this.error=error
-    },
-    map: function (fn) {
-        return this;
-    },
-    fail: function() {
-        return this.error
-    },
-    bind: function(fn) {
-        return this;
-    },
-    isFail: function() {
-        return true
-    },
-    isSuccess: function() {
-        return false;
-    },
-    fail: function() {
-        return this.error
-    },
-    success: function() {
-        throw 'Illegal state. Cannot call success() on a Validation.fail'
-    }
-}
+    Fail.fn = Fail.prototype = {
+        init:function (error) {
+            this.error = error
+        },
+        map:function (fn) {
+            return this;
+        },
+        bind:function (fn) {
+            return this;
+        },
+        isFail:function () {
+            return true
+        },
+        isSuccess:function () {
+            return false;
+        },
+        fail:function () {
+            return this.error
+        },
+        success:function () {
+            throw 'Illegal state. Cannot call success() on a Validation.fail'
+        }
+    };
 
-Fail.fn.init.prototype = Fail.fn
+    Fail.fn.init.prototype = Fail.fn;
 
-return this
+    return this
 }(window || this));
 
