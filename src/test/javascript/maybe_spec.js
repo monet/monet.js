@@ -1,5 +1,7 @@
 describe('A Maybe', function() {
 
+    Functional.install()
+
     beforeEach(function() {
       this.addMatchers({
         toBeSomeMaybe: function(expected) {
@@ -71,6 +73,20 @@ describe('A Maybe', function() {
         it('will throw an exception', function(){
             expect(function(){Maybe.some()}).toThrow('Illegal state exception')
             expect(function(){Maybe.just()}).toThrow('Illegal state exception')
+        })
+    })
+
+    var person = function (forename, surname, address) {
+        return forename + " " + surname + " lives at " + address
+    }
+
+    describe('Applicative functor pattern', function() {
+        it('will produce a person object', function() {
+            var maybeAddress = Maybe.just('Dulwich, London')
+            var maybeSurname = Maybe.just('Baker')
+            var maybeForename = Maybe.just('Tom')
+            var personString = maybeAddress.ap(maybeSurname.ap(maybeForename.map(person.partial(_,_,_)))).just()
+            expect(personString).toBe("Tom Baker lives at Dulwich, London")
         })
     })
 

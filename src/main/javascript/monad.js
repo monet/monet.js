@@ -49,6 +49,12 @@
         },
         orJust:function (otherValue) {
             return this.orSome(otherValue)
+        }       ,
+        ap: function(maybeWithFunction) {
+            var value = this.val
+            return maybeWithFunction.map(function(fn){
+                return fn(value)
+            })
         }
 
     };
