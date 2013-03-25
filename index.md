@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.2
-dev-version: 0.2
+version: 0.3
+dev-version: 0.3
 ---
 
 ## Introduction
@@ -26,7 +26,7 @@ Download the [zip][gitZip] or [tar][gitTar] ball.
 The `Maybe` type is the most common way of represented the `null` type with making the possibilities of `NullPointer`
 issues disappear.
 
-`Maybe` is effectively abstract and as two concrete subtypes: `Some` and `None`.
+`Maybe` is effectively abstract and as two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
 
 #### Creating an Maybe
 
@@ -62,24 +62,45 @@ For example:
 	})
 
 
-#### isSome()
+#### isSome() also: isJust()
 `isSome` on a `Some` value will return `true` and will return `false` on a `None`.
 
 	maybe.some("hi").isSome()
 	=> true
 
 
-#### isNone()
+#### isNone() also: isNothing()
 `isNone` on a `None` value will return `true` and will return `false` on a `Some`.
 
-####some()
+####some() also: just()
 `some` will 'reduce' the `Maybe` to its value.
 
 	maybe.some("hi").some()
 	=> "hi"
 
-####ap(Maybe[function])
-The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another Maybe type which contains a function. 
+####ap(Maybe(fn))
+The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another `Maybe` type which contains a function, and then applies that function to the value contained in the calling `Maybe`. 
+
+	maybe.ap(maybeWithfn): Maybe
+
+It may seem odd to want to apply a function to a monad that exists inside another monad, but this is particular useful for when you have a curried function being applied across many monads.
+
+Here is an example for creating a string out of the result of a couple of `Maybe`s.  The example uses [Functional Javascript] to partially apply the function.
+
+	var person = function (forename, surname, address) {
+        return forename + " " + surname + " lives in " + address
+    }.partial(_,_,_)
+
+    var maybeAddress = Maybe.just('Dulwich, London')
+    var maybeSurname = Maybe.just('Baker')
+    var maybeForename = Maybe.just('Tom')
+    
+    var personString = maybeAddress.ap(maybeSurname.ap(maybeForename.map(person))).just()
+    
+    #result: "Tom Baker lives in Dulwich, London"
+
+For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
+	
 
 ## Validation
 Validation is a rather specific monad that can hold either a success value or a failure value (i.e. an error message or some other failure object).  Is is catamorphically identical to Either.
@@ -123,5 +144,6 @@ Will return the failed value, usually an error message.
 
             
 [functionalJava]: http://functionaljava.org/
+[Functional Javascript]: http://osteele.com/sources/javascript/functional/
 [gitZip]: https://github.com/cwmyers/monad.js/zipball/master (zip format)
 [gitTar]: https://github.com/cwmyers/monad.js/tarball/master (tar format)
