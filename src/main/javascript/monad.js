@@ -1,7 +1,7 @@
-//     Monad.js 0.2
+//     Monad.js 0.4
 
 //     (c) 2012-2013 Chris Myers
-//     Backbone may be freely distributed under the MIT license.
+//     Monad.js may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://cwmyers.github.com/monad.js
 
