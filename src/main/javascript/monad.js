@@ -163,8 +163,13 @@
         success:function () {
             throw 'Illegal state. Cannot call success() on a Validation.fail'
         },
-        ap: function(validationWithFunction) {
-            return this;
+        ap:function (validationWithFn) {
+            var value = this.error
+            if (validationWithFn.isFail()) {
+                return Validation.fail(value.concat(validationWithFn.fail()))
+            } else {
+                return this;
+            }
         }
     };
 
