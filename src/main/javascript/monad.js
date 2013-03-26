@@ -11,7 +11,6 @@
     };
 
 
-
     /* Maybe Monad */
 
     var Maybe = window.Maybe = {};
@@ -49,10 +48,10 @@
         },
         orJust:function (otherValue) {
             return this.orSome(otherValue)
-        }       ,
-        ap: function(maybeWithFunction) {
+        },
+        ap:function (maybeWithFunction) {
             var value = this.val
-            return maybeWithFunction.map(function(fn){
+            return maybeWithFunction.map(function (fn) {
                 return fn(value)
             })
         }
@@ -85,7 +84,7 @@
         just:illegalStateFunction,
         orSome:idFunction,
         orJust:idFunction,
-        ap: function(maybeWithFunction) {
+        ap:function (maybeWithFunction) {
             return this;
         }
     };
