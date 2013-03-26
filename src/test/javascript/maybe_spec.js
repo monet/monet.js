@@ -95,4 +95,20 @@ describe('A Maybe', function() {
         })
     })
 
+    describe('Maybe.fromNull', function () {
+        describe('will create a none for', function () {
+            it('undefined', function () {
+                expect(Maybe.fromNull(undefined)).toBeNoneMaybe()
+            })
+            it('null', function () {
+                expect(Maybe.fromNull(null)).toBeNoneMaybe()
+            })
+        })
+        describe('will create a some for',function() {
+            it('string', function() {
+                expect(Maybe.fromNull("asdf")).toBeSomeMaybe("asdf")
+            })
+        })
+    })
+
 })
