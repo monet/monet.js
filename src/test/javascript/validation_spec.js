@@ -87,10 +87,33 @@ describe('A Validation', function() {
             var result = validateAddress.ap(Validation.fail(["no surname"]).ap(validateForename.map(personCurried)))
             expect(result).toBeFailureWith("no surname")
         })
-        it('will accumulate errors if any validations are failures', function() {
+        it('will accumulate errors if any validations are list type failures', function() {
             var result = Validation.fail(["no address"]).ap(Validation.fail(["no surname"]).ap(validateForename.map(personCurried)))
             expect(result.fail()[0]).toBe("no address")
             expect(result.fail()[1]).toBe("no surname")
+        })
+        it('will accumulate errors if any validations are string type failures', function() {
+            var result = Validation.fail("no address ").ap(Validation.fail("no surname").ap(validateForename.map(personCurried)))
+            expect(result.fail()).toBe("no address no surname")
+        })
+        it('will anonymously accumulate errors if any validations are failures', function() {
+            var result = Validation.fail(["no address"]).ap(Validation.fail(["no surname"]).ap(validateForename.acc()))
+            expect(result.fail()[0]).toBe("no address")
+            expect(result.fail()[1]).toBe("no surname")
+
+        })
+        it('will anonymously accumulate errors if any validations are failures, acc() on fail', function() {
+            var result = Validation.fail(["no address"]).ap(Validation.fail(["no surname"]).ap(Validation.fail("no first name").acc()))
+            expect(result.fail()[0]).toBe("no address")
+            expect(result.fail()[1]).toBe("no surname")
+            expect(result.fail()[2]).toBe("no first name")
+
+        })
+        it('will anonymously accumulate errors if any validations are failures, acc() on fail, ap() on success', function() {
+            var result = validateAddress.ap(Validation.fail(["no surname"]).ap(Validation.fail("no first name").acc()))
+            expect(result.fail()[0]).toBe("no surname")
+            expect(result.fail()[1]).toBe("no first name")
+
         })
 
     })
