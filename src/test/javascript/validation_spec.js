@@ -71,7 +71,8 @@ describe('A Validation', function() {
 
     var person = function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
-    }.partial(_,_,_)
+    };
+    var personCurried = person.partial(_,_,_)
 
     var validateAddress = Validation.success('Dulwich, London')
     var validateSurname = Validation.success('Baker')
@@ -79,12 +80,19 @@ describe('A Validation', function() {
 
     describe('Applicative functor pattern', function() {
         it('will produce a person object if all validations are successes', function() {
-            var personString = validateAddress.ap(validateSurname.ap(validateForename.map(person))).success()
+            var personString = validateAddress.ap(validateSurname.ap(validateForename.map(personCurried))).success()
             expect(personString).toBe("Tom Baker lives at Dulwich, London")
         })
         it('will not produce a person object if any validations are failures', function() {
-            var result = validateAddress.ap(Validation.fail("no surname").ap(validateForename.map(person)))
+            var result = validateAddress.ap(Validation.fail(["no surname"]).ap(validateForename.map(personCurried)))
             expect(result).toBeFailureWith("no surname")
         })
+        it('will accumulate errors if any validations are failures', function() {
+            var result = Validation.fail(["no address"]).ap(Validation.fail(["no surname"]).ap(validateForename.map(personCurried)))
+            expect(result.fail()[0]).toBe("no address")
+            expect(result.fail()[1]).toBe("no surname")
+        })
+
     })
+
 })
