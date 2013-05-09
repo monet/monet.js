@@ -137,8 +137,8 @@
                 return fn(value);
             })
         },
-        acc: function(){
-            var x = function() {
+        acc: function () {
+            var x = function () {
                 return x
             }
             return Validation.success(x)
@@ -177,8 +177,8 @@
             } else {
                 return this;
             }
-        }        ,
-        acc: function(){
+        },
+        acc: function () {
             return this;
         }
     };
