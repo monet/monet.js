@@ -1,3 +1,11 @@
+//     Monad.js 0.4
+
+//     (c) 2012-2013 Chris Myers
+//     Monad.js may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://cwmyers.github.com/monad.js
+
+
 (function (window) {
 
     var idFunction = function (value) {
@@ -11,48 +19,55 @@
     };
 
 
-
     /* Maybe Monad */
 
-    var Maybe = window.Maybe = {};
+    var Maybe = window.Maybe = {}
+
+    Maybe.fromNull = function (val) {
+        if (val == undefined || val == null) {
+            return Maybe.none()
+        } else {
+            return Maybe.some(val)
+        }
+    }
 
     var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = function (val) {
         return new Some.fn.init(val)
     };
 
     Some.fn = Some.prototype = {
-        init:function (val) {
+        init: function (val) {
             if (val == null) {
                 throw "Illegal state exception"
             }
             this.val = val
         },
 
-        map:function (fn) {
+        map: function (fn) {
             return new Some(fn(this.val))
         },
-        isSome:trueFunction,
-        isJust:trueFunction,
-        isNone:falseFunction,
-        isNothing:falseFunction,
-        bind:function (bindFn) {
+        isSome: trueFunction,
+        isJust: trueFunction,
+        isNone: falseFunction,
+        isNothing: falseFunction,
+        bind: function (bindFn) {
             return bindFn(this.val)
         },
-        some:function () {
+        some: function () {
             return this.val
         },
-        just:function () {
+        just: function () {
             return this.some()
         },
-        orSome:function (otherValue) {
+        orSome: function (otherValue) {
             return this.val
         },
-        orJust:function (otherValue) {
+        orJust: function (otherValue) {
             return this.orSome(otherValue)
-        }       ,
-        ap: function(maybeWithFunction) {
+        },
+        ap: function (maybeWithFunction) {
             var value = this.val
-            return maybeWithFunction.map(function(fn){
+            return maybeWithFunction.map(function (fn) {
                 return fn(value)
             })
         }
@@ -69,23 +84,23 @@
         throw "Illegal state exception"
     };
     None.fn = None.prototype = {
-        init:function (val) {
+        init: function (val) {
         },
 
-        map:function () {
+        map: function () {
             return this
         },
-        isSome:falseFunction,
-        isNone:trueFunction,
-        isNothing:trueFunction,
-        bind:function (bindFn) {
+        isSome: falseFunction,
+        isNone: trueFunction,
+        isNothing: trueFunction,
+        bind: function (bindFn) {
             return this
         },
-        some:illegalStateFunction,
-        just:illegalStateFunction,
-        orSome:idFunction,
-        orJust:idFunction,
-        ap: function(maybeWithFunction) {
+        some: illegalStateFunction,
+        just: illegalStateFunction,
+        orSome: idFunction,
+        orJust: idFunction,
+        ap: function (maybeWithFunction) {
             return this;
         }
     };
@@ -99,23 +114,36 @@
     };
 
     Success.fn = Success.prototype = {
-        init:function (val) {
+        init: function (val) {
             this.val = val
         },
-        map:function (fn) {
+        map: function (fn) {
             return new Success(fn(this.val))
         },
-        success:function () {
+        success: function () {
             return this.val;
         },
-        isSuccess:trueFunction,
-        isFail:falseFunction,
-        fail:function () {
+        isSuccess: trueFunction,
+        isFail: falseFunction,
+        fail: function () {
             throw 'Illegal state. Cannot call fail() on a Validation.success'
         },
-        bind:function (fn) {
+        bind: function (fn) {
             return fn(this.val);
+        },
+        ap: function (validationWithFn) {
+            var value = this.val
+            return validationWithFn.map(function (fn) {
+                return fn(value);
+            })
+        },
+        acc: function(){
+            var x = function() {
+                return x
+            }
+            return Validation.success(x)
         }
+
     };
 
     Success.fn.init.prototype = Success.fn;
@@ -125,26 +153,49 @@
     };
 
     Fail.fn = Fail.prototype = {
-        init:function (error) {
+        init: function (error) {
             this.error = error
         },
-        map:function (fn) {
+        map: function (fn) {
             return this;
         },
-        bind:function (fn) {
+        bind: function (fn) {
             return this;
         },
-        isFail:trueFunction,
-        isSuccess:falseFunction,
-        fail:function () {
+        isFail: trueFunction,
+        isSuccess: falseFunction,
+        fail: function () {
             return this.error
         },
-        success:function () {
+        success: function () {
             throw 'Illegal state. Cannot call success() on a Validation.fail'
+        },
+        ap: function (validationWithFn) {
+            var value = this.error
+            if (validationWithFn.isFail()) {
+                return Validation.fail(Semigroup.append(value, validationWithFn.fail()))
+            } else {
+                return this;
+            }
+        }        ,
+        acc: function(){
+            return this;
         }
     };
 
     Fail.fn.init.prototype = Fail.fn;
+
+    var Semigroup = window.Semigroup = {}
+
+    Semigroup.append = function (a, b) {
+        if (a instanceof Array) {
+            return a.concat(b)
+        }
+        if (typeof a === "string") {
+            return a + b
+        }
+        throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
+    }
 
     return this
 }(window || this));
