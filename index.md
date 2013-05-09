@@ -103,7 +103,7 @@ For further reading see [this excellent article](http://learnyouahaskell.com/fun
 	
 
 ## Validation
-Validation is a rather specific monad that can hold either a success value or a failure value (i.e. an error message or some other failure object).  Is is catamorphically identical to Either.
+Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods.  It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors.
 
 #### Creating a Validation
 
@@ -142,6 +142,25 @@ Will return the succesful value.
 ####fail()
 Will return the failed value, usually an error message.
 
+####ap(Validation(fn))
+
+Implements the applicative functor pattern.  `ap` will apply a function over the validation from within the supplied validation.  If any of the validations are `fail`s then the function will collect the errors.
+
+	var person = function (forename, surname, address) {
+        return forename + " " + surname + " lives at " + address
+    };
+    var personCurried = person.partial(_,_,_)
+
+    var validateAddress = Validation.success('Dulwich, London')
+    var validateSurname = Validation.success('Baker')
+    var validateForename = Validation.success('Tom')
+    
+    var personString = validateAddress.ap(validateSurname.ap(validateForename.map(personCurried))).success()
+    
+    // result: "Tom Baker lives at Dulwich, London"
+    
+    var result = Validation.fail(["no address"]).ap(Validation.fail(["no surname"]).ap(validateForename.map(personCurried)))
+    // result: ["no address", "no surname"]
             
 [functionalJava]: http://functionaljava.org/
 [Functional Javascript]: http://osteele.com/sources/javascript/functional/
