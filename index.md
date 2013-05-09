@@ -155,11 +155,14 @@ Implements the applicative functor pattern.  `ap` will apply a function over the
     var validateSurname = Validation.success('Baker')
     var validateForename = Validation.success('Tom')
     
-    var personString = validateAddress.ap(validateSurname.ap(validateForename.map(personCurried))).success()
+    var personString = validateAddress.ap(validateSurname
+    	.ap(validateForename.map(personCurried))).success()
     
     // result: "Tom Baker lives at Dulwich, London"
     
-    var result = Validation.fail(["no address"]).ap(Validation.fail(["no surname"]).ap(validateForename.map(personCurried)))
+    var result = Validation.fail(["no address"])
+    	.ap(Validation.fail(["no surname"])
+    	.ap(validateForename.map(personCurried)))
     // result: ["no address", "no surname"]
             
 [functionalJava]: http://functionaljava.org/
