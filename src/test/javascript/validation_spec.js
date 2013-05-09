@@ -68,4 +68,54 @@ describe('A Validation', function() {
       })
 
     })
+
+    var person = function (forename, surname, address) {
+        return forename + " " + surname + " lives at " + address
+    };
+    var personCurried = person.partial(_,_,_)
+
+    var validateAddress = Validation.success('Dulwich, London')
+    var validateSurname = Validation.success('Baker')
+    var validateForename = Validation.success('Tom')
+
+    describe('Applicative functor pattern', function() {
+        it('will produce a person object if all validations are successes', function() {
+            var personString = validateAddress.ap(validateSurname.ap(validateForename.map(personCurried))).success()
+            expect(personString).toBe("Tom Baker lives at Dulwich, London")
+        })
+        it('will not produce a person object if any validations are failures', function() {
+            var result = validateAddress.ap(Validation.fail(["no surname"]).ap(validateForename.map(personCurried)))
+            expect(result).toBeFailureWith("no surname")
+        })
+        it('will accumulate errors if any validations are list type failures', function() {
+            var result = Validation.fail(["no address"]).ap(Validation.fail(["no surname"]).ap(validateForename.map(personCurried)))
+            expect(result.fail()[0]).toBe("no address")
+            expect(result.fail()[1]).toBe("no surname")
+        })
+        it('will accumulate errors if any validations are string type failures', function() {
+            var result = Validation.fail("no address ").ap(Validation.fail("no surname").ap(validateForename.map(personCurried)))
+            expect(result.fail()).toBe("no address no surname")
+        })
+        it('will anonymously accumulate errors if any validations are failures', function() {
+            var result = Validation.fail(["no address"]).ap(Validation.fail(["no surname"]).ap(validateForename.acc()))
+            expect(result.fail()[0]).toBe("no address")
+            expect(result.fail()[1]).toBe("no surname")
+
+        })
+        it('will anonymously accumulate errors if any validations are failures, acc() on fail', function() {
+            var result = Validation.fail(["no address"]).ap(Validation.fail(["no surname"]).ap(Validation.fail("no first name").acc()))
+            expect(result.fail()[0]).toBe("no address")
+            expect(result.fail()[1]).toBe("no surname")
+            expect(result.fail()[2]).toBe("no first name")
+
+        })
+        it('will anonymously accumulate errors if any validations are failures, acc() on fail, ap() on success', function() {
+            var result = validateAddress.ap(Validation.fail(["no surname"]).ap(Validation.fail("no first name").acc()))
+            expect(result.fail()[0]).toBe("no surname")
+            expect(result.fail()[1]).toBe("no first name")
+
+        })
+
+    })
+
 })
