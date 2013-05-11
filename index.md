@@ -21,6 +21,20 @@ goodness.
 ##Download
 
 Download the [zip][gitZip] or [tar][gitTar] ball.
+
+##Installation
+
+Simply download and add to your html pages or we also support [bower].
+
+### Bower installation
+Using [bower]:
+
+	bower install monad.js
+
+or to install a specific version
+
+	bower install monad.js#0.4.0
+	
 ## Maybe
 
 The `Maybe` type is the most common way of represented the `null` type with making the possibilities of `NullPointer`
@@ -169,3 +183,4 @@ Implements the applicative functor pattern.  `ap` will apply a function over the
 [Functional Javascript]: http://osteele.com/sources/javascript/functional/
 [gitZip]: https://github.com/cwmyers/monad.js/zipball/master (zip format)
 [gitTar]: https://github.com/cwmyers/monad.js/tarball/master (tar format)
+[bower]: http://bower.io
