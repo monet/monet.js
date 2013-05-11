@@ -111,7 +111,7 @@ Here is an example for creating a string out of the result of a couple of `Maybe
     
     var personString = maybeAddress.ap(maybeSurname.ap(maybeForename.map(person))).just()
     
-    #result: "Tom Baker lives in Dulwich, London"
+    // result: "Tom Baker lives in Dulwich, London"
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
 	
@@ -177,7 +177,7 @@ Implements the applicative functor pattern.  `ap` will apply a function over the
     var result = Validation.fail(["no address"])
     	.ap(Validation.fail(["no surname"])
     	.ap(validateForename.map(personCurried)))
-    // result: ["no address", "no surname"]
+    // result: Validation(["no address", "no surname"])
             
 [functionalJava]: http://functionaljava.org/
 [Functional Javascript]: http://osteele.com/sources/javascript/functional/
