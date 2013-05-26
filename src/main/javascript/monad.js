@@ -24,12 +24,8 @@
     var Maybe = window.Maybe = {}
 
     Maybe.fromNull = function (val) {
-        if (val == undefined || val == null) {
-            return Maybe.none()
-        } else {
-            return Maybe.some(val)
-        }
-    }
+        return (val == undefined || val == null) ? Maybe.none() : Maybe.some(val)
+    };
 
     var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = function (val) {
         return new Some.fn.init(val)
