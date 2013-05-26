@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.4.0
-dev-version: 0.4.0
+version: 0.4.1
+dev-version: 0.4.1
 ---
 
 ## Introduction
@@ -46,6 +46,7 @@ issues disappear.
 
 	var maybe = Maybe.some(val);
 	var maybe = Maybe.none();
+	var maybe = Maybe.fromNull(val);  // none if val is null, some otherwise
 	
 ### Functions
 #### map(fn)
@@ -60,7 +61,7 @@ For example:
 	})
 	=> 124
 
-#### bind(fn)
+#### bind(fn) *alias: flatMap*
 `bind` takes a function that takes a value and returns an `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on.
             
 	maybe.bind(fn) : Maybe
@@ -76,17 +77,17 @@ For example:
 	})
 
 
-#### isSome() also: isJust()
+#### isSome() *alias: isJust*
 `isSome` on a `Some` value will return `true` and will return `false` on a `None`.
 
 	maybe.some("hi").isSome()
 	=> true
 
 
-#### isNone() also: isNothing()
+#### isNone() *alias: isNothing*
 `isNone` on a `None` value will return `true` and will return `false` on a `Some`.
 
-####some() also: just()
+####some() *alias: just*
 `some` will 'reduce' the `Maybe` to its value.
 
 	maybe.some("hi").some()
@@ -128,7 +129,7 @@ Validation is not quite a monad as it [doesn't quite follow the monad rules](htt
 ####map()
 `map` takes a function (a -> b) and applies that function to the value inside the `success` side of the `Validation` and returns another `Validation`.
 
-####bind(fn)
+####bind(fn) *alias: flatMap*
 `bind` takes a function that takes a value and returns an `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
             
 	validation.bind(fn) : validation
@@ -151,7 +152,7 @@ Will return `true` if this is a successful validation, `false` otherwise.
 Will return `false` if this is a failed validation, `true` otherwise.
 
 ####success()
-Will return the succesful value.
+Will return the successful value.
 
 ####fail()
 Will return the failed value, usually an error message.
@@ -178,6 +179,16 @@ Implements the applicative functor pattern.  `ap` will apply a function over the
     	.ap(Validation.fail(["no surname"])
     	.ap(validateForename.map(personCurried)))
     // result: Validation(["no address", "no surname"])
+    
+####cata(failFn,successFn)
+
+The catamorphism for validation.  If the validation is `success` the success function will be executed with the success value and the value of the function returned. Otherwise the `failure` function will be called with the failure value.
+
+	var result = v.cata(function(failure) {
+		return "oh dear it failed because " + failure
+	}, function(success) {
+		return "yay! " + success
+	})
             
 [functionalJava]: http://functionaljava.org/
 [Functional Javascript]: http://osteele.com/sources/javascript/functional/
