@@ -42,6 +42,7 @@ describe('A Maybe', function() {
         })
         it('will be transformed to a none on bind that returns none', function() {
             expect(someString.bind(function(val){return Maybe.none()})).toBeNoneMaybe()
+            expect(someString.flatMap(function(val){return Maybe.none()})).toBeNoneMaybe()
         })
         it ('will return the value when orSome() is called', function() {
             expect(someString.orSome('no no!')).toBe('abcd')

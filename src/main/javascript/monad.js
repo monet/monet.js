@@ -137,6 +137,9 @@
         bind: function (fn) {
             return fn(this.val);
         },
+        flatMap: function(fn) {
+            return this.bind(fn)
+        },
         ap: function (validationWithFn) {
             var value = this.val
             return validationWithFn.map(function (fn) {
@@ -170,6 +173,9 @@
         },
         bind: function (fn) {
             return this;
+        },
+        flatMap: function (fn) {
+             return this.bind(fn)
         },
         isFail: trueFunction,
         isSuccess: falseFunction,
