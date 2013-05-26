@@ -53,6 +53,9 @@
         bind: function (bindFn) {
             return bindFn(this.val)
         },
+        flatMap: function(fn) {
+            return this.bind(fn)
+        },
         some: function () {
             return this.val
         },
@@ -94,6 +97,9 @@
         isNone: trueFunction,
         isNothing: trueFunction,
         bind: function (bindFn) {
+            return this
+        },
+        flatMap: function(fn) {
             return this
         },
         some: illegalStateFunction,
