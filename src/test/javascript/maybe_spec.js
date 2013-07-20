@@ -37,8 +37,12 @@ describe('A Maybe', function() {
         it('will be transformed by a bind', function() {
             expect(someString.bind(function(val){return Maybe.some('Hello')})).toBeSomeMaybeWith('Hello')
         })
+        it('will be transformed by a flatMap', function() {
+            expect(someString.flatMap(function(val){return Maybe.some('Hello')})).toBeSomeMaybeWith('Hello')
+        })
         it('will be transformed to a none on bind that returns none', function() {
             expect(someString.bind(function(val){return Maybe.none()})).toBeNoneMaybe()
+            expect(someString.flatMap(function(val){return Maybe.none()})).toBeNoneMaybe()
         })
         it ('will return the value when orSome() is called', function() {
             expect(someString.orSome('no no!')).toBe('abcd')
@@ -62,7 +66,9 @@ describe('A Maybe', function() {
         })
         it('will always return a none on bind', function() {
             expect(none.bind(function() { return Maybe.some('a')})).toBeNoneMaybe()
+            expect(none.flatMap(function() { return Maybe.some('a')})).toBeNoneMaybe()
             expect(none.bind(function() { return Maybe.none()})).toBeNoneMaybe()
+            expect(none.flatMap(function() { return Maybe.none()})).toBeNoneMaybe()
         })
         it ('will return the other value when orSome() is called', function() {
             expect(none.orSome('yep')).toBe('yep')
