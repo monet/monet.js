@@ -138,7 +138,7 @@ For example:
 
 	validation.bind(function(val) {
 		if (val == "hi") {
-			return Validation,success("world")
+			return Validation.success("world")
 		} else {
 			return Validation.fail("wow, you really failed.")
 		}
