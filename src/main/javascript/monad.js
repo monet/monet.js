@@ -24,12 +24,8 @@
     var Maybe = window.Maybe = {}
 
     Maybe.fromNull = function (val) {
-        if (val == undefined || val == null) {
-            return Maybe.none()
-        } else {
-            return Maybe.some(val)
-        }
-    }
+        return (val == undefined || val == null) ? Maybe.none() : Maybe.some(val)
+    };
 
     var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = function (val) {
         return new Some.fn.init(val)
@@ -52,6 +48,9 @@
         isNothing: falseFunction,
         bind: function (bindFn) {
             return bindFn(this.val)
+        },
+        flatMap: function(fn) {
+            return this.bind(fn)
         },
         some: function () {
             return this.val
@@ -96,6 +95,9 @@
         bind: function (bindFn) {
             return this
         },
+        flatMap: function(fn) {
+            return this
+        },
         some: illegalStateFunction,
         just: illegalStateFunction,
         orSome: idFunction,
@@ -131,6 +133,9 @@
         bind: function (fn) {
             return fn(this.val);
         },
+        flatMap: function(fn) {
+            return this.bind(fn)
+        },
         ap: function (validationWithFn) {
             var value = this.val
             return validationWithFn.map(function (fn) {
@@ -164,6 +169,9 @@
         },
         bind: function (fn) {
             return this;
+        },
+        flatMap: function (fn) {
+             return this.bind(fn)
         },
         isFail: trueFunction,
         isSuccess: falseFunction,

@@ -36,12 +36,10 @@ describe('A Validation', function () {
             expect(successString.fail).toThrow('Illegal state. Cannot call fail() on a Validation.success')
         })
         it('will be transformed by a bind', function () {
-            expect(successString.bind(function (val) {
-                return Validation.success("efgh")
-            })).toBeSuccessWith("efgh")
-            expect(successString.bind(function (val) {
-                return Validation.fail("big fail")
-            })).toBeFailureWith("big fail")
+            expect(successString.bind(function (val) {return Validation.success("efgh")})).toBeSuccessWith("efgh")
+            expect(successString.bind(function (val) {return Validation.fail("big fail")})).toBeFailureWith("big fail")
+            expect(successString.flatMap(function (val) {return Validation.success("efgh")})).toBeSuccessWith("efgh")
+            expect(successString.flatMap(function (val) {return Validation.fail("big fail")})).toBeFailureWith("big fail")
         })
         it('will run the success side of cata', function () {
             expect(successString.cata(function(val){
@@ -60,12 +58,10 @@ describe('A Validation', function () {
             })).toBeFailureWith("error dude")
         })
         it('will not be transformed by a bind', function () {
-            expect(failString.bind(function (val) {
-                return Validation.success("efgh")
-            })).toBeFailureWith("error dude")
-            expect(failString.bind(function (val) {
-                return Validation.fail("big fail")
-            })).toBeFailureWith("error dude")
+            expect(failString.bind(function (val) {return Validation.success("efgh")})).toBeFailureWith("error dude")
+            expect(failString.bind(function (val) {return Validation.fail("big fail")})).toBeFailureWith("error dude")
+            expect(failString.flatMap(function (val) {return Validation.success("efgh")})).toBeFailureWith("error dude")
+            expect(failString.flatMap(function (val) {return Validation.fail("big fail")})).toBeFailureWith("error dude")
         })
         it('will return false when isSuccess is called', function () {
             expect(failString.isSuccess()).toBeFalsy()
