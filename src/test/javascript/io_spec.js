@@ -1,6 +1,5 @@
 describe("An IO monad", function() {	
 	var effect = IO(function() {
-				console.log("some effect")
 				return "effect";
 				})
 	describe("will have lazy", function() {
@@ -10,9 +9,7 @@ describe("An IO monad", function() {
 		})		
 		it("flatMap function", function() {
 			var newEffect = function(b) { 
-				console.log("inside flatMap")
 				return IO(function() {
-					console.log("inside effect")
 					return b + "ive flatMap"
 				}
 			)}
