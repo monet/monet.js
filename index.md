@@ -189,6 +189,19 @@ The catamorphism for validation.  If the validation is `success` the success fun
 	}, function(success) {
 		return "yay! " + success
 	})
+	
+## IO
+The `IO` monad is for isolating effects to maintain referential transparency in your software.  Essentially you create a description of your effects of which is performed as the last action in your programme.  The IO is lazy and will not be evaluated until the `perform` (*alias* `run`) method is called.
+
+###Functions
+####IO(fn) *alias: io*
+The constructor for the `IO` monad.  It is a purely functional wrapper around the supplied effect and enables referential transparency in your software.
+####bind(fn) *alias: flatMap*
+Perform a monadic bind (flatMap) over the effect.  This will happen lazily and will not evaluate the effect.
+####map(fn)
+Performs a map over the result of the effect.  This will happen lazily and will not evaluate the effect.
+####run *alias: perform*
+Evaluates the effect inside the `IO` monad.  This can only be run once in your programme and at the very end.
             
 [functionalJava]: http://functionaljava.org/
 [Functional Javascript]: http://osteele.com/sources/javascript/functional/
