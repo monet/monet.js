@@ -1,6 +1,6 @@
 {
   "name": "monad.js",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "main": "src/main/javascript/monad.js",
   "ignore": [
     "**/.*",
