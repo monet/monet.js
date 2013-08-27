@@ -211,6 +211,38 @@
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
     }
 
+    var IO = io = window.IO = window.io= function(effectFn) {
+        return new IO.fn.init(effectFn)
+    }
+
+    IO.fn = IO.prototype = {
+        init: function(effectFn) {
+            this.effectFn = effectFn;
+        },
+        map: function(fn) {
+            var self = this;
+            return IO(function() {
+                return fn(self.effectFn())
+            })
+        },
+        flatMap: function(fn) {
+            var self = this
+            return IO(function() {
+                return fn(self.effectFn()).run()
+            });
+        },
+        bind: function(fn) {
+            return this.flatMap(fn)
+        },
+        run: function(effectFn) {
+            return this.effectFn()
+        }
+    }
+
+    IO.fn.init.prototype = IO.fn;
+
+    
+
     return this
 }(window || this));
 
