@@ -33,7 +33,7 @@ Using [bower]:
 
 or to install a specific version
 
-	bower install monad.js#0.4.0
+	bower install monad.js#0.5.0
 	
 ## Maybe
 
