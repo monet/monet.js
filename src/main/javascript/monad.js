@@ -49,7 +49,7 @@
         bind: function (bindFn) {
             return bindFn(this.val)
         },
-        flatMap: function(fn) {
+        flatMap: function (fn) {
             return this.bind(fn)
         },
         some: function () {
@@ -95,7 +95,7 @@
         bind: function (bindFn) {
             return this
         },
-        flatMap: function(fn) {
+        flatMap: function (fn) {
             return this
         },
         some: illegalStateFunction,
@@ -133,7 +133,7 @@
         bind: function (fn) {
             return fn(this.val);
         },
-        flatMap: function(fn) {
+        flatMap: function (fn) {
             return this.bind(fn)
         },
         ap: function (validationWithFn) {
@@ -148,7 +148,7 @@
             }
             return Validation.success(x)
         },
-        cata: function(success, fail) {
+        cata: function (success, fail) {
             return success(this.val)
         }
 
@@ -171,7 +171,7 @@
             return this;
         },
         flatMap: function (fn) {
-             return this.bind(fn)
+            return this.bind(fn)
         },
         isFail: trueFunction,
         isSuccess: falseFunction,
@@ -192,7 +192,7 @@
         acc: function () {
             return this;
         },
-        cata: function(success, fail) {
+        cata: function (success, fail) {
             return fail(this.error)
         }
     };
@@ -211,37 +211,42 @@
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
     }
 
-    var IO = io = window.IO = window.io= function(effectFn) {
+    var IO = io = window.IO = window.io = function (effectFn) {
         return new IO.fn.init(effectFn)
     }
 
     IO.fn = IO.prototype = {
-        init: function(effectFn) {
+        init: function (effectFn) {
             this.effectFn = effectFn;
         },
-        map: function(fn) {
+        map: function (fn) {
             var self = this;
-            return IO(function() {
+            return IO(function () {
                 return fn(self.effectFn())
             })
         },
-        flatMap: function(fn) {
+        flatMap: function (fn) {
             var self = this
-            return IO(function() {
+            return IO(function () {
                 return fn(self.effectFn()).run()
             });
         },
-        bind: function(fn) {
+        bind: function (fn) {
             return this.flatMap(fn)
         },
-        run: function(effectFn) {
+        run: function () {
             return this.effectFn()
+        },
+        perform: function () {
+            return this.run()
+        },
+        performUnsafeIO: function () {
+            return this.run()
         }
     }
 
     IO.fn.init.prototype = IO.fn;
 
-    
 
     return this
 }(window || this));
