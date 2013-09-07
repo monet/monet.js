@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../src/main/javascript/monad.js" type="text/javascript"></script>
+    <script src="../src/main/javascript/functional.js" type="text/javascript"></script>
+    <script src="bower_components/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="bower_components/underscore/underscore-min.js" type="text/javascript"></script>
+    <title>Example IO page</title>
+</head>
+<body>
+
+<span id="SomeId">Some text</span>
+
+<div>
+    <span>first name: <input type="text" id="firstName"/> </span>
+    <span>last name: <input type="text" id="lastName"/> </span>
+    <span>postcode: <input type="text" id="postcode"/> </span>
+</div>
+
+<div>
+    <span>Result:</span> <span id="result"></span>
+</div>
+
+<script>
+    function idFunction(id) {
+        return id
+    }
+
+    var happyPerson = function(f,l,p) {
+        return "Welcome "+f+ " "+l + " who lives at "+p
+    }.partial(_,_,_)
+
+    $("input").keyup(function () {
+        var validate = function (label,value) {
+            return value != "" ? Validation.success(value) : Validation.fail(["Please give a " +label])
+        }.partial(_,_)
+
+        var firstNameValidation = getValForId("#firstName").map(validate("first name"))
+        var lastNameValidation = getValForId("#lastName").map(validate("last name"))
+        var postCodeNameValidation = getValForId("#postcode").map(validate("postcode/zip code"))
+
+        var personValidationIO = firstNameValidation.flatMap(function(f) {
+            return lastNameValidation.flatMap(function(l){
+                return postCodeNameValidation.map(function(p){
+                    return p.ap(l.ap(f.map(happyPerson)))
+                })
+            })
+        })
+
+        personValidationIO.map(function (v) {
+                    return v.cata(idFunction, function(errors) {
+                        return errors.reduce(function(acc, error){
+                              return acc+"<div>"+error+"</div>"
+                        })
+
+                    })
+                }).flatMap(writeText("#result")).run()
+    })
+
+    function getId(id) {
+        return IO(function () {
+            return $(id)
+        })
+    }
+
+    var getTextForId = function(id) {
+        return getId(id).map(getText)
+    }
+
+    var getValForId = function(id) {
+        return getId(id).map(getVal)
+    }
+
+    var getText = function (o) {
+        return o.text()
+    }
+
+    var getVal = function (o) {
+        return o.val()
+    }
+
+    var writeText = function (id, text) {
+        return IO(function () {
+            $(id).text(text)
+        })
+    }.partial(_, _)
+
+    getId("#SomeId").map(getText).map(function (text) {
+        return text + " now with awesomeness"
+    }).flatMap(writeText("#SomeId")).run()
+
+</script>
+
+</body>
+</html>
