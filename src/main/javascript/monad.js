@@ -233,12 +233,15 @@
             return ValidationT(this.monad.map(function(v){
                return v.ap(validationWithFn)
             }))
+        },
+        perform: function() {
+            return this.monad;
         }
     }
 
     ValidationT.fn.init.prototype = ValidationT.fn;
 
-    var IO = io = window.IO = window.io= function(effectFn) {
+    var IO = io = window.IO = window.io = function(effectFn) {
         return new IO.fn.init(effectFn)
     }
 
