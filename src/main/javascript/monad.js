@@ -220,14 +220,19 @@
             this.monad = monad
         },
         map: function(fn) {
-            return this.monad.map(function(v) {
+            return ValidationT(this.monad.map(function(v) {
                 return v.map(fn)
-            })
+            }))
         },
         flatMap: function(fn) {
-            return this.monad.map(function(v){
+            return ValidationT(this.monad.map(function(v){
                 return v.flatMap(fn)
-            })
+            }))
+        },
+        ap: function(validationWithFn) {
+            return ValidationT(this.monad.map(function(v){
+               return v.ap(validationWithFn)
+            }))
         }
     }
 
