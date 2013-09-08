@@ -3,6 +3,7 @@
 <head>
     <script src="../src/main/javascript/monad.js" type="text/javascript"></script>
     <script src="../src/main/javascript/functional.js" type="text/javascript"></script>
+    <!--<script src="bower_components/underscore/underscore.js" type="text/javascript"></script>-->
     <script src="bower_components/jquery/jquery.min.js" type="text/javascript"></script>
     <title>Example IO page</title>
 </head>
@@ -38,9 +39,9 @@
         var lastNameValidation = getValForId("#lastName").map(validate("last name"))
         var postCodeNameValidation = getValForId("#postcode").map(validate("postcode/zip code"))
 
-        var personValidationIO = firstNameValidation.flatMap(function(f) {
-            return lastNameValidation.flatMap(function(l){
-                return postCodeNameValidation.map(function(p){
+        var personValidationIO = firstNameValidation.flatMap(function (f) {
+            return lastNameValidation.flatMap(function (l) {
+                return postCodeNameValidation.map(function (p) {
                     return p.ap(l.ap(f.map(happyPerson)))
                 })
             })
@@ -57,12 +58,16 @@
         })
     }
 
-    var getTextForId = function(id) {
+    var getTextForId = function (id) {
         return getId(id).map(getText)
     }
 
-    var getValForId = function(id) {
+    var getValForId = function (id) {
         return getId(id).map(getVal)
+    }
+
+    var getText = function (o) {
+        return o.text()
     }
 
     var getText = function (o) {
