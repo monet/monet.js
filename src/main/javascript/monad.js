@@ -230,8 +230,10 @@
             }))
         },
         ap: function(validationWithFn) {
-            return ValidationT(this.monad.map(function(v){
-               return v.ap(validationWithFn)
+            return ValidationT(this.monad.flatMap(function (v){
+                return validationWithFn.perform().map(function(v2){
+                    return v.ap(v2)
+                })
             }))
         },
         perform: function() {

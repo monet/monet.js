@@ -37,17 +37,9 @@
 
         var firstNameValidation = ValidationT(getValForId("#firstName").map(validate("first name")))
         var lastNameValidation = ValidationT(getValForId("#lastName").map(validate("last name")))
-        var postCodeNameValidation = ValidationT(getValForId("#postcode").map(validate("postcode/zip code")))
+        var postCodeValidation = ValidationT(getValForId("#postcode").map(validate("postcode/zip code")))
 
-        var personValidationIO = postCodeNameValidation.ap(lastNameValidation.ap(firstNameValidation.map(happyPerson))).perform()
-
-//        var personValidationIO = firstNameValidation.flatMap(function (f) {
-//            return lastNameValidation.flatMap(function (l) {
-//                return postCodeNameValidation.map(function (p) {
-//                    return p.ap(l.ap(f.map(happyPerson)))
-//                })
-//            })
-//        })
+        var personValidationIO = (postCodeValidation.ap(lastNameValidation.ap(firstNameValidation.map(happyPerson)))).perform()
 
         personValidationIO.map(function (v) {
             return v.cata(idFunction, idFunction)
