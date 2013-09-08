@@ -211,6 +211,28 @@
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
     }
 
+    var ValidationT = validationT = window.ValidationT = window.validationT = function(monad) {
+        return new ValidationT.fn.init(monad)
+    }
+
+    ValidationT.fn = ValidationT.prototype = {
+        init: function(monad) {
+            this.monad = monad
+        },
+        map: function(fn) {
+            return this.monad.map(function(v) {
+                return v.map(fn)
+            })
+        },
+        flatMap: function(fn) {
+            return this.monad.map(function(v){
+                return v.flatMap(fn)
+            })
+        }
+    }
+
+    ValidationT.fn.init.prototype = ValidationT.fn;
+
     var IO = io = window.IO = window.io= function(effectFn) {
         return new IO.fn.init(effectFn)
     }
