@@ -26,30 +26,32 @@
         return id
     }
 
-    var happyPerson = function(f,l,p) {
-        return "Welcome "+f+ " "+l + " who lives at "+p
-    }.partial(_,_,_)
+    var happyPerson = function (f, l, p) {
+        return "Welcome " + f + " " + l + " who lives at " + p
+    }.partial(_, _, _)
 
     $("input").keyup(function () {
-        var validate = function (label,value) {
-            return value != "" ? Validation.success(value) : Validation.fail("Please give a " +label)
-        }.partial(_,_)
+        var validate = function (label, value) {
+            return value != "" ? Validation.success(value) : Validation.fail("Please give a " + label)
+        }.partial(_, _)
 
-        var firstNameValidation = getValForId("#firstName").map(validate("first name"))
-        var lastNameValidation = getValForId("#lastName").map(validate("last name"))
-        var postCodeNameValidation = getValForId("#postcode").map(validate("postcode/zip code"))
+        var firstNameValidation = ValidationT(getValForId("#firstName").map(validate("first name")))
+        var lastNameValidation = ValidationT(getValForId("#lastName").map(validate("last name")))
+        var postCodeNameValidation = ValidationT(getValForId("#postcode").map(validate("postcode/zip code")))
 
-        var personValidationIO = firstNameValidation.flatMap(function (f) {
-            return lastNameValidation.flatMap(function (l) {
-                return postCodeNameValidation.map(function (p) {
-                    return p.ap(l.ap(f.map(happyPerson)))
-                })
-            })
-        })
+        var personValidationIO = postCodeNameValidation.ap(lastNameValidation.ap(firstNameValidation.map(happyPerson))).perform()
+
+//        var personValidationIO = firstNameValidation.flatMap(function (f) {
+//            return lastNameValidation.flatMap(function (l) {
+//                return postCodeNameValidation.map(function (p) {
+//                    return p.ap(l.ap(f.map(happyPerson)))
+//                })
+//            })
+//        })
 
         personValidationIO.map(function (v) {
-                    return v.cata(idFunction, idFunction)
-                }).flatMap(writeText("#result")).run()
+            return v.cata(idFunction, idFunction)
+        }).flatMap(writeText("#result")).run()
     })
 
     function getId(id) {
