@@ -39,6 +39,8 @@
         var lastNameValidation = ValidationT(getValForId("#lastName").map(validate("last name")))
         var postCodeValidation = ValidationT(getValForId("#postcode").map(validate("postcode/zip code")))
 
+
+        // accumulate errors then convert back from a validation transformer.
         var personValidationIO = (postCodeValidation.ap(lastNameValidation.ap(firstNameValidation.map(happyPerson)))).perform()
 
         personValidationIO.map(function (v) {
