@@ -241,7 +241,7 @@
         }
     }
 
-    MonadT.fn.init.prototype = monadT.fn;
+    MonadT.fn.init.prototype = MonadT.fn;
 
     var IO = io = window.IO = window.io = function(effectFn) {
         return new IO.fn.init(effectFn)
