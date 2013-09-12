@@ -75,6 +75,10 @@
 
     Some.fn.init.prototype = Some.fn;
 
+    Object.prototype.some = Object.prototype.just = function () {
+        return new Some(this)
+    }
+
     var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = function () {
         return new None.fn.init()
     };
@@ -211,39 +215,39 @@
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
     }
 
-    var MonadT = monadT = monadTransformer = MonadTransformer = window.monadTransformer = window.MonadT = window.monadT = function(monad) {
+    var MonadT = monadT = monadTransformer = MonadTransformer = window.monadTransformer = window.MonadT = window.monadT = function (monad) {
         return new MonadT.fn.init(monad)
     }
 
     MonadT.fn = MonadT.prototype = {
-        init: function(monad) {
+        init: function (monad) {
             this.monad = monad
         },
-        map: function(fn) {
-            return monadT(this.monad.map(function(v) {
+        map: function (fn) {
+            return monadT(this.monad.map(function (v) {
                 return v.map(fn)
             }))
         },
-        flatMap: function(fn) {
-            return monadT(this.monad.map(function(v){
+        flatMap: function (fn) {
+            return monadT(this.monad.map(function (v) {
                 return v.flatMap(fn)
             }))
         },
-        ap: function(validationWithFn) {
-            return monadT(this.monad.flatMap(function (v){
-                return validationWithFn.perform().map(function(v2){
+        ap: function (validationWithFn) {
+            return monadT(this.monad.flatMap(function (v) {
+                return validationWithFn.perform().map(function (v2) {
                     return v.ap(v2)
                 })
             }))
         },
-        perform: function() {
+        perform: function () {
             return this.monad;
         }
     }
 
     MonadT.fn.init.prototype = MonadT.fn;
 
-    var IO = io = window.IO = window.io = function(effectFn) {
+    var IO = io = window.IO = window.io = function (effectFn) {
         return new IO.fn.init(effectFn)
     }
 

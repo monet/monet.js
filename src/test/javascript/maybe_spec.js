@@ -117,4 +117,14 @@ describe('A Maybe', function() {
         })
     })
 
+    describe("will pimp an object", function() {
+        it ("with some", function(){
+            expect("hello".some()).toBeSomeMaybeWith("hello")
+        })
+        it("with just", function(){
+            expect("hello".just()).toBeSomeMaybeWith("hello")
+        })
+
+    })
+
 })
