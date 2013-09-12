@@ -148,7 +148,7 @@
             }
             return Validation.success(x)
         },
-        cata: function (success, fail) {
+        cata: function (fail, success) {
             return success(this.val)
         }
 
@@ -192,7 +192,7 @@
         acc: function () {
             return this;
         },
-        cata: function (success, fail) {
+        cata: function (fail, success) {
             return fail(this.error)
         }
     };
