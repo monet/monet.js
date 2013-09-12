@@ -31,9 +31,9 @@
         return id
     }
 
-    var happyPerson = wu.autoCurry(function (f, l, p) {
+    var happyPerson = function (f, l, p) {
         return "Welcome " + f + " " + l + " who lives at " + p
-    })
+    }.autoCurry()
 
     $("input").keyup(function () {
         var validate = function (label, value) {
@@ -54,7 +54,7 @@
                         return acc + "<div>"+e+"</div>"
                 },"")
             }, idFunction)
-        }).flatMap(writeText("#result")).run()
+        }).flatMap(writeHtml("#result")).run()
     })
 
     function getId(id) {
@@ -82,6 +82,12 @@
     var writeText = function (id, text) {
         return IO(function () {
             $(id).text(text)
+        })
+    }.autoCurry()
+
+    var writeHtml = function(id, html) {
+        return IO(function () {
+            $(id).html(html)
         })
     }.autoCurry()
 
