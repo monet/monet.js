@@ -22,6 +22,9 @@
 </div>
 
 <script>
+
+    Functional.install()
+
     function idFunction(id) {
         return id
     }
@@ -35,9 +38,9 @@
             return value != "" ? Validation.success(value) : Validation.fail("Please give a " + label)
         }.partial(_, _)
 
-        var firstNameValidation = ValidationT(getValForId("#firstName").map(validate("first name")))
-        var lastNameValidation = ValidationT(getValForId("#lastName").map(validate("last name")))
-        var postCodeValidation = ValidationT(getValForId("#postcode").map(validate("postcode/zip code")))
+        var firstNameValidation = monadT(getValForId("#firstName").map(validate("first name")))
+        var lastNameValidation = monadT(getValForId("#lastName").map(validate("last name")))
+        var postCodeValidation = monadT(getValForId("#postcode").map(validate("postcode/zip code")))
 
 
         // accumulate errors then convert back from a validation transformer.
@@ -60,10 +63,6 @@
 
     var getValForId = function (id) {
         return getId(id).map(getVal)
-    }
-
-    var getText = function (o) {
-        return o.text()
     }
 
     var getText = function (o) {
