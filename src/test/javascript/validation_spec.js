@@ -43,9 +43,9 @@ describe('A Validation', function () {
         })
         it('will run the success side of cata', function () {
             expect(successString.cata(function(val){
-                return "success "+val
-            },function(val){
                 throw "fail"
+            },function(val){
+                return "success "+val
             })).toBe("success abcd")
         })
     })
@@ -77,9 +77,9 @@ describe('A Validation', function () {
         })
         it('will run the failure side of cata', function () {
             expect(failString.cata(function(val){
-                throw "success"
-            },function(val){
                 return "fail: "+val
+            }, function(val){
+                throw "success"
             })).toBe("fail: error dude")
         })
 
