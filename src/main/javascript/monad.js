@@ -49,21 +49,13 @@
         bind: function (bindFn) {
             return bindFn(this.val)
         },
-        flatMap: function (fn) {
-            return this.bind(fn)
-        },
         some: function () {
             return this.val
-        },
-        just: function () {
-            return this.some()
         },
         orSome: function (otherValue) {
             return this.val
         },
-        orJust: function (otherValue) {
-            return this.orSome(otherValue)
-        },
+
         ap: function (maybeWithFunction) {
             var value = this.val
             return maybeWithFunction.map(function (fn) {
@@ -73,7 +65,14 @@
 
     };
 
-    Some.fn.init.prototype = Some.fn;
+    // aliases
+    Some.prototype.orJust = Some.prototype.orSome
+    Some.prototype.just = Some.prototype.some
+    Some.prototype.flatMap = Some.prototype.bind
+
+
+    Some.fn.init.prototype = Some.fn
+
 
     Object.prototype.some = Object.prototype.just = function () {
         return new Some(this)
@@ -99,9 +98,6 @@
         bind: function (bindFn) {
             return this
         },
-        flatMap: function (fn) {
-            return this
-        },
         some: illegalStateFunction,
         just: illegalStateFunction,
         orSome: idFunction,
@@ -110,6 +106,9 @@
             return this;
         }
     };
+
+    // aliases
+    None.prototype.flatMap = None.prototype.bind
 
     None.fn.init.prototype = None.fn;
 
@@ -160,6 +159,10 @@
 
     Success.fn.init.prototype = Success.fn;
 
+    Object.prototype.success = function() {
+        return Validation.success(this)
+    }
+
     var Fail = Validation.Fail = Validation.fail = function (error) {
         return new Fail.fn.init(error)
     };
@@ -202,6 +205,10 @@
     };
 
     Fail.fn.init.prototype = Fail.fn;
+
+    Object.prototype.fail = function() {
+        return Validation.fail(this)
+    }
 
     var Semigroup = window.Semigroup = {}
 
@@ -246,6 +253,7 @@
     }
 
     MonadT.fn.init.prototype = MonadT.fn;
+    MonadT.prototype.bind = MonadT.prototype.flatMap;
 
     var IO = io = window.IO = window.io = function (effectFn) {
         return new IO.fn.init(effectFn)

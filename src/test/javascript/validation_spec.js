@@ -134,4 +134,14 @@ describe('A Validation', function () {
 
     })
 
+    describe("will pimp an object", function() {
+        it ("with success", function(){
+            expect("hello".success()).toBeSuccessWith("hello")
+        })
+        it("with fail", function(){
+            expect("hello".fail()).toBeFailureWith("hello")
+        })
+
+    })
+
 })
