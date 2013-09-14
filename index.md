@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.5.0
-dev-version: 0.5.0
+version: 0.5.1
+dev-version: 0.5.1
 ---
 
 ## Introduction
@@ -13,10 +13,9 @@ model all those monadic types that JavaScript (and well most languages) thoughtl
 If you know what a monad is then you are already an awesome programmer and if you don't, well... awesome is what you are
 about to become.
 
-This library is inspired by those that have come before, especially the [FunctionalJava][functionalJava] project.
+This library is inspired by those that have come before, especially the [FunctionalJava][functionalJava] and [Scalaz][scalaz] projects.
 
-We are still in the early stages of development and have only implemented a few types, but stay tuned for more monadic
-goodness.
+While functional programming may be alien to you, this library is a simple way to introduce monads and pure functional programming into your daily practises.
 
 ##Download
 
@@ -33,7 +32,7 @@ Using [bower]:
 
 or to install a specific version
 
-	bower install monad.js#0.5.0
+	bower install monad.js#_{{ page.version }}_
 	
 ## Maybe
 
@@ -47,6 +46,11 @@ issues disappear.
 	var maybe = Maybe.some(val);
 	var maybe = Maybe.none();
 	var maybe = Maybe.fromNull(val);  // none if val is null, some otherwise
+	
+or more simply with pimped method
+
+	var maybe = "hello world".some()
+	var maybe = val.some()
 	
 ### Functions
 #### map(fn)
@@ -125,6 +129,11 @@ Validation is not quite a monad as it [doesn't quite follow the monad rules](htt
 	var success = Validation.success(val);
 	var failure = Validation.fail("some error");
 
+or with pimped methods on an object
+
+	var success = val.success();
+	var failure = "some error".fail();
+
 ###Functions
 ####map()
 `map` takes a function (a -> b) and applies that function to the value inside the `success` side of the `Validation` and returns another `Validation`.
@@ -193,6 +202,10 @@ The catamorphism for validation.  If the validation is `success` the success fun
 ## IO
 The `IO` monad is for isolating effects to maintain referential transparency in your software.  Essentially you create a description of your effects of which is performed as the last action in your programme.  The IO is lazy and will not be evaluated until the `perform` (*alias* `run`) method is called.
 
+#### Creating an IO
+
+	var ioAction = IO(function () { return $("#id").val() })
+
 ###Functions
 ####IO(fn) *alias: io*
 The constructor for the `IO` monad.  It is a purely functional wrapper around the supplied effect and enables referential transparency in your software.
@@ -202,9 +215,50 @@ Perform a monadic bind (flatMap) over the effect.  This will happen lazily and w
 Performs a map over the result of the effect.  This will happen lazily and will not evaluate the effect.
 ####run *alias: perform*
 Evaluates the effect inside the `IO` monad.  This can only be run once in your programme and at the very end.
+
+### Examples
+Say we have a function to read from the DOM and a function to write to the DOM.  
+
+	var read = function(id) {
+		return $(id).text()
+	}
+	
+	var write = function(id, value) {
+		$(id).text(value)
+	}
+
+On their own both functions would have a side effect because they violate referential transparency.  The `read` function is dependent on an ever changing DOM  and thus subsequent calls to it would not produce the same result.  The `write` function obviously mutates the DOM and so it too is not referentially transparent, as each time it is called, an effect occurs.
+
+We can modify this functions so that instead of performing these side-effects they will just return an `IO` with the yet-to-be-executed function inside it.
+
+	var read = IO(function (id) { return $(id).text() })
+	
+	var write = function(id) {
+		return IO(function(value) {
+			$(id).text(value)
+		})
+	}
+
+You can call `write(id)` until you are blue in the face but all it will do is return an `IO` with a function inside.
+
+We can now call `map` and `flatMap` to chain this two effects together.  Say we wanted to read from a `div` covert all the text to uppercase and then write back to that `div`.
+
+	var toUpper = function (text) { return text.toUpperCase() }
+	var changeToUpperIO = read("#myId").map(toUpper).flatMap(write("#myId"))
+	
+So what is the type of `changeToUpperIO`?  Well it is the `IO` type.  And that means at this stage, **nothing has been executed yet**.  The DOM has not been read from, the text has not been mapped and the DOM has not been updated.  What we have is a **referentially transparent description** of our programme.
+
+In other pure functional languages such as Haskell we would simply return this type back to the runtime, but in JavaScript we have to manage this ourselves.  So now let's run our effect.
+
+	changeToUpperIO.run()
+	
+Now our DOM should be updated with the text converted to upper case.
+
+It becomes much clearer which functions deal with IO and which functions simply deal with data.  `read` and `write` return an `IO` effect but `toUpper` simply converts a supplied string to upper case.  This pattern is what you will often find in your software, having an effect when you start (i.e. reading from a data source, network etc), performing transformations on the results of that effect and finally having an effect at the end (such as writing result to a database, disk, or DOM).
             
 [functionalJava]: http://functionaljava.org/
 [Functional Javascript]: http://osteele.com/sources/javascript/functional/
 [gitZip]: https://github.com/cwmyers/monad.js/zipball/master (zip format)
 [gitTar]: https://github.com/cwmyers/monad.js/tarball/master (tar format)
 [bower]: http://bower.io
+[scalaz]: https://github.com/scalaz/scalaz
