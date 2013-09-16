@@ -313,6 +313,13 @@
         }
     }
 
+    Function.prototype.andThen = function(g) {
+        var f = this
+        return function(x) {
+            return g(f(x))
+        }
+    }
+
 
     return this
 }(window || this));

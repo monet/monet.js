@@ -79,7 +79,6 @@
         return e.text(text)
     }.autoCurry()
 
-
     var getVal = function (o) {
         return o.val()
     }
@@ -88,9 +87,11 @@
         return getId(id).map(writeFn(content))
     }.autoCurry()
 
-    getId("#SomeId").map(getText).map(function (text) {
+    var addAwesomeness = function (text) {
         return text + " now with awesomeness"
-    }).flatMap(writer(setText)("#SomeId")).run()
+    }
+
+    getId("#SomeId").map(getText.andThen(addAwesomeness)).flatMap(writer(setText)("#SomeId")).run()
 
 </script>
 
