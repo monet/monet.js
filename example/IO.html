@@ -57,11 +57,7 @@
         }).flatMap(writeHtml("#result")).run()
     })
 
-    function getId(id) {
-        return function () {
-            return $(id)
-        }.io()
-    }
+    var getId = $.io1()
 
     var getTextForId = function (id) {
         return getId(id).map(getText)
@@ -75,6 +71,10 @@
         return o.text()
     }
 
+    var setHtml = function(o) {
+        return o.html
+    }
+
     var getVal = function (o) {
         return o.val()
     }
@@ -85,11 +85,16 @@
         })
     }.autoCurry()
 
+
     var writeHtml = function(id, html) {
         return function () {
             $(id).html(html)
         }.io()
     }.autoCurry()
+
+    var writeHtml1 = function(id, html) {
+        return getId(id).map(setHtml)
+    }
 
     getId("#SomeId").map(getText).map(function (text) {
         return text + " now with awesomeness"

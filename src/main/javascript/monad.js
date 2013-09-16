@@ -291,8 +291,26 @@
 
     IO.fn.init.prototype = IO.fn;
 
-    Function.prototype.io = function() {
+    Function.prototype.io = function () {
         return IO(this)
+    }
+
+    Function.prototype.io1 = function () {
+        var f = this;
+        return function (x) {
+            return IO(
+                function () {
+                    return f(x)
+                }
+            )
+        }
+    }
+
+    Function.prototype.compose = Function.prototype.o = function (g) {
+        var f = this
+        return function (x) {
+            return f(g(x))
+        }
     }
 
 
