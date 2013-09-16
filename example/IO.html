@@ -23,7 +23,7 @@
 
 <script>
 
-    Function.prototype.autoCurry = function(n) {
+    Function.prototype.autoCurry = function (n) {
         return wu.autoCurry(this, n);
     }
 
@@ -51,10 +51,10 @@
         personValidationIO.map(function (v) {
             return v.cata(function (errors) {
                 return _.reduce(errors, function (acc, e) {
-                        return acc + "<div>"+e+"</div>"
-                },"")
+                    return acc + "<div>" + e + "</div>"
+                }, "")
             }, idFunction)
-        }).flatMap(writeHtml("#result")).run()
+        }).flatMap(writer(setHtml)("#result")).run()
     })
 
     var getId = $.io1()
@@ -71,34 +71,26 @@
         return o.text()
     }
 
-    var setHtml = function(o) {
-        return o.html
-    }
+    var setHtml = function (html, o) {
+        return o.html(html)
+    }.autoCurry()
+
+    var setText = function (text, e) {
+        return e.text(text)
+    }.autoCurry()
+
 
     var getVal = function (o) {
         return o.val()
     }
 
-    var writeText = function (id, text) {
-        return IO(function () {
-            $(id).text(text)
-        })
+    var writer = function (writeFn, id, content) {
+        return getId(id).map(writeFn(content))
     }.autoCurry()
-
-
-    var writeHtml = function(id, html) {
-        return function () {
-            $(id).html(html)
-        }.io()
-    }.autoCurry()
-
-    var writeHtml1 = function(id, html) {
-        return getId(id).map(setHtml)
-    }
 
     getId("#SomeId").map(getText).map(function (text) {
         return text + " now with awesomeness"
-    }).flatMap(writeText("#SomeId")).run()
+    }).flatMap(writer(setText)("#SomeId")).run()
 
 </script>
 
