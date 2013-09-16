@@ -159,7 +159,7 @@
 
     Success.fn.init.prototype = Success.fn;
 
-    Object.prototype.success = function() {
+    Object.prototype.success = function () {
         return Validation.success(this)
     }
 
@@ -206,7 +206,7 @@
 
     Fail.fn.init.prototype = Fail.fn;
 
-    Object.prototype.fail = function() {
+    Object.prototype.fail = function () {
         return Validation.fail(this)
     }
 
@@ -290,6 +290,10 @@
     }
 
     IO.fn.init.prototype = IO.fn;
+
+    Function.prototype.io = function() {
+        return IO(this)
+    }
 
 
     return this

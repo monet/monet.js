@@ -37,7 +37,7 @@
 
     $("input").keyup(function () {
         var validate = function (label, value) {
-            return value != "" ? Validation.success(value) : Validation.fail(["Please give a " + label])
+            return value != "" ? value.success() : ["Please give a " + label].fail()
         }.autoCurry()
 
         var firstNameValidation = monadT(getValForId("#firstName").map(validate("first name")))
@@ -58,9 +58,9 @@
     })
 
     function getId(id) {
-        return IO(function () {
+        return function () {
             return $(id)
-        })
+        }.io()
     }
 
     var getTextForId = function (id) {
@@ -86,9 +86,9 @@
     }.autoCurry()
 
     var writeHtml = function(id, html) {
-        return IO(function () {
+        return function () {
             $(id).html(html)
-        })
+        }.io()
     }.autoCurry()
 
     getId("#SomeId").map(getText).map(function (text) {
