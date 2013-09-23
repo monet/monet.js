@@ -32,7 +32,7 @@ Using [bower]:
 
 or to install a specific version
 
-	bower install monad.js#_{{ page.version }}_
+	bower install monad.js#{{ page.version }}
 	
 ## Maybe
 
@@ -47,7 +47,7 @@ issues disappear.
 	var maybe = Maybe.none();
 	var maybe = Maybe.fromNull(val);  // none if val is null, some otherwise
 	
-or more simply with pimped method
+or more simply with the pimped method on Object.
 
 	var maybe = "hello world".some()
 	var maybe = val.some()
@@ -210,14 +210,28 @@ The `IO` monad is for isolating effects to maintain referential transparency in 
 ####IO(fn) *alias: io*
 The constructor for the `IO` monad.  It is a purely functional wrapper around the supplied effect and enables referential transparency in your software.
 ####bind(fn) *alias: flatMap*
-Perform a monadic bind (flatMap) over the effect.  This will happen lazily and will not evaluate the effect.
+Perform a monadic bind (flatMap) over the effect.  It takes a function that returns an `IO`. This will happen lazily and will not evaluate the effect.
 ####map(fn)
 Performs a map over the result of the effect.  This will happen lazily and will not evaluate the effect.
 ####run *alias: perform*
 Evaluates the effect inside the `IO` monad.  This can only be run once in your programme and at the very end.
+###"Pimped" functions
+####fn.io()
+Wraps a supplied function in an `IO`.  Assumes no arguments will be supplied to the function.
+	
+	function() { return $("#id") }.io()
+	
+####fn.io1()
+Returns a function that will return an `IO` when one parameter is supplied.
+
+	function(id) { return $(id) }.io1()
+
+or more simply
+
+	$.io1()
 
 ### Examples
-Say we have a function to read from the DOM and a function to write to the DOM.  
+Say we have a function to read from the DOM and a function to write to the DOM. *This example uses jQuery.*
 
 	var read = function(id) {
 		return $(id).text()
@@ -255,6 +269,20 @@ In other pure functional languages such as Haskell we would simply return this t
 Now our DOM should be updated with the text converted to upper case.
 
 It becomes much clearer which functions deal with IO and which functions simply deal with data.  `read` and `write` return an `IO` effect but `toUpper` simply converts a supplied string to upper case.  This pattern is what you will often find in your software, having an effect when you start (i.e. reading from a data source, network etc), performing transformations on the results of that effect and finally having an effect at the end (such as writing result to a database, disk, or DOM).
+
+##Other useful functions
+###Functions
+####fn.compose(f1) *alias fn.o(fn1)
+Function composition.  `f.compose(g)` is equivalent to: 
+	function compose(x) {
+		return f(g(x))
+	}
+####fn.andThen(fn1)
+Function composition flipped. `f.andThen(g)` is equivalent to:
+	function compose(x) {
+		return g(f(x))
+	}
+
             
 [functionalJava]: http://functionaljava.org/
 [Functional Javascript]: http://osteele.com/sources/javascript/functional/
