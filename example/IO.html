@@ -23,7 +23,7 @@
 
 <script>
 
-    Function.prototype.autoCurry = function(n) {
+    Function.prototype.autoCurry = function (n) {
         return wu.autoCurry(this, n);
     }
 
@@ -37,7 +37,7 @@
 
     $("input").keyup(function () {
         var validate = function (label, value) {
-            return value != "" ? Validation.success(value) : Validation.fail(["Please give a " + label])
+            return value != "" ? value.success() : ["Please give a " + label].fail()
         }.autoCurry()
 
         var firstNameValidation = monadT(getValForId("#firstName").map(validate("first name")))
@@ -51,17 +51,13 @@
         personValidationIO.map(function (v) {
             return v.cata(function (errors) {
                 return _.reduce(errors, function (acc, e) {
-                        return acc + "<div>"+e+"</div>"
-                },"")
+                    return acc + "<div>" + e + "</div>"
+                }, "")
             }, idFunction)
-        }).flatMap(writeHtml("#result")).run()
+        }).flatMap(writer(setHtml)("#result")).run()
     })
 
-    function getId(id) {
-        return IO(function () {
-            return $(id)
-        })
-    }
+    var getId = $.io1()
 
     var getTextForId = function (id) {
         return getId(id).map(getText)
@@ -75,25 +71,27 @@
         return o.text()
     }
 
+    var setHtml = function (html, o) {
+        return o.html(html)
+    }.autoCurry()
+
+    var setText = function (text, e) {
+        return e.text(text)
+    }.autoCurry()
+
     var getVal = function (o) {
         return o.val()
     }
 
-    var writeText = function (id, text) {
-        return IO(function () {
-            $(id).text(text)
-        })
+    var writer = function (writeFn, id, content) {
+        return getId(id).map(writeFn(content))
     }.autoCurry()
 
-    var writeHtml = function(id, html) {
-        return IO(function () {
-            $(id).html(html)
-        })
-    }.autoCurry()
-
-    getId("#SomeId").map(getText).map(function (text) {
+    var addAwesomeness = function (text) {
         return text + " now with awesomeness"
-    }).flatMap(writeText("#SomeId")).run()
+    }
+
+    getId("#SomeId").map(getText.andThen(addAwesomeness)).flatMap(writer(setText)("#SomeId")).run()
 
 </script>
 

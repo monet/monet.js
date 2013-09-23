@@ -49,21 +49,13 @@
         bind: function (bindFn) {
             return bindFn(this.val)
         },
-        flatMap: function (fn) {
-            return this.bind(fn)
-        },
         some: function () {
             return this.val
-        },
-        just: function () {
-            return this.some()
         },
         orSome: function (otherValue) {
             return this.val
         },
-        orJust: function (otherValue) {
-            return this.orSome(otherValue)
-        },
+
         ap: function (maybeWithFunction) {
             var value = this.val
             return maybeWithFunction.map(function (fn) {
@@ -73,7 +65,18 @@
 
     };
 
-    Some.fn.init.prototype = Some.fn;
+    // aliases
+    Some.prototype.orJust = Some.prototype.orSome
+    Some.prototype.just = Some.prototype.some
+    Some.prototype.flatMap = Some.prototype.bind
+
+
+    Some.fn.init.prototype = Some.fn
+
+
+    Object.prototype.some = Object.prototype.just = function () {
+        return new Some(this)
+    }
 
     var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = function () {
         return new None.fn.init()
@@ -95,9 +98,6 @@
         bind: function (bindFn) {
             return this
         },
-        flatMap: function (fn) {
-            return this
-        },
         some: illegalStateFunction,
         just: illegalStateFunction,
         orSome: idFunction,
@@ -106,6 +106,9 @@
             return this;
         }
     };
+
+    // aliases
+    None.prototype.flatMap = None.prototype.bind
 
     None.fn.init.prototype = None.fn;
 
@@ -156,6 +159,10 @@
 
     Success.fn.init.prototype = Success.fn;
 
+    Object.prototype.success = function () {
+        return Validation.success(this)
+    }
+
     var Fail = Validation.Fail = Validation.fail = function (error) {
         return new Fail.fn.init(error)
     };
@@ -199,6 +206,10 @@
 
     Fail.fn.init.prototype = Fail.fn;
 
+    Object.prototype.fail = function () {
+        return Validation.fail(this)
+    }
+
     var Semigroup = window.Semigroup = {}
 
     Semigroup.append = function (a, b) {
@@ -211,39 +222,40 @@
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
     }
 
-    var MonadT = monadT = monadTransformer = MonadTransformer = window.monadTransformer = window.MonadT = window.monadT = function(monad) {
+    var MonadT = monadT = monadTransformer = MonadTransformer = window.monadTransformer = window.MonadT = window.monadT = function (monad) {
         return new MonadT.fn.init(monad)
     }
 
     MonadT.fn = MonadT.prototype = {
-        init: function(monad) {
+        init: function (monad) {
             this.monad = monad
         },
-        map: function(fn) {
-            return monadT(this.monad.map(function(v) {
+        map: function (fn) {
+            return monadT(this.monad.map(function (v) {
                 return v.map(fn)
             }))
         },
-        flatMap: function(fn) {
-            return monadT(this.monad.map(function(v){
+        flatMap: function (fn) {
+            return monadT(this.monad.map(function (v) {
                 return v.flatMap(fn)
             }))
         },
-        ap: function(validationWithFn) {
-            return monadT(this.monad.flatMap(function (v){
-                return validationWithFn.perform().map(function(v2){
+        ap: function (validationWithFn) {
+            return monadT(this.monad.flatMap(function (v) {
+                return validationWithFn.perform().map(function (v2) {
                     return v.ap(v2)
                 })
             }))
         },
-        perform: function() {
+        perform: function () {
             return this.monad;
         }
     }
 
     MonadT.fn.init.prototype = MonadT.fn;
+    MonadT.prototype.bind = MonadT.prototype.flatMap;
 
-    var IO = io = window.IO = window.io = function(effectFn) {
+    var IO = io = window.IO = window.io = function (effectFn) {
         return new IO.fn.init(effectFn)
     }
 
@@ -278,6 +290,35 @@
     }
 
     IO.fn.init.prototype = IO.fn;
+
+    Function.prototype.io = function () {
+        return IO(this)
+    }
+
+    Function.prototype.io1 = function () {
+        var f = this;
+        return function (x) {
+            return IO(
+                function () {
+                    return f(x)
+                }
+            )
+        }
+    }
+
+    Function.prototype.compose = Function.prototype.o = function (g) {
+        var f = this
+        return function (x) {
+            return f(g(x))
+        }
+    }
+
+    Function.prototype.andThen = function(g) {
+        var f = this
+        return function(x) {
+            return g(f(x))
+        }
+    }
 
 
     return this
