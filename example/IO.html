@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../src/main/javascript/monad.js" type="text/javascript"></script>
+    <script src="bower_components/underscore/underscore-min.js" type="text/javascript"></script>
+    <script src="bower_components/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="wu-0.1.8.min.js" type="text/javascript"></script>
+    <title>Example IO page</title>
+</head>
+<body>
+
+<span id="SomeId">Some text</span>
+
+<div>
+    <span>first name: <input type="text" id="firstName"/> </span>
+    <span>last name: <input type="text" id="lastName"/> </span>
+    <span>postcode: <input type="text" id="postcode"/> </span>
+</div>
+
+<div>
+    <span>Result:</span> <span id="result"></span>
+</div>
+
+<script>
+
+    Function.prototype.autoCurry = function (n) {
+        return wu.autoCurry(this, n);
+    }
+
+    function idFunction(id) {
+        return id
+    }
+
+    var happyPerson = function (f, l, p) {
+        return "Welcome " + f + " " + l + " who lives at " + p
+    }.autoCurry()
+
+    $("input").keyup(function () {
+        var validate = function (label, value) {
+            return value != "" ? value.success() : ["Please give a " + label].fail()
+        }.autoCurry()
+
+        var firstNameValidation = monadT(getValForId("#firstName").map(validate("first name")))
+        var lastNameValidation = monadT(getValForId("#lastName").map(validate("last name")))
+        var postCodeValidation = monadT(getValForId("#postcode").map(validate("postcode/zip code")))
+
+
+        // accumulate errors then convert back from a validation transformer.
+        var personValidationIO = (postCodeValidation.ap(lastNameValidation.ap(firstNameValidation.map(happyPerson)))).perform()
+
+        personValidationIO.map(function (v) {
+            return v.cata(function (errors) {
+                return _.reduce(errors, function (acc, e) {
+                    return acc + "<div>" + e + "</div>"
+                }, "")
+            }, idFunction)
+        }).flatMap(writer(setHtml)("#result")).run()
+    })
+
+    var getId = $.io1()
+
+    var getTextForId = function (id) {
+        return getId(id).map(getText)
+    }
+
+    var getValForId = function (id) {
+        return getId(id).map(getVal)
+    }
+
+    var getText = function (o) {
+        return o.text()
+    }
+
+    var setHtml = function (html, o) {
+        return o.html(html)
+    }.autoCurry()
+
+    var setText = function (text, e) {
+        return e.text(text)
+    }.autoCurry()
+
+    var getVal = function (o) {
+        return o.val()
+    }
+
+    var writer = function (writeFn, id, content) {
+        return getId(id).map(writeFn(content))
+    }.autoCurry()
+
+    var addAwesomeness = function (text) {
+        return text + " now with awesomeness"
+    }
+
+    getId("#SomeId").map(getText.andThen(addAwesomeness)).flatMap(writer(setText)("#SomeId")).run()
+
+</script>
+
+</body>
+</html>

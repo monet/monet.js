@@ -43,9 +43,9 @@ describe('A Validation', function () {
         })
         it('will run the success side of cata', function () {
             expect(successString.cata(function(val){
-                return "success "+val
-            },function(val){
                 throw "fail"
+            },function(val){
+                return "success "+val
             })).toBe("success abcd")
         })
     })
@@ -77,9 +77,9 @@ describe('A Validation', function () {
         })
         it('will run the failure side of cata', function () {
             expect(failString.cata(function(val){
-                throw "success"
-            },function(val){
                 return "fail: "+val
+            }, function(val){
+                throw "success"
             })).toBe("fail: error dude")
         })
 
@@ -130,6 +130,20 @@ describe('A Validation', function () {
             expect(result.fail()[0]).toBe("no surname")
             expect(result.fail()[1]).toBe("no first name")
 
+        })
+
+    })
+
+    describe("will pimp an object", function() {
+        it ("with success", function(){
+            expect("hello".success()).toBeSuccessWith("hello")
+        })
+        it("with fail on string", function(){
+            expect("hello".fail()).toBeFailureWith("hello")
+        })
+        it("with fail on array", function() {
+            expect(["hello"].fail()).toBeFailure()
+            expect(["hello"].fail().fail()[0]).toBe("hello")
         })
 
     })
