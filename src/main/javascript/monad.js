@@ -313,11 +313,39 @@
         }
     }
 
-    Function.prototype.andThen = function(g) {
+    Function.prototype.andThen = function (g) {
         var f = this
-        return function(x) {
+        return function (x) {
             return g(f(x))
         }
+    }
+
+    var List = list = window.List = function (head, tail) {
+        return new List.fn.init(head, tail)
+    }
+
+
+
+    List.fn = List.prototype = {
+        init: function (head, tail) {
+            if (head == undefined || head == null) {
+                this.isNil = true
+            } else {
+                this.isNil = false
+                this.head = head
+                this.tail = tail
+            }
+        },
+        cons: function(head) {
+            return List(head, this)
+        }
+    }
+
+    List.fn.init.prototype = List.fn;
+    var Nil = window.Nil = new List.fn.init()
+
+    Array.prototype.list = function() {
+
     }
 
 
