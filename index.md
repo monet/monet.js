@@ -272,7 +272,7 @@ It becomes much clearer which functions deal with IO and which functions simply 
 
 ##Other useful functions
 ###Functions
-####fn.compose(f1) *alias fn.o(fn1)
+####fn.compose(f1) *alias fn.o(fn1)*
 Function composition.  `f.compose(g)` is equivalent to: 
 	function compose(x) {
 		return f(g(x))
