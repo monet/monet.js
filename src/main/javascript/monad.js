@@ -324,7 +324,17 @@
         return new List.fn.init(head, tail)
     }
 
+    var listMap = function (fn, l) {
+        if (l.isNil) {
+            return l
+        } else {
+            return listMap(fn, l.tail).cons(fn(l.head))
+        }
+    }
 
+    var foldLeft = function (fn, acc, l) {
+        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head), l.tail)
+    }
 
     List.fn = List.prototype = {
         init: function (head, tail) {
@@ -336,16 +346,29 @@
                 this.tail = tail
             }
         },
-        cons: function(head) {
+        cons: function (head) {
             return List(head, this)
+        },
+        map: function (fn) {
+            return listMap(fn, this)
+        },
+        toArray: function () {
+            return foldLeft(function (acc, e) {
+                acc.push(e)
+                return acc
+            }, [], this)
         }
     }
 
     List.fn.init.prototype = List.fn;
     var Nil = window.Nil = new List.fn.init()
 
-    Array.prototype.list = function() {
-
+    Array.prototype.list = function () {
+        var l = Nil
+        for (i = this.length; i--; i <= 0) {
+            l = l.cons(this[i])
+        }
+        return l
     }
 
 
