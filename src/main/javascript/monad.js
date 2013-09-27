@@ -357,6 +357,12 @@
                 acc.push(e)
                 return acc
             }, [], this)
+        },
+        foldLeft: function(initialValue) {
+            var self = this
+            return function(fn) {
+                return foldLeft(fn, initialValue, self)
+            }
         }
     }
 
