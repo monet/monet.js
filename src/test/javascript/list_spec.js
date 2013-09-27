@@ -1,5 +1,11 @@
 describe("An immutable list", function () {
+
     var list = List(1, List(2, List(3, List(4, Nil))))
+
+    var plusOne = function (a) {
+        return a + 1
+    };
+
 
     it("can be converted to Array", function() {
         expect(list.toArray()).toEqual([1,2,3,4])
@@ -10,9 +16,7 @@ describe("An immutable list", function () {
     })
 
     it("can be mapped", function () {
-        var mappedList = list.map(function (a) {
-            return a + 1
-        })
+        var mappedList = list.map(plusOne)
         expect(mappedList.head).toBe(2)
         expect(mappedList.tail.head).toBe(3)
         expect(mappedList.tail.tail.head).toBe(4)
@@ -20,6 +24,6 @@ describe("An immutable list", function () {
     })
 
     it("can be reduced using foldLeft", function() {
-
+        expect(list.foldLeft(0)(function(acc,e) {return acc+e})).toEqual(10)
     })
 })
