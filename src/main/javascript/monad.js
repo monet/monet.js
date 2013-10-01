@@ -336,6 +336,16 @@
         return l.isNil ? acc : foldLeft(fn, fn(acc, l.head), l.tail)
     }
 
+    var foldRight = function (fn, l, acc) {
+        return l.isNil ? acc : fn(l.head, foldRight(fn, l.tail, acc))
+    }
+
+    var append = function (list1, list2) {
+        return list1.isNil ? list2 : append(list1.tail, list2).cons(list1.head)
+
+    }
+
+
     List.fn = List.prototype = {
         init: function (head, tail) {
             if (head == undefined || head == null) {
@@ -358,11 +368,21 @@
                 return acc
             }, [], this)
         },
-        foldLeft: function(initialValue) {
+        foldLeft: function (initialValue) {
             var self = this
-            return function(fn) {
+            return function (fn) {
                 return foldLeft(fn, initialValue, self)
             }
+        },
+        append: function (list2) {
+            return append(this, list2)
+        },
+        flatten: function () {
+            return foldRight(append, this, Nil)
+
+        },
+        flatMap: function (fn) {
+            return this.map(fn).flatten()
         }
     }
 
@@ -375,6 +395,10 @@
             l = l.cons(this[i])
         }
         return l
+    }
+
+    Object.prototype.cons = function (list) {
+        return list.cons(this)
     }
 
 

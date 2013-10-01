@@ -26,4 +26,22 @@ describe("An immutable list", function () {
     it("can be reduced using foldLeft", function() {
         expect(list.foldLeft(0)(function(acc,e) {return acc+e})).toEqual(10)
     })
+
+    it("will have cons available on objects", function() {
+        expect("fun".cons(list).toArray()).toEqual(["fun",1,2,3,4])
+    })
+
+    it("will be transformed by a flatMap", function() {
+        expect(list.flatMap(function (e) {
+            return [e*e, e+e].list()
+        }).toArray()).toEqual([1,2,4,4,9,6,16,8])
+    })
+
+    it("will be append another list", function(){
+        expect(list.append([5,6,7].list()).toArray()).toEqual([1,2,3,4,5,6,7])
+    })
+
+    it("will flatten inner lists", function() {
+        expect([[1,2].list(),[3,4].list()].list().flatten().toArray()).toEqual([1,2,3,4])
+    })
 })
