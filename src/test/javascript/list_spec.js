@@ -72,12 +72,15 @@ describe("An immutable list", function () {
 
     describe("will sequence a list", function () {
         describe("of Maybes", function () {
-//            it("with one defined element", function () {
-//                expect(List(Some("hello")).sequenceMaybe().some().toArray()).toEqual(["hello"])
-//            })
-//            it("with multiple defined elements", function() {
-//                expect(List(Some(1),Some(2),Some(3)).sequenceMaybe().some().toArray()).toBeSomeMaybeWithList([1,2,3])
-//            })
+            it("with one defined element", function () {
+                expect(List(Some("hello"), Nil).sequenceMaybe().some().toArray()).toEqual(["hello"])
+            })
+            it("with multiple defined elements", function() {
+                expect([Some(1),Some(2),Some(3)].list().sequenceMaybe().some().toArray()).toEqual([1,2,3])
+            })
+            it("with multiple defined elements and one undefined element", function() {
+                expect([Some(1),Some(2),None()].list().sequenceMaybe()).toBeNoneMaybe()
+            })
         })
     })
 })

@@ -31,6 +31,16 @@
         return new Some.fn.init(val)
     };
 
+    Maybe.map2 = function (maybeA, maybeB) {
+        return function (fn) {
+            return maybeA.flatMap(function (a) {
+                return maybeB.map(function (b) {
+                    return fn(a, b)
+                })
+            })
+        }
+    }
+
     Some.fn = Some.prototype = {
         init: function (val) {
             if (val == null) {
@@ -41,6 +51,9 @@
 
         map: function (fn) {
             return new Some(fn(this.val))
+        },
+        map2: function (maybeB) {
+
         },
         isSome: trueFunction,
         isJust: trueFunction,
@@ -78,7 +91,7 @@
         return new Some(this)
     }
 
-    var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = function () {
+    var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = window.None = function () {
         return new None.fn.init()
     };
 
@@ -345,9 +358,13 @@
     }
 
     var sequenceMaybe = function (list) {
-        return list.head.map(List).flatMap(function (list1) {
-            return sequenceMaybe(list.tail)
+        return list.foldRight(Some(Nil))(function(a,b) {
+            return Maybe.map2(a,b)(cons)
         })
+    }
+
+    var cons = function(head, tail) {
+        return tail.cons(head)
     }
 
 
@@ -377,6 +394,12 @@
             var self = this
             return function (fn) {
                 return foldLeft(fn, initialValue, self)
+            }
+        },
+        foldRight: function (initialValue) {
+            var self = this
+            return function (fn) {
+                return foldRight(fn, self, initialValue)
             }
         },
         append: function (list2) {
