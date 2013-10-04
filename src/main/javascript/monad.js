@@ -10,10 +10,8 @@
 
     var curry = function (fn, args) {
         return function () {
-            var args1 = Array.prototype.slice.call(arguments).list();
-            var args2 = args.append(args1);
-            return args2.size() == fn.length ? fn.apply(this, args2.toArray()) : curry(fn, args2)
-
+            var args1 = args.append(Array.prototype.slice.call(arguments).list());
+            return args1.size() == fn.length ? fn.apply(this, args1.toArray()) : curry(fn, args1)
         }
     }
     window.curry = curry
