@@ -19,6 +19,9 @@
     };
 
 
+
+
+
     /* Maybe Monad */
 
     var Maybe = window.Maybe = {}
@@ -31,8 +34,8 @@
         return new Some.fn.init(val)
     };
 
-    Maybe.map2 = function (maybeA, maybeB) {
-        return function (fn) {
+    Maybe.map2 = function (fn) {
+        return function (maybeA, maybeB) {
             return maybeA.flatMap(function (a) {
                 return maybeB.map(function (b) {
                     return fn(a, b)
@@ -358,12 +361,10 @@
     }
 
     var sequenceMaybe = function (list) {
-        return list.foldRight(Some(Nil))(function(a,b) {
-            return Maybe.map2(a,b)(cons)
-        })
+        return list.foldRight(Some(Nil))(Maybe.map2(cons))
     }
 
-    var cons = function(head, tail) {
+    var cons = function (head, tail) {
         return tail.cons(head)
     }
 

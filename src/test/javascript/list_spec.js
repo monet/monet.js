@@ -81,6 +81,9 @@ describe("An immutable list", function () {
             it("with multiple defined elements and one undefined element", function() {
                 expect([Some(1),Some(2),None()].list().sequenceMaybe()).toBeNoneMaybe()
             })
+            it("with no elements", function() {
+                expect([].list().sequenceMaybe().some().toArray()).toEqual([])
+            })
         })
     })
 })
