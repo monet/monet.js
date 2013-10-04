@@ -27,7 +27,7 @@
         return (val == undefined || val == null) ? Maybe.none() : Maybe.some(val)
     };
 
-    var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = function (val) {
+    var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = window.Some = window.Just = function (val) {
         return new Some.fn.init(val)
     };
 
@@ -342,7 +342,12 @@
 
     var append = function (list1, list2) {
         return list1.isNil ? list2 : append(list1.tail, list2).cons(list1.head)
+    }
 
+    var sequenceMaybe = function (list) {
+        return list.head.map(List).flatMap(function (list1) {
+            return sequenceMaybe(list.tail)
+        })
     }
 
 
@@ -353,7 +358,7 @@
             } else {
                 this.isNil = false
                 this.head = head
-                this.tail = tail
+                this.tail = (tail == undefined || tail == null) ? Nil : tail
             }
         },
         cons: function (head) {
@@ -383,6 +388,11 @@
         },
         flatMap: function (fn) {
             return this.map(fn).flatten()
+        },
+        // transforms a list of Maybes to a Maybe list
+        sequenceMaybe: function () {
+            return sequenceMaybe(this)
+
         }
     }
 
