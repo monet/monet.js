@@ -8,6 +8,20 @@
 
 (function (window) {
 
+    var curry = function (fn, args) {
+        return function () {
+            var args1 = Array.prototype.slice.call(arguments).list();
+            var args2 = args.append(args1);
+            return args2.size() == fn.length ? fn.apply(this, args2.toArray()) : curry(fn, args2)
+
+        }
+    }
+    window.curry = curry
+
+})(window || this);
+
+(function (window) {
+
     var idFunction = function (value) {
         return value
     };
@@ -17,9 +31,6 @@
     var falseFunction = function () {
         return false
     };
-
-
-
 
 
     /* Maybe Monad */
@@ -336,6 +347,11 @@
         }
     }
 
+    Function.prototype.curry = function() {
+        return curry(this, Nil)
+    }
+
+
     var List = list = window.List = function (head, tail) {
         return new List.fn.init(head, tail)
     }
@@ -373,11 +389,16 @@
         init: function (head, tail) {
             if (head == undefined || head == null) {
                 this.isNil = true
+                this.size_ = 0
             } else {
                 this.isNil = false
                 this.head = head
                 this.tail = (tail == undefined || tail == null) ? Nil : tail
+                this.size_ = tail.size() + 1
             }
+        },
+        size: function () {
+            return this.size_
         },
         cons: function (head) {
             return List(head, this)
