@@ -8,6 +8,20 @@
 
 (function (window) {
 
+    var curry = function (fn, args) {
+        return function () {
+            var args1 = args.append(Array.prototype.slice.call(arguments).list());
+            return args1.size() == fn.length ? fn.apply(this, args1.toArray()) : curry(fn, args1)
+        }
+    }
+    window.curry = curry
+
+    return this
+
+})(window || this);
+
+(function (window) {
+
     var idFunction = function (value) {
         return value
     };
@@ -19,7 +33,122 @@
     };
 
 
+    Function.prototype.curry = function () {
+        return curry(this, Nil)
+    }
 
+
+    // List monad
+
+    var List = list = window.List = function (head, tail) {
+        return new List.fn.init(head, tail)
+    }
+
+    var listMap = function (fn, l) {
+        if (l.isNil) {
+            return l
+        } else {
+            return listMap(fn, l.tail).cons(fn(l.head))
+        }
+    }
+
+    var foldLeft = function (fn, acc, l) {
+        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head), l.tail)
+    }
+
+    var foldRight = function (fn, l, acc) {
+        return l.isNil ? acc : fn(l.head, foldRight(fn, l.tail, acc))
+    }
+
+    var append = function (list1, list2) {
+        return list1.isNil ? list2 : append(list1.tail, list2).cons(list1.head)
+    }
+
+    var sequenceMaybe = function (list) {
+        return list.foldRight(Some(Nil))(Maybe.map2(cons))
+    }
+
+    var sequenceValidation = function (list) {
+        return list.foldRight(Success(Nil))(Validation.map2(cons))
+    }
+
+    var cons = function (head, tail) {
+        return tail.cons(head)
+    }
+
+
+    List.fn = List.prototype = {
+        init: function (head, tail) {
+            if (head == undefined || head == null) {
+                this.isNil = true
+                this.size_ = 0
+            } else {
+                this.isNil = false
+                this.head = head
+                this.tail = (tail == undefined || tail == null) ? Nil : tail
+                this.size_ = tail.size() + 1
+            }
+        },
+        size: function () {
+            return this.size_
+        },
+        cons: function (head) {
+            return List(head, this)
+        },
+        map: function (fn) {
+            return listMap(fn, this)
+        },
+        toArray: function () {
+            return foldLeft(function (acc, e) {
+                acc.push(e)
+                return acc
+            }, [], this)
+        },
+        foldLeft: function (initialValue) {
+            var self = this
+            return function (fn) {
+                return foldLeft(fn, initialValue, self)
+            }
+        },
+        foldRight: function (initialValue) {
+            var self = this
+            return function (fn) {
+                return foldRight(fn, self, initialValue)
+            }
+        },
+        append: function (list2) {
+            return append(this, list2)
+        },
+        flatten: function () {
+            return foldRight(append, this, Nil)
+
+        },
+        flatMap: function (fn) {
+            return this.map(fn).flatten()
+        },
+        // transforms a list of Maybes to a Maybe list
+        sequenceMaybe: function () {
+            return sequenceMaybe(this)
+        },
+        sequenceValidation: function () {
+            return sequenceValidation(this)
+        }
+    }
+
+    List.fn.init.prototype = List.fn;
+    var Nil = window.Nil = new List.fn.init()
+
+    Array.prototype.list = function () {
+        var l = Nil
+        for (i = this.length; i--; i <= 0) {
+            l = l.cons(this[i])
+        }
+        return l
+    }
+
+    Object.prototype.cons = function (list) {
+        return list.cons(this)
+    }
 
 
     /* Maybe Monad */
@@ -130,9 +259,20 @@
 
     var Validation = window.Validation = {};
 
+    Validation.map2 = function (fn) {
+        return function (validationA, validationB) {
+            return validationA.flatMap(function (a) {
+                return validationB.map(function (b) {
+                    return fn(a, b)
+                })
+            })
+        }
+    }
+
+
     var Success = Validation.Success = Validation.success = function (val) {
         return new Success.fn.init(val)
-    };
+    }
 
     Success.fn = Success.prototype = {
         init: function (val) {
@@ -334,105 +474,6 @@
         return function (x) {
             return g(f(x))
         }
-    }
-
-    var List = list = window.List = function (head, tail) {
-        return new List.fn.init(head, tail)
-    }
-
-    var listMap = function (fn, l) {
-        if (l.isNil) {
-            return l
-        } else {
-            return listMap(fn, l.tail).cons(fn(l.head))
-        }
-    }
-
-    var foldLeft = function (fn, acc, l) {
-        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head), l.tail)
-    }
-
-    var foldRight = function (fn, l, acc) {
-        return l.isNil ? acc : fn(l.head, foldRight(fn, l.tail, acc))
-    }
-
-    var append = function (list1, list2) {
-        return list1.isNil ? list2 : append(list1.tail, list2).cons(list1.head)
-    }
-
-    var sequenceMaybe = function (list) {
-        return list.foldRight(Some(Nil))(Maybe.map2(cons))
-    }
-
-    var cons = function (head, tail) {
-        return tail.cons(head)
-    }
-
-
-    List.fn = List.prototype = {
-        init: function (head, tail) {
-            if (head == undefined || head == null) {
-                this.isNil = true
-            } else {
-                this.isNil = false
-                this.head = head
-                this.tail = (tail == undefined || tail == null) ? Nil : tail
-            }
-        },
-        cons: function (head) {
-            return List(head, this)
-        },
-        map: function (fn) {
-            return listMap(fn, this)
-        },
-        toArray: function () {
-            return foldLeft(function (acc, e) {
-                acc.push(e)
-                return acc
-            }, [], this)
-        },
-        foldLeft: function (initialValue) {
-            var self = this
-            return function (fn) {
-                return foldLeft(fn, initialValue, self)
-            }
-        },
-        foldRight: function (initialValue) {
-            var self = this
-            return function (fn) {
-                return foldRight(fn, self, initialValue)
-            }
-        },
-        append: function (list2) {
-            return append(this, list2)
-        },
-        flatten: function () {
-            return foldRight(append, this, Nil)
-
-        },
-        flatMap: function (fn) {
-            return this.map(fn).flatten()
-        },
-        // transforms a list of Maybes to a Maybe list
-        sequenceMaybe: function () {
-            return sequenceMaybe(this)
-
-        }
-    }
-
-    List.fn.init.prototype = List.fn;
-    var Nil = window.Nil = new List.fn.init()
-
-    Array.prototype.list = function () {
-        var l = Nil
-        for (i = this.length; i--; i <= 0) {
-            l = l.cons(this[i])
-        }
-        return l
-    }
-
-    Object.prototype.cons = function (list) {
-        return list.cons(this)
     }
 
 

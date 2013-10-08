@@ -85,5 +85,16 @@ describe("An immutable list", function () {
                 expect([].list().sequenceMaybe().some().toArray()).toEqual([])
             })
         })
+        describe("of Validations", function() {
+            it("with one success element", function() {
+                expect(List("hello".success(),Nil).sequenceValidation().success().toArray()).toEqual(["hello"])
+            })
+            it("with two success elements", function() {
+                expect(["1".success(),"2".success()].list().sequenceValidation().success().toArray()).toEqual(["1","2"])
+            })
+//            it("with one success element and one fail element", function() {
+//                expect(["happy".success(), "sad".fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad"])
+//            })
+        })
     })
 })
