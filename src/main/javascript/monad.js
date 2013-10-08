@@ -19,6 +19,9 @@
     };
 
 
+
+
+
     /* Maybe Monad */
 
     var Maybe = window.Maybe = {}
@@ -27,9 +30,19 @@
         return (val == undefined || val == null) ? Maybe.none() : Maybe.some(val)
     };
 
-    var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = function (val) {
+    var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = window.Some = window.Just = function (val) {
         return new Some.fn.init(val)
     };
+
+    Maybe.map2 = function (fn) {
+        return function (maybeA, maybeB) {
+            return maybeA.flatMap(function (a) {
+                return maybeB.map(function (b) {
+                    return fn(a, b)
+                })
+            })
+        }
+    }
 
     Some.fn = Some.prototype = {
         init: function (val) {
@@ -41,6 +54,9 @@
 
         map: function (fn) {
             return new Some(fn(this.val))
+        },
+        map2: function (maybeB) {
+
         },
         isSome: trueFunction,
         isJust: trueFunction,
@@ -78,7 +94,7 @@
         return new Some(this)
     }
 
-    var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = function () {
+    var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = window.None = function () {
         return new None.fn.init()
     };
 
@@ -313,11 +329,110 @@
         }
     }
 
-    Function.prototype.andThen = function(g) {
+    Function.prototype.andThen = function (g) {
         var f = this
-        return function(x) {
+        return function (x) {
             return g(f(x))
         }
+    }
+
+    var List = list = window.List = function (head, tail) {
+        return new List.fn.init(head, tail)
+    }
+
+    var listMap = function (fn, l) {
+        if (l.isNil) {
+            return l
+        } else {
+            return listMap(fn, l.tail).cons(fn(l.head))
+        }
+    }
+
+    var foldLeft = function (fn, acc, l) {
+        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head), l.tail)
+    }
+
+    var foldRight = function (fn, l, acc) {
+        return l.isNil ? acc : fn(l.head, foldRight(fn, l.tail, acc))
+    }
+
+    var append = function (list1, list2) {
+        return list1.isNil ? list2 : append(list1.tail, list2).cons(list1.head)
+    }
+
+    var sequenceMaybe = function (list) {
+        return list.foldRight(Some(Nil))(Maybe.map2(cons))
+    }
+
+    var cons = function (head, tail) {
+        return tail.cons(head)
+    }
+
+
+    List.fn = List.prototype = {
+        init: function (head, tail) {
+            if (head == undefined || head == null) {
+                this.isNil = true
+            } else {
+                this.isNil = false
+                this.head = head
+                this.tail = (tail == undefined || tail == null) ? Nil : tail
+            }
+        },
+        cons: function (head) {
+            return List(head, this)
+        },
+        map: function (fn) {
+            return listMap(fn, this)
+        },
+        toArray: function () {
+            return foldLeft(function (acc, e) {
+                acc.push(e)
+                return acc
+            }, [], this)
+        },
+        foldLeft: function (initialValue) {
+            var self = this
+            return function (fn) {
+                return foldLeft(fn, initialValue, self)
+            }
+        },
+        foldRight: function (initialValue) {
+            var self = this
+            return function (fn) {
+                return foldRight(fn, self, initialValue)
+            }
+        },
+        append: function (list2) {
+            return append(this, list2)
+        },
+        flatten: function () {
+            return foldRight(append, this, Nil)
+
+        },
+        flatMap: function (fn) {
+            return this.map(fn).flatten()
+        },
+        // transforms a list of Maybes to a Maybe list
+        sequenceMaybe: function () {
+            return sequenceMaybe(this)
+
+        }
+    }
+
+    List.fn.init.prototype = List.fn;
+    var Nil = window.Nil = new List.fn.init()
+
+    Array.prototype.list = function () {
+        var l = Nil
+        for (i = this.length; i--; i <= 0) {
+            l = l.cons(this[i])
+        }
+        return l
+    }
+
+    Object.prototype.cons = function (list) {
+        return list.cons(this)
     }
 
 
