@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.5.1
-dev-version: 0.5.1
+version: 0.6.0
+dev-version: 0.6.0
 ---
 
 ## Introduction
@@ -20,6 +20,10 @@ While functional programming may be alien to you, this library is a simple way t
 ##Download
 
 Download the [zip][gitZip] or [tar][gitTar] ball.
+
+##Source code
+
+The source is available at: [http://github.com/cwmyers/monad.js](http://github.com/cwmyers/monad.js).
 
 ##Installation
 
@@ -94,8 +98,16 @@ For example:
 ####some() *alias: just*
 `some` will 'reduce' the `Maybe` to its value.
 
-	maybe.some("hi").some()
+	Maybe.some("hi").some()
 	=> "hi"
+	
+####orSome(value) *alias: orJust*
+Will return the containing value inside the `Maybe` or return the supplied value.
+
+	maybe.some("hi").orSome("bye")
+	=> "hi"
+	Maybe.none().orSome("bye")
+	=> "bye"
 
 ####ap(Maybe(fn))
 The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another `Maybe` type which contains a function, and then applies that function to the value contained in the calling `Maybe`. 
@@ -104,11 +116,11 @@ The `ap` function implements the Applicative Functor pattern.  It takes as a par
 
 It may seem odd to want to apply a function to a monad that exists inside another monad, but this is particular useful for when you have a curried function being applied across many monads.
 
-Here is an example for creating a string out of the result of a couple of `Maybe`s.  The example uses [Functional Javascript] to partially apply the function.
+Here is an example for creating a string out of the result of a couple of `Maybe`s.  We use `curry()` which is a pimped method on Function so we can partially apply.
 
 	var person = function (forename, surname, address) {
         return forename + " " + surname + " lives in " + address
-    }.partial(_,_,_)
+    }.curry()
 
     var maybeAddress = Maybe.just('Dulwich, London')
     var maybeSurname = Maybe.just('Baker')
@@ -172,21 +184,21 @@ Implements the applicative functor pattern.  `ap` will apply a function over the
 
 	var person = function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
-    };
-    var personCurried = person.partial(_,_,_)
+    }.curry();
+    
 
     var validateAddress = Validation.success('Dulwich, London')
     var validateSurname = Validation.success('Baker')
     var validateForename = Validation.success('Tom')
     
     var personString = validateAddress.ap(validateSurname
-    	.ap(validateForename.map(personCurried))).success()
+    	.ap(validateForename.map(person))).success()
     
     // result: "Tom Baker lives at Dulwich, London"
     
     var result = Validation.fail(["no address"])
     	.ap(Validation.fail(["no surname"])
-    	.ap(validateForename.map(personCurried)))
+    	.ap(validateForename.map(person)))
     // result: Validation(["no address", "no surname"])
     
 ####cata(failFn,successFn)
@@ -272,7 +284,7 @@ It becomes much clearer which functions deal with IO and which functions simply 
 
 ##Other useful functions
 ###Functions
-####fn.compose(f1) *alias fn.o(fn1)
+####fn.compose(f1) *alias fn.o(fn1)*
 Function composition.  `f.compose(g)` is equivalent to: 
 	function compose(x) {
 		return f(g(x))
@@ -283,9 +295,78 @@ Function composition flipped. `f.andThen(g)` is equivalent to:
 		return g(f(x))
 	}
 
+## Immutable lists
+
+An immutable list is a list that has a head element and a tail. A tail is another list.  The empty list is represented by the `Nil` constructor.  An immutable list is also known as a "cons" list.  Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
+
+#### Creating a list
+
+The easiest way to create a list is with the pimped method on Array.
+
+	var myList = [1,2,3].list()
+
+which is equivalent to:
+
+	var myList = List(1, List(2, List(3, Nil)))
+
+As you can see from the second example each List object contains a head element and the tail is just another list element.
+
+###Functions
+####cons(element)
+
+`cons` will prepend the element to the front of the list and return a new list.  The existing list remains unchanged.
+
+	var newList = myList.cons(4)
+	// newList.toArray() == [4,1,2,3]
+	// myList.toArray() == [1,2,3]
+
+`cons` is also available as a pimped method on `Object.prototype`:
+
+	var myList = ["a","b","c"].list()
+	var newList = "z".cons(myList)
+	newList.toArray() == ["z","a","b","c"]
+
+####map(fn)
+
+Maps the supplied function over the list.
+
+	var list = [1,2,3].list().map(function(a) {
+		return a+1
+	})
+	// list == [2,3,4]	
+
+####flatMap(fn) *alias: bind()*
+
+Maps the supplied function over the list and then flattens the returned list.  The supplied function must return a new list.
+	
+####foldLeft(initialValue)(function(acc, e))
+
+`foldLeft` takes an initial value and a function and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first value and the current element in the list as its second argument.  The returned value from the function will be pass into the accumulator on the subsequent pass.
+
+For example, say you wanted to add up a list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
+
+	var myList = [1,2,3,4].list()
+	var sum = myList.foldLeft(0)(function(acc, e) {
+		return e+acc
+	})
+	// sum == 10
+	
+####foldRight(initialValue)(function(e, acc))
+
+Performs a fold right across the list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
+
+####append(list2)
+
+Will append the second list to the current list.
+
+	var list1 = [1,2,3].list()
+	var list2 = [4,5,6].list()
+	var list3 = list1.append(list2)
+	// list3.toArray() == [1,2,3,4,5,6]
+
+
             
 [functionalJava]: http://functionaljava.org/
-[Functional Javascript]: http://osteele.com/sources/javascript/functional/
 [gitZip]: https://github.com/cwmyers/monad.js/zipball/master (zip format)
 [gitTar]: https://github.com/cwmyers/monad.js/tarball/master (tar format)
 [bower]: http://bower.io
