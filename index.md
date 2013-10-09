@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.6.0
-dev-version: 0.6.0
+version: 0.6.1
+dev-version: 0.6.1
 ---
 
 ## Introduction
@@ -27,7 +27,12 @@ The source is available at: [http://github.com/cwmyers/monad.js](http://github.c
 
 ##Installation
 
-Simply download and add to your html pages or we also support [bower].
+Simply download and add to your html pages or we also support [bower].  You can also include `monad-pimp.js` which contains extra functions on the `Object.prototype`
+for creating monads.
+
+    <script type="text/javascript" src="monad.js"></script>
+    <!-- Optionally -->
+    <script type="text/javascript" src="monad-pimp.js"></script>
 
 ### Bower installation
 Using [bower]:
