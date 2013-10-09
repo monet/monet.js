@@ -1,4 +1,4 @@
-//     Monad.js 0.5.1
+//     Monad.js 0.6.0
 
 //     (c) 2012-2013 Chris Myers
 //     Monad.js may be freely distributed under the MIT license.
