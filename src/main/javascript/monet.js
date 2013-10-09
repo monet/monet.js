@@ -3,7 +3,7 @@
 //     (c) 2012-2013 Chris Myers
 //     Monad.js may be freely distributed under the MIT license.
 //     For all details and documentation:
-//     http://cwmyers.github.com/monad.js
+//     http://cwmyers.github.com/monet.js
 
 
 (function (window) {

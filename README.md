@@ -1,9 +1,9 @@
-# monad.js
+# monet.js
 
-[![Build Status](https://travis-ci.org/cwmyers/monad.js.png)](https://travis-ci.org/cwmyers/monad.js)
+[![Build Status](https://travis-ci.org/cwmyers/monet.js.png)](https://travis-ci.org/cwmyers/monet.js)
 
 
-For people who wish they didn't have to programme in JavaScript. Full documentation at http://cwmyers.github.com/monad.js/
+For people who wish they didn't have to programme in JavaScript. Full documentation at http://cwmyers.github.com/monet.js/
 
 
 ## Introduction
@@ -24,25 +24,25 @@ Download the [zip][gitZip] or [tar][gitTar] ball.
 
 ##Source code
 
-The source is available at: [http://github.com/cwmyers/monad.js](http://github.com/cwmyers/monad.js).
+The source is available at: [http://github.com/cwmyers/monet.js](http://github.com/cwmyers/monet.js).
 
 ##Installation
 
-Simply download and add to your html pages or we also support [bower].  You can also include `monad-pimp.js` which contains extra functions on the `Object.prototype`
+Simply download and add to your html pages or we also support [bower].  You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype`
 for creating monads.
 
-    <script type="text/javascript" src="monad.js"></script>
+    <script type="text/javascript" src="monet.js"></script>
     <!-- Optionally -->
-    <script type="text/javascript" src="monad-pimp.js"></script>
+    <script type="text/javascript" src="monet-pimp.js"></script>
 
 ### Bower installation
 Using [bower]:
 
-	bower install monad.js
+	bower install monet.js
 
 or to install a specific version
 
-	bower install monad.js#0.6.1
+	bower install monet.js#0.6.1
 
 ## Maybe
 
@@ -373,7 +373,7 @@ Will append the second list to the current list.
 
 
 [functionalJava]: http://functionaljava.org/
-[gitZip]: https://github.com/cwmyers/monad.js/zipball/master (zip format)
-[gitTar]: https://github.com/cwmyers/monad.js/tarball/master (tar format)
+[gitZip]: https://github.com/cwmyers/monet.js/zipball/master (zip format)
+[gitTar]: https://github.com/cwmyers/monet.js/tarball/master (tar format)
 [bower]: http://bower.io
 [scalaz]: https://github.com/scalaz/scalaz
