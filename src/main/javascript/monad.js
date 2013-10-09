@@ -146,9 +146,7 @@
         return l
     }
 
-    Object.prototype.cons = function (list) {
-        return list.cons(this)
-    }
+
 
 
     /* Maybe Monad */
@@ -219,9 +217,6 @@
     Some.fn.init.prototype = Some.fn
 
 
-    Object.prototype.some = Object.prototype.just = function () {
-        return new Some(this)
-    }
 
     var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = window.None = function () {
         return new None.fn.init()
@@ -315,9 +310,6 @@
 
     Success.fn.init.prototype = Success.fn;
 
-    Object.prototype.success = function () {
-        return Validation.success(this)
-    }
 
     var Fail = Validation.Fail = Validation.fail = function (error) {
         return new Fail.fn.init(error)
@@ -361,10 +353,6 @@
     };
 
     Fail.fn.init.prototype = Fail.fn;
-
-    Object.prototype.fail = function () {
-        return Validation.fail(this)
-    }
 
     var Semigroup = window.Semigroup = {}
 
