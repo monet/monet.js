@@ -22,35 +22,14 @@
 
 <script>
 
+
     function idFunction(id) {
         return id
     }
 
-    var happyPerson = function (f, l, p) {
-        return "Welcome " + f + " " + l + " who lives at " + p
-    }.curry()
 
-    $("input").keyup(function () {
-        var validate = function (label, value) {
-            return value != "" ? value.success() : ["Please give a " + label].fail()
-        }.curry()
+    var a = List(2,List(1,Nil))
 
-        var firstNameValidation = monadT(getValForId("#firstName").map(validate("first name")))
-        var lastNameValidation = monadT(getValForId("#lastName").map(validate("last name")))
-        var postCodeValidation = monadT(getValForId("#postcode").map(validate("postcode/zip code")))
-
-
-        // accumulate errors then convert back from a validation transformer.
-        var personValidationIO = (postCodeValidation.ap(lastNameValidation.ap(firstNameValidation.map(happyPerson)))).perform()
-
-        personValidationIO.map(function (v) {
-            return v.cata(function (errors) {
-                return _.reduce(errors, function (acc, e) {
-                    return acc + "<div>" + e + "</div>"
-                }, "")
-            }, idFunction)
-        }).flatMap(writer(setHtml)("#result")).run()
-    })
 
     var getId = $.io1()
 

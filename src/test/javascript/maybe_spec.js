@@ -1,6 +1,5 @@
 describe('A Maybe', function() {
 
-    Functional.install()
 
     beforeEach(function() {
       this.addMatchers({
@@ -84,7 +83,7 @@ describe('A Maybe', function() {
 
     var person = function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
-    }.partial(_,_,_)
+    }.curry()
 
     var maybeAddress = Maybe.just('Dulwich, London')
     var maybeSurname = Maybe.just('Baker')
