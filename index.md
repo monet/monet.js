@@ -360,14 +360,18 @@ Will append the second list to the current list.
 ###Functions
 ####fn.compose(f1) *alias fn.o(fn1)*
 Function composition.  `f.compose(g)` is equivalent to:
+
 	function compose(x) {
 		return f(g(x))
 	}
+
 ####fn.andThen(fn1)
 Function composition flipped. `f.andThen(g)` is equivalent to:
+
 	function compose(x) {
 		return g(f(x))
 	}
+
 ####fn.curry()
 This method on function will curry that function so that it can be partially applied. This implementation is quite flexible and allows
 a method to be applied in the following ways:
@@ -391,6 +395,10 @@ a method to be applied in the following ways:
     sum(1)(2,3)
     // or nearly any other combination...
     // will return 6
+
+##Author
+
+Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers).
 
 
 [functionalJava]: http://functionaljava.org/
