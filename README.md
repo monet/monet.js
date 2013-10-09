@@ -1,10 +1,3 @@
----
-title: Home
-layout: index
-version: 0.6.1
-dev-version: 0.6.1
----
-
 # monad.js
 
 [![Build Status](https://travis-ci.org/cwmyers/monad.js.png)](https://travis-ci.org/cwmyers/monad.js)
@@ -49,7 +42,7 @@ Using [bower]:
 
 or to install a specific version
 
-	bower install monad.js#{{ page.version }}
+	bower install monad.js#0.6.1
 
 ## Maybe
 
