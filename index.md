@@ -37,11 +37,11 @@ for creating monads.
 ### Bower installation
 Using [bower]:
 
-	bower install monet.js
+	bower install monet
 
 or to install a specific version
 
-	bower install monet.js#{{ page.version }}
+	bower install monet#{{ page.version }}
 	
 ## Maybe
 
