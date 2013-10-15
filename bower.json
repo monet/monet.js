@@ -1,5 +1,5 @@
 {
-  "name": "monet.js",
+  "name": "monet",
   "version": "0.6.1",
   "main": ["src/main/javascript/monet.js","src/main/javascript/monet-pimp.js"],
   "ignore": [
