@@ -38,16 +38,15 @@ for creating monads.
 ### Bower installation
 Using [bower]:
 
-	bower install monet.js
+	bower install monet
 
 or to install a specific version
 
-	bower install monet.js#0.6.1
+	bower install monet#{{ page.version }}
 
 ## Maybe
 
-The `Maybe` type is the most common way of represented the `null` type with making the possibilities of `NullPointer`
-issues disappear.
+The `Maybe` type is the most common way of representing *nothingness* (or the `null` type) with making the possibilities of `NullPointer` issues disappear.
 
 `Maybe` is effectively abstract and as two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
 
@@ -288,19 +287,6 @@ Now our DOM should be updated with the text converted to upper case.
 
 It becomes much clearer which functions deal with IO and which functions simply deal with data.  `read` and `write` return an `IO` effect but `toUpper` simply converts a supplied string to upper case.  This pattern is what you will often find in your software, having an effect when you start (i.e. reading from a data source, network etc), performing transformations on the results of that effect and finally having an effect at the end (such as writing result to a database, disk, or DOM).
 
-##Other useful functions
-###Functions
-####fn.compose(f1) *alias fn.o(fn1)*
-Function composition.  `f.compose(g)` is equivalent to:
-	function compose(x) {
-		return f(g(x))
-	}
-####fn.andThen(fn1)
-Function composition flipped. `f.andThen(g)` is equivalent to:
-	function compose(x) {
-		return g(f(x))
-	}
-
 ## Immutable lists
 
 An immutable list is a list that has a head element and a tail. A tail is another list.  The empty list is represented by the `Nil` constructor.  An immutable list is also known as a "cons" list.  Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
@@ -370,6 +356,49 @@ Will append the second list to the current list.
 	var list3 = list1.append(list2)
 	// list3.toArray() == [1,2,3,4,5,6]
 
+##Other useful functions
+###Functions
+####fn.compose(f1) *alias fn.o(fn1)*
+Function composition.  `f.compose(g)` is equivalent to:
+
+	function compose(x) {
+		return f(g(x))
+	}
+
+####fn.andThen(fn1)
+Function composition flipped. `f.andThen(g)` is equivalent to:
+
+	function compose(x) {
+		return g(f(x))
+	}
+
+####fn.curry()
+This method on function will curry that function so that it can be partially applied. This implementation is quite flexible and allows
+a method to be applied in the following ways:
+
+    var sum = function(a,b,c) {
+        return a+b+c
+    }.curry()
+
+    sum(1) // will return a function that takes b and c
+
+    sum(1,2)
+    //or
+    sum(1)(2) // will return a function that takes c
+
+    sum(1,2,3)
+    //or
+    sum(1)(2)(3)
+    //or
+    sum(1,2)(3)
+    //or
+    sum(1)(2,3)
+    // or nearly any other combination...
+    // will return 6
+
+##Author
+
+Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers).
 
 
 [functionalJava]: http://functionaljava.org/
