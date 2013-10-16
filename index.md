@@ -45,8 +45,7 @@ or to install a specific version
 	
 ## Maybe
 
-The `Maybe` type is the most common way of represented the `null` type with making the possibilities of `NullPointer`
-issues disappear.
+The `Maybe` type is the most common way of representing *nothingness* (or the `null` type) with making the possibilities of `NullPointer` issues disappear.
 
 `Maybe` is effectively abstract and as two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
 
