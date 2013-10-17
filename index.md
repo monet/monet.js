@@ -1,7 +1,7 @@
 ---
 title: Home
 layout: index
-version: 0.6.1
+version: 0.6.2
 dev-version: 0.6.1
 ---
 
@@ -346,7 +346,7 @@ For example, say you wanted to add up a list of integers, your initial value wou
 
 Performs a fold right across the list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
 
-####append(list2)
+####append(list2) *alias: concat()*
 
 Will append the second list to the current list.
 
@@ -354,6 +354,13 @@ Will append the second list to the current list.
 	var list2 = [4,5,6].list()
 	var list3 = list1.append(list2)
 	// list3.toArray() == [1,2,3,4,5,6]
+	
+####sequenceMaybe() : Maybe
+Takes a list of `Maybe`s and turns it into a `Maybe` `List`.  If the list contains at least one `None` value then a `None` will be returned, otherwise a `Some` will be returned with a list of all the values.
+
+####sequenceValidation() : Validation
+Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure side`, if there are **any** failures.
+
 
 ##Other useful functions
 ###Functions
