@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.6.2
-dev-version: 0.6.1
+version: 0.6.3
+dev-version: 0.6.4
 ---
 
 ## Introduction
@@ -361,6 +361,8 @@ Takes a list of `Maybe`s and turns it into a `Maybe` `List`.  If the list contai
 ####sequenceValidation() : Validation
 Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure side`, if there are **any** failures.
 
+####reverse()
+Returns a new list reversed.
 
 ##Other useful functions
 ###Functions
