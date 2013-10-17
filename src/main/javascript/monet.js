@@ -37,6 +37,12 @@
     };
 
 
+    var swap = function(f) {
+        return function(a,b) {
+            return f(b,a)
+        }
+    }
+
     Function.prototype.curry = function () {
         return curry(this, Nil)
     }
@@ -83,7 +89,7 @@
     }
 
     var listReverse = function(list) {
-        return list.foldLeft(Nil)(cons)
+        return list.foldLeft(Nil)(swap(cons))
     }
 
     var cons = function (head, tail) {
