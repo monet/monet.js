@@ -78,6 +78,9 @@ describe("An immutable list", function () {
             it("with multiple defined elements", function() {
                 expect([Some(1),Some(2),Some(3)].list().sequenceMaybe().some().toArray()).toEqual([1,2,3])
             })
+            it("with multiple defined elements (pimped)", function() {
+                expect(["1".some(),"2".some(),"3".some()].list().sequenceMaybe().some().toArray()).toEqual(["1","2","3"])
+            })
             it("with multiple defined elements and one undefined element", function() {
                 expect([Some(1),Some(2),None()].list().sequenceMaybe()).toBeNoneMaybe()
             })
@@ -92,9 +95,18 @@ describe("An immutable list", function () {
             it("with two success elements", function() {
                 expect(["1".success(),"2".success()].list().sequenceValidation().success().toArray()).toEqual(["1","2"])
             })
-//            it("with one success element and one fail element", function() {
-//                expect(["happy".success(), "sad".fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad"])
-//            })
+            it("with one success element and one fail (in array) element", function() {
+                expect(["happy".success(), ["sad"].fail()].list().sequenceValidation().fail()).toEqual(["sad"])
+            })
+            it("with one success element and two failed (in array) element", function() {
+                expect(["happy".success(), ["sad"].fail(), ["really sad"].fail()].list().sequenceValidation().fail()).toEqual(["sad", "really sad"])
+            })
+            it("with one success element and one fail (in list) element", function() {
+                expect(["happy".success(), ["sad"].list().fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad"])
+            })
+            it("with one success element and two failed (in list) element", function() {
+                expect(["happy".success(), ["sad"].list().fail(), ["really sad"].list().fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad", "really sad"])
+            })
         })
     })
 })

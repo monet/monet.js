@@ -1,9 +1,9 @@
-//     Monad.js 0.6.0
+//     Monet.js 0.6.1
 
 //     (c) 2012-2013 Chris Myers
-//     Monad.js may be freely distributed under the MIT license.
+//     Monet.js may be freely distributed under the MIT license.
 //     For all details and documentation:
-//     http://cwmyers.github.com/monad.js
+//     http://cwmyers.github.com/monet.js
 
 
 (function (window) {
@@ -21,6 +21,10 @@
 })(window || this);
 
 (function (window) {
+
+    var isFunction = function(f) {
+        return !!(f && f.constructor && f.call && f.apply)
+    }
 
     var idFunction = function (value) {
         return value
@@ -69,7 +73,17 @@
     }
 
     var sequenceValidation = function (list) {
-        return list.foldRight(Success(Nil))(Validation.map2(cons))
+        return list.foldLeft(Success(Nil))(function (acc, a) {
+            return  acc.ap(a.map(function (v) {
+                return function (t) {
+                    return cons(v, t)
+                }
+            }))
+        }).map(listReverse)
+    }
+
+    var listReverse = function(list) {
+        return list.foldLeft(Nil)(cons)
     }
 
     var cons = function (head, tail) {
@@ -123,6 +137,9 @@
             return foldRight(append, this, Nil)
 
         },
+        reverse: function() {
+           return listReverse(this)
+        },
         flatMap: function (fn) {
             return this.map(fn).flatten()
         },
@@ -138,16 +155,17 @@
     List.fn.init.prototype = List.fn;
     var Nil = window.Nil = new List.fn.init()
 
+    // Aliases
+
+    List.prototype.concat = List.prototype.append
+
+
     Array.prototype.list = function () {
         var l = Nil
         for (i = this.length; i--; i <= 0) {
             l = l.cons(this[i])
         }
         return l
-    }
-
-    Object.prototype.cons = function (list) {
-        return list.cons(this)
     }
 
 
@@ -218,10 +236,6 @@
 
     Some.fn.init.prototype = Some.fn
 
-
-    Object.prototype.some = Object.prototype.just = function () {
-        return new Some(this)
-    }
 
     var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = window.None = function () {
         return new None.fn.init()
@@ -315,9 +329,6 @@
 
     Success.fn.init.prototype = Success.fn;
 
-    Object.prototype.success = function () {
-        return Validation.success(this)
-    }
 
     var Fail = Validation.Fail = Validation.fail = function (error) {
         return new Fail.fn.init(error)
@@ -362,10 +373,6 @@
 
     Fail.fn.init.prototype = Fail.fn;
 
-    Object.prototype.fail = function () {
-        return Validation.fail(this)
-    }
-
     var Semigroup = window.Semigroup = {}
 
     Semigroup.append = function (a, b) {
@@ -374,6 +381,9 @@
         }
         if (typeof a === "string") {
             return a + b
+        }
+        if (isFunction(a.concat)) {
+            return a.concat(b)
         }
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
     }
@@ -396,9 +406,9 @@
                 return v.flatMap(fn)
             }))
         },
-        ap: function (validationWithFn) {
+        ap: function (monadWithFn) {
             return monadT(this.monad.flatMap(function (v) {
-                return validationWithFn.perform().map(function (v2) {
+                return monadWithFn.perform().map(function (v2) {
                     return v.ap(v2)
                 })
             }))

@@ -1,7 +1,7 @@
 {
-  "name": "monad.js",
-  "version": "0.6.0",
-  "main": "src/main/javascript/monad.js",
+  "name": "monet",
+  "version": "0.6.1",
+  "main": ["src/main/javascript/monet.js","src/main/javascript/monet-pimp.js"],
   "ignore": [
     "**/.*",
     "node_modules",
