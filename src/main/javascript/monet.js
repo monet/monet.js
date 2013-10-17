@@ -1,4 +1,4 @@
-//     Monet.js 0.6.1
+//     Monet.js 0.6.2
 
 //     (c) 2012-2013 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -21,6 +21,10 @@
 })(window || this);
 
 (function (window) {
+
+    var isFunction = function(f) {
+        return !!(f && f.constructor && f.call && f.apply)
+    }
 
     var idFunction = function (value) {
         return value
@@ -69,7 +73,17 @@
     }
 
     var sequenceValidation = function (list) {
-        return list.foldRight(Success(Nil))(Validation.map2(cons))
+        return list.foldLeft(Success(Nil))(function (acc, a) {
+            return  acc.ap(a.map(function (v) {
+                return function (t) {
+                    return cons(v, t)
+                }
+            }))
+        }).map(listReverse)
+    }
+
+    var listReverse = function(list) {
+        return list.foldLeft(Nil)(cons)
     }
 
     var cons = function (head, tail) {
@@ -123,6 +137,9 @@
             return foldRight(append, this, Nil)
 
         },
+        reverse: function() {
+           return listReverse(this)
+        },
         flatMap: function (fn) {
             return this.map(fn).flatten()
         },
@@ -138,6 +155,11 @@
     List.fn.init.prototype = List.fn;
     var Nil = window.Nil = new List.fn.init()
 
+    // Aliases
+
+    List.prototype.concat = List.prototype.append
+
+
     Array.prototype.list = function () {
         var l = Nil
         for (i = this.length; i--; i <= 0) {
@@ -145,8 +167,6 @@
         }
         return l
     }
-
-
 
 
     /* Maybe Monad */
@@ -215,7 +235,6 @@
 
 
     Some.fn.init.prototype = Some.fn
-
 
 
     var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = window.None = function () {
@@ -363,6 +382,9 @@
         if (typeof a === "string") {
             return a + b
         }
+        if (isFunction(a.concat)) {
+            return a.concat(b)
+        }
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
     }
 
@@ -384,9 +406,9 @@
                 return v.flatMap(fn)
             }))
         },
-        ap: function (validationWithFn) {
+        ap: function (monadWithFn) {
             return monadT(this.monad.flatMap(function (v) {
-                return validationWithFn.perform().map(function (v2) {
+                return monadWithFn.perform().map(function (v2) {
                     return v.ap(v2)
                 })
             }))
