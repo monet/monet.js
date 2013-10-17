@@ -7,11 +7,7 @@ dev-version: 0.6.4
 
 ## Introduction
 
-So you've been forced to use JavaScript, eh? Well, don't write your will just yet, this library is what you want to
-model all those monadic types that JavaScript (and well most languages) thoughtlessly omit.
-
-If you know what a monad is then you are already an awesome programmer and if you don't, well... awesome is what you are
-about to become.
+Monet is a library designed to bring great power to your JavaScript programming. It is a tool bag that assists Functional Programming by providing a rich set of Monads and other useful functions.
 
 This library is inspired by those that have come before, especially the [FunctionalJava][functionalJava] and [Scalaz][scalaz] projects.
 
@@ -358,8 +354,20 @@ Will append the second list to the current list.
 ####sequenceMaybe() : Maybe
 Takes a list of `Maybe`s and turns it into a `Maybe` `List`.  If the list contains at least one `None` value then a `None` will be returned, otherwise a `Some` will be returned with a list of all the values.
 
+	var sequenced = [Some(1), Some(2), Some(3)].list().sequenceMaybe()
+	// sequenced == Some([1,2,3]) <- That's an immutable list not an array
+	
+	var sequenced = [Some(1), Some(2), None, Some(3), None].list().sequenceMaybe()
+	// sequenced == None
+
 ####sequenceValidation() : Validation
-Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure side`, if there are **any** failures.
+Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure` side, if there are **any** failures.
+
+	var sequenced = ["a".success(), "b".success(), "c".success()].list().sequenceValidation()
+	// sequenced == Success(["a", "b", "c"])
+	
+	var sequenced = ["a".success(), "b".success(), "c".fail(), "d".fail(), "e".success()].list().sequenceValidation()
+	// sequenced == Fail(["c","d"])
 
 ####reverse()
 Returns a new list reversed.
