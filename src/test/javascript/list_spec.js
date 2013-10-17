@@ -90,11 +90,20 @@ describe("An immutable list", function () {
                 expect(List("hello".success(),Nil).sequenceValidation().success().toArray()).toEqual(["hello"])
             })
             it("with two success elements", function() {
-                expect(["1".success(),"2".success()].list().sequenceValidation().success().toArray()).toEqual(["1","2"])
+                expect([Validation.Success("1"),Validation.Success("2")].list().sequenceValidation().success().toArray()).toEqual(["1","2"])
             })
-//            it("with one success element and one fail element", function() {
-//                expect(["happy".success(), "sad".fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad"])
-//            })
+            it("with one success element and one fail (in array) element", function() {
+                expect(["happy".success(), ["sad"].fail()].list().sequenceValidation().fail()).toEqual(["sad"])
+            })
+            it("with one success element and two failed (in array) element", function() {
+                expect(["happy".success(), ["sad"].fail(), ["really sad"].fail()].list().sequenceValidation().fail()).toEqual(["sad", "really sad"])
+            })
+            it("with one success element and one fail (in list) element", function() {
+                expect(["happy".success(), ["sad"].list().fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad"])
+            })
+            it("with one success element and two failed (in list) element", function() {
+                expect(["happy".success(), ["sad"].list().fail(), ["really sad"].list().fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad", "really sad"])
+            })
         })
     })
 })
