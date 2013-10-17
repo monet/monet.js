@@ -1,4 +1,4 @@
-//     Monet.js 0.6.2
+//     Monet.js 0.6.3
 
 //     (c) 2012-2013 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -36,6 +36,12 @@
         return false
     };
 
+
+    var swap = function(f) {
+        return function(a,b) {
+            return f(b,a)
+        }
+    }
 
     Function.prototype.curry = function () {
         return curry(this, Nil)
@@ -83,7 +89,7 @@
     }
 
     var listReverse = function(list) {
-        return list.foldLeft(Nil)(cons)
+        return list.foldLeft(Nil)(swap(cons))
     }
 
     var cons = function (head, tail) {

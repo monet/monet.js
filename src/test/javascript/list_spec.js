@@ -70,6 +70,18 @@ describe("An immutable list", function () {
 
     })
 
+    describe("will reverse a list", function() {
+        it("with 4 elements", function() {
+            expect(list.reverse().toArray()).toEqual([4,3,2,1])
+        })
+        it("with no elements", function() {
+            expect(Nil.reverse().toArray()).toEqual([])
+        })
+        it("with one element", function() {
+            expect(List(1,Nil).reverse().toArray()).toEqual([1])
+        })
+    })
+
     describe("will sequence a list", function () {
         describe("of Maybes", function () {
             it("with one defined element", function () {
