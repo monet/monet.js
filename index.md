@@ -372,6 +372,9 @@ Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will 
 ####reverse()
 Returns a new list reversed.
 
+	var list = [1,2,3].list().reverse()
+	// list.toArray() == [3,2,1]
+
 ##Other useful functions
 ###Functions
 ####fn.compose(f1) *alias fn.o(fn1)*
