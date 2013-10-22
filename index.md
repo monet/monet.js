@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.6.3
-dev-version: 0.6.4
+version: 0.6.4
+dev-version: 0.6.5
 ---
 
 ## Introduction
@@ -288,7 +288,7 @@ An immutable list is a list that has a head element and a tail. A tail is anothe
 
 #### Creating a list
 
-The easiest way to create a list is with the pimped method on Array.
+The easiest way to create a list is with the pimped method on Array, available in monet-pimp.js.
 
 	var myList = [1,2,3].list()
 
