@@ -1,4 +1,4 @@
-//     Monet.js 0.6.3
+//     Monet.js 0.6.4
 
 //     (c) 2012-2013 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -10,7 +10,7 @@
 
     var curry = function (fn, args) {
         return function () {
-            var args1 = args.append(Array.prototype.slice.call(arguments).list());
+            var args1 = args.append(List.fromArray(Array.prototype.slice.call(arguments)));
             return args1.size() == fn.length ? fn.apply(this, args1.toArray()) : curry(fn, args1)
         }
     }
@@ -165,14 +165,15 @@
 
     List.prototype.concat = List.prototype.append
 
-
-    Array.prototype.list = function () {
+    List.fromArray = function (array) {
         var l = Nil
-        for (i = this.length; i--; i <= 0) {
-            l = l.cons(this[i])
+        for (i = array.length; i--; i <= 0) {
+            l = l.cons(array[i])
         }
         return l
+
     }
+
 
 
     /* Maybe Monad */
