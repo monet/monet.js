@@ -26,6 +26,10 @@
         return Validation.fail(this)
     }
 
+    Array.prototype.list = function () {
+        return List.fromArray(this)
+    }
+
     return this
 
 })(window || this);
