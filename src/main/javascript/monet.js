@@ -109,6 +109,9 @@
                 this.size_ = tail.size() + 1
             }
         },
+        of: function(value) {
+            return new List(value)
+        },
         size: function () {
             return this.size_
         },
@@ -164,6 +167,9 @@
     // Aliases
 
     List.prototype.concat = List.prototype.append
+    List.prototype.bind = List.prototype.chain = List.prototype.flatMap
+    List.prototype.empty = function(){return Nil}
+
 
     List.fromArray = function (array) {
         var l = Nil
