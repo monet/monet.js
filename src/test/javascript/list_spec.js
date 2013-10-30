@@ -121,4 +121,14 @@ describe("An immutable list", function () {
             })
         })
     })
+    describe("complies with FantasyLand spec for", function() {
+        it("'of'", function() {
+            expect(List.of("some val").toArray()).toEqual(["some val"])
+        })
+        describe("'chain'", function() {
+            it("being associative", function(){
+
+            })
+        })
+    })
 })

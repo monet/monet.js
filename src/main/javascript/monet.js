@@ -22,7 +22,7 @@
 
 (function (window) {
 
-    var isFunction = function(f) {
+    var isFunction = function (f) {
         return !!(f && f.constructor && f.call && f.apply)
     }
 
@@ -37,9 +37,9 @@
     };
 
 
-    var swap = function(f) {
-        return function(a,b) {
-            return f(b,a)
+    var swap = function (f) {
+        return function (a, b) {
+            return f(b, a)
         }
     }
 
@@ -88,7 +88,7 @@
         }).map(listReverse)
     }
 
-    var listReverse = function(list) {
+    var listReverse = function (list) {
         return list.foldLeft(Nil)(swap(cons))
     }
 
@@ -109,7 +109,7 @@
                 this.size_ = tail.size() + 1
             }
         },
-        of: function(value) {
+        of: function (value) {
             return new List(value)
         },
         size: function () {
@@ -146,8 +146,8 @@
             return foldRight(append, this, Nil)
 
         },
-        reverse: function() {
-           return listReverse(this)
+        reverse: function () {
+            return listReverse(this)
         },
         flatMap: function (fn) {
             return this.map(fn).flatten()
@@ -168,7 +168,9 @@
 
     List.prototype.concat = List.prototype.append
     List.prototype.bind = List.prototype.chain = List.prototype.flatMap
-    List.prototype.empty = function(){return Nil}
+    List.prototype.empty = function () {
+        return Nil
+    }
 
 
     List.fromArray = function (array) {
@@ -180,6 +182,9 @@
 
     }
 
+    List.of = function (a) {
+        return new List(a, Nil)
+    }
 
 
     /* Maybe Monad */
@@ -189,6 +194,10 @@
     Maybe.fromNull = function (val) {
         return (val == undefined || val == null) ? Maybe.none() : Maybe.some(val)
     };
+
+    Maybe.of = function (a) {
+        return Some(a)
+    }
 
     var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = window.Some = window.Just = function (val) {
         return new Some.fn.init(val)
@@ -244,7 +253,7 @@
     // aliases
     Some.prototype.orJust = Some.prototype.orSome
     Some.prototype.just = Some.prototype.some
-    Some.prototype.flatMap = Some.prototype.bind
+    Some.prototype.flatMap = Some.prototype.chain = Some.prototype.bind
 
 
     Some.fn.init.prototype = Some.fn
@@ -280,7 +289,7 @@
     };
 
     // aliases
-    None.prototype.flatMap = None.prototype.bind
+    None.prototype.flatMap = None.prototype.chain = None.prototype.bind
 
     None.fn.init.prototype = None.fn;
 
