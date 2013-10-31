@@ -16,7 +16,7 @@ describe('A Maybe', function () {
     });
 
     var someString = Maybe.Some("abcd")
-    var none = Maybe.none()
+    var none = Maybe.None()
     describe('with a value', function () {
         it('will be transformed by a map', function () {
             expect(someString.map(function (val) {
@@ -35,20 +35,20 @@ describe('A Maybe', function () {
         })
         it('will be transformed by a bind', function () {
             expect(someString.bind(function (val) {
-                return Maybe.some('Hello')
+                return Maybe.Some('Hello')
             })).toBeSomeMaybeWith('Hello')
         })
         it('will be transformed by a flatMap', function () {
             expect(someString.flatMap(function (val) {
-                return Maybe.some('Hello')
+                return Maybe.Some('Hello')
             })).toBeSomeMaybeWith('Hello')
         })
         it('will be transformed to a none on bind that returns none', function () {
             expect(someString.bind(function (val) {
-                return Maybe.none()
+                return Maybe.None()
             })).toBeNoneMaybe()
             expect(someString.flatMap(function (val) {
-                return Maybe.none()
+                return Maybe.None()
             })).toBeNoneMaybe()
         })
         it('will return the value when orSome() is called', function () {
@@ -63,7 +63,7 @@ describe('A Maybe', function () {
                 return val.length
             }).isNone()).toBeTruthy()
         })
-        it('will throw an exception when some() is called', function () {
+        it('will throw an exception when Some() is called', function () {
             expect(none.some).toThrow("Illegal state exception")
         })
         it('will be true for isNone()', function () {
@@ -75,16 +75,16 @@ describe('A Maybe', function () {
         })
         it('will always return a none on bind', function () {
             expect(none.bind(function () {
-                return Maybe.some('a')
+                return Maybe.Some('a')
             })).toBeNoneMaybe()
             expect(none.flatMap(function () {
-                return Maybe.some('a')
+                return Maybe.Some('a')
             })).toBeNoneMaybe()
             expect(none.bind(function () {
-                return Maybe.none()
+                return Maybe.None()
             })).toBeNoneMaybe()
             expect(none.flatMap(function () {
-                return Maybe.none()
+                return Maybe.None()
             })).toBeNoneMaybe()
         })
         it('will return the other value when orSome() is called', function () {
@@ -95,10 +95,10 @@ describe('A Maybe', function () {
     describe('Some constructed without a value', function () {
         it('will throw an exception', function () {
             expect(function () {
-                Maybe.some()
+                Maybe.Some()
             }).toThrow('Illegal state exception')
             expect(function () {
-                Maybe.just()
+                Maybe.Just()
             }).toThrow('Illegal state exception')
         })
     })
@@ -107,9 +107,9 @@ describe('A Maybe', function () {
         return forename + " " + surname + " lives at " + address
     }.curry()
 
-    var maybeAddress = Maybe.just('Dulwich, London')
-    var maybeSurname = Maybe.just('Baker')
-    var maybeForename = Maybe.just('Tom')
+    var maybeAddress = Maybe.Just('Dulwich, London')
+    var maybeSurname = Maybe.Just('Baker')
+    var maybeForename = Maybe.Just('Tom')
 
     describe('Applicative functor pattern', function () {
         it('will produce a person object if all maybes contain values', function () {
@@ -117,7 +117,7 @@ describe('A Maybe', function () {
             expect(personString).toBe("Tom Baker lives at Dulwich, London")
         })
         it('will not produce a person object if any maybes do not contain values', function () {
-            var result = maybeAddress.ap(Maybe.nothing().ap(maybeForename.map(person)))
+            var result = maybeAddress.ap(Maybe.Nothing().ap(maybeForename.map(person)))
             expect(result).toBeNoneMaybe()
         })
     })

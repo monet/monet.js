@@ -192,15 +192,19 @@
     var Maybe = window.Maybe = {}
 
     Maybe.fromNull = function (val) {
-        return (val == undefined || val == null) ? Maybe.none() : Maybe.some(val)
+        return (val == undefined || val == null) ? Maybe.None() : Maybe.Some(val)
     };
 
     Maybe.of = function (a) {
         return Some(a)
     }
 
-    var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = window.Some = window.Just = function (val) {
-        return new Some.fn.init(val)
+    var Some = Just = Maybe.Just = Maybe.Some = window.Some = window.Just = function (val) {
+        return new Maybe.fn.init(true, val)
+    };
+
+    var None = Nothing = Maybe.Nothing = Maybe.None = window.None = function () {
+        return new Maybe.fn.init(false, null)
     };
 
     Maybe.map2 = function (fn) {
@@ -213,82 +217,57 @@
         }
     }
 
-    Some.fn = Some.prototype = {
-        init: function (val) {
-            if (val == null) {
+    Maybe.fn = Maybe.prototype = {
+        init: function (isValue, val) {
+            this.isValue = isValue
+            if (val == null && isValue) {
                 throw "Illegal state exception"
             }
             this.val = val
         },
 
         map: function (fn) {
-            return new Some(fn(this.val))
+            return this.bind(Maybe.of.compose(fn))
         },
-        isSome: trueFunction,
-        isJust: trueFunction,
-        isNone: falseFunction,
-        isNothing: falseFunction,
+        isSome: function () {
+            return this.isValue
+        },
+        isNone: function () {
+            return !this.isSome()
+        },
         bind: function (bindFn) {
-            return bindFn(this.val)
+            return this.isValue ? bindFn(this.val) : this
         },
         some: function () {
-            return this.val
+            if (this.isValue) {
+                return this.val
+            } else {
+                throw "Illegal state exception"
+            }
         },
         orSome: function (otherValue) {
-            return this.val
+            return this.isValue ? this.val : otherValue
         },
 
         ap: function (maybeWithFunction) {
             var value = this.val
-            return maybeWithFunction.map(function (fn) {
+            return this.isValue ? maybeWithFunction.map(function (fn) {
                 return fn(value)
-            })
+            }) : this
         }
 
     };
 
     // aliases
-    Some.prototype.orJust = Some.prototype.orSome
-    Some.prototype.just = Some.prototype.some
-    Some.prototype.flatMap = Some.prototype.chain = Some.prototype.bind
+    Maybe.prototype.orJust = Maybe.prototype.orSome
+    Maybe.prototype.just = Maybe.prototype.some
+    Maybe.prototype.isJust = Maybe.prototype.isSome
+    Maybe.prototype.isNothing = Maybe.prototype.isNone
+    Maybe.prototype.flatMap = Maybe.prototype.chain = Maybe.prototype.bind
 
 
-    Some.fn.init.prototype = Some.fn
+    Maybe.fn.init.prototype = Maybe.fn
 
-
-    var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = window.None = function () {
-        return new None.fn.init()
-    };
-
-    var illegalStateFunction = function () {
-        throw "Illegal state exception"
-    };
-    None.fn = None.prototype = {
-        init: function (val) {
-        },
-
-        map: function () {
-            return this
-        },
-        isSome: falseFunction,
-        isNone: trueFunction,
-        isNothing: trueFunction,
-        bind: function (bindFn) {
-            return this
-        },
-        some: illegalStateFunction,
-        just: illegalStateFunction,
-        orSome: idFunction,
-        orJust: idFunction,
-        ap: function (maybeWithFunction) {
-            return this;
-        }
-    };
-
-    // aliases
-    None.prototype.flatMap = None.prototype.chain = None.prototype.bind
-
-    None.fn.init.prototype = None.fn;
 
     var Validation = window.Validation = {};
 

@@ -15,7 +15,7 @@ describe('A Monad Transformer', function () {
     });
 
     function create(a) {
-        return monadT(IO(function() {return Maybe.some(a)}))
+        return monadT(IO(function() {return Maybe.Some(a)}))
     }
     var maybeIO = create("hi")
 
@@ -26,7 +26,7 @@ describe('A Monad Transformer', function () {
     })
 
     it('will allow a containing value to be flatMapped', function() {
-        var flatmappedMaybeIO = maybeIO.flatMap(function (s) { return Maybe.some("w00t")})
+        var flatmappedMaybeIO = maybeIO.flatMap(function (s) { return Maybe.Some("w00t")})
         expect(flatmappedMaybeIO.perform().run()).toBeSomeMaybeWith("w00t")
     })
 
