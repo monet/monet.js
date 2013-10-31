@@ -224,9 +224,6 @@
         map: function (fn) {
             return new Some(fn(this.val))
         },
-        map2: function (maybeB) {
-
-        },
         isSome: trueFunction,
         isJust: trueFunction,
         isNone: falseFunction,
@@ -306,7 +303,7 @@
     }
 
 
-    var Success = Validation.Success = Validation.success = function (val) {
+    var Success = Validation.Success = Validation.success = window.Success = function (val) {
         return new Success.fn.init(val)
     }
 
@@ -352,7 +349,7 @@
     Success.fn.init.prototype = Success.fn;
 
 
-    var Fail = Validation.Fail = Validation.fail = function (error) {
+    var Fail = Validation.Fail = Validation.fail = window.Fail = function (error) {
         return new Fail.fn.init(error)
     };
 
@@ -478,6 +475,79 @@
     }
 
     IO.fn.init.prototype = IO.fn;
+
+    /* Either Monad */
+
+    var Either = window.Either = {}
+
+
+    Either.of = function (a) {
+        return Right(a)
+    }
+
+    var Right = Either.Right = window.Right = function (val) {
+        return new Either.fn.init(val, true)
+    };
+    var Left = Either.Left = window.Left = function (val) {
+        return new Either.fn.init(val, false)
+    };
+
+    Either.map2 = function (fn) {
+        return function (a, b) {
+            return a.flatMap(function (a1) {
+                return b.map(function (b1) {
+                    return fn(a1, b1)
+                })
+            })
+        }
+    }
+
+    Either.fn = Either.prototype = {
+        init: function (val, isRightValue) {
+            this.isRightValue = isRightValue
+            this.value = val
+        },
+        map: function (fn) {
+            return this.isRightValue ? Right(fn(this.value)) : this
+        },
+        flatMap: function (fn) {
+            return this.isRightValue ? fn(this.value) : this
+        },
+        ap: function (eitherWithFn) {
+            var self = this
+            return this.isRightValue ? eitherWithFn.map(function (fn) {
+                return fn(self.value)
+            }) : this
+        },
+        isRight: function () {
+            return this.isRightValue
+        },
+        isLeft: function () {
+            return !this.isRight()
+        },
+        right: function () {
+            if (this.isRightValue) {
+                return this.value
+            } else {
+                throw "Illegal state. Cannot call right() on a Either.left"
+            }
+        },
+        left: function () {
+            if (this.isRightValue) {
+                throw "Illegal state. Cannot call left() on a Either.right"
+            } else {
+                return this.value
+            }
+        },
+        cata: function (leftFn, rightFn) {
+            return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
+        }
+    }
+
+    Either.prototype.bind = Either.prototype.chain = Either.prototype.flatMap
+
+    Either.fn.init.prototype = Either.fn;
+
 
     Function.prototype.io = function () {
         return IO(this)

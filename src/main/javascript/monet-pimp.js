@@ -26,6 +26,14 @@
         return Validation.fail(this)
     }
 
+    Object.prototype.right = function() {
+        return Either.Right(this)
+    }
+
+    Object.prototype.left = function() {
+        return Either.Left(this)
+    }
+
     Array.prototype.list = function () {
         return List.fromArray(this)
     }
