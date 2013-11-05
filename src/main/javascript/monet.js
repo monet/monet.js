@@ -43,6 +43,10 @@
         }
     }
 
+    map = function (fn) {
+        return this.bind(this.of.compose(fn))
+    }
+
     Function.prototype.curry = function () {
         return curry(this, Nil)
     }
@@ -227,7 +231,7 @@
         },
 
         map: function (fn) {
-            return this.bind(Maybe.of.compose(fn))
+            return map.call(this, fn)
         },
         isSome: function () {
             return this.isValue
@@ -254,7 +258,8 @@
             return this.isValue ? maybeWithFunction.map(function (fn) {
                 return fn(value)
             }) : this
-        }
+        },
+        of: Maybe.of
 
     };
 
@@ -390,6 +395,10 @@
         return new MonadT.fn.init(monad)
     }
 
+    MonadT.of = function (m) {
+        return MonadT(m)
+    }
+
     MonadT.fn = MonadT.prototype = {
         init: function (monad) {
             this.monad = monad
@@ -413,14 +422,19 @@
         },
         perform: function () {
             return this.monad;
-        }
+        },
+        of: MonadT.of
     }
 
     MonadT.fn.init.prototype = MonadT.fn;
-    MonadT.prototype.bind = MonadT.prototype.flatMap;
+    MonadT.prototype.bind = MonadT.prototype.chain = MonadT.prototype.flatMap;
 
     var IO = io = window.IO = window.io = function (effectFn) {
         return new IO.fn.init(effectFn)
+    }
+
+    IO.of = function (fn) {
+        return IO(fn)
     }
 
     IO.fn = IO.prototype = {
@@ -439,21 +453,16 @@
                 return fn(self.effectFn()).run()
             });
         },
-        bind: function (fn) {
-            return this.flatMap(fn)
-        },
         run: function () {
             return this.effectFn()
         },
-        perform: function () {
-            return this.run()
-        },
-        performUnsafeIO: function () {
-            return this.run()
-        }
+        of: IO.of
     }
 
     IO.fn.init.prototype = IO.fn;
+
+    IO.prototype.bind = IO.prototype.chain = IO.prototype.flatMap
+    IO.prototype.perform = IO.prototype.performUnsafeIO = IO.prototype.run
 
     /* Either Monad */
 
@@ -559,5 +568,8 @@
 
 
     return this
-}(window || this));
+}
+    (window || this)
+    )
+;
 
