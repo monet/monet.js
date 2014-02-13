@@ -569,7 +569,5 @@
 
     return this
 }
-    (window || this)
-    )
-;
+(window || this));
 
