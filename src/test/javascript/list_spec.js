@@ -34,10 +34,10 @@ describe("An immutable list", function () {
 
     it("can be mapped", function () {
         var mappedList = list.map(plusOne)
-        expect(mappedList.head).toBe(2)
-        expect(mappedList.tail.head).toBe(3)
-        expect(mappedList.tail.tail.head).toBe(4)
-        expect(mappedList.tail.tail.tail.head).toBe(5)
+        expect(mappedList.head()).toBe(2)
+        expect(mappedList.tail().head()).toBe(3)
+        expect(mappedList.tail().tail().head()).toBe(4)
+        expect(mappedList.tail().tail().tail().head()).toBe(5)
     })
 
     it("can be reduced using foldLeft", function () {
@@ -119,6 +119,11 @@ describe("An immutable list", function () {
             it("with one success element and two failed (in list) element", function() {
                 expect(["happy".success(), ["sad"].list().fail(), ["really sad"].list().fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad", "really sad"])
             })
+        })
+    })
+    describe("that is empty", function() {
+        it("will return Nil on tail()", function() {
+            expect(Nil.tail()).toBe(Nil)
         })
     })
     describe("complies with FantasyLand spec for", function() {

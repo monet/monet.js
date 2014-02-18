@@ -43,7 +43,7 @@
         }
     }
 
-    map = function (fn) {
+    var map = function (fn) {
         return this.bind(this.of.compose(fn))
     }
 
@@ -62,20 +62,20 @@
         if (l.isNil) {
             return l
         } else {
-            return listMap(fn, l.tail).cons(fn(l.head))
+            return listMap(fn, l.tail()).cons(fn(l.head()))
         }
     }
 
     var foldLeft = function (fn, acc, l) {
-        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head), l.tail)
+        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head()), l.tail())
     }
 
     var foldRight = function (fn, l, acc) {
-        return l.isNil ? acc : fn(l.head, foldRight(fn, l.tail, acc))
+        return l.isNil ? acc : fn(l.head(), foldRight(fn, l.tail(), acc))
     }
 
     var append = function (list1, list2) {
-        return list1.isNil ? list2 : append(list1.tail, list2).cons(list1.head)
+        return list1.isNil ? list2 : append(list1.tail(), list2).cons(list1.head())
     }
 
     var sequenceMaybe = function (list) {
@@ -108,9 +108,9 @@
                 this.size_ = 0
             } else {
                 this.isNil = false
-                this.head = head
-                this.tail = (tail == undefined || tail == null) ? Nil : tail
-                this.size_ = tail.size() + 1
+                this.head_ = head
+                this.tail_ = (tail == undefined || tail == null) ? Nil : tail
+                this.size_ = (tail == undefined || tail == null) ? 0 : tail.size() + 1
             }
         },
         of: function (value) {
@@ -121,6 +121,9 @@
         },
         cons: function (head) {
             return List(head, this)
+        },
+        snoc: function (element) {
+            return this.concat(List(element))
         },
         map: function (fn) {
             return listMap(fn, this)
@@ -154,7 +157,8 @@
             return listReverse(this)
         },
         flatMap: function (fn) {
-            return this.map(fn).flatten()
+            var mappedlist = this.map(fn);
+            return mappedlist.flatten()
         },
         // transforms a list of Maybes to a Maybe list
         sequenceMaybe: function () {
@@ -162,7 +166,14 @@
         },
         sequenceValidation: function () {
             return sequenceValidation(this)
-        }
+        },
+        head: function () {
+            return this.head_
+        },
+        tail: function () {
+            return this.isNil ? Nil : this.tail_
+        },
+        isNEL: falseFunction
     }
 
     List.fn.init.prototype = List.fn;
@@ -189,6 +200,68 @@
     List.of = function (a) {
         return new List(a, Nil)
     }
+
+    /*
+     * Non-Empty List monad
+     * This is also a comonad because there exists the implementation of extract, which is just head
+     *
+     */
+
+
+    var NEL = window.NEL = function (head, tail) {
+        if (head == undefined || head == null) {
+            throw "Cannot create an empty Non-Empty List."
+        }
+        return new NEL.fn.init(head, tail)
+    }
+
+    NEL.fn = NEL.prototype = {
+        init: function (head, tail) {
+            if (head == undefined || head == null) {
+                this.isNil = true
+                this.size_ = 0
+            } else {
+                this.isNil = false
+                this.head_ = head
+                this.tail_ = (tail == undefined || tail == null) ? Nil : tail
+                this.size_ = this.tail_.size()
+            }
+        },
+        map: function (fn) {
+            return NEL(fn(this.head_), listMap(fn, this.tail_))
+        },
+
+        bind: function (fn) {
+            var p = fn(this.head_)
+            if (!p.isNEL()) {
+                throw "function must return a NonEmptyList."
+            }
+            var list = this.tail().foldLeft(Nil.snoc(p.head()).append(p.tail()))(function (acc, e) {
+                var list2 = fn(e).toList()
+                return acc.snoc(list2.head()).append(list2.tail())
+            })
+
+            return new NEL(list.head(), list.tail())
+
+        },
+
+        head: function () {
+            return this.head_
+        },
+
+        tail: function () {
+            return this.tail_
+        },
+        toList: function () {
+            return List(this.head_, this.tail_)
+        },
+        isNEL: trueFunction
+    }
+
+    NEL.fn.init.prototype = NEL.fn;
+    NEL.prototype.toArray = List.prototype.toArray
+    NEL.prototype.flatMap = NEL.prototype.bind
+    NEL.prototype.extract = NEL.prototype.head
 
 
     /* Maybe Monad */
@@ -568,6 +641,5 @@
 
 
     return this
-}
-(window || this));
+}(window || this));
 
