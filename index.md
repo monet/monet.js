@@ -68,11 +68,25 @@ And functions on a Monadic type that has been constructed with `A`
 ##### Anonymous functions
 	
 For functions that take other functions as parameters (which are called *Higher order functions*) we will use an abbreviated way to represent that function
-using a pseudo type lambda `A -> B`. 
+using a pseudo type lambda:
+
+	A -> B 
+
+So,
 
 	function x(a: A -> B, c: B -> C): C
 
-So the above means that function `x` takes two parameters that are both functions themselves. `a` is a function that takes a type `A` and returns a type `B` and `c` is a function that takes a type `B` and returns a type `C`. The function `x` will return a type `C`.
+means that function `x` takes two parameters that are both functions themselves. `a` is a function that takes a type `A` and returns a type `B` and `c` is a function that takes a type `B` and returns a type `C`. The function `x` will return a type `C`.
+
+##### The Unit type
+
+Some functions (or lambdas) do not take a parameter, and some do not return anything.  Will express this as:
+
+	() -> A
+
+or
+
+	A -> ()
 	
 ## Maybe
 
@@ -93,9 +107,10 @@ or more simply with the pimped method on Object.
 	
 ### Functions
 #### map
-`map` takes a function (A -> B) and applies that function to the value inside the `Maybe` and returns another `Maybe`.
-	
+
 	Maybe[A].map(fn: A -> B) : Maybe[B]
+
+`map` takes a function (A -> B) and applies that function to the value inside the `Maybe` and returns another `Maybe`.
 
 For example:
 
@@ -106,9 +121,11 @@ For example:
 
 
 #### bind *alias: flatMap*
+
+	Maybe[A].bind(fn: A -> Maybe[B]): Maybe[B]
+
 `bind` takes a function that takes a value and returns an `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on.
             
-	Maybe[A].bind(fn: A -> Maybe[B]): Maybe[B]
 
 For example:
 
@@ -122,9 +139,10 @@ For example:
 
 
 #### isSome *alias: isJust*
-`isSome` on a `Some` value will return `true` and will return `false` on a `None`.
 
 	Maybe[A].isSome(): Boolean
+
+`isSome` on a `Some` value will return `true` and will return `false` on a `None`.
 
 For example:
 
@@ -133,9 +151,10 @@ For example:
 
 
 #### isNone *alias: isNothing*
-`isNone` on a `None` value will return `true` and will return `false` on a `Some`.
 
 	Maybe[A].isNone(): Boolean
+
+`isNone` on a `None` value will return `true` and will return `false` on a `Some`.
 
 For example:
 
@@ -143,16 +162,20 @@ For example:
 	//result: true
 
 ####some() *alias: just*
-`some` will 'reduce' the `Maybe` to its value.  But warning! It will throw an error if you attempt to do this on a none.  Use `orSome` instead.
 
 	Maybe[A].some(): A
+
+`some` will 'reduce' the `Maybe` to its value.  But warning! It will throw an error if you attempt to do this on a none.  Use `orSome` instead.
 
 For example:
 
 	Maybe.some("hi").some()
 	//result: "hi"
 	
-####orSome(value) *alias: orJust*
+####orSome *alias: orJust*
+
+	Maybe[A].orSome(a:A) : A
+	
 Will return the containing value inside the `Maybe` or return the supplied value.
 
 	maybe.some("hi").orSome("bye")
@@ -161,9 +184,10 @@ Will return the containing value inside the `Maybe` or return the supplied value
 	=> "bye"
 
 ####ap
-The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another `Maybe` type which contains a function, and then applies that function to the value contained in the calling `Maybe`. 
 
 	Maybe[A].ap(Maybe[A->B]): Maybe[B]
+
+The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another `Maybe` type which contains a function, and then applies that function to the value contained in the calling `Maybe`. 
 
 It may seem odd to want to apply a function to a monad that exists inside another monad, but this is particular useful for when you have a curried function being applied across many monads.
 
@@ -177,7 +201,9 @@ Here is an example for creating a string out of the result of a couple of `Maybe
     var maybeSurname = Maybe.just('Baker')
     var maybeForename = Maybe.just('Tom')
     
-    var personString = maybeAddress.ap(maybeSurname.ap(maybeForename.map(person))).just()
+    var personString = maybeAddress
+                      .ap(maybeSurname
+	                     .ap(maybeForename.map(person))).just()
     
     // result: "Tom Baker lives in Dulwich, London"
 
@@ -199,9 +225,10 @@ or with pimped methods on an object
 
 ###Functions
 ####map
-`map` takes a function (A -> B) and applies that function to the value inside the `success` side of the `Validation` and returns another `Validation`.
 
 	Validation[E,A].map(fn:A -> B): Validation[E,A]
+
+`map` takes a function (A -> B) and applies that function to the value inside the `success` side of the `Validation` and returns another `Validation`.
 
 For example:
 
@@ -209,10 +236,11 @@ For example:
 	//result: 124
 
 ####bind *alias: flatMap*
-`bind` takes a function that takes a value and returns an `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
-            
+
 	Validation[E,A].bind(fn:A -> Validation[E,B]) : Validation[E,B]
 
+`bind` takes a function that takes a value and returns an `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
+            
 For example:
 
 	validation.bind(function(val) {
@@ -225,24 +253,29 @@ For example:
 
 
 ####isSuccess
-Will return `true` if this is a successful validation, `false` otherwise. 
 
 	Validation[E,A].isSuccess() : Boolean
 
+Will return `true` if this is a successful validation, `false` otherwise. 
+
 ####isFail
-Will return `false` if this is a failed validation, `true` otherwise.
 
 	Validation[E,A].isFail() : Boolean
 
+Will return `false` if this is a failed validation, `true` otherwise.
+
 ####success
-Will return the successful value.
 
 	Validation[E,A].success() : A
 
+Will return the successful value.
+
+
 ####fail
-Will return the failed value, usually an error message.
 
 	Validation[E,A].fail() : E
+
+Will return the failed value, usually an error message.
 
 ####ap
 
@@ -291,22 +324,25 @@ The `IO` monad is for isolating effects to maintain referential transparency in 
 	var ioAction = IO(function () { return $("#id").val() })
 
 ###Functions
-####IO(fn) *alias: io*
-The constructor for the `IO` monad.  It is a purely functional wrapper around the supplied effect and enables referential transparency in your software.
+####IO *alias: io*
 
 	IO[A](fn: () -> A): IO[A]
 
-####bind(fn) *alias: flatMap*
-Perform a monadic bind (flatMap) over the effect.  It takes a function that returns an `IO`. This will happen lazily and will not evaluate the effect.
+The constructor for the `IO` monad.  It is a purely functional wrapper around the supplied effect and enables referential transparency in your software.
+
+####bind *alias: flatMap*
 
 	IO[A](fn: A -> IO[B]): IO[B]
 
+Perform a monadic bind (flatMap) over the effect.  It takes a function that returns an `IO`. This will happen lazily and will not evaluate the effect.
+
 Examples: see below
 
-####map(fn)
-Performs a map over the result of the effect.  This will happen lazily and will not evaluate the effect.
+####map
 
 	IO[A](fn: A -> B): IO[B]
+
+Performs a map over the result of the effect.  This will happen lazily and will not evaluate the effect.
 
 ####run *alias: perform*
 Evaluates the effect inside the `IO` monad.  This can only be run once in your programme and at the very end.
@@ -384,11 +420,11 @@ which is equivalent to:
 As you can see from the second example each List object contains a head element and the tail is just another list element.
 
 ###Functions
-####cons(element)
+####cons
+
+	List[A].cons(a: A) : List[A]
 
 `cons` will prepend the element to the front of the list and return a new list.  The existing list remains unchanged.
-
-	List[A].cons(A) : List[A]
 
 For example:
 
@@ -402,28 +438,29 @@ For example:
 	var newList = "z".cons(myList)
 	newList.toArray() == ["z","a","b","c"]
 
-####map(fn)
-
-Maps the supplied function over the list.
+####map
 
 	List[A].map(fn: A->B): List[B]
+
+Maps the supplied function over the list.
 
 	var list = [1,2,3].list().map(function(a) {
 		return a+1
 	})
 	// list == [2,3,4]	
 
-####flatMap(fn) *alias: bind()*
-
-Maps the supplied function over the list and then flattens the returned list.  The supplied function must return a new list.
+####flatMap *alias: bind*
 
 	List[A].flatMap(fn: A -> List[B]): List[B]
+
+Maps the supplied function over the list and then flattens the returned list.  The supplied function must return a new list.
 	
-####foldLeft(initialValue)(function(acc, e))
+####foldLeft
+
+	List[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
 
 `foldLeft` takes an initial value and a function and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first value and the current element in the list as its second argument.  The returned value from the function will be pass into the accumulator on the subsequent pass.
 
-	List[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
 
 For example, say you wanted to add up a list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
 
@@ -435,13 +472,15 @@ For example, say you wanted to add up a list of integers, your initial value wou
 	
 ####foldRight(initialValue)(function(e, acc))
 
+	List[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
+
 Performs a fold right across the list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
 
-####append(list2) *alias: concat()*
-
-Will append the second list to the current list.
+####append *alias: concat()*
 
 	List[A].append(list: List[A]) : List[A]
+
+Will append the second list to the current list.  Both list must be of the same type.
 
 For example:
 
@@ -451,9 +490,10 @@ For example:
 	// list3.toArray() == [1,2,3,4,5,6]
 	
 ####sequenceMaybe() : Maybe
-Takes a list of `Maybe`s and turns it into a `Maybe` `List`.  If the list contains at least one `None` value then a `None` will be returned, otherwise a `Some` will be returned with a list of all the values.
 
-	List[Maybe[A]].sequenceMaybe: Maybe[List[A]]
+	List[Maybe[A]].sequenceMaybe(): Maybe[List[A]]
+
+Takes a list of `Maybe`s and turns it into a `Maybe` `List`.  If the list contains at least one `None` value then a `None` will be returned, otherwise a `Some` will be returned with a list of all the values.
 
 For example:
 
@@ -466,15 +506,24 @@ For example:
 ####sequenceValidation() : Validation
 Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure` side, if there are **any** failures.
 
-	List[Validation]
+	List[Validation[E,A]].sequenceValidation(): Validation[List[E], List[A]]
 
-	var sequenced = ["a".success(), "b".success(), "c".success()].list().sequenceValidation()
+	var sequenced = ["a".success(), "b".success(), "c".success()]
+		.list().sequenceValidation()
 	// sequenced == Success(["a", "b", "c"])
 	
-	var sequenced = ["a".success(), "b".success(), "c".fail(), "d".fail(), "e".success()].list().sequenceValidation()
+	var sequenced = ["a".success(), 
+	                 "b".success(), 
+                     "c".fail(), 
+                     "d".fail(), 
+                     "e".success()]
+					.list().sequenceValidation()
 	// sequenced == Fail(["c","d"])
 
-####reverse()
+####reverse
+
+	List[A].reverse(): List[A]
+
 Returns a new list reversed.
 
 	var list = [1,2,3].list().reverse()
