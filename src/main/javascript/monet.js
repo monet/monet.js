@@ -155,7 +155,7 @@
         flatten: function () {
             return foldRight(append, this, Nil)
         },
-        flattenMaybe: function() {
+        flattenMaybe: function () {
             return this.flatMap(Maybe.toList)
         },
         reverse: function () {
@@ -180,7 +180,7 @@
         tail: function () {
             return this.isNil ? Nil : this.tail_
         },
-        tails: function() {
+        tails: function () {
             return this.isNil ? List(Nil, Nil) : this.tail().tails().cons(this)
         },
         isNEL: falseFunction
@@ -261,7 +261,8 @@
         tail: function () {
             return this.tail_
         },
-        tails: function() {
+        //NEL[A] -> NEL[NEL[A]]
+        tails: function () {
             var listsOfNels = this.toList().tails().map(NEL.fromList).flattenMaybe();
             return  NEL(listsOfNels.head(), listsOfNels.tail())
         },
@@ -276,6 +277,13 @@
                 return NEL(reversedTail.head(), reversedTail.tail().append(List(this.head())))
             }
         },
+        foldLeft: function (initialValue) {
+            return this.toList().foldLeft(initialValue)
+        },
+        // NEL[A] -> (NEL[A] -> B) -> NEL[B]
+        cobind: function (fn) {
+            return this.cojoin().map(fn)
+        },
         isNEL: trueFunction
     }
 
@@ -286,6 +294,8 @@
     NEL.fn.init.prototype = NEL.fn;
     NEL.prototype.toArray = List.prototype.toArray
     NEL.prototype.extract = NEL.prototype.copure = NEL.prototype.head
+    NEL.prototype.cojoin = NEL.prototype.tails
+    NEL.prototype.coflatMap = NEL.prototype.mapTails = NEL.prototype.cobind
 
 
     /* Maybe Monad */
@@ -361,7 +371,7 @@
             }) : this
         },
 
-        toList: function() {
+        toList: function () {
             return this.map(List).orSome(Nil)
         },
         of: Maybe.of

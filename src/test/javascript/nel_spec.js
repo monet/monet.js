@@ -59,5 +59,13 @@ describe("A Non-Empty immutable list", function () {
         ])
     })
 
+    it("will map a function over the tails with cobind", function () {
+        expect(nonEmptyList.cobind(function (nel) {
+            return nel.foldLeft(0)(function(a,b){
+                return a+b
+            })
+        }).toArray()).toEqual([10,9,7,4])
+    })
+
 })
 
