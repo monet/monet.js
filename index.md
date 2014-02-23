@@ -96,8 +96,8 @@ The `Maybe` type is the most common way of representing *nothingness* (or the `n
 
 #### Creating an Maybe
 
-	var maybe = Maybe.some(val);
-	var maybe = Maybe.none();
+	var maybe = Maybe.Some(val);
+	var maybe = Maybe.None();
 	var maybe = Maybe.fromNull(val);  // none if val is null, some otherwise
 	
 or more simply with the pimped method on Object.
@@ -114,7 +114,7 @@ or more simply with the pimped method on Object.
 
 For example:
 
-	maybe.some(123).map(function(val) {
+	Maybe.Some(123).map(function(val) {
 		return val+1
 	})
 	=> 124
@@ -131,9 +131,9 @@ For example:
 
 	maybe.bind(function(val) {
 		if (val == "hi") {
-			return maybe.some("world")
+			return Maybe.Some("world")
 		} else {
-			return maybe.none()
+			return Maybe.None()
 		}
 	})
 
