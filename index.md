@@ -528,6 +528,94 @@ Returns a new list reversed.
 
 	var list = [1,2,3].list().reverse()
 	// list.toArray() == [3,2,1]
+	
+
+## Non Empty Lists
+
+Much like the immutable list, a Non Empty List can never be empty.  It implements the `comonad` pattern.  It has a guaranteed head (total)
+and a guaranteed (total) tail.
+
+#### Creating a NonEmptyList
+
+	var nonEmptyList = NonEmptyList(1, [2,3,4].list())
+	// alias
+	var nonEmptyList = NEL(1, [2,3,4].list())
+	// or
+	var nonEmptyList = NonEmptyList(1, Nil)
+	// or fromList which returns a Maybe[NonEmptyList].
+	var maybeNonEmptyList = NonEmptyList.fromList([1,2,3,4].list())
+
+Trying to create an empty `NonEmptyList` will throw an exception.
+
+###Functions
+####map
+
+	NEL[A].map(fn: A -> B): NEL[B]
+
+Maps a function over a NonEmptyList.
+
+###bind *alias: flatMap, chain*
+
+	NEL[A].bind(fn: A -> NEL[B]): NEL[B]
+
+Performs a monadic bind over the NonEmptyList.
+
+####head *alias: copure, extract*
+
+	NEL[A].head(): A
+
+Returns the head of the NonEmptyList.  Also known as `copure` or `extract` this is part of the comonad pattern.
+
+####tail
+
+	NEL[A].tail(): List[A]
+
+Returns the tail of the `NonEmptyList`.
+
+####tails *alias: cojoin*
+
+	NEL[A].tails(): NEL[NEL[A]]
+
+Returns all the tails of the `NonEmptyList`.  Also known as `cojoin` this is part of the comonad pattern.  A list is considered
+a tail of itself.
+
+For example:
+
+	NEL(1, [2,3,4].list()).tails()
+	//result: [
+	//          [ 1, 2, 3, 4 ],
+	//          [ 2, 3, 4 ],
+	//          [ 3, 4 ],
+	//          [ 4 ]
+	//        ]
+
+####mapTails *alias: cobind, coflatMap*
+
+	NEL[A].mapTails(fn: NEL[A] -> B): NEL[B]
+
+Maps a function over the tails of the `NonEmptyList`.  Also known as `cobind` this is part of the comonad pattern.
+
+For example:
+
+	nonEmptyList.cobind(function (nel) {
+	            return nel.foldLeft(0)(function(a,b){
+	                return a+b
+	            })
+	        }
+	//result: [10,9,7,4]
+
+####reverse
+
+	NEL[A].reverse(): NEL[A]
+
+Reverses the `NonEmptyList`.
+
+####fromList
+
+	NEL.fromList(List[A]): Maybe[NEL[A]]
+
+Returns an optional `NonEmptyList`.  If the supplied `List` is empty the result will be a `None`, otherwise a `NonEmptyList` wrapped in
+a `Some` (or `Just`).
 
 ##Other useful functions
 ###Functions
