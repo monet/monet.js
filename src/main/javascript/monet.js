@@ -59,10 +59,13 @@
     }
 
     var listMap = function (fn, l) {
-        if (l.isNil) {
-            return l
-        } else {
-            return listMap(fn, l.tail()).cons(fn(l.head()))
+        return l.isNil ? l : listMap(fn, l.tail()).cons(fn(l.head()))
+    }
+
+    var listEach = function (effectFn, l) {
+        if (!l.isNil) {
+            effectFn(l.head())
+            listEach(effectFn, l.tail())
         }
     }
 
@@ -151,14 +154,18 @@
         },
         flatten: function () {
             return foldRight(append, this, Nil)
-
+        },
+        flattenMaybe: function() {
+            return this.flatMap(Maybe.toList)
         },
         reverse: function () {
             return listReverse(this)
         },
-        flatMap: function (fn) {
-            var mappedlist = this.map(fn);
-            return mappedlist.flatten()
+        bind: function (fn) {
+            return this.map(fn).flatten()
+        },
+        each: function (effectFn) {
+            listEach(effectFn, this)
         },
         // transforms a list of Maybes to a Maybe list
         sequenceMaybe: function () {
@@ -173,6 +180,9 @@
         tail: function () {
             return this.isNil ? Nil : this.tail_
         },
+        tails: function() {
+            return this.isNil ? List(Nil, Nil) : this.tail().tails().cons(this)
+        },
         isNEL: falseFunction
     }
 
@@ -182,7 +192,6 @@
     // Aliases
 
     List.prototype.concat = List.prototype.append
-    List.prototype.bind = List.prototype.chain = List.prototype.flatMap
     List.prototype.empty = function () {
         return Nil
     }
@@ -252,16 +261,31 @@
         tail: function () {
             return this.tail_
         },
+        tails: function() {
+            var listsOfNels = this.toList().tails().map(NEL.fromList).flattenMaybe();
+            return  NEL(listsOfNels.head(), listsOfNels.tail())
+        },
         toList: function () {
             return List(this.head_, this.tail_)
+        },
+        reverse: function () {
+            if (this.tail().isNil) {
+                return this
+            } else {
+                var reversedTail = this.tail().reverse()
+                return NEL(reversedTail.head(), reversedTail.tail().append(List(this.head())))
+            }
         },
         isNEL: trueFunction
     }
 
+    NEL.fromList = function (list) {
+        return list.isNil ? None() : Some(NEL(list.head(), list.tail()))
+    }
+
     NEL.fn.init.prototype = NEL.fn;
     NEL.prototype.toArray = List.prototype.toArray
-    NEL.prototype.flatMap = NEL.prototype.bind
-    NEL.prototype.extract = NEL.prototype.head
+    NEL.prototype.extract = NEL.prototype.copure = NEL.prototype.head
 
 
     /* Maybe Monad */
@@ -292,6 +316,10 @@
                 })
             })
         }
+    }
+
+    Maybe.toList = function (maybe) {
+        return maybe.toList()
     }
 
     Maybe.fn = Maybe.prototype = {
@@ -332,6 +360,10 @@
                 return fn(value)
             }) : this
         },
+
+        toList: function() {
+            return this.map(List).orSome(Nil)
+        },
         of: Maybe.of
 
     };
@@ -341,7 +373,6 @@
     Maybe.prototype.just = Maybe.prototype.some
     Maybe.prototype.isJust = Maybe.prototype.isSome
     Maybe.prototype.isNothing = Maybe.prototype.isNone
-    Maybe.prototype.flatMap = Maybe.prototype.chain = Maybe.prototype.bind
 
 
     Maybe.fn.init.prototype = Maybe.fn
@@ -382,9 +413,6 @@
         bind: function (fn) {
             return fn(this.val);
         },
-        flatMap: function (fn) {
-            return this.bind(fn)
-        },
         ap: function (validationWithFn) {
             var value = this.val
             return validationWithFn.map(function (fn) {
@@ -419,9 +447,6 @@
         },
         bind: function (fn) {
             return this;
-        },
-        flatMap: function (fn) {
-            return this.bind(fn)
         },
         isFail: trueFunction,
         isSuccess: falseFunction,
@@ -481,7 +506,7 @@
                 return v.map(fn)
             }))
         },
-        flatMap: function (fn) {
+        bind: function (fn) {
             return monadT(this.monad.map(function (v) {
                 return v.flatMap(fn)
             }))
@@ -500,7 +525,6 @@
     }
 
     MonadT.fn.init.prototype = MonadT.fn;
-    MonadT.prototype.bind = MonadT.prototype.chain = MonadT.prototype.flatMap;
 
     var IO = io = window.IO = window.io = function (effectFn) {
         return new IO.fn.init(effectFn)
@@ -520,7 +544,7 @@
                 return fn(self.effectFn())
             })
         },
-        flatMap: function (fn) {
+        bind: function (fn) {
             var self = this
             return IO(function () {
                 return fn(self.effectFn()).run()
@@ -534,7 +558,6 @@
 
     IO.fn.init.prototype = IO.fn;
 
-    IO.prototype.bind = IO.prototype.chain = IO.prototype.flatMap
     IO.prototype.perform = IO.prototype.performUnsafeIO = IO.prototype.run
 
     /* Either Monad */
@@ -571,7 +594,7 @@
         map: function (fn) {
             return this.isRightValue ? Right(fn(this.value)) : this
         },
-        flatMap: function (fn) {
+        bind: function (fn) {
             return this.isRightValue ? fn(this.value) : this
         },
         ap: function (eitherWithFn) {
@@ -605,8 +628,6 @@
         }
     }
 
-    Either.prototype.bind = Either.prototype.chain = Either.prototype.flatMap
-
     Either.fn.init.prototype = Either.fn;
 
 
@@ -639,6 +660,21 @@
         }
     }
 
+    // Wire up aliases
+    function alias(type) {
+        type.prototype.flatMap = type.prototype.chain = type.prototype.bind
+        type.prototype.pure = type.prototype.unit = type.prototype.of
+        type.pure = type.unit = type.of
+    }
+
+    alias(MonadT)
+    alias(Either)
+    alias(Maybe)
+    alias(IO)
+    alias(NEL)
+    alias(List)
+    alias(Success)
+    alias(Fail)
 
     return this
 }(window || this));
