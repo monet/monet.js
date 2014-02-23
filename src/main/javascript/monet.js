@@ -212,12 +212,12 @@
 
     /*
      * Non-Empty List monad
-     * This is also a comonad because there exists the implementation of extract, which is just head
+     * This is also a comonad because there exists the implementation of extract(copure), which is just head
+     * and cobind and cojoin.
      *
      */
 
-
-    var NEL = window.NEL = function (head, tail) {
+    var NEL = window.NEL = NonEmptyList = window.NonEmptyList = function (head, tail) {
         if (head == undefined || head == null) {
             throw "Cannot create an empty Non-Empty List."
         }
@@ -251,7 +251,6 @@
             })
 
             return new NEL(list.head(), list.tail())
-
         },
 
         head: function () {
