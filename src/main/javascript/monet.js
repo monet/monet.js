@@ -1,6 +1,6 @@
-//     Monet.js 0.6.4
+//     Monet.js 0.6.5
 
-//     (c) 2012-2013 Chris Myers
+//     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://cwmyers.github.com/monet.js
@@ -22,7 +22,7 @@
 
 (function (window) {
 
-    var isFunction = function(f) {
+    var isFunction = function (f) {
         return !!(f && f.constructor && f.call && f.apply)
     }
 
@@ -37,10 +37,14 @@
     };
 
 
-    var swap = function(f) {
-        return function(a,b) {
-            return f(b,a)
+    var swap = function (f) {
+        return function (a, b) {
+            return f(b, a)
         }
+    }
+
+    var map = function (fn) {
+        return this.bind(this.of.compose(fn))
     }
 
     Function.prototype.curry = function () {
@@ -55,23 +59,26 @@
     }
 
     var listMap = function (fn, l) {
-        if (l.isNil) {
-            return l
-        } else {
-            return listMap(fn, l.tail).cons(fn(l.head))
+        return l.isNil ? l : listMap(fn, l.tail()).cons(fn(l.head()))
+    }
+
+    var listEach = function (effectFn, l) {
+        if (!l.isNil) {
+            effectFn(l.head())
+            listEach(effectFn, l.tail())
         }
     }
 
     var foldLeft = function (fn, acc, l) {
-        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head), l.tail)
+        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head()), l.tail())
     }
 
     var foldRight = function (fn, l, acc) {
-        return l.isNil ? acc : fn(l.head, foldRight(fn, l.tail, acc))
+        return l.isNil ? acc : fn(l.head(), foldRight(fn, l.tail(), acc))
     }
 
     var append = function (list1, list2) {
-        return list1.isNil ? list2 : append(list1.tail, list2).cons(list1.head)
+        return list1.isNil ? list2 : append(list1.tail(), list2).cons(list1.head())
     }
 
     var sequenceMaybe = function (list) {
@@ -88,7 +95,7 @@
         }).map(listReverse)
     }
 
-    var listReverse = function(list) {
+    var listReverse = function (list) {
         return list.foldLeft(Nil)(swap(cons))
     }
 
@@ -104,16 +111,22 @@
                 this.size_ = 0
             } else {
                 this.isNil = false
-                this.head = head
-                this.tail = (tail == undefined || tail == null) ? Nil : tail
-                this.size_ = tail.size() + 1
+                this.head_ = head
+                this.tail_ = (tail == undefined || tail == null) ? Nil : tail
+                this.size_ = (tail == undefined || tail == null) ? 0 : tail.size() + 1
             }
+        },
+        of: function (value) {
+            return new List(value)
         },
         size: function () {
             return this.size_
         },
         cons: function (head) {
             return List(head, this)
+        },
+        snoc: function (element) {
+            return this.concat(List(element))
         },
         map: function (fn) {
             return listMap(fn, this)
@@ -141,13 +154,18 @@
         },
         flatten: function () {
             return foldRight(append, this, Nil)
-
         },
-        reverse: function() {
-           return listReverse(this)
+        flattenMaybe: function () {
+            return this.flatMap(Maybe.toList)
         },
-        flatMap: function (fn) {
+        reverse: function () {
+            return listReverse(this)
+        },
+        bind: function (fn) {
             return this.map(fn).flatten()
+        },
+        each: function (effectFn) {
+            listEach(effectFn, this)
         },
         // transforms a list of Maybes to a Maybe list
         sequenceMaybe: function () {
@@ -155,7 +173,17 @@
         },
         sequenceValidation: function () {
             return sequenceValidation(this)
-        }
+        },
+        head: function () {
+            return this.head_
+        },
+        tail: function () {
+            return this.isNil ? Nil : this.tail_
+        },
+        tails: function () {
+            return this.isNil ? List(Nil, Nil) : this.tail().tails().cons(this)
+        },
+        isNEL: falseFunction
     }
 
     List.fn.init.prototype = List.fn;
@@ -164,6 +192,10 @@
     // Aliases
 
     List.prototype.concat = List.prototype.append
+    List.prototype.empty = function () {
+        return Nil
+    }
+
 
     List.fromArray = function (array) {
         var l = Nil
@@ -175,17 +207,115 @@
     }
 
 
+    List.of = function (a) {
+        return new List(a, Nil)
+    }
+
+    /*
+     * Non-Empty List monad
+     * This is also a comonad because there exists the implementation of extract(copure), which is just head
+     * and cobind and cojoin.
+     *
+     */
+
+    var NEL = window.NEL = NonEmptyList = window.NonEmptyList = function (head, tail) {
+        if (head == undefined || head == null) {
+            throw "Cannot create an empty Non-Empty List."
+        }
+        return new NEL.fn.init(head, tail)
+    }
+
+    NEL.fn = NEL.prototype = {
+        init: function (head, tail) {
+            if (head == undefined || head == null) {
+                this.isNil = true
+                this.size_ = 0
+            } else {
+                this.isNil = false
+                this.head_ = head
+                this.tail_ = (tail == undefined || tail == null) ? Nil : tail
+                this.size_ = this.tail_.size()
+            }
+        },
+        map: function (fn) {
+            return NEL(fn(this.head_), listMap(fn, this.tail_))
+        },
+
+        bind: function (fn) {
+            var p = fn(this.head_)
+            if (!p.isNEL()) {
+                throw "function must return a NonEmptyList."
+            }
+            var list = this.tail().foldLeft(Nil.snoc(p.head()).append(p.tail()))(function (acc, e) {
+                var list2 = fn(e).toList()
+                return acc.snoc(list2.head()).append(list2.tail())
+            })
+
+            return new NEL(list.head(), list.tail())
+        },
+
+        head: function () {
+            return this.head_
+        },
+
+        tail: function () {
+            return this.tail_
+        },
+        //NEL[A] -> NEL[NEL[A]]
+        tails: function () {
+            var listsOfNels = this.toList().tails().map(NEL.fromList).flattenMaybe();
+            return  NEL(listsOfNels.head(), listsOfNels.tail())
+        },
+        toList: function () {
+            return List(this.head_, this.tail_)
+        },
+        reverse: function () {
+            if (this.tail().isNil) {
+                return this
+            } else {
+                var reversedTail = this.tail().reverse()
+                return NEL(reversedTail.head(), reversedTail.tail().append(List(this.head())))
+            }
+        },
+        foldLeft: function (initialValue) {
+            return this.toList().foldLeft(initialValue)
+        },
+        // NEL[A] -> (NEL[A] -> B) -> NEL[B]
+        cobind: function (fn) {
+            return this.cojoin().map(fn)
+        },
+        isNEL: trueFunction
+    }
+
+    NEL.fromList = function (list) {
+        return list.isNil ? None() : Some(NEL(list.head(), list.tail()))
+    }
+
+    NEL.fn.init.prototype = NEL.fn;
+    NEL.prototype.toArray = List.prototype.toArray
+    NEL.prototype.extract = NEL.prototype.copure = NEL.prototype.head
+    NEL.prototype.cojoin = NEL.prototype.tails
+    NEL.prototype.coflatMap = NEL.prototype.mapTails = NEL.prototype.cobind
+
 
     /* Maybe Monad */
 
     var Maybe = window.Maybe = {}
 
     Maybe.fromNull = function (val) {
-        return (val == undefined || val == null) ? Maybe.none() : Maybe.some(val)
+        return (val == undefined || val == null) ? Maybe.None() : Maybe.Some(val)
     };
 
-    var Some = Just = Maybe.Just = Maybe.just = Maybe.Some = Maybe.some = window.Some = window.Just = function (val) {
-        return new Some.fn.init(val)
+    Maybe.of = function (a) {
+        return Some(a)
+    }
+
+    var Some = Just = Maybe.Just = Maybe.Some = window.Some = window.Just = function (val) {
+        return new Maybe.fn.init(true, val)
+    };
+
+    var None = Nothing = Maybe.Nothing = Maybe.None = window.None = function () {
+        return new Maybe.fn.init(false, null)
     };
 
     Maybe.map2 = function (fn) {
@@ -198,85 +328,65 @@
         }
     }
 
-    Some.fn = Some.prototype = {
-        init: function (val) {
-            if (val == null) {
+    Maybe.toList = function (maybe) {
+        return maybe.toList()
+    }
+
+    Maybe.fn = Maybe.prototype = {
+        init: function (isValue, val) {
+            this.isValue = isValue
+            if (val == null && isValue) {
                 throw "Illegal state exception"
             }
             this.val = val
         },
 
         map: function (fn) {
-            return new Some(fn(this.val))
+            return map.call(this, fn)
         },
-        map2: function (maybeB) {
-
+        isSome: function () {
+            return this.isValue
         },
-        isSome: trueFunction,
-        isJust: trueFunction,
-        isNone: falseFunction,
-        isNothing: falseFunction,
+        isNone: function () {
+            return !this.isSome()
+        },
         bind: function (bindFn) {
-            return bindFn(this.val)
+            return this.isValue ? bindFn(this.val) : this
         },
         some: function () {
-            return this.val
+            if (this.isValue) {
+                return this.val
+            } else {
+                throw "Illegal state exception"
+            }
         },
         orSome: function (otherValue) {
-            return this.val
+            return this.isValue ? this.val : otherValue
         },
 
         ap: function (maybeWithFunction) {
             var value = this.val
-            return maybeWithFunction.map(function (fn) {
+            return this.isValue ? maybeWithFunction.map(function (fn) {
                 return fn(value)
-            })
-        }
+            }) : this
+        },
+
+        toList: function () {
+            return this.map(List).orSome(Nil)
+        },
+        of: Maybe.of
 
     };
 
     // aliases
-    Some.prototype.orJust = Some.prototype.orSome
-    Some.prototype.just = Some.prototype.some
-    Some.prototype.flatMap = Some.prototype.bind
+    Maybe.prototype.orJust = Maybe.prototype.orSome
+    Maybe.prototype.just = Maybe.prototype.some
+    Maybe.prototype.isJust = Maybe.prototype.isSome
+    Maybe.prototype.isNothing = Maybe.prototype.isNone
 
 
-    Some.fn.init.prototype = Some.fn
+    Maybe.fn.init.prototype = Maybe.fn
 
-
-    var None = Nothing = Maybe.Nothing = Maybe.None = Maybe.none = Maybe.nothing = window.None = function () {
-        return new None.fn.init()
-    };
-
-    var illegalStateFunction = function () {
-        throw "Illegal state exception"
-    };
-    None.fn = None.prototype = {
-        init: function (val) {
-        },
-
-        map: function () {
-            return this
-        },
-        isSome: falseFunction,
-        isNone: trueFunction,
-        isNothing: trueFunction,
-        bind: function (bindFn) {
-            return this
-        },
-        some: illegalStateFunction,
-        just: illegalStateFunction,
-        orSome: idFunction,
-        orJust: idFunction,
-        ap: function (maybeWithFunction) {
-            return this;
-        }
-    };
-
-    // aliases
-    None.prototype.flatMap = None.prototype.bind
-
-    None.fn.init.prototype = None.fn;
 
     var Validation = window.Validation = {};
 
@@ -291,7 +401,7 @@
     }
 
 
-    var Success = Validation.Success = Validation.success = function (val) {
+    var Success = Validation.Success = Validation.success = window.Success = function (val) {
         return new Success.fn.init(val)
     }
 
@@ -312,9 +422,6 @@
         },
         bind: function (fn) {
             return fn(this.val);
-        },
-        flatMap: function (fn) {
-            return this.bind(fn)
         },
         ap: function (validationWithFn) {
             var value = this.val
@@ -337,7 +444,7 @@
     Success.fn.init.prototype = Success.fn;
 
 
-    var Fail = Validation.Fail = Validation.fail = function (error) {
+    var Fail = Validation.Fail = Validation.fail = window.Fail = function (error) {
         return new Fail.fn.init(error)
     };
 
@@ -350,9 +457,6 @@
         },
         bind: function (fn) {
             return this;
-        },
-        flatMap: function (fn) {
-            return this.bind(fn)
         },
         isFail: trueFunction,
         isSuccess: falseFunction,
@@ -399,6 +503,10 @@
         return new MonadT.fn.init(monad)
     }
 
+    MonadT.of = function (m) {
+        return MonadT(m)
+    }
+
     MonadT.fn = MonadT.prototype = {
         init: function (monad) {
             this.monad = monad
@@ -408,7 +516,7 @@
                 return v.map(fn)
             }))
         },
-        flatMap: function (fn) {
+        bind: function (fn) {
             return monadT(this.monad.map(function (v) {
                 return v.flatMap(fn)
             }))
@@ -422,14 +530,18 @@
         },
         perform: function () {
             return this.monad;
-        }
+        },
+        of: MonadT.of
     }
 
     MonadT.fn.init.prototype = MonadT.fn;
-    MonadT.prototype.bind = MonadT.prototype.flatMap;
 
     var IO = io = window.IO = window.io = function (effectFn) {
         return new IO.fn.init(effectFn)
+    }
+
+    IO.of = function (fn) {
+        return IO(fn)
     }
 
     IO.fn = IO.prototype = {
@@ -442,27 +554,92 @@
                 return fn(self.effectFn())
             })
         },
-        flatMap: function (fn) {
+        bind: function (fn) {
             var self = this
             return IO(function () {
                 return fn(self.effectFn()).run()
             });
         },
-        bind: function (fn) {
-            return this.flatMap(fn)
-        },
         run: function () {
             return this.effectFn()
         },
-        perform: function () {
-            return this.run()
-        },
-        performUnsafeIO: function () {
-            return this.run()
-        }
+        of: IO.of
     }
 
     IO.fn.init.prototype = IO.fn;
+
+    IO.prototype.perform = IO.prototype.performUnsafeIO = IO.prototype.run
+
+    /* Either Monad */
+
+    var Either = window.Either = {}
+
+
+    Either.of = function (a) {
+        return Right(a)
+    }
+
+    var Right = Either.Right = window.Right = function (val) {
+        return new Either.fn.init(val, true)
+    };
+    var Left = Either.Left = window.Left = function (val) {
+        return new Either.fn.init(val, false)
+    };
+
+    Either.map2 = function (fn) {
+        return function (a, b) {
+            return a.flatMap(function (a1) {
+                return b.map(function (b1) {
+                    return fn(a1, b1)
+                })
+            })
+        }
+    }
+
+    Either.fn = Either.prototype = {
+        init: function (val, isRightValue) {
+            this.isRightValue = isRightValue
+            this.value = val
+        },
+        map: function (fn) {
+            return this.isRightValue ? Right(fn(this.value)) : this
+        },
+        bind: function (fn) {
+            return this.isRightValue ? fn(this.value) : this
+        },
+        ap: function (eitherWithFn) {
+            var self = this
+            return this.isRightValue ? eitherWithFn.map(function (fn) {
+                return fn(self.value)
+            }) : this
+        },
+        isRight: function () {
+            return this.isRightValue
+        },
+        isLeft: function () {
+            return !this.isRight()
+        },
+        right: function () {
+            if (this.isRightValue) {
+                return this.value
+            } else {
+                throw "Illegal state. Cannot call right() on a Either.left"
+            }
+        },
+        left: function () {
+            if (this.isRightValue) {
+                throw "Illegal state. Cannot call left() on a Either.right"
+            } else {
+                return this.value
+            }
+        },
+        cata: function (leftFn, rightFn) {
+            return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
+        }
+    }
+
+    Either.fn.init.prototype = Either.fn;
+
 
     Function.prototype.io = function () {
         return IO(this)
@@ -493,6 +670,21 @@
         }
     }
 
+    // Wire up aliases
+    function alias(type) {
+        type.prototype.flatMap = type.prototype.chain = type.prototype.bind
+        type.prototype.pure = type.prototype.unit = type.prototype.of
+        type.pure = type.unit = type.of
+    }
+
+    alias(MonadT)
+    alias(Either)
+    alias(Maybe)
+    alias(IO)
+    alias(NEL)
+    alias(List)
+    alias(Success)
+    alias(Fail)
 
     return this
 }(window || this));

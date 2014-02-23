@@ -1,4 +1,4 @@
-//     monet-pimp.js 0.6.4
+//     monet-pimp.js 0.6.5
 
 //     This file needs to be included after monet.js
 
@@ -24,6 +24,14 @@
 
     Object.prototype.fail = function () {
         return Validation.fail(this)
+    }
+
+    Object.prototype.right = function() {
+        return Either.Right(this)
+    }
+
+    Object.prototype.left = function() {
+        return Either.Left(this)
     }
 
     Array.prototype.list = function () {
