@@ -208,7 +208,87 @@ Here is an example for creating a string out of the result of a couple of `Maybe
     // result: "Tom Baker lives in Dulwich, London"
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
+
+## Either
+Either (or the disjunct union) is a type that can either hold a value of type `A` or a value of type `B` but never at the same time.  Typically
+it is used to represent computations that can fail with an error.  Think of it as a better way to handle exceptions.  We think of an `Either`
+as having two sides, the success is held on the right and the failure on the left.  This is a right biased either which means that `map`
+and `flatMap` (`bind`) will operate on the right side of the either.
+
+####Creating an Either
+
+	var success = Either.Right(val);
+	var failure = Either.Left(val);
+
+or with the pimped methods on object:
+
+	var success = val.right()
+	var failure = "some error".left()
+
+###Functions
+####map
+
+	Either[E,A].map(fn: A -> B): Either[E,B]
+
+This will apply the supplied function over the right side of the either, if one exists, otherwise it returns the `Either` untouched.
+
+For example:
+
+	Right(123).map(function (e) {return e+1})
+	// result: Right(124)
+	Left("grr").map(function (e) {return e+1})
+	// result: Left("grr")
+
+####flatMap *alias: bind, chain*
+
+	Either[E,A].flatMap(fn: A -> Either[E,B]): Either[E,B]
+
+This will perform a monadic bind over the right side of the either, otherwise it will do nothing.
+
+####ap
+
+	Either[E,A].ap(v: Either[E, A -> B]): Either[E,B]
+
+This takes an either that has a function on the right side of the either and then applies it to the right side of itself. This implements
+the applicative functor pattern.
+
+####cata
+
+	Either[E,A].cata(leftFn: E -> X, rightFn: A ->X): X
+
+The catamorphism for either.  If the either is `right` the right function will be executed with the right value and the value of the function returned. Otherwise the `left` function will be called with the left value.
+
+	For example:
+
+		var result = either.cata(function(failure) {
+			return "oh dear it failed because " + failure
+		}, function(success) {
+			return "yay! " + success
+		})
+
+####isRight
+
+	Either[E,A].isRight(): Boolean
+
+Returns true if this Either is right, false otherwise.
+
+####isLeft
+
+	Either[E,A].isLeft(): Boolean
+
+Returns true if this Either is left, false otherwise.
+
+####right
+
+	Either[E,A].right(): A
 	
+Returns the value in the right side, otherwise throws an exception.
+
+####left
+
+	Either[E,A].left(): E
+
+Returns the value in the left side, otherwise throws an exception.
 
 ## Validation
 Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods.  It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors.  We will represent a Validation like this: `Validation[E,A]` where `E` represents the error type and `A` represents the success type.
@@ -233,9 +313,9 @@ or with pimped methods on an object
 For example:
 
 	Validation.success(123).map(function(val) { return val + 1})
-	//result: 124
+	//result: Success(124)
 
-####bind *alias: flatMap*
+####bind *alias: flatMap, chain*
 
 	Validation[E,A].bind(fn:A -> Validation[E,B]) : Validation[E,B]
 
