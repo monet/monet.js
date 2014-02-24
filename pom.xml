@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.chrisandjo.monad.js</groupId>
-	<artifactId>monad-js</artifactId>
+	<artifactId>monet-js</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 

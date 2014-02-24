@@ -405,6 +405,10 @@
         return new Success.fn.init(val)
     }
 
+    Validation.of = function(v){
+        return Success(v)
+    }
+
     Success.fn = Success.prototype = {
         init: function (val) {
             this.val = val
@@ -437,7 +441,8 @@
         },
         cata: function (fail, success) {
             return success(this.val)
-        }
+        },
+        of: Validation.of
 
     };
 
@@ -479,7 +484,8 @@
         },
         cata: function (fail, success) {
             return fail(this.error)
-        }
+        }   ,
+        of: Validation.of
     };
 
     Fail.fn.init.prototype = Fail.fn;
@@ -639,6 +645,30 @@
     }
 
     Either.fn.init.prototype = Either.fn;
+
+
+    var Trampoline = window.Trampoline = {}
+
+    var Suspend = Trampoline.Suspend = window.Suspend = function (fn) {
+        return new Trampoline.fn.init(fn, true)
+    };
+    var Return = Trampoline.Return = window.Return = function (val) {
+        return new Trampoline.fn.init(val, false)
+    };
+
+
+    Trampoline.fn = Trampoline.prototype = {
+        init: function (val, isSuspend) {
+            this.isSuspend = isSuspend
+            this.value = val
+        },
+        run: function() {
+            return this.isSuspend ? this.value() : this.value
+        }
+    }
+
+    Trampoline.fn.init.prototype = Trampoline.fn;
+
 
 
     Function.prototype.io = function () {
