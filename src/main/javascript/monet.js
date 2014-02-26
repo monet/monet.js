@@ -402,93 +402,77 @@
 
 
     var Success = Validation.Success = Validation.success = window.Success = function (val) {
-        return new Success.fn.init(val)
+        return new Validation.fn.init(val, true)
     }
 
-    Validation.of = function(v){
+    var Fail = Validation.Fail = Validation.fail = window.Fail = function (error) {
+        return new Validation.fn.init(error, false)
+    }
+
+
+    Validation.of = function (v) {
         return Success(v)
     }
 
-    Success.fn = Success.prototype = {
-        init: function (val) {
+    Validation.fn = Validation.prototype = {
+        init: function (val, success) {
             this.val = val
+            this.isSuccessValue = success
         },
         map: function (fn) {
-            return new Success(fn(this.val))
+            return this.isSuccess() ?
+                Success(fn(this.val)) : this
         },
         success: function () {
-            return this.val;
+            if (this.isSuccess())
+                return this.val;
+            else
+                throw 'Illegal state. Cannot call success() on a Validation.fail'
         },
-        isSuccess: trueFunction,
-        isFail: falseFunction,
+        isSuccess: function () {
+            return this.isSuccessValue
+        },
+        isFail: function () {
+            return !this.isSuccessValue
+        },
         fail: function () {
-            throw 'Illegal state. Cannot call fail() on a Validation.success'
+            if (this.isSuccess())
+                throw 'Illegal state. Cannot call fail() on a Validation.success'
+            else
+                return this.val
         },
         bind: function (fn) {
-            return fn(this.val);
+            return this.isSuccess() ? fn(this.val) : this
         },
         ap: function (validationWithFn) {
             var value = this.val
-            return validationWithFn.map(function (fn) {
-                return fn(value);
-            })
+            return this.isSuccess() ?
+                validationWithFn.map(function (fn) {
+                    return fn(value);
+                })
+                :
+                (validationWithFn.isFail() ?
+                    Validation.Fail(Semigroup.append(value, validationWithFn.fail()))
+                    : this)
+
         },
         acc: function () {
             var x = function () {
                 return x
             }
-            return Validation.success(x)
+            return this.isSuccessValue ? Validation.success(x) : this
         },
         cata: function (fail, success) {
-            return success(this.val)
+            return this.isSuccessValue ?
+                success(this.val)
+                : fail(this.val)
         },
         of: Validation.of
 
     };
 
-    Success.fn.init.prototype = Success.fn;
+    Validation.fn.init.prototype = Validation.fn;
 
-
-    var Fail = Validation.Fail = Validation.fail = window.Fail = function (error) {
-        return new Fail.fn.init(error)
-    };
-
-    Fail.fn = Fail.prototype = {
-        init: function (error) {
-            this.error = error
-        },
-        map: function (fn) {
-            return this;
-        },
-        bind: function (fn) {
-            return this;
-        },
-        isFail: trueFunction,
-        isSuccess: falseFunction,
-        fail: function () {
-            return this.error
-        },
-        success: function () {
-            throw 'Illegal state. Cannot call success() on a Validation.fail'
-        },
-        ap: function (validationWithFn) {
-            var value = this.error
-            if (validationWithFn.isFail()) {
-                return Validation.fail(Semigroup.append(value, validationWithFn.fail()))
-            } else {
-                return this;
-            }
-        },
-        acc: function () {
-            return this;
-        },
-        cata: function (fail, success) {
-            return fail(this.error)
-        }   ,
-        of: Validation.of
-    };
-
-    Fail.fn.init.prototype = Fail.fn;
 
     var Semigroup = window.Semigroup = {}
 
@@ -662,13 +646,12 @@
             this.isSuspend = isSuspend
             this.value = val
         },
-        run: function() {
+        run: function () {
             return this.isSuspend ? this.value() : this.value
         }
     }
 
     Trampoline.fn.init.prototype = Trampoline.fn;
-
 
 
     Function.prototype.io = function () {
@@ -713,8 +696,7 @@
     alias(IO)
     alias(NEL)
     alias(List)
-    alias(Success)
-    alias(Fail)
+    alias(Validation)
 
     return this
 }(window || this));
