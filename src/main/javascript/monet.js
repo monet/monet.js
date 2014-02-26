@@ -191,7 +191,6 @@
 
     // Aliases
 
-    List.prototype.concat = List.prototype.append
     List.prototype.empty = function () {
         return Nil
     }
@@ -234,7 +233,7 @@
                 this.isNil = false
                 this.head_ = head
                 this.tail_ = (tail == undefined || tail == null) ? Nil : tail
-                this.size_ = this.tail_.size()
+                this.size_ = this.tail_.size() + 1
             }
         },
         map: function (fn) {
@@ -280,9 +279,15 @@
         foldLeft: function (initialValue) {
             return this.toList().foldLeft(initialValue)
         },
+        append: function(list2) {
+            return NEL.fromList(this.toList().append(list2.toList())).some()
+        },
         // NEL[A] -> (NEL[A] -> B) -> NEL[B]
         cobind: function (fn) {
             return this.cojoin().map(fn)
+        },
+        size: function (){
+            return this.size_
         },
         isNEL: trueFunction
     }
@@ -688,6 +693,9 @@
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
         type.prototype.pure = type.prototype.unit = type.prototype.of
         type.pure = type.unit = type.of
+        if (type.prototype.append != undefined) {
+            type.prototype.concat = type.prototype.append
+        }
     }
 
     alias(MonadT)
