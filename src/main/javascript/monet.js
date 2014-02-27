@@ -177,6 +177,9 @@
         head: function () {
             return this.head_
         },
+        headMaybe: function() {
+            return this.isNil ? None(): Some(this.head_)
+        },
         tail: function () {
             return this.isNil ? Nil : this.tail_
         },
