@@ -338,10 +338,6 @@
             }
             this.val = val
         },
-
-        map: function (fn) {
-            return map.call(this, fn)
-        },
         isSome: function () {
             return this.isValue
         },
@@ -371,9 +367,7 @@
 
         toList: function () {
             return this.map(List).orSome(Nil)
-        },
-        of: Maybe.of
-
+        }
     };
 
     // aliases
@@ -405,10 +399,6 @@
         init: function (val, success) {
             this.val = val
             this.isSuccessValue = success
-        },
-        map: function (fn) {
-            return this.isSuccess() ?
-                Success(fn(this.val)) : this
         },
         success: function () {
             if (this.isSuccess())
@@ -453,9 +443,7 @@
             return this.isSuccessValue ?
                 success(this.val)
                 : fail(this.val)
-        },
-        of: Validation.of
-
+        }
     };
 
     Validation.fn.init.prototype = Validation.fn;
@@ -507,8 +495,7 @@
         },
         perform: function () {
             return this.monad;
-        },
-        of: MonadT.of
+        }
     }
 
     MonadT.fn.init.prototype = MonadT.fn;
@@ -539,8 +526,7 @@
         },
         run: function () {
             return this.effectFn()
-        },
-        of: IO.of
+        }
     }
 
     IO.fn.init.prototype = IO.fn;
@@ -567,9 +553,6 @@
         init: function (val, isRightValue) {
             this.isRightValue = isRightValue
             this.value = val
-        },
-        map: function (fn) {
-            return this.isRightValue ? Right(fn(this.value)) : this
         },
         bind: function (fn) {
             return this.isRightValue ? fn(this.value) : this
@@ -665,6 +648,7 @@
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
         type.prototype.pure = type.prototype.unit = type.prototype.of
         type.pure = type.unit = type.of
+        type.prototype.of = type.of
         if (type.prototype.append != undefined) {
             type.prototype.concat = type.prototype.append
         }
@@ -679,6 +663,12 @@
                         return fn(a, b)
                     })
                 })
+            }
+        }
+
+        if(type.prototype.map == undefined) {
+            type.prototype.map = function(fn) {
+                return map.call(this, fn)
             }
         }
 
