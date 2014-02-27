@@ -326,16 +326,6 @@
         return new Maybe.fn.init(false, null)
     };
 
-    Maybe.map2 = function (fn) {
-        return function (maybeA, maybeB) {
-            return maybeA.flatMap(function (a) {
-                return maybeB.map(function (b) {
-                    return fn(a, b)
-                })
-            })
-        }
-    }
-
     Maybe.toList = function (maybe) {
         return maybe.toList()
     }
@@ -397,17 +387,6 @@
 
 
     var Validation = window.Validation = {};
-
-    Validation.map2 = function (fn) {
-        return function (validationA, validationB) {
-            return validationA.flatMap(function (a) {
-                return validationB.map(function (b) {
-                    return fn(a, b)
-                })
-            })
-        }
-    }
-
 
     var Success = Validation.Success = Validation.success = window.Success = function (val) {
         return new Validation.fn.init(val, true)
@@ -584,16 +563,6 @@
         return new Either.fn.init(val, false)
     };
 
-    Either.map2 = function (fn) {
-        return function (a, b) {
-            return a.flatMap(function (a1) {
-                return b.map(function (b1) {
-                    return fn(a1, b1)
-                })
-            })
-        }
-    }
-
     Either.fn = Either.prototype = {
         init: function (val, isRightValue) {
             this.isRightValue = isRightValue
@@ -699,6 +668,20 @@
         if (type.prototype.append != undefined) {
             type.prototype.concat = type.prototype.append
         }
+
+        type.prototype.join = function() {
+            return this.flatMap(idFunction)
+        }
+        type.map2 = function (fn) {
+            return function (ma, mb) {
+                return ma.flatMap(function (a) {
+                    return mb.map(function (b) {
+                        return fn(a, b)
+                    })
+                })
+            }
+        }
+
     }
 
     alias(MonadT)

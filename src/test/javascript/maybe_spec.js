@@ -158,5 +158,11 @@ describe('A Maybe', function () {
         })
     })
 
+    describe("with a Maybe", function() {
+        it("will join", function() {
+            expect(Some("hello".just()).join()).toBeSomeMaybeWith("hello")
+        })
+    })
+
 
 })

@@ -25,4 +25,13 @@ describe("An IO monad", function() {
 			expect(effect.run()).toBe("effect")
 		})
 	})
+
+    describe("will join", function() {
+        it("an inner IO", function() {
+            var nestedEffect = IO(function () {
+                return effect
+            });
+            expect(nestedEffect.join().run()).toBe("effect")
+        })
+    })
 })
