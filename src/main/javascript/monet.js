@@ -1,4 +1,4 @@
-//     Monet.js 0.6.5
+//     Monet.js 0.6.6
 
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -177,8 +177,8 @@
         head: function () {
             return this.head_
         },
-        headMaybe: function() {
-            return this.isNil ? None(): Some(this.head_)
+        headMaybe: function () {
+            return this.isNil ? None() : Some(this.head_)
         },
         tail: function () {
             return this.isNil ? Nil : this.tail_
@@ -282,14 +282,14 @@
         foldLeft: function (initialValue) {
             return this.toList().foldLeft(initialValue)
         },
-        append: function(list2) {
+        append: function (list2) {
             return NEL.fromList(this.toList().append(list2.toList())).some()
         },
         // NEL[A] -> (NEL[A] -> B) -> NEL[B]
         cobind: function (fn) {
             return this.cojoin().map(fn)
         },
-        size: function (){
+        size: function () {
             return this.size_
         },
         isNEL: trueFunction
@@ -367,6 +367,12 @@
 
         toList: function () {
             return this.map(List).orSome(Nil)
+        },
+        toEither: function (failVal) {
+            return this.isSome() ? Right(this.val) : Left(failVal)
+        },
+        toValidation: function (failVal) {
+            return this.isSome() ? Success(this.val) : Fail(failVal)
         }
     };
 
@@ -443,6 +449,12 @@
             return this.isSuccessValue ?
                 success(this.val)
                 : fail(this.val)
+        },
+        toMaybe: function () {
+            return this.isSuccess() ? Some(this.val) : None()
+        },
+        toEither: function () {
+            return (this.isSuccess() ? Right : Left)(this.val)
         }
     };
 
@@ -585,6 +597,12 @@
         },
         cata: function (leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
+        },
+        toMaybe: function () {
+            return this.isRight() ? Some(this.val) : None()
+        },
+        toValidation: function () {
+            return this.isRight() ? Success(this.val) : Fail(this.val)
         }
     }
 
@@ -653,7 +671,7 @@
             type.prototype.concat = type.prototype.append
         }
 
-        type.prototype.join = function() {
+        type.prototype.join = function () {
             return this.flatMap(idFunction)
         }
         type.map2 = function (fn) {
@@ -666,8 +684,8 @@
             }
         }
 
-        if(type.prototype.map == undefined) {
-            type.prototype.map = function(fn) {
+        if (type.prototype.map == undefined) {
+            type.prototype.map = function (fn) {
                 return map.call(this, fn)
             }
         }
