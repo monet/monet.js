@@ -357,7 +357,9 @@
         orSome: function (otherValue) {
             return this.isValue ? this.val : otherValue
         },
-
+        orElse: function(maybe) {
+            return this.isValue ? this : maybe
+        },
         ap: function (maybeWithFunction) {
             var value = this.val
             return this.isValue ? maybeWithFunction.map(function (fn) {

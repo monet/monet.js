@@ -55,6 +55,9 @@ describe('A Maybe', function () {
             expect(someString.orSome('no no!')).toBe('abcd')
             expect(someString.orJust('no no!')).toBe('abcd')
         })
+        it('will return the first monad on orElse', function() {
+            expect(someString.orElse(none)).toBeSomeMaybeWith("abcd")
+        })
     })
 
     describe('without a value', function () {
@@ -89,6 +92,10 @@ describe('A Maybe', function () {
         })
         it('will return the other value when orSome() is called', function () {
             expect(none.orSome('yep')).toBe('yep')
+        })
+
+        it('will return the supplied monad on orElse', function() {
+            expect(none.orElse(someString)).toBeSomeMaybeWith('abcd')
         })
     })
 
