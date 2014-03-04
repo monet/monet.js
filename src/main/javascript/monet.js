@@ -357,7 +357,7 @@
         orSome: function (otherValue) {
             return this.isValue ? this.val : otherValue
         },
-        orElse: function(maybe) {
+        orElse: function (maybe) {
             return this.isValue ? this : maybe
         },
         ap: function (maybeWithFunction) {
@@ -375,6 +375,12 @@
         },
         toValidation: function (failVal) {
             return this.isSome() ? Success(this.val) : Fail(failVal)
+        },
+        fold: function(defaultValue) {
+            var self = this
+            return function(fn) {
+                return self.isSome() ? fn(self.val) : defaultValue
+            }
         }
     };
 
@@ -384,9 +390,7 @@
     Maybe.prototype.isJust = Maybe.prototype.isSome
     Maybe.prototype.isNothing = Maybe.prototype.isNone
 
-
     Maybe.fn.init.prototype = Maybe.fn
-
 
     var Validation = window.Validation = {};
 
@@ -397,7 +401,6 @@
     var Fail = Validation.Fail = Validation.fail = window.Fail = function (error) {
         return new Validation.fn.init(error, false)
     }
-
 
     Validation.of = function (v) {
         return Success(v)
@@ -439,7 +442,6 @@
                 (validationWithFn.isFail() ?
                     Validation.Fail(Semigroup.append(value, validationWithFn.fail()))
                     : this)
-
         },
         acc: function () {
             var x = function () {
