@@ -87,7 +87,35 @@ Some functions (or lambdas) do not take a parameter, and some do not return anyt
 or
 
 	A -> ()
-	
+
+## All monads
+
+Everything that is a monad in will implement the following functions.  The specific monads will be discussed in detail below.
+
+####bind *alias: flatMap, chain*
+
+	Monad[A].bind(f: A -> Monad[B]): Monad[B]
+
+Performs a monadic bind.
+
+####map
+
+	Monad[A].map(f: A -> B): Monad[B]
+
+####unit *alias: pure, of*
+
+	Monad.unit(A): Monad[A]
+
+####ap
+
+	Monad[A].ap(m: Monad[A -> B]): Monad[B]
+
+####join
+
+	Monad[Monad[A]].join(): Monad[A]
+
+The inner and outer monads are the same type.
+
 ## Maybe
 
 The `Maybe` type is the most common way of representing *nothingness* (or the `null` type) with making the possibilities of `NullPointer` issues disappear.
@@ -120,7 +148,7 @@ For example:
 	=> 124
 
 
-#### bind *alias: flatMap*
+####bind *alias: flatMap, chain*
 
 	Maybe[A].bind(fn: A -> Maybe[B]): Maybe[B]
 
@@ -150,7 +178,7 @@ For example:
 	//result: true
 
 
-#### isNone *alias: isNothing*
+####isNone *alias: isNothing*
 
 	Maybe[A].isNone(): Boolean
 
@@ -161,7 +189,7 @@ For example:
 	Maybe.none().isNone()
 	//result: true
 
-####some() *alias: just*
+####some *alias: just*
 
 	Maybe[A].some(): A
 
@@ -182,6 +210,12 @@ Will return the containing value inside the `Maybe` or return the supplied value
 	=> "hi"
 	Maybe.none().orSome("bye")
 	=> "bye"
+
+####orElse
+
+	Maybe[A].orElse(Maybe[A]): Maybe[A]
+
+Returns the Maybe if it is a Some otherwise returns the supplied Maybe.
 
 ####ap
 
@@ -208,6 +242,24 @@ Here is an example for creating a string out of the result of a couple of `Maybe
     // result: "Tom Baker lives in Dulwich, London"
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
+
+####toEither
+
+	Maybe[A].toEither(fail: E): Either[E,A]
+
+Converts a Maybe to an Either
+
+####toValidation
+
+	Maybe[A].toValidation(fail: E): Validation[E,A]
+
+Converts a Maybe to a Validation.
+
+####toList
+
+	Maybe[A].toList: List[A]
+
+Converts to a list, returns an Empty list on None.
 
 ## Either
 Either (or the disjunct union) is a type that can either hold a value of type `A` or a value of type `B` but never at the same time.  Typically
@@ -289,6 +341,18 @@ Returns the value in the right side, otherwise throws an exception.
 	Either[E,A].left(): E
 
 Returns the value in the left side, otherwise throws an exception.
+
+####toValidation
+
+	Either[E,A].toValidation(): Validation[E,A]
+
+Converts the `Either` to a `Validation`.
+
+####toMaybe
+
+	Either[E,A].toMaybe(): Maybe[A]
+
+Converts to a `Maybe` dropping the left side.
 
 ## Validation
 Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods.  It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors.  We will represent a Validation like this: `Validation[E,A]` where `E` represents the error type and `A` represents the success type.
@@ -395,6 +459,18 @@ For example:
 	}, function(success) {
 		return "yay! " + success
 	})
+
+####toEither
+
+	Validation[E,A].toEither(): Either[E,A]
+
+Converts an `Either` to a `Validation`
+
+####toMaybe
+
+	Validation[E,A].toMaybe(): Maybe[A]
+
+Converts to a `Maybe` dropping the failure side.
 	
 ## Immutable lists
 
@@ -447,6 +523,32 @@ Maps the supplied function over the list.
 	List[A].flatMap(fn: A -> List[B]): List[B]
 
 Maps the supplied function over the list and then flattens the returned list.  The supplied function must return a new list.
+
+####head
+
+	List[A].head(): A
+
+Returns the head of the list.
+
+For example:
+
+	[1,2,3].list().head()
+	//result: 1
+
+####headMaybe
+
+	List[A].headMaybe(): Maybe[A]
+
+Returns the optional head of the list.
+
+
+For example:
+
+	[1,2,3,4].list().headMaybe()
+	// result: Some(1)
+	
+	Nil.headMaybe()
+	// result: None()
 	
 ####foldLeft
 
@@ -596,6 +698,12 @@ For example:
 	            })
 	        }
 	//result: [10,9,7,4]
+
+####append *alias: concat*
+
+	NEL[A].append(n: NEL[A]): NEL[A]
+
+Appends two NonEmptyLists together.
 
 ####reverse
 
