@@ -1,4 +1,4 @@
-//     Monet.js 0.6.5
+//     Monet.js 0.6.6
 
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -177,6 +177,9 @@
         head: function () {
             return this.head_
         },
+        headMaybe: function () {
+            return this.isNil ? None() : Some(this.head_)
+        },
         tail: function () {
             return this.isNil ? Nil : this.tail_
         },
@@ -191,7 +194,6 @@
 
     // Aliases
 
-    List.prototype.concat = List.prototype.append
     List.prototype.empty = function () {
         return Nil
     }
@@ -234,7 +236,7 @@
                 this.isNil = false
                 this.head_ = head
                 this.tail_ = (tail == undefined || tail == null) ? Nil : tail
-                this.size_ = this.tail_.size()
+                this.size_ = this.tail_.size() + 1
             }
         },
         map: function (fn) {
@@ -280,9 +282,15 @@
         foldLeft: function (initialValue) {
             return this.toList().foldLeft(initialValue)
         },
+        append: function (list2) {
+            return NEL.fromList(this.toList().append(list2.toList())).some()
+        },
         // NEL[A] -> (NEL[A] -> B) -> NEL[B]
         cobind: function (fn) {
             return this.cojoin().map(fn)
+        },
+        size: function () {
+            return this.size_
         },
         isNEL: trueFunction
     }
@@ -318,16 +326,6 @@
         return new Maybe.fn.init(false, null)
     };
 
-    Maybe.map2 = function (fn) {
-        return function (maybeA, maybeB) {
-            return maybeA.flatMap(function (a) {
-                return maybeB.map(function (b) {
-                    return fn(a, b)
-                })
-            })
-        }
-    }
-
     Maybe.toList = function (maybe) {
         return maybe.toList()
     }
@@ -339,10 +337,6 @@
                 throw "Illegal state exception"
             }
             this.val = val
-        },
-
-        map: function (fn) {
-            return map.call(this, fn)
         },
         isSome: function () {
             return this.isValue
@@ -363,7 +357,9 @@
         orSome: function (otherValue) {
             return this.isValue ? this.val : otherValue
         },
-
+        orElse: function (maybe) {
+            return this.isValue ? this : maybe
+        },
         ap: function (maybeWithFunction) {
             var value = this.val
             return this.isValue ? maybeWithFunction.map(function (fn) {
@@ -374,8 +370,18 @@
         toList: function () {
             return this.map(List).orSome(Nil)
         },
-        of: Maybe.of
-
+        toEither: function (failVal) {
+            return this.isSome() ? Right(this.val) : Left(failVal)
+        },
+        toValidation: function (failVal) {
+            return this.isSome() ? Success(this.val) : Fail(failVal)
+        },
+        fold: function(defaultValue) {
+            var self = this
+            return function(fn) {
+                return self.isSome() ? fn(self.val) : defaultValue
+            }
+        }
     };
 
     // aliases
@@ -384,111 +390,80 @@
     Maybe.prototype.isJust = Maybe.prototype.isSome
     Maybe.prototype.isNothing = Maybe.prototype.isNone
 
-
     Maybe.fn.init.prototype = Maybe.fn
-
 
     var Validation = window.Validation = {};
 
-    Validation.map2 = function (fn) {
-        return function (validationA, validationB) {
-            return validationA.flatMap(function (a) {
-                return validationB.map(function (b) {
-                    return fn(a, b)
-                })
-            })
-        }
-    }
-
-
     var Success = Validation.Success = Validation.success = window.Success = function (val) {
-        return new Success.fn.init(val)
+        return new Validation.fn.init(val, true)
     }
 
-    Validation.of = function(v){
+    var Fail = Validation.Fail = Validation.fail = window.Fail = function (error) {
+        return new Validation.fn.init(error, false)
+    }
+
+    Validation.of = function (v) {
         return Success(v)
     }
 
-    Success.fn = Success.prototype = {
-        init: function (val) {
+    Validation.fn = Validation.prototype = {
+        init: function (val, success) {
             this.val = val
-        },
-        map: function (fn) {
-            return new Success(fn(this.val))
+            this.isSuccessValue = success
         },
         success: function () {
-            return this.val;
+            if (this.isSuccess())
+                return this.val;
+            else
+                throw 'Illegal state. Cannot call success() on a Validation.fail'
         },
-        isSuccess: trueFunction,
-        isFail: falseFunction,
+        isSuccess: function () {
+            return this.isSuccessValue
+        },
+        isFail: function () {
+            return !this.isSuccessValue
+        },
         fail: function () {
-            throw 'Illegal state. Cannot call fail() on a Validation.success'
+            if (this.isSuccess())
+                throw 'Illegal state. Cannot call fail() on a Validation.success'
+            else
+                return this.val
         },
         bind: function (fn) {
-            return fn(this.val);
+            return this.isSuccess() ? fn(this.val) : this
         },
         ap: function (validationWithFn) {
             var value = this.val
-            return validationWithFn.map(function (fn) {
-                return fn(value);
-            })
+            return this.isSuccess() ?
+                validationWithFn.map(function (fn) {
+                    return fn(value);
+                })
+                :
+                (validationWithFn.isFail() ?
+                    Validation.Fail(Semigroup.append(value, validationWithFn.fail()))
+                    : this)
         },
         acc: function () {
             var x = function () {
                 return x
             }
-            return Validation.success(x)
+            return this.isSuccessValue ? Validation.success(x) : this
         },
         cata: function (fail, success) {
-            return success(this.val)
+            return this.isSuccessValue ?
+                success(this.val)
+                : fail(this.val)
         },
-        of: Validation.of
-
+        toMaybe: function () {
+            return this.isSuccess() ? Some(this.val) : None()
+        },
+        toEither: function () {
+            return (this.isSuccess() ? Right : Left)(this.val)
+        }
     };
 
-    Success.fn.init.prototype = Success.fn;
+    Validation.fn.init.prototype = Validation.fn;
 
-
-    var Fail = Validation.Fail = Validation.fail = window.Fail = function (error) {
-        return new Fail.fn.init(error)
-    };
-
-    Fail.fn = Fail.prototype = {
-        init: function (error) {
-            this.error = error
-        },
-        map: function (fn) {
-            return this;
-        },
-        bind: function (fn) {
-            return this;
-        },
-        isFail: trueFunction,
-        isSuccess: falseFunction,
-        fail: function () {
-            return this.error
-        },
-        success: function () {
-            throw 'Illegal state. Cannot call success() on a Validation.fail'
-        },
-        ap: function (validationWithFn) {
-            var value = this.error
-            if (validationWithFn.isFail()) {
-                return Validation.fail(Semigroup.append(value, validationWithFn.fail()))
-            } else {
-                return this;
-            }
-        },
-        acc: function () {
-            return this;
-        },
-        cata: function (fail, success) {
-            return fail(this.error)
-        }   ,
-        of: Validation.of
-    };
-
-    Fail.fn.init.prototype = Fail.fn;
 
     var Semigroup = window.Semigroup = {}
 
@@ -536,8 +511,7 @@
         },
         perform: function () {
             return this.monad;
-        },
-        of: MonadT.of
+        }
     }
 
     MonadT.fn.init.prototype = MonadT.fn;
@@ -568,8 +542,7 @@
         },
         run: function () {
             return this.effectFn()
-        },
-        of: IO.of
+        }
     }
 
     IO.fn.init.prototype = IO.fn;
@@ -592,23 +565,10 @@
         return new Either.fn.init(val, false)
     };
 
-    Either.map2 = function (fn) {
-        return function (a, b) {
-            return a.flatMap(function (a1) {
-                return b.map(function (b1) {
-                    return fn(a1, b1)
-                })
-            })
-        }
-    }
-
     Either.fn = Either.prototype = {
         init: function (val, isRightValue) {
             this.isRightValue = isRightValue
             this.value = val
-        },
-        map: function (fn) {
-            return this.isRightValue ? Right(fn(this.value)) : this
         },
         bind: function (fn) {
             return this.isRightValue ? fn(this.value) : this
@@ -641,6 +601,12 @@
         },
         cata: function (leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
+        },
+        toMaybe: function () {
+            return this.isRight() ? Some(this.val) : None()
+        },
+        toValidation: function () {
+            return this.isRight() ? Success(this.val) : Fail(this.val)
         }
     }
 
@@ -662,13 +628,12 @@
             this.isSuspend = isSuspend
             this.value = val
         },
-        run: function() {
+        run: function () {
             return this.isSuspend ? this.value() : this.value
         }
     }
 
     Trampoline.fn.init.prototype = Trampoline.fn;
-
 
 
     Function.prototype.io = function () {
@@ -705,6 +670,30 @@
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
         type.prototype.pure = type.prototype.unit = type.prototype.of
         type.pure = type.unit = type.of
+        type.prototype.of = type.of
+        if (type.prototype.append != undefined) {
+            type.prototype.concat = type.prototype.append
+        }
+
+        type.prototype.join = function () {
+            return this.flatMap(idFunction)
+        }
+        type.map2 = function (fn) {
+            return function (ma, mb) {
+                return ma.flatMap(function (a) {
+                    return mb.map(function (b) {
+                        return fn(a, b)
+                    })
+                })
+            }
+        }
+
+        if (type.prototype.map == undefined) {
+            type.prototype.map = function (fn) {
+                return map.call(this, fn)
+            }
+        }
+
     }
 
     alias(MonadT)
@@ -713,8 +702,7 @@
     alias(IO)
     alias(NEL)
     alias(List)
-    alias(Success)
-    alias(Fail)
+    alias(Validation)
 
     return this
 }(window || this));

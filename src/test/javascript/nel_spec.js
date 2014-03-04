@@ -67,5 +67,14 @@ describe("A Non-Empty immutable list", function () {
         }).toArray()).toEqual([10,9,7,4])
     })
 
+    it("will append two NELs together", function() {
+        var n1 = NEL.fromList([1,2,3,4].list()).some()
+        var n2 = NEL.fromList([5,6,7,8].list()).some()
+        var nAppend = n1.append(n2)
+        expect(nAppend.isNEL).toBeTruthy()
+        expect(nAppend.size()).toBe(8)
+        expect(nAppend.toArray()).toEqual([1,2,3,4,5,6,7,8])
+    })
+
 })
 

@@ -33,7 +33,7 @@ describe('A Validation', function () {
             expect(successString.isFail()).toBeFalsy()
         })
         it('will throw error when fail() is called', function () {
-            expect(successString.fail).toThrow('Illegal state. Cannot call fail() on a Validation.success')
+            expect(function(){return successString.fail()}).toThrow('Illegal state. Cannot call fail() on a Validation.success')
         })
         it('will be transformed by a bind', function () {
             expect(successString.bind(function (val) {return Validation.success("efgh")})).toBeSuccessWith("efgh")
@@ -73,7 +73,7 @@ describe('A Validation', function () {
             expect(failString.isFail()).toBeTruthy()
         })
         it('will throw error when success() is called', function () {
-            expect(failString.success).toThrow('Illegal state. Cannot call success() on a Validation.fail')
+            expect(function(){return failString.success()}).toThrow('Illegal state. Cannot call success() on a Validation.fail')
         })
         it('will run the failure side of cata', function () {
             expect(failString.cata(function(val){

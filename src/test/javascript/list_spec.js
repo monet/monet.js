@@ -140,6 +140,16 @@ describe("An immutable list", function () {
         it("will return a list with an empty list on tails()", function () {
             expect(Nil.tails().toArray()).toEqual([Nil])
         })
+        it("will return None for headMaybe", function() {
+            expect(Nil.headMaybe()).toBeNoneMaybe()
+        })
+    })
+
+    describe("that has multiple elements", function() {
+        it("will return the first element in a Some for headMaybe", function() {
+            expect(list.headMaybe()).toBeSomeMaybeWith(1)
+
+        })
     })
     describe("complies with FantasyLand spec for", function () {
         it("'of'", function () {
@@ -151,4 +161,5 @@ describe("An immutable list", function () {
             })
         })
     })
+
 })
