@@ -33,7 +33,7 @@
 
     $("input").keyup(function () {
         var validate = function (label, value) {
-            return value != "" ? value.success() : ["Please give a " + label].fail()
+            return value != "" ? value.success() : NEL("Please give a " + label).fail()
         }.curry()
 
         var firstNameValidation = monadT(getValForId("#firstName").map(validate("first name")))
@@ -46,9 +46,9 @@
 
         personValidationIO.map(function (v) {
             return v.cata(function (errors) {
-                return _.reduce(errors, function (acc, e) {
+                return errors.foldLeft("")(function(acc, e){
                     return acc + "<div>" + e + "</div>"
-                }, "")
+                })
             }, idFunction)
         }).flatMap(writer(setHtml)("#result")).run()
     })
