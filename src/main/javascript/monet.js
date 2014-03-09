@@ -36,8 +36,9 @@
         return false
     };
 
+    var Monet = window.Monet = {}
 
-    var swap = function (f) {
+    var swap = Monet.swap = function (f) {
         return function (a, b) {
             return f(b, a)
         }
@@ -376,9 +377,9 @@
         toValidation: function (failVal) {
             return this.isSome() ? Success(this.val) : Fail(failVal)
         },
-        fold: function(defaultValue) {
+        fold: function (defaultValue) {
             var self = this
-            return function(fn) {
+            return function (fn) {
                 return self.isSome() ? fn(self.val) : defaultValue
             }
         }
@@ -612,6 +613,37 @@
 
     Either.fn.init.prototype = Either.fn;
 
+    var Reader = reader = window.Reader = function (fn) {
+        return new Reader.fn.init(fn)
+    }
+
+    Reader.of = function (fn) {
+        return Reader(fn)
+    }
+
+    Reader.fn = Reader.prototype = {
+        init: function (fn) {
+            this.f = fn
+        },
+        run: function (config) {
+            return this.f(config)
+        },
+        bind: function (fn) {
+            var self = this
+            return Reader(function (config) {
+                return fn(self.run(config)).run(config)
+            })
+        },
+        map: function (fn) {
+            var self = this
+            return Reader(function (config) {
+                return fn(self.run(config))
+            })
+        }
+    }
+
+    Reader.fn.init.prototype = Reader.fn;
+
 
     var Trampoline = window.Trampoline = {}
 
@@ -649,6 +681,22 @@
                 }
             )
         }
+    }
+
+    Function.prototype.reader = function () {
+        var f = this
+        var wrapReader = function (fn, args) {
+            return function () {
+                var args1 = args.append(List.fromArray(Array.prototype.slice.call(arguments)));
+                var self = this
+                return args1.size() + 1 == fn.length ?
+                    Reader(function (c) {
+                        return fn.apply(self, (args1.append(List(c))).toArray())
+                    }) :
+                    wrapReader(fn, args1)
+            }
+        }
+        return wrapReader(f, Nil)
     }
 
     Function.prototype.compose = Function.prototype.o = function (g) {
@@ -703,6 +751,7 @@
     alias(NEL)
     alias(List)
     alias(Validation)
+    alias(Reader)
 
     return this
 }(window || this));
