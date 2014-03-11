@@ -51,19 +51,16 @@
     }.reader()
 
     var createSentence = function () {
-        return addName("Hello").map(function (s) {
-            return s + " welcome to the future of DI"
-        })
+        return addName("hello").map(function (g) {
+               return g + " welcome to the future of DI"
+                }
+        )
+
     }
 
-    var addName2 = function (text) {
-        return Reader(function (c) {
-            return text + " " + c.text
-        })
-    }
 
-    var addName = function (text, config) {
-        return text + " " + config.text
+    var addName = function (greeting, config) {
+        return greeting + " " + config.text
     }.reader()
 
     var debugConfig = {
@@ -76,7 +73,7 @@
         renderer: setHtml
     }
 
-    createSentence().flatMap(writer("#SomeId")).run(prodConfig).performUnsafeIO()
+    createSentence().flatMap(writer("#SomeId")).run(debugConfig).performUnsafeIO()
 
 
 </script>

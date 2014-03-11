@@ -541,6 +541,12 @@
                 return fn(self.effectFn()).run()
             });
         },
+        ap: function (ioWithFn) {
+            var self = this
+            return ioWithFn.map(function (fn) {
+                return fn(self.effectFn())
+            })
+        },
         run: function () {
             return this.effectFn()
         }
@@ -632,6 +638,14 @@
             var self = this
             return Reader(function (config) {
                 return fn(self.run(config)).run(config)
+            })
+        },
+        ap: function(readerWithFn) {
+            var self = this
+            return readerWithFn.bind(function(fn) {
+                return Reader(function(config) {
+                    return fn(self.run(config))
+                })
             })
         },
         map: function (fn) {
