@@ -560,7 +560,6 @@
 
     var Either = window.Either = {}
 
-
     Either.of = function (a) {
         return Right(a)
     }
