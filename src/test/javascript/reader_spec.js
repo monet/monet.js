@@ -33,5 +33,15 @@ describe("A Reader Monad", function () {
         expect(reader.run(config1)).toBe("POST http://test1.com:8080/something?secretKey=s3cr3t")
     })
 
+    it("must be applicable", function() {
+        var reader = connect("something").ap(Reader(function(config) {
+            return function(c) {
+                return "**"+c+"**"
+            }
+
+        }))
+        expect(reader.run(config1)).toBe("**POST http://test1.com:8080/something**")
+
+    })
 
 })
