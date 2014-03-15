@@ -9,17 +9,8 @@
 </head>
 <body>
 
-<span id="SomeId">Some text</span>
+<span id="SomeId">Hello</span>
 
-<div>
-    <span>first name: <input type="text" id="firstName"/> </span>
-    <span>last name: <input type="text" id="lastName"/> </span>
-    <span>postcode: <input type="text" id="postcode"/> </span>
-</div>
-
-<div>
-    <span>Result:</span> <span id="result"></span>
-</div>
 
 <script>
 
@@ -27,9 +18,6 @@
     function idFunction(id) {
         return id
     }
-
-
-    var a = List(2,List(1,Nil))
 
 
     var getId = $.io1()
@@ -58,15 +46,35 @@
         return o.val()
     }
 
-    var writer = function (writeFn, id, content) {
-        return getId(id).map(writeFn(content))
-    }.curry()
+    var writer = function (id, content, config) {
+        return getId(id).map(config.renderer(content))
+    }.reader()
 
-    var addAwesomeness = function (text) {
-        return text + " now with awesomeness"
+    var createSentence = function () {
+        return addName("hello").map(function (g) {
+               return g + " welcome to the future of DI"
+                }
+        )
+
     }
 
-    getId("#SomeId").map(getText.andThen(addAwesomeness)).flatMap(writer(setText)("#SomeId")).run()
+
+    var addName = function (greeting, config) {
+        return greeting + " " + config.text
+    }.reader()
+
+    var debugConfig = {
+        text: "<i>Chris</i>",
+        renderer: setText
+    }
+
+    var prodConfig = {
+        text: "<b>Ken</b>",
+        renderer: setHtml
+    }
+
+    createSentence().flatMap(writer("#SomeId")).run(debugConfig).performUnsafeIO()
+
 
 </script>
 
