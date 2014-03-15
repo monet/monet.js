@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.6.5
-dev-version: 0.6.6
+version: 0.7.0
+dev-version: 0.7.1
 ---
 
 ## Introduction
@@ -649,7 +649,7 @@ Trying to create an empty `NonEmptyList` will throw an exception.
 
 Maps a function over a NonEmptyList.
 
-###bind *alias: flatMap, chain*
+####bind *alias: flatMap, chain*
 
 	NEL[A].bind(fn: A -> NEL[B]): NEL[B]
 
@@ -805,6 +805,92 @@ Now our DOM should be updated with the text converted to upper case.
 
 It becomes much clearer which functions deal with IO and which functions simply deal with data.  `read` and `write` return an `IO` effect but `toUpper` simply converts a supplied string to upper case.  This pattern is what you will often find in your software, having an effect when you start (i.e. reading from a data source, network etc), performing transformations on the results of that effect and finally having an effect at the end (such as writing result to a database, disk, or DOM).
 
+##Reader
+
+The `Reader` monad is a wonderful solution to dependency injection into your functions.  There are plenty of great resources to get your
+teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
+
+The `Reader` monad provides a way to "weave" your configuration throughout your programme.  
+
+### Creating a Reader
+
+Say you had this function which requires configuration:
+
+	function createPrettyName(name, printer) {
+		return printer.write("hello " + name)
+	}
+
+Calling this function from other functions that don't need the dependency `printer` is kind of awkward.
+
+	function render(printer) {
+		return createPrettyName("Tom", printer)
+	}
+
+One quick win would be to `curry` the `createPrettyName` function, and make `render` partially apply the function and let the caller of
+`render` supply the printer.
+
+	function createPrettyName(name, printer) {
+		return printer.write("hello " + name)
+	}.curry()
+	
+	function render() {
+		return createPrettyName("Tom")
+	}
+
+This is better, but what if `render` wants to perform some sort of operation on the result of `createPrettyName`?  It would have to apply
+the final parameter (i.e. the `printer`) before `createPrettyName` would execute.
+
+This where the `Reader` monad comes in.  We could rewrite `createPrettyName` thusly:
+
+	function createPrettyName(name) {
+		return Reader(function(printer) {
+			return printer.write("hello " + name)
+		})
+	}
+
+To sweeten up the syntax a little we can also write:
+
+	function createPrettyName(name, printer) {
+		return printer.write("hello " + name)
+	}.reader()
+
+So now, when a name is supplied to `createPrettyName` the `Reader` monad is returned and being a monad it supports all the monadic goodness.
+
+We can now get access to the result of `createPrettyName` through a `map`.
+
+	function reader() {
+		return createPrettyName("Tom").map(function (s) { return "---"+s+"---"})
+	}
+
+The top level of our programme would co-ordinate the injecting of the dependency by calling `run` on the resulting `Reader.`
+
+	reader().run(new BoldPrinter())
+
+###Functions
+####map
+
+	Reader[A].map(f: A -> B): Reader[B]
+
+Maps the supplied function over the `Reader`.
+
+####bind *alias: flatMap, chain*
+
+	Reader[A].bind(f: A -> Reader[B]): Reader[B]
+
+Performs a monadic bind over the `Reader`.
+
+####ap
+
+	Reader[A].ap(a: Reader[A->B]): Reader[B]
+
+Applies the function inside the supplied `Reader` to the value `A` in the outer `Reader`.  Applicative Functor pattern.
+
+####run
+
+	Reader[A].run(config)
+
+Executes the function wrapped in the `Reader` with the supplied `config`.
+
 ##Other useful functions
 ###Functions
 ####fn.compose(f1) *alias fn.o(fn1)*
@@ -847,7 +933,7 @@ a method to be applied in the following ways:
 
 ##Author
 
-Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers).
+Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
 
 
 [functionalJava]: http://functionaljava.org/
