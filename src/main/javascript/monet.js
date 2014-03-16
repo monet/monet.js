@@ -82,8 +82,12 @@
         return list1.isNil ? list2 : append(list1.tail(), list2).cons(list1.head())
     }
 
-    var sequenceMaybe = function (list) {
-        return list.foldRight(Some(Nil))(Maybe.map2(cons))
+    var sequence = function (list, type) {
+        return list.foldRight(type.of(Nil))(type.map2(cons))
+    }
+
+    var lazySequence = function (list, type) {
+        return list.foldRight(type.of(function() {return Nil}))(type.map2(cons))
     }
 
     var sequenceValidation = function (list) {
@@ -170,10 +174,19 @@
         },
         // transforms a list of Maybes to a Maybe list
         sequenceMaybe: function () {
-            return sequenceMaybe(this)
+            return sequence(this, Maybe)
         },
         sequenceValidation: function () {
             return sequenceValidation(this)
+        },
+        sequenceEither: function() {
+            return sequence(this, Either)
+        },
+        sequence: function(monadType) {
+            return sequence(this, monadType)
+        },
+        lazySequence: function(monadType) {
+            return lazySequence(this, monadType)
         },
         head: function () {
             return this.head_
