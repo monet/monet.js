@@ -132,6 +132,53 @@ describe("An immutable list", function () {
                 expect(["happy".success(), ["sad"].list().fail(), ["really sad"].list().fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad", "really sad"])
             })
         })
+        describe("of Eithers", function() {
+            it("with one right element", function () {
+                expect(List("hello".right(), Nil).sequenceEither().right().toArray()).toEqual(["hello"])
+            })
+            it("with two right elements", function () {
+                expect(["1".right(), "2".right()].list().sequenceEither().right().toArray()).toEqual(["1", "2"])
+            })
+            it("with one right element and one left element", function () {
+                expect(["happy".right(), "sad".left()].list().sequenceEither().left()).toEqual("sad")
+            })
+            it("with one right element and two left element", function () {
+                expect(["happy".right(), "sad".left(), "really sad".left()].list().sequenceEither().left()).toEqual("sad")
+            })
+            it("with one right element and one left (in list) element", function () {
+                expect(["happy".right(), ["sad"].list().left()].list().sequenceEither().left().toArray()).toEqual(["sad"])
+            })
+            it("with one right element and two left (in list) element", function () {
+                expect(["happy".right(), ["sad"].list().left(), ["really sad"].list().left()].list().sequenceEither().left().toArray()).toEqual(["sad"])
+            })
+        })
+        describe("of IOs", function() {
+            it("with one IO", function() {
+                var io1 = IO(function() {
+                    return "hi"
+                })
+                expect([io1].list().lazySequence(IO).run().toArray()).toEqual(["hi"])
+            })
+            it("with two IOs", function() {
+                var io1 = IO(function() {
+                    return "hi"
+                })
+                expect([io1,io1].list().lazySequence(IO).run().toArray()).toEqual(["hi","hi"])
+            })
+        })
+        describe("of Readers", function() {
+            it("with one Reader", function() {
+                var r = Reader(function (config) { return config.text})
+                expect([r].list().lazySequence(Reader).run({text:"Hi Reader"}).toArray()).toEqual(["Hi Reader"])
+
+            })
+            it("with two Readers", function() {
+                var r1 = Reader(function (config) { return config.text})
+                var r2 = Reader(function (config) { return config.name})
+                expect([r1, r2].list().lazySequence(Reader).run({text:"Hi Reader", name:"Tom"}).toArray()).toEqual(["Hi Reader", "Tom"])
+
+            })
+        })
     })
     describe("that is empty", function () {
         it("will return Nil on tail()", function () {

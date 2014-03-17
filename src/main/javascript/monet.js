@@ -1,4 +1,4 @@
-//     Monet.js 0.7.0
+//     Monet.js 0.7.1
 
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -52,7 +52,6 @@
         return curry(this, Nil)
     }
 
-
     // List monad
 
     var List = list = window.List = function (head, tail) {
@@ -82,8 +81,14 @@
         return list1.isNil ? list2 : append(list1.tail(), list2).cons(list1.head())
     }
 
-    var sequenceMaybe = function (list) {
-        return list.foldRight(Some(Nil))(Maybe.map2(cons))
+    var sequence = function (list, type) {
+        return list.foldRight(type.of(Nil))(type.map2(cons))
+    }
+
+    var lazySequence = function (list, type) {
+        return list.foldRight(type.of(function () {
+            return Nil
+        }))(type.map2(cons))
     }
 
     var sequenceValidation = function (list) {
@@ -170,10 +175,25 @@
         },
         // transforms a list of Maybes to a Maybe list
         sequenceMaybe: function () {
-            return sequenceMaybe(this)
+            return sequence(this, Maybe)
         },
         sequenceValidation: function () {
             return sequenceValidation(this)
+        },
+        sequenceEither: function () {
+            return sequence(this, Either)
+        },
+        sequenceIO: function () {
+            return lazySequence(this, IO)
+        },
+        sequenceReader: function () {
+            return lazySequence(this, Reader)
+        },
+        sequence: function (monadType) {
+            return sequence(this, monadType)
+        },
+        lazySequence: function (monadType) {
+            return lazySequence(this, monadType)
         },
         head: function () {
             return this.head_
@@ -527,6 +547,8 @@
 
     IO.fn = IO.prototype = {
         init: function (effectFn) {
+            if (!isFunction(effectFn))
+                throw "IO requires a function"
             this.effectFn = effectFn;
         },
         map: function (fn) {
@@ -639,10 +661,10 @@
                 return fn(self.run(config)).run(config)
             })
         },
-        ap: function(readerWithFn) {
+        ap: function (readerWithFn) {
             var self = this
-            return readerWithFn.bind(function(fn) {
-                return Reader(function(config) {
+            return readerWithFn.bind(function (fn) {
+                return Reader(function (config) {
                     return fn(self.run(config))
                 })
             })
