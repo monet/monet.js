@@ -116,7 +116,7 @@ The inner and outer monads are the same type.
 
 The `Maybe` type is the most common way of representing *nothingness* (or the `null` type) with making the possibilities of `NullPointer` issues disappear.
 
-`Maybe` is effectively abstract and as two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
+`Maybe` is effectively abstract and has two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
 
 #### Creating an Maybe
 
