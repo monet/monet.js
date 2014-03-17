@@ -166,6 +166,19 @@ describe("An immutable list", function () {
                 expect([io1,io1].list().lazySequence(IO).run().toArray()).toEqual(["hi","hi"])
             })
         })
+        describe("of Readers", function() {
+            it("with one Reader", function() {
+                var r = Reader(function (config) { return config.text})
+                expect([r].list().lazySequence(Reader).run({text:"Hi Reader"}).toArray()).toEqual(["Hi Reader"])
+
+            })
+            it("with two Readers", function() {
+                var r1 = Reader(function (config) { return config.text})
+                var r2 = Reader(function (config) { return config.name})
+                expect([r1, r2].list().lazySequence(Reader).run({text:"Hi Reader", name:"Tom"}).toArray()).toEqual(["Hi Reader", "Tom"])
+
+            })
+        })
     })
     describe("that is empty", function () {
         it("will return Nil on tail()", function () {
