@@ -600,7 +600,7 @@ Or you can use the convenience methods like `sequenceMaybe` or `sequenceEither` 
 
 	List[Monad[A].lazySequence(Monad): Monad[List[A]]
 
-This is the same as `sequence` except it caters for Monads that require laziness, such as `IO` and `Reader.
+This is the same as `sequence` except it caters for Monads that require laziness, such as `IO` and `Reader`.
 
 ####sequenceMaybe
 
