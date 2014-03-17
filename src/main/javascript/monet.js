@@ -52,7 +52,6 @@
         return curry(this, Nil)
     }
 
-
     // List monad
 
     var List = list = window.List = function (head, tail) {
@@ -87,7 +86,9 @@
     }
 
     var lazySequence = function (list, type) {
-        return list.foldRight(type.of(function() {return Nil}))(type.map2(cons))
+        return list.foldRight(type.of(function () {
+            return Nil
+        }))(type.map2(cons))
     }
 
     var sequenceValidation = function (list) {
@@ -179,13 +180,19 @@
         sequenceValidation: function () {
             return sequenceValidation(this)
         },
-        sequenceEither: function() {
+        sequenceEither: function () {
             return sequence(this, Either)
         },
-        sequence: function(monadType) {
+        sequenceIO: function () {
+            return lazySequence(this, IO)
+        },
+        sequenceReader: function () {
+            return lazySequence(this, Reader)
+        },
+        sequence: function (monadType) {
             return sequence(this, monadType)
         },
-        lazySequence: function(monadType) {
+        lazySequence: function (monadType) {
             return lazySequence(this, monadType)
         },
         head: function () {
@@ -540,6 +547,8 @@
 
     IO.fn = IO.prototype = {
         init: function (effectFn) {
+            if (!isFunction(effectFn))
+                throw "IO requires a function"
             this.effectFn = effectFn;
         },
         map: function (fn) {
@@ -652,10 +661,10 @@
                 return fn(self.run(config)).run(config)
             })
         },
-        ap: function(readerWithFn) {
+        ap: function (readerWithFn) {
             var self = this
-            return readerWithFn.bind(function(fn) {
-                return Reader(function(config) {
+            return readerWithFn.bind(function (fn) {
+                return Reader(function (config) {
                     return fn(self.run(config))
                 })
             })
