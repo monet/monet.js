@@ -1,4 +1,4 @@
-//     Monet.js 0.7.0
+//     Monet.js 0.7.1
 
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
