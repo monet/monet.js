@@ -1,8 +1,8 @@
 ---
 title: Home
 layout: index
-version: 0.7.0
-dev-version: 0.7.1
+version: 0.7.1
+dev-version: 0.7.2
 ---
 
 ## Introduction
@@ -23,8 +23,7 @@ The source is available at: [http://github.com/cwmyers/monet.js](http://github.c
 
 ##Installation
 
-Simply download and add to your html pages or we also support [bower].  You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype`
-for creating monads.
+Simply download and add to your html pages or we also support [bower].  You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
 
     <script type="text/javascript" src="monet.js"></script>
     <!-- Optionally -->
@@ -42,16 +41,13 @@ or to install a specific version
 ## A note on types
 
 #### Well it's JavaScript - there ain't any
-As you know JavaScript isn't a strongly typed language.  This kinda sucks.  Types are a great help when it comes to functional programming as it makes the
-code more comprehensible and prevents a range of errors from being introduced.
+As you know JavaScript isn't a strongly typed language.  This kinda sucks.  Types are a great help when it comes to functional programming as it makes the code more comprehensible and prevents a range of errors from being introduced.
 
-Knowing the types of your functions and data is also important when writing documentation (such as this one), so we will invent some type annotations to make things
-more clear.  We will only do this in the function definition and *not* in the **concrete examples**.
+Knowing the types of your functions and data is also important when writing documentation (such as this one), so we will invent some type annotations to make things more clear.  We will only do this in the function definition and *not* in the **concrete examples**.
 
 #### Generic Types
 
-JavaScript doesn't have generic types but it's useful to know about them when dealing with Monads.  For instance the `List` monad is a type that requires another type, such
-as a string or integer or some other type before it can be constructed.  So you would have a List of Strings or a List of Integers or generically a List of `A`s where `A` is a type you will supply.  Now of course this is JavaScript and you can do as you please even though it doesn't make sense.  But to make things clearer (hopefully) we will attempt to do show generics or *type parameters* thusly:
+JavaScript doesn't have generic types but it's useful to know about them when dealing with Monads.  For instance the `List` monad is a type that requires another type, such as a string or integer or some other type before it can be constructed.  So you would have a List of Strings or a List of Integers or generically a List of `A`s where `A` is a type you will supply.  Now of course this is JavaScript and you can do as you please even though it doesn't make sense.  But to make things clearer (hopefully) we will attempt to do show generics or *type parameters* thusly:
 
 	List[A]
 
@@ -583,8 +579,30 @@ For example:
 	var list2 = [4,5,6].list()
 	var list3 = list1.append(list2)
 	// list3.toArray() == [1,2,3,4,5,6]
-	
-####sequenceMaybe() : Maybe
+
+
+####sequence
+
+	List[Monad[A].sequence(Monad): Monad[List[A]]
+
+Will `sequence` a list of monads.  The signature above is slightly hard to represent, but this function will sequence a list of any type of monad, but you will need to supply the name of the monad you are sequencing.
+
+**Note: This version of sequence will only work with Monads that can cope with eager evaluations.  For lazy monads such as `IO` and `Reader` please use `lazySequence` or the explicit versions, such as `sequenceIO`.**
+
+For example:
+
+	[1.right(), 2.left()].list().sequence(Either) // For Eithers
+	[1.some(), 2.none	()].list().sequence(Maybe)
+
+Or you can use the convenience methods like `sequenceMaybe` or `sequenceEither` below.  Note that since Validation is not a true monad it will not work as expected for this method; use `sequenceValidation` instead.
+
+####lazySequence
+
+	List[Monad[A].lazySequence(Monad): Monad[List[A]]
+
+This is the same as `sequence` except it caters for Monads that require laziness, such as `IO` and `Reader.
+
+####sequenceMaybe
 
 	List[Maybe[A]].sequenceMaybe(): Maybe[List[A]]
 
@@ -598,10 +616,28 @@ For example:
 	var sequenced = [Some(1), Some(2), None, Some(3), None].list().sequenceMaybe()
 	// sequenced == None
 
-####sequenceValidation() : Validation
-Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure` side, if there are **any** failures.
+This is the same as calling:
+
+	[Some(1), Some(2)].sequence(Maybe)
+
+####sequenceEither
+
+	List[Either[E,A]].sequenceEither(): Either[E, List[A]]
+
+This will sequence a `List` of `Either`s stopping on the first `Left` that it finds.  It will return either a `List` of the `Right` values or the first `Left` value it encounters.
+
+For example:
+
+	[1.right(), 2.right(), 3.right()].list().sequenceEither() == Right(List(1,2,3))
+	[1.right(), 2.left(), 3.left()].list() == Left(2)
+
+Note: Unlike `sequenceValidation` it does not accumulate the `Left` (or "failing") values, but rather stops execution and returns the first `Left`.
+
+####sequenceValidation
 
 	List[Validation[E,A]].sequenceValidation(): Validation[List[E], List[A]]
+
+Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure` side, if there are **any** failures.
 
 	var sequenced = ["a".success(), "b".success(), "c".success()]
 		.list().sequenceValidation()
@@ -614,6 +650,18 @@ Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will 
                      "e".success()]
 					.list().sequenceValidation()
 	// sequenced == Fail(["c","d"])
+
+####sequenceIO
+
+	List[IO[A]].sequenceIO(): IO[List[A]]
+
+Will sequence a list of `IO` actions.
+
+####sequenceReader
+
+	List[Reader[A]].sequenceReader(): Reader[List[A]]
+
+Will sequence a list of `Reader`s.
 
 ####reverse
 
