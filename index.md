@@ -592,7 +592,7 @@ Will `sequence` a list of monads.  The signature above is slightly hard to repre
 For example:
 
 	[1.right(), 2.left()].list().sequence(Either) // For Eithers
-	[1.some(), 2.none	()].list().sequence(Maybe)
+	[1.some(), 2.none()].list().sequence(Maybe)
 
 Or you can use the convenience methods like `sequenceMaybe` or `sequenceEither` below.  Note that since Validation is not a true monad it will not work as expected for this method; use `sequenceValidation` instead.
 
