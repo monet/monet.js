@@ -17,6 +17,10 @@ describe('A Validation', function () {
         });
     });
     var successString = Validation.success("abcd")
+    var successMap = function (val) {
+        return "success " + val
+    };
+
     describe('that is successful', function () {
         it('will be transformed by a map', function () {
             expect(successString.map(function (val) {
@@ -33,24 +37,46 @@ describe('A Validation', function () {
             expect(successString.isFail()).toBeFalsy()
         })
         it('will throw error when fail() is called', function () {
-            expect(function(){return successString.fail()}).toThrow('Illegal state. Cannot call fail() on a Validation.success')
+            expect(function () {
+                return successString.fail()
+            }).toThrow('Illegal state. Cannot call fail() on a Validation.success')
         })
         it('will be transformed by a bind', function () {
-            expect(successString.bind(function (val) {return Validation.success("efgh")})).toBeSuccessWith("efgh")
-            expect(successString.bind(function (val) {return Validation.fail("big fail")})).toBeFailureWith("big fail")
-            expect(successString.flatMap(function (val) {return Validation.success("efgh")})).toBeSuccessWith("efgh")
-            expect(successString.flatMap(function (val) {return Validation.fail("big fail")})).toBeFailureWith("big fail")
+            expect(successString.bind(function (val) {
+                return Validation.success("efgh")
+            })).toBeSuccessWith("efgh")
+            expect(successString.bind(function (val) {
+                return Validation.fail("big fail")
+            })).toBeFailureWith("big fail")
+            expect(successString.flatMap(function (val) {
+                return Validation.success("efgh")
+            })).toBeSuccessWith("efgh")
+            expect(successString.flatMap(function (val) {
+                return Validation.fail("big fail")
+            })).toBeFailureWith("big fail")
         })
         it('will run the success side of cata', function () {
-            expect(successString.cata(function(val){
+            expect(successString.cata(function (val) {
                 throw "fail"
-            },function(val){
-                return "success "+val
-            })).toBe("success abcd")
+            }, successMap)).toBe("success abcd")
         })
+        it('will not be failMapped', function () {
+            expect(successString.failMap(function () {
+                throw "fail"
+            })).toBeSuccessWith("abcd")
+        })
+        it('will be bimapped', function () {
+            expect(successString.bimap(function () {
+                throw "fail"
+            }, successMap)).toBeSuccessWith("success abcd")
+        })
+
     })
 
     var failString = Validation.fail("error dude")
+    var failMap = function (val) {
+        return "fail: " + val
+    };
     describe('that is a failure', function () {
         it('will not be transformed by a map', function () {
             expect(failString.map(function (val) {
@@ -58,10 +84,18 @@ describe('A Validation', function () {
             })).toBeFailureWith("error dude")
         })
         it('will not be transformed by a bind', function () {
-            expect(failString.bind(function (val) {return Validation.success("efgh")})).toBeFailureWith("error dude")
-            expect(failString.bind(function (val) {return Validation.fail("big fail")})).toBeFailureWith("error dude")
-            expect(failString.flatMap(function (val) {return Validation.success("efgh")})).toBeFailureWith("error dude")
-            expect(failString.flatMap(function (val) {return Validation.fail("big fail")})).toBeFailureWith("error dude")
+            expect(failString.bind(function (val) {
+                return Validation.success("efgh")
+            })).toBeFailureWith("error dude")
+            expect(failString.bind(function (val) {
+                return Validation.fail("big fail")
+            })).toBeFailureWith("error dude")
+            expect(failString.flatMap(function (val) {
+                return Validation.success("efgh")
+            })).toBeFailureWith("error dude")
+            expect(failString.flatMap(function (val) {
+                return Validation.fail("big fail")
+            })).toBeFailureWith("error dude")
         })
         it('will return false when isSuccess is called', function () {
             expect(failString.isSuccess()).toBeFalsy()
@@ -73,14 +107,23 @@ describe('A Validation', function () {
             expect(failString.isFail()).toBeTruthy()
         })
         it('will throw error when success() is called', function () {
-            expect(function(){return failString.success()}).toThrow('Illegal state. Cannot call success() on a Validation.fail')
+            expect(function () {
+                return failString.success()
+            }).toThrow('Illegal state. Cannot call success() on a Validation.fail')
         })
         it('will run the failure side of cata', function () {
-            expect(failString.cata(function(val){
-                return "fail: "+val
-            }, function(val){
+            expect(failString.cata(failMap, function (val) {
                 throw "success"
             })).toBe("fail: error dude")
+        })
+        it('can be bimapped', function () {
+            expect(failString.bimap(failMap, function () {
+                throw "success side"
+            })).toBeFailureWith("fail: error dude")
+        })
+
+        it('can be failMapped', function() {
+            expect(failString.failMap(failMap)).toBeFailureWith("fail: error dude")
         })
 
     })
@@ -134,14 +177,14 @@ describe('A Validation', function () {
 
     })
 
-    describe("will pimp an object", function() {
-        it ("with success", function(){
+    describe("will pimp an object", function () {
+        it("with success", function () {
             expect("hello".success()).toBeSuccessWith("hello")
         })
-        it("with fail on string", function(){
+        it("with fail on string", function () {
             expect("hello".fail()).toBeFailureWith("hello")
         })
-        it("with fail on array", function() {
+        it("with fail on array", function () {
             expect(["hello"].fail()).toBeFailure()
             expect(["hello"].fail().fail()[0]).toBe("hello")
         })

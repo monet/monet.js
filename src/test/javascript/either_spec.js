@@ -37,20 +37,42 @@ describe('An Either', function () {
             expect(rightString.isLeft()).toBeFalsy()
         })
         it('will throw error when left() is called', function () {
-            expect(function() {rightString.left()}).toThrow('Illegal state. Cannot call left() on a Either.right')
+            expect(function () {
+                rightString.left()
+            }).toThrow('Illegal state. Cannot call left() on a Either.right')
         })
         it('will be transformed by a bind', function () {
-            expect(rightString.bind(function (val) {return Either.Right("efgh")})).toBeRightWith("efgh")
-            expect(rightString.bind(function (val) {return Either.Left("big left")})).toBeLeftWith("big left")
-            expect(rightString.flatMap(function (val) {return Either.Right("efgh")})).toBeRightWith("efgh")
-            expect(rightString.flatMap(function (val) {return Either.Left("big left")})).toBeLeftWith("big left")
+            expect(rightString.bind(function (val) {
+                return Either.Right("efgh")
+            })).toBeRightWith("efgh")
+            expect(rightString.bind(function (val) {
+                return Either.Left("big left")
+            })).toBeLeftWith("big left")
+            expect(rightString.flatMap(function (val) {
+                return Either.Right("efgh")
+            })).toBeRightWith("efgh")
+            expect(rightString.flatMap(function (val) {
+                return Either.Left("big left")
+            })).toBeLeftWith("big left")
         })
         it('will run the right side of cata', function () {
-            expect(rightString.cata(function(val){
+            expect(rightString.cata(function (val) {
                 throw "left"
-            },function(val){
-                return "right "+val
+            }, function (val) {
+                return "right " + val
             })).toBe("right abcd")
+        })
+        it('will not be leftMapped', function () {
+            expect(rightString.leftMap(function () {
+                throw "left"
+            })).toBeRightWith("abcd")
+        })
+        it('will be bimapped', function () {
+            expect(rightString.bimap(function () {
+                throw left
+            },function (s) {
+                return "right " + s
+            })).toBeRightWith("right abcd")
         })
     })
 
@@ -62,10 +84,18 @@ describe('An Either', function () {
             })).toBeLeftWith("error dude")
         })
         it('will not be transformed by a bind', function () {
-            expect(leftString.bind(function (val) {return Either.Right("efgh")})).toBeLeftWith("error dude")
-            expect(leftString.bind(function (val) {return Either.Left("big left")})).toBeLeftWith("error dude")
-            expect(leftString.flatMap(function (val) {return Either.Right("efgh")})).toBeLeftWith("error dude")
-            expect(leftString.flatMap(function (val) {return Either.Left("big left")})).toBeLeftWith("error dude")
+            expect(leftString.bind(function (val) {
+                return Either.Right("efgh")
+            })).toBeLeftWith("error dude")
+            expect(leftString.bind(function (val) {
+                return Either.Left("big left")
+            })).toBeLeftWith("error dude")
+            expect(leftString.flatMap(function (val) {
+                return Either.Right("efgh")
+            })).toBeLeftWith("error dude")
+            expect(leftString.flatMap(function (val) {
+                return Either.Left("big left")
+            })).toBeLeftWith("error dude")
         })
         it('will return false when isRight is called', function () {
             expect(leftString.isRight()).toBeFalsy()
@@ -77,14 +107,28 @@ describe('An Either', function () {
             expect(leftString.isLeft()).toBeTruthy()
         })
         it('will throw error when right() is called', function () {
-            expect(function(){leftString.right()}).toThrow('Illegal state. Cannot call right() on a Either.left')
+            expect(function () {
+                leftString.right()
+            }).toThrow('Illegal state. Cannot call right() on a Either.left')
         })
         it('will run the left side of cata', function () {
-            expect(leftString.cata(function(val){
-                return "left: "+val
-            }, function(val){
+            expect(leftString.cata(function (val) {
+                return "left: " + val
+            }, function (val) {
                 throw "right"
             })).toBe("left: error dude")
+        })
+        it('will be leftMapped', function () {
+            expect(leftString.leftMap(function (s) {
+                return "left: " + s
+            }).left()).toBe("left: error dude")
+        })
+        it('can be bimapped', function () {
+            expect(leftString.bimap(function (s) {
+                return "left: " + s
+            }, function () {
+                throw "right"
+            })).toBeLeftWith("left: error dude")
         })
 
     })
@@ -118,14 +162,14 @@ describe('An Either', function () {
 
     })
 
-    describe("will pimp an object", function() {
-        it ("with right", function(){
+    describe("will pimp an object", function () {
+        it("with right", function () {
             expect("hello".right()).toBeRightWith("hello")
         })
-        it("with left on string", function(){
+        it("with left on string", function () {
             expect("hello".left()).toBeLeftWith("hello")
         })
-        it("with left on array", function() {
+        it("with left on array", function () {
             expect(["hello"].left()).toBeLeft()
             expect(["hello"].left().left()[0]).toBe("hello")
         })

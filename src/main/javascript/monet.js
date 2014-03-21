@@ -475,6 +475,12 @@
                 success(this.val)
                 : fail(this.val)
         },
+        failMap: function (fn) {
+            return this.isFail() ? Fail(fn(this.val)) : this
+        },
+        bimap: function (fail, success) {
+            return this.isSuccessValue ? this.map(success) : this.failMap(fail)
+        },
         toMaybe: function () {
             return this.isSuccess() ? Some(this.val) : None()
         },
@@ -607,6 +613,9 @@
                 return fn(self.value)
             }) : this
         },
+        leftMap: function (fn) {
+            return this.isLeft() ? Left(fn(this.value)) : this
+        },
         isRight: function () {
             return this.isRightValue
         },
@@ -629,6 +638,9 @@
         },
         cata: function (leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
+        },
+        bimap: function (leftFn, rightFn) {
+            return this.isRightValue ? this.map(rightFn) : this.leftMap(leftFn)
         },
         toMaybe: function () {
             return this.isRight() ? Some(this.val) : None()
