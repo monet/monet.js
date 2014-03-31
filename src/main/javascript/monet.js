@@ -691,18 +691,18 @@
 
     Reader.fn.init.prototype = Reader.fn;
 
+    var Free = window.Free = {}
 
-    var Trampoline = window.Trampoline = {}
 
-    var Suspend = Trampoline.Suspend = window.Suspend = function (fn) {
-        return new Trampoline.fn.init(fn, true)
+    var Suspend = Free.Suspend = window.Suspend = function (functor) {
+        return new Free.fn.init(functor, true)
     };
-    var Return = Trampoline.Return = window.Return = function (val) {
+    var Return = Free.Return = window.Return = function (val) {
         return new Trampoline.fn.init(val, false)
     };
 
 
-    Trampoline.fn = Trampoline.prototype = {
+    Free.fn = Free.prototype = {
         init: function (val, isSuspend) {
             this.isSuspend = isSuspend
             this.value = val
@@ -712,7 +712,7 @@
         }
     }
 
-    Trampoline.fn.init.prototype = Trampoline.fn;
+    Free.fn.init.prototype = Free.fn;
 
 
     Function.prototype.io = function () {
