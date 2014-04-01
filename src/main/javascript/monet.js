@@ -693,26 +693,75 @@
 
     var Free = window.Free = {}
 
-
     var Suspend = Free.Suspend = window.Suspend = function (functor) {
         return new Free.fn.init(functor, true)
-    };
+    }
     var Return = Free.Return = window.Return = function (val) {
-        return new Trampoline.fn.init(val, false)
-    };
+        return new Free.fn.init(val, false)
+    }
 
+    Free.of = function (a) {
+        return Return(a)
+    }
+
+    Free.liftF = function (functor) {
+        return Suspend(functor.map(Return))
+    }
 
     Free.fn = Free.prototype = {
         init: function (val, isSuspend) {
             this.isSuspend = isSuspend
-            this.value = val
+            this.functor = val
         },
         run: function () {
-            return this.isSuspend ? this.value() : this.value
+            return this.isSuspend ? this.functor() : this.functor
+        },
+        bind: function (fn) {
+            return this.isSuspend ?
+                Suspend(
+                    this.functor.map(
+                        function (free) {
+                            return free.bind(fn)
+                        })) :
+                fn(this.functor)
+        },
+        resume: function () {
+            return this.isSuspend ? Left(this.functor) : Right(this.functor)
+        },
+        go: function(f) {
+            function go2(t) {
+                return t.resume().cata(function(left){
+                    return go2(f(left))
+                }, idFunction)
+            }
+            return go2(this)
         }
+
     }
 
     Free.fn.init.prototype = Free.fn;
+
+    var Identity = window.Identity = function (a) {
+        return new Identity.fn.init(a)
+    }
+
+    Identity.of = function (a) {
+        return new Identity(a)
+    }
+
+    Identity.fn = Identity.prototype = {
+        init: function (val) {
+            this.val = val
+        },
+        bind: function (fn) {
+            return fn(this.val);
+        },
+        get: function () {
+            return this.val
+        }
+    }
+
+    Identity.fn.init.prototype = Identity.fn;
 
 
     Function.prototype.io = function () {
@@ -763,12 +812,12 @@
     // Wire up aliases
     function alias(type) {
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
-        type.prototype.pure = type.prototype.unit = type.prototype.of
         type.pure = type.unit = type.of
         type.prototype.of = type.of
         if (type.prototype.append != undefined) {
             type.prototype.concat = type.prototype.append
         }
+        type.prototype.pure = type.prototype.unit = type.prototype.of
 
         type.prototype.join = function () {
             return this.flatMap(idFunction)
@@ -799,6 +848,8 @@
     alias(List)
     alias(Validation)
     alias(Reader)
+    alias(Free)
+    alias(Identity)
 
     return this
 }(window || this));
