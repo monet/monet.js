@@ -59,7 +59,9 @@
     }
 
     var listMap = function (fn, l) {
-        return l.isNil ? l : listMap(fn, l.tail()).cons(fn(l.head()))
+        return foldRight(function (e, acc) {
+            return acc.cons(fn(e))
+        }, l, Nil)
     }
 
     var listEach = function (effectFn, l) {
@@ -70,15 +72,44 @@
     }
 
     var foldLeft = function (fn, acc, l) {
-        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head()), l.tail())
+        function fL(fn, acc, l) {
+            return l.isNil ?
+                Return(acc) :
+                Suspend(function () {
+                    return fL(fn, fn(acc, l.head()), l.tail())
+                })
+        }
+
+        return fL(fn, acc, l).run()
     }
 
     var foldRight = function (fn, l, acc) {
-        return l.isNil ? acc : fn(l.head(), foldRight(fn, l.tail(), acc))
+        function fR(fn, l, acc) {
+            return l.isNil ?
+                Return(acc) :
+                Suspend(function () {
+                    return fR(fn, l.tail(), acc)
+                }).map(function (acc1) {
+                        return fn(l.head(), acc1)
+                    })
+        }
+
+        return fR(fn, l, acc).run()
     }
 
+
     var append = function (list1, list2) {
-        return list1.isNil ? list2 : append(list1.tail(), list2).cons(list1.head())
+        function append1(list1, list2) {
+            return list1.isNil ?
+                Return(list2) :
+                Suspend(function () {
+                    return append1(list1.tail(), list2).map(function (list) {
+                        return list.cons(list1.head())
+                    })
+                })
+        }
+
+        return append1(list1, list2).run()
     }
 
     var sequence = function (list, type) {
@@ -711,10 +742,16 @@
     Free.fn = Free.prototype = {
         init: function (val, isSuspend) {
             this.isSuspend = isSuspend
-            this.functor = val
+            if (isSuspend) {
+                this.functor = val
+            } else {
+                this.val = val
+            }
         },
         run: function () {
-            return this.isSuspend ? this.functor() : this.functor
+            return this.go(function (f) {
+                return f()
+            })
         },
         bind: function (fn) {
             return this.isSuspend ?
@@ -723,18 +760,29 @@
                         function (free) {
                             return free.bind(fn)
                         })) :
-                fn(this.functor)
+                fn(this.val)
         },
         resume: function () {
-            return this.isSuspend ? Left(this.functor) : Right(this.functor)
+            return this.isSuspend ? Left(this.functor) : Right(this.val)
         },
-        go: function(f) {
+
+        go1: function (f) {
             function go2(t) {
-                return t.resume().cata(function(left){
-                    return go2(f(left))
+                return t.resume().cata(function (functor) {
+                    return go2(f(functor))
                 }, idFunction)
             }
+
             return go2(this)
+        },
+        go: function (f) {
+            var result = this.resume()
+            while (result.isLeft()) {
+                var next = f(result.left())
+                result = next.resume()
+            }
+
+            return result.right()
         }
 
     }
@@ -802,7 +850,7 @@
         }
     }
 
-    Function.prototype.andThen = function (g) {
+    Function.prototype.andThen = Function.prototype.map = function (g) {
         var f = this
         return function (x) {
             return g(f(x))
