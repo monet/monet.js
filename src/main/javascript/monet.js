@@ -59,9 +59,11 @@
     }
 
     var listMap = function (fn, l) {
-        return foldRight(function (e, acc) {
-            return acc.cons(fn(e))
-        }, l, Nil)
+        return listMapC(fn, l).run()
+    }
+
+    var listMapC = function(fn,l) {
+        return l.isNil ? Return(l) : Suspend(function() {return listMapC(fn, l.tail())}).map(cons.curry()(fn(l.head())))
     }
 
     var listEach = function (effectFn, l) {
