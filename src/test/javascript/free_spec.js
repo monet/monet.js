@@ -38,11 +38,12 @@ describe("A Free monad", function () {
 
     })
 
-    it("will blow the stack", function () {
-        var limit=10
+    it("will not blow the stack", function () {
+        var limit = 1000
+
         function g(a) {
             if (a < limit) {
-                return Suspend(function() {
+                return Suspend(function () {
                     return g(a + 1)
                 })
             } else {
