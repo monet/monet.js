@@ -27,12 +27,12 @@ describe("An immutable list", function () {
         expect(list.tails().map(function (m) {
             return m.toArray()
         }).toArray()).toEqual([
-            [ 1, 2, 3, 4 ],
-            [ 2, 3, 4 ],
-            [ 3, 4 ],
-            [ 4 ],
-            [ ]
-        ])
+                [ 1, 2, 3, 4 ],
+                [ 2, 3, 4 ],
+                [ 3, 4 ],
+                [ 4 ],
+                [ ]
+            ])
     })
 
 
@@ -132,7 +132,7 @@ describe("An immutable list", function () {
                 expect(["happy".success(), ["sad"].list().fail(), ["really sad"].list().fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad", "really sad"])
             })
         })
-        describe("of Eithers", function() {
+        describe("of Eithers", function () {
             it("with one right element", function () {
                 expect(List("hello".right(), Nil).sequenceEither().right().toArray()).toEqual(["hello"])
             })
@@ -152,30 +152,36 @@ describe("An immutable list", function () {
                 expect(["happy".right(), ["sad"].list().left(), ["really sad"].list().left()].list().sequenceEither().left().toArray()).toEqual(["sad"])
             })
         })
-        describe("of IOs", function() {
-            it("with one IO", function() {
-                var io1 = IO(function() {
+        describe("of IOs", function () {
+            it("with one IO", function () {
+                var io1 = IO(function () {
                     return "hi"
                 })
                 expect([io1].list().lazySequence(IO).run().toArray()).toEqual(["hi"])
             })
-            it("with two IOs", function() {
-                var io1 = IO(function() {
+            it("with two IOs", function () {
+                var io1 = IO(function () {
                     return "hi"
                 })
-                expect([io1,io1].list().lazySequence(IO).run().toArray()).toEqual(["hi","hi"])
+                expect([io1, io1].list().lazySequence(IO).run().toArray()).toEqual(["hi", "hi"])
             })
         })
-        describe("of Readers", function() {
-            it("with one Reader", function() {
-                var r = Reader(function (config) { return config.text})
-                expect([r].list().lazySequence(Reader).run({text:"Hi Reader"}).toArray()).toEqual(["Hi Reader"])
+        describe("of Readers", function () {
+            it("with one Reader", function () {
+                var r = Reader(function (config) {
+                    return config.text
+                })
+                expect([r].list().lazySequence(Reader).run({text: "Hi Reader"}).toArray()).toEqual(["Hi Reader"])
 
             })
-            it("with two Readers", function() {
-                var r1 = Reader(function (config) { return config.text})
-                var r2 = Reader(function (config) { return config.name})
-                expect([r1, r2].list().lazySequence(Reader).run({text:"Hi Reader", name:"Tom"}).toArray()).toEqual(["Hi Reader", "Tom"])
+            it("with two Readers", function () {
+                var r1 = Reader(function (config) {
+                    return config.text
+                })
+                var r2 = Reader(function (config) {
+                    return config.name
+                })
+                expect([r1, r2].list().lazySequence(Reader).run({text: "Hi Reader", name: "Tom"}).toArray()).toEqual(["Hi Reader", "Tom"])
 
             })
         })
@@ -187,17 +193,30 @@ describe("An immutable list", function () {
         it("will return a list with an empty list on tails()", function () {
             expect(Nil.tails().toArray()).toEqual([Nil])
         })
-        it("will return None for headMaybe", function() {
+        it("will return None for headMaybe", function () {
             expect(Nil.headMaybe()).toBeNoneMaybe()
         })
     })
 
-    describe("that has multiple elements", function() {
-        it("will return the first element in a Some for headMaybe", function() {
+    describe("that has multiple elements", function () {
+        it("will return the first element in a Some for headMaybe", function () {
             expect(list.headMaybe()).toBeSomeMaybeWith(1)
 
         })
     })
+    describe("that is huge, must not blow the stack", function () {
+        var list1 = [], list2 = []
+        var size = 1000;
+        for (i = 0; i < size; i++) {
+            list1.push(i)
+            list2.push(i * 2)
+
+        }
+        it("for an append", function () {
+            expect(list1.list().append(list2.list()).size()).toBe(size*2)
+        })
+    })
+
     describe("complies with FantasyLand spec for", function () {
         it("'of'", function () {
             expect(List.of("some val").toArray()).toEqual(["some val"])

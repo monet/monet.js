@@ -1,4 +1,4 @@
-//     Monet.js 0.7.1
+//     Monet.js 0.8.0
 
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -59,7 +59,11 @@
     }
 
     var listMap = function (fn, l) {
-        return l.isNil ? l : listMap(fn, l.tail()).cons(fn(l.head()))
+        return listMapC(fn, l).run()
+    }
+
+    var listMapC = function(fn,l) {
+        return l.isNil ? Return(l) : Suspend(function() {return listMapC(fn, l.tail())}).map(cons.curry()(fn(l.head())))
     }
 
     var listEach = function (effectFn, l) {
@@ -70,15 +74,44 @@
     }
 
     var foldLeft = function (fn, acc, l) {
-        return l.isNil ? acc : foldLeft(fn, fn(acc, l.head()), l.tail())
+        function fL(fn, acc, l) {
+            return l.isNil ?
+                Return(acc) :
+                Suspend(function () {
+                    return fL(fn, fn(acc, l.head()), l.tail())
+                })
+        }
+
+        return fL(fn, acc, l).run()
     }
 
     var foldRight = function (fn, l, acc) {
-        return l.isNil ? acc : fn(l.head(), foldRight(fn, l.tail(), acc))
+        function fR(fn, l, acc) {
+            return l.isNil ?
+                Return(acc) :
+                Suspend(function () {
+                    return fR(fn, l.tail(), acc)
+                }).map(function (acc1) {
+                        return fn(l.head(), acc1)
+                    })
+        }
+
+        return fR(fn, l, acc).run()
     }
 
+
     var append = function (list1, list2) {
-        return list1.isNil ? list2 : append(list1.tail(), list2).cons(list1.head())
+        function append1(list1, list2) {
+            return list1.isNil ?
+                Return(list2) :
+                Suspend(function () {
+                    return append1(list1.tail(), list2).map(function (list) {
+                        return list.cons(list1.head())
+                    })
+                })
+        }
+
+        return append1(list1, list2).run()
     }
 
     var sequence = function (list, type) {
@@ -475,6 +508,12 @@
                 success(this.val)
                 : fail(this.val)
         },
+        failMap: function (fn) {
+            return this.isFail() ? Fail(fn(this.val)) : this
+        },
+        bimap: function (fail, success) {
+            return this.isSuccessValue ? this.map(success) : this.failMap(fail)
+        },
         toMaybe: function () {
             return this.isSuccess() ? Some(this.val) : None()
         },
@@ -607,6 +646,9 @@
                 return fn(self.value)
             }) : this
         },
+        leftMap: function (fn) {
+            return this.isLeft() ? Left(fn(this.value)) : this
+        },
         isRight: function () {
             return this.isRightValue
         },
@@ -629,6 +671,9 @@
         },
         cata: function (leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
+        },
+        bimap: function (leftFn, rightFn) {
+            return this.isRightValue ? this.map(rightFn) : this.leftMap(leftFn)
         },
         toMaybe: function () {
             return this.isRight() ? Some(this.val) : None()
@@ -679,28 +724,94 @@
 
     Reader.fn.init.prototype = Reader.fn;
 
+    var Free = window.Free = {}
 
-    var Trampoline = window.Trampoline = {}
+    var Suspend = Free.Suspend = window.Suspend = function (functor) {
+        return new Free.fn.init(functor, true)
+    }
+    var Return = Free.Return = window.Return = function (val) {
+        return new Free.fn.init(val, false)
+    }
 
-    var Suspend = Trampoline.Suspend = window.Suspend = function (fn) {
-        return new Trampoline.fn.init(fn, true)
-    };
-    var Return = Trampoline.Return = window.Return = function (val) {
-        return new Trampoline.fn.init(val, false)
-    };
+    Free.of = function (a) {
+        return Return(a)
+    }
 
+    Free.liftF = function (functor) {
+        return Suspend(functor.map(Return))
+    }
 
-    Trampoline.fn = Trampoline.prototype = {
+    Free.fn = Free.prototype = {
         init: function (val, isSuspend) {
             this.isSuspend = isSuspend
-            this.value = val
+            if (isSuspend) {
+                this.functor = val
+            } else {
+                this.val = val
+            }
         },
         run: function () {
-            return this.isSuspend ? this.value() : this.value
+            return this.go(function (f) {
+                return f()
+            })
+        },
+        bind: function (fn) {
+            return this.isSuspend ?
+                Suspend(
+                    this.functor.map(
+                        function (free) {
+                            return free.bind(fn)
+                        })) :
+                fn(this.val)
+        },
+        resume: function () {
+            return this.isSuspend ? Left(this.functor) : Right(this.val)
+        },
+
+        go1: function (f) {
+            function go2(t) {
+                return t.resume().cata(function (functor) {
+                    return go2(f(functor))
+                }, idFunction)
+            }
+
+            return go2(this)
+        },
+        go: function (f) {
+            var result = this.resume()
+            while (result.isLeft()) {
+                var next = f(result.left())
+                result = next.resume()
+            }
+
+            return result.right()
+        }
+
+    }
+
+    Free.fn.init.prototype = Free.fn;
+
+    var Identity = window.Identity = function (a) {
+        return new Identity.fn.init(a)
+    }
+
+    Identity.of = function (a) {
+        return new Identity(a)
+    }
+
+    Identity.fn = Identity.prototype = {
+        init: function (val) {
+            this.val = val
+        },
+        bind: function (fn) {
+            return fn(this.val);
+        },
+        get: function () {
+            return this.val
         }
     }
 
-    Trampoline.fn.init.prototype = Trampoline.fn;
+    Identity.fn.init.prototype = Identity.fn;
 
 
     Function.prototype.io = function () {
@@ -741,7 +852,7 @@
         }
     }
 
-    Function.prototype.andThen = function (g) {
+    Function.prototype.andThen = Function.prototype.map = function (g) {
         var f = this
         return function (x) {
             return g(f(x))
@@ -751,12 +862,12 @@
     // Wire up aliases
     function alias(type) {
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
-        type.prototype.pure = type.prototype.unit = type.prototype.of
         type.pure = type.unit = type.of
         type.prototype.of = type.of
         if (type.prototype.append != undefined) {
             type.prototype.concat = type.prototype.append
         }
+        type.prototype.pure = type.prototype.unit = type.prototype.of
 
         type.prototype.join = function () {
             return this.flatMap(idFunction)
@@ -787,6 +898,8 @@
     alias(List)
     alias(Validation)
     alias(Reader)
+    alias(Free)
+    alias(Identity)
 
     return this
 }(window || this));
