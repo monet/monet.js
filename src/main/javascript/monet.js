@@ -62,8 +62,10 @@
         return listMapC(fn, l).run()
     }
 
-    var listMapC = function(fn,l) {
-        return l.isNil ? Return(l) : Suspend(function() {return listMapC(fn, l.tail())}).map(cons.curry()(fn(l.head())))
+    var listMapC = function (fn, l) {
+        return l.isNil ? Return(l) : Suspend(function () {
+            return listMapC(fn, l.tail())
+        }).map(cons.curry()(fn(l.head())))
     }
 
     var listEach = function (effectFn, l) {
@@ -74,29 +76,29 @@
     }
 
     var foldLeft = function (fn, acc, l) {
-        function fL(fn, acc, l) {
+        function fL(acc, l) {
             return l.isNil ?
                 Return(acc) :
                 Suspend(function () {
-                    return fL(fn, fn(acc, l.head()), l.tail())
+                    return fL(fn(acc, l.head()), l.tail())
                 })
         }
 
-        return fL(fn, acc, l).run()
+        return fL(acc, l).run()
     }
 
     var foldRight = function (fn, l, acc) {
-        function fR(fn, l, acc) {
+        function fR(l, acc) {
             return l.isNil ?
                 Return(acc) :
                 Suspend(function () {
-                    return fR(fn, l.tail(), acc)
+                    return fR(l.tail(), acc)
                 }).map(function (acc1) {
                         return fn(l.head(), acc1)
                     })
         }
 
-        return fR(fn, l, acc).run()
+        return fR(l, acc).run()
     }
 
 
