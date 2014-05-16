@@ -175,12 +175,20 @@ describe('A Validation', function () {
 
         })
 
-        it('will accumulate errors for apply2', function() {
+        it('will apply function for apply2 with two successes', function() {
             var createPersonString = function (f, l) {
                 return f + " " + l
             }
             var result = Monet.apply2(validateForename, validateSurname, createPersonString);
             expect(result).toBeSuccessWith("Tom Baker")
+        })
+
+        it('will accumulate errors for apply2 with one failure', function() {
+            var createPersonString = function (f, l) {
+                return f + " " + l
+            }
+            var result = Monet.apply2(validateForename, Validation.fail(["no surname"]), createPersonString);
+            expect(result.fail()[0]).toBe("no surname")
         })
     })
 
