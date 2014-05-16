@@ -48,6 +48,10 @@
         return this.bind(this.of.compose(fn))
     }
 
+    var apply2 = Monet.apply2 = function(a1, a2, f) {
+        return a2.ap(a1.map(f.curry()))
+    }
+
     Function.prototype.curry = function () {
         return curry(this, Nil)
     }
@@ -869,7 +873,7 @@
         if (type.prototype.append != undefined) {
             type.prototype.concat = type.prototype.append
         }
-        type.prototype.pure = type.prototype.unit = type.prototype.of
+        type.prototype.point = type.prototype.pure = type.prototype.unit = type.prototype.of
 
         type.prototype.join = function () {
             return this.flatMap(idFunction)
@@ -889,6 +893,12 @@
                 return map.call(this, fn)
             }
         }
+
+        type.prototype.takeLeft = function(m) {
+            type.ap(m.map)
+
+        }
+
 
     }
 

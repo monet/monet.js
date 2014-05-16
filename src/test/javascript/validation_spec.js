@@ -175,6 +175,13 @@ describe('A Validation', function () {
 
         })
 
+        it('will accumulate errors for apply2', function() {
+            var createPersonString = function (f, l) {
+                return f + " " + l
+            }
+            var result = Monet.apply2(validateForename, validateSurname, createPersonString);
+            expect(result).toBeSuccessWith("Tom Baker")
+        })
     })
 
     describe("will pimp an object", function () {
