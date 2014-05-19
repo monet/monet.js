@@ -55,7 +55,7 @@ describe('A Maybe', function () {
             expect(someString.orSome('no no!')).toBe('abcd')
             expect(someString.orJust('no no!')).toBe('abcd')
         })
-        it('will return the first monad on orElse', function() {
+        it('will return the first monad on orElse', function () {
             expect(someString.orElse(none)).toBeSomeMaybeWith("abcd")
         })
     })
@@ -94,7 +94,7 @@ describe('A Maybe', function () {
             expect(none.orSome('yep')).toBe('yep')
         })
 
-        it('will return the supplied monad on orElse', function() {
+        it('will return the supplied monad on orElse', function () {
             expect(none.orElse(someString)).toBeSomeMaybeWith('abcd')
         })
     })
@@ -127,6 +127,33 @@ describe('A Maybe', function () {
             var result = maybeAddress.ap(Maybe.Nothing().ap(maybeForename.map(person)))
             expect(result).toBeNoneMaybe()
         })
+
+        it('will work with apply2 with two Somes', function () {
+            var result = Monet.apply2(maybeForename, maybeSurname, function (f, l) {
+                return f + " " + l
+            })
+            expect(result).toBeSomeMaybeWith("Tom Baker")
+        })
+
+        it('will work with apply2 with one Some and a none', function () {
+            var result = Monet.apply2(Maybe.None(), maybeSurname, function (f, l) {
+                return f + " " + l
+            })
+            expect(result).toBeNoneMaybe()
+            var result2 = Monet.apply2(maybeForename, Maybe.None(), function (f, l) {
+                return f + " " + l
+            })
+            expect(result2).toBeNoneMaybe()
+        })
+
+        it('will work with apply2 with two nones', function () {
+            var result = Monet.apply2(Maybe.None(), maybeSurname, function (f, l) {
+                return f + " " + l
+            })
+            expect(result).toBeNoneMaybe()
+        })
+
+
     })
 
     describe('Maybe.fromNull', function () {
@@ -159,15 +186,33 @@ describe('A Maybe', function () {
         it("'of'", function () {
             expect(Maybe.of("hello")).toBeSomeMaybeWith("hello")
         })
-        it("'chain'", function() {
-            expect(Maybe.of("hello").chain(function(a){return Maybe.of(a+" world")})).toBeSomeMaybeWith("hello world")
-            expect(None().chain(function(a){return Maybe.of(a+" world")})).toBeNoneMaybe()
+        it("'chain'", function () {
+            expect(Maybe.of("hello").chain(function (a) {
+                return Maybe.of(a + " world")
+            })).toBeSomeMaybeWith("hello world")
+            expect(None().chain(function (a) {
+                return Maybe.of(a + " world")
+            })).toBeNoneMaybe()
         })
     })
 
-    describe("with a Maybe", function() {
-        it("will join", function() {
+    describe("with a Maybe", function () {
+        it("will join", function () {
             expect(Some("hello".just()).join()).toBeSomeMaybeWith("hello")
+        })
+    })
+
+    describe("with combinators", function() {
+        it("will take left", function() {
+            expect(Some("hi").takeLeft(Some("world"))).toBeSomeMaybeWith("hi")
+        })
+        it("will not take left on none", function() {
+            expect(None().takeLeft(Some("world"))).toBeNoneMaybe()
+            expect(Some("world").takeLeft(None())).toBeNoneMaybe()
+            expect(None().takeLeft(None())).toBeNoneMaybe()
+        })
+        it("will take right", function() {
+            expect(Some("hi").takeRight(Some("world"))).toBeSomeMaybeWith("world")
         })
     })
 
