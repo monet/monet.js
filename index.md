@@ -1,7 +1,7 @@
 ---
 title: Home
 layout: index
-version: 0.8.0
+version: 0.8.1
 ---
 
 ## Introduction
@@ -110,6 +110,37 @@ Performs a monadic bind.
 	Monad[Monad[A]].join(): Monad[A]
 
 The inner and outer monads are the same type.
+
+####takeLeft
+
+	Monad[A].takeLeft(m: Monad[B]): Monad[A]
+
+Performs a combination of both monads and takes the left one.
+
+For example:
+
+	Some(1).takeLeft(Some(2))
+	// result: Some(1)
+	Some(1).takeLeft(None())
+	// result: None
+	None().takeLeft(Some(3))
+	// result: None
+
+####takeRight
+
+	Monad[A].takeRight(m: Monad[B]): Monad[B]
+
+Performs a combination of both monads and takes the right one. 
+
+For example:
+
+	Some(1).takeRight(Some(2))
+	// result: Some(2)
+	Some(1).takeRight(None())
+	// result: None
+	None().takeRight(Some(2))
+	//result: None
+	
 
 ## Maybe
 
