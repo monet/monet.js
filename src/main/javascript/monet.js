@@ -1,4 +1,4 @@
-//     Monet.js 0.8.0
+//     Monet.js 0.8.1
 
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -48,6 +48,10 @@
         return this.bind(this.of.compose(fn))
     }
 
+    var apply2 = Monet.apply2 = function(a1, a2, f) {
+        return a2.ap(a1.map(f.curry()))
+    }
+
     Function.prototype.curry = function () {
         return curry(this, Nil)
     }
@@ -62,8 +66,10 @@
         return listMapC(fn, l).run()
     }
 
-    var listMapC = function(fn,l) {
-        return l.isNil ? Return(l) : Suspend(function() {return listMapC(fn, l.tail())}).map(cons.curry()(fn(l.head())))
+    var listMapC = function (fn, l) {
+        return l.isNil ? Return(l) : Suspend(function () {
+            return listMapC(fn, l.tail())
+        }).map(cons.curry()(fn(l.head())))
     }
 
     var listEach = function (effectFn, l) {
@@ -74,29 +80,29 @@
     }
 
     var foldLeft = function (fn, acc, l) {
-        function fL(fn, acc, l) {
+        function fL(acc, l) {
             return l.isNil ?
                 Return(acc) :
                 Suspend(function () {
-                    return fL(fn, fn(acc, l.head()), l.tail())
+                    return fL(fn(acc, l.head()), l.tail())
                 })
         }
 
-        return fL(fn, acc, l).run()
+        return fL(acc, l).run()
     }
 
     var foldRight = function (fn, l, acc) {
-        function fR(fn, l, acc) {
+        function fR(l, acc) {
             return l.isNil ?
                 Return(acc) :
                 Suspend(function () {
-                    return fR(fn, l.tail(), acc)
+                    return fR(l.tail(), acc)
                 }).map(function (acc1) {
                         return fn(l.head(), acc1)
                     })
         }
 
-        return fR(fn, l, acc).run()
+        return fR(l, acc).run()
     }
 
 
@@ -859,19 +865,23 @@
         }
     }
 
-    // Wire up aliases
-    function alias(type) {
+    function addAliases(type) {
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
         type.pure = type.unit = type.of
         type.prototype.of = type.of
         if (type.prototype.append != undefined) {
             type.prototype.concat = type.prototype.append
         }
-        type.prototype.pure = type.prototype.unit = type.prototype.of
+        type.prototype.point = type.prototype.pure = type.prototype.unit = type.prototype.of
+    }
 
+
+    // Wire up aliases
+    function addMonadOps(type) {
         type.prototype.join = function () {
             return this.flatMap(idFunction)
         }
+
         type.map2 = function (fn) {
             return function (ma, mb) {
                 return ma.flatMap(function (a) {
@@ -881,25 +891,47 @@
                 })
             }
         }
+    }
 
+    function addFunctorOps(type) {
         if (type.prototype.map == undefined) {
             type.prototype.map = function (fn) {
                 return map.call(this, fn)
             }
         }
-
     }
 
-    alias(MonadT)
-    alias(Either)
-    alias(Maybe)
-    alias(IO)
-    alias(NEL)
-    alias(List)
-    alias(Validation)
-    alias(Reader)
-    alias(Free)
-    alias(Identity)
+    function addApplicativeOps(type) {
+        type.prototype.takeLeft = function (m) {
+            return apply2(this, m, function (a, b) {
+                return a
+            })
+        }
+
+        type.prototype.takeRight = function (m) {
+            return apply2(this, m, function (a, b) {
+                return b
+            })
+        }
+    }
+
+    function decorate(type) {
+        addAliases(type)
+        addMonadOps(type);
+        addFunctorOps(type);
+        addApplicativeOps(type);
+    }
+
+    decorate(MonadT)
+    decorate(Either)
+    decorate(Maybe)
+    decorate(IO)
+    decorate(NEL)
+    decorate(List)
+    decorate(Validation)
+    decorate(Reader)
+    decorate(Free)
+    decorate(Identity)
 
     return this
 }(window || this));
