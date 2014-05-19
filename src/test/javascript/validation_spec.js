@@ -190,6 +190,14 @@ describe('A Validation', function () {
             var result = Monet.apply2(validateForename, Validation.fail(["no surname"]), createPersonString);
             expect(result.fail()[0]).toBe("no surname")
         })
+        it('will accumulate errors for apply2 with two failures', function() {
+            var createPersonString = function (f, l) {
+                return f + " " + l
+            }
+            var result = Monet.apply2(Validation.fail(["no first name"]), Validation.fail(["no surname"]), createPersonString);
+            expect(result.fail()[0]).toBe("no surname")
+            expect(result.fail()[1]).toBe("no first name")
+        })
     })
 
     describe("will pimp an object", function () {

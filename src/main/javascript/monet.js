@@ -865,8 +865,7 @@
         }
     }
 
-    // Wire up aliases
-    function alias(type) {
+    function addAliases(type) {
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
         type.pure = type.unit = type.of
         type.prototype.of = type.of
@@ -874,10 +873,15 @@
             type.prototype.concat = type.prototype.append
         }
         type.prototype.point = type.prototype.pure = type.prototype.unit = type.prototype.of
+    }
 
+
+    // Wire up aliases
+    function addMonadOps(type) {
         type.prototype.join = function () {
             return this.flatMap(idFunction)
         }
+
         type.map2 = function (fn) {
             return function (ma, mb) {
                 return ma.flatMap(function (a) {
@@ -887,31 +891,47 @@
                 })
             }
         }
+    }
 
+    function addFunctorOps(type) {
         if (type.prototype.map == undefined) {
             type.prototype.map = function (fn) {
                 return map.call(this, fn)
             }
         }
-
-        type.prototype.takeLeft = function(m) {
-            type.ap(m.map)
-
-        }
-
-
     }
 
-    alias(MonadT)
-    alias(Either)
-    alias(Maybe)
-    alias(IO)
-    alias(NEL)
-    alias(List)
-    alias(Validation)
-    alias(Reader)
-    alias(Free)
-    alias(Identity)
+    function addApplicativeOps(type) {
+        type.prototype.takeLeft = function (m) {
+            return apply2(this, m, function (a, b) {
+                return a
+            })
+        }
+
+        type.prototype.takeRight = function (m) {
+            return apply2(this, m, function (a, b) {
+                return b
+            })
+        }
+    }
+
+    function decorate(type) {
+        addAliases(type)
+        addMonadOps(type);
+        addFunctorOps(type);
+        addApplicativeOps(type);
+    }
+
+    decorate(MonadT)
+    decorate(Either)
+    decorate(Maybe)
+    decorate(IO)
+    decorate(NEL)
+    decorate(List)
+    decorate(Validation)
+    decorate(Reader)
+    decorate(Free)
+    decorate(Identity)
 
     return this
 }(window || this));

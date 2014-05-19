@@ -202,5 +202,19 @@ describe('A Maybe', function () {
         })
     })
 
+    describe("with combinators", function() {
+        it("will take left", function() {
+            expect(Some("hi").takeLeft(Some("world"))).toBeSomeMaybeWith("hi")
+        })
+        it("will not take left on none", function() {
+            expect(None().takeLeft(Some("world"))).toBeNoneMaybe()
+            expect(Some("world").takeLeft(None())).toBeNoneMaybe()
+            expect(None().takeLeft(None())).toBeNoneMaybe()
+        })
+        it("will take right", function() {
+            expect(Some("hi").takeRight(Some("world"))).toBeSomeMaybeWith("world")
+        })
+    })
+
 
 })
