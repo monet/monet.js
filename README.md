@@ -24,8 +24,7 @@ The source is available at: [http://github.com/cwmyers/monet.js](http://github.c
 
 ##Installation
 
-Simply download and add to your html pages or we also support [bower].  You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype`
-for creating monads.
+Simply download and add to your html pages or we also support [bower].  You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
 
     <script type="text/javascript" src="monet.js"></script>
     <!-- Optionally -->
@@ -43,16 +42,13 @@ or to install a specific version
 ## A note on types
 
 #### Well it's JavaScript - there ain't any
-As you know JavaScript isn't a strongly typed language.  This kinda sucks.  Types are a great help when it comes to functional programming as it makes the
-code more comprehensible and prevents a range of errors from being introduced.
+As you know JavaScript isn't a strongly typed language.  This kinda sucks.  Types are a great help when it comes to functional programming as it makes the code more comprehensible and prevents a range of errors from being introduced.
 
-Knowing the types of your functions and data is also important when writing documentation (such as this one), so we will invent some type annotations to make things
-more clear.  We will only do this in the function definition and *not* in the **concrete examples**.
+Knowing the types of your functions and data is also important when writing documentation (such as this one), so we will invent some type annotations to make things more clear.  We will only do this in the function definition and *not* in the **concrete examples**.
 
 #### Generic Types
 
-JavaScript doesn't have generic types but it's useful to know about them when dealing with Monads.  For instance the `List` monad is a type that requires another type, such
-as a string or integer or some other type before it can be constructed.  So you would have a List of Strings or a List of Integers or generically a List of `A`s where `A` is a type you will supply.  Now of course this is JavaScript and you can do as you please even though it doesn't make sense.  But to make things clearer (hopefully) we will attempt to do show generics or *type parameters* thusly:
+JavaScript doesn't have generic types but it's useful to know about them when dealing with Monads.  For instance the `List` monad is a type that requires another type, such as a string or integer or some other type before it can be constructed.  So you would have a List of Strings or a List of Integers or generically a List of `A`s where `A` is a type you will supply.  Now of course this is JavaScript and you can do as you please even though it doesn't make sense.  But to make things clearer (hopefully) we will attempt to do show generics or *type parameters* thusly:
 
 	List[A]
 
@@ -89,16 +85,75 @@ or
 
 	A -> ()
 
+## All monads
+
+Everything that is a monad in will implement the following functions.  The specific monads will be discussed in detail below.
+
+####bind *alias: flatMap, chain*
+
+	Monad[A].bind(f: A -> Monad[B]): Monad[B]
+
+Performs a monadic bind.
+
+####map
+
+	Monad[A].map(f: A -> B): Monad[B]
+
+####unit *alias: pure, of*
+
+	Monad.unit(A): Monad[A]
+
+####ap
+
+	Monad[A].ap(m: Monad[A -> B]): Monad[B]
+
+####join
+
+	Monad[Monad[A]].join(): Monad[A]
+
+The inner and outer monads are the same type.
+
+####takeLeft
+
+	Monad[A].takeLeft(m: Monad[B]): Monad[A]
+
+Performs a combination of both monads and takes the left one.
+
+For example:
+
+	Some(1).takeLeft(Some(2))
+	// result: Some(1)
+	Some(1).takeLeft(None())
+	// result: None
+	None().takeLeft(Some(3))
+	// result: None
+
+####takeRight
+
+	Monad[A].takeRight(m: Monad[B]): Monad[B]
+
+Performs a combination of both monads and takes the right one.
+
+For example:
+
+	Some(1).takeRight(Some(2))
+	// result: Some(2)
+	Some(1).takeRight(None())
+	// result: None
+	None().takeRight(Some(2))
+	//result: None
+
+
 ## Maybe
 
 The `Maybe` type is the most common way of representing *nothingness* (or the `null` type) with making the possibilities of `NullPointer` issues disappear.
 
-`Maybe` is effectively abstract and as two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
+`Maybe` is effectively abstract and has two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
 
 #### Creating an Maybe
 
-	var maybe = Maybe.some(val);
-	var maybe = Maybe.none();
+	var maybe = Maybe.Some(val);
+	var maybe = Maybe.None();
 	var maybe = Maybe.fromNull(val);  // none if val is null, some otherwise
 
 or more simply with the pimped method on Object.
@@ -115,13 +170,13 @@ or more simply with the pimped method on Object.
 
 For example:
 
-	maybe.some(123).map(function(val) {
+	Maybe.Some(123).map(function(val) {
 		return val+1
 	})
 	=> 124
 
 
-#### bind *alias: flatMap*
+####bind *alias: flatMap, chain*
 
 	Maybe[A].bind(fn: A -> Maybe[B]): Maybe[B]
 
@@ -132,9 +187,9 @@ For example:
 
 	maybe.bind(function(val) {
 		if (val == "hi") {
-			return maybe.some("world")
+			return Maybe.Some("world")
 		} else {
-			return maybe.none()
+			return Maybe.None()
 		}
 	})
 
@@ -151,7 +206,7 @@ For example:
 	//result: true
 
 
-#### isNone *alias: isNothing*
+####isNone *alias: isNothing*
 
 	Maybe[A].isNone(): Boolean
 
@@ -162,7 +217,7 @@ For example:
 	Maybe.none().isNone()
 	//result: true
 
-####some() *alias: just*
+####some *alias: just*
 
 	Maybe[A].some(): A
 
@@ -183,6 +238,12 @@ Will return the containing value inside the `Maybe` or return the supplied value
 	=> "hi"
 	Maybe.none().orSome("bye")
 	=> "bye"
+
+####orElse
+
+	Maybe[A].orElse(Maybe[A]): Maybe[A]
+
+Returns the Maybe if it is a Some otherwise returns the supplied Maybe.
 
 ####ap
 
@@ -210,6 +271,120 @@ Here is an example for creating a string out of the result of a couple of `Maybe
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
 
+####toEither
+
+	Maybe[A].toEither(fail: E): Either[E,A]
+
+Converts a Maybe to an Either
+
+####toValidation
+
+	Maybe[A].toValidation(fail: E): Validation[E,A]
+
+Converts a Maybe to a Validation.
+
+####toList
+
+	Maybe[A].toList: List[A]
+
+Converts to a list, returns an Empty list on None.
+
+## Either
+Either (or the disjunct union) is a type that can either hold a value of type `A` or a value of type `B` but never at the same time.  Typically
+it is used to represent computations that can fail with an error.  Think of it as a better way to handle exceptions.  We think of an `Either`
+as having two sides, the success is held on the right and the failure on the left.  This is a right biased either which means that `map`
+and `flatMap` (`bind`) will operate on the right side of the either.
+
+####Creating an Either
+
+	var success = Either.Right(val);
+	var failure = Either.Left(val);
+
+or with the pimped methods on object:
+
+	var success = val.right()
+	var failure = "some error".left()
+
+###Functions
+####map
+
+	Either[E,A].map(fn: A -> B): Either[E,B]
+
+This will apply the supplied function over the right side of the either, if one exists, otherwise it returns the `Either` untouched.
+
+For example:
+
+	Right(123).map(function (e) {return e+1})
+	// result: Right(124)
+	Left("grr").map(function (e) {return e+1})
+	// result: Left("grr")
+
+####flatMap *alias: bind, chain*
+
+	Either[E,A].flatMap(fn: A -> Either[E,B]): Either[E,B]
+
+This will perform a monadic bind over the right side of the either, otherwise it will do nothing.
+
+####ap
+
+	Either[E,A].ap(v: Either[E, A -> B]): Either[E,B]
+
+This takes an either that has a function on the right side of the either and then applies it to the right side of itself. This implements
+the applicative functor pattern.
+
+####cata
+
+	Either[E,A].cata(leftFn: E -> X, rightFn: A ->X): X
+
+The catamorphism for either.  If the either is `right` the right function will be executed with the right value and the value of the function returned. Otherwise the `left` function will be called with the left value.
+
+	For example:
+
+		var result = either.cata(function(failure) {
+			return "oh dear it failed because " + failure
+		}, function(success) {
+			return "yay! " + success
+		})
+
+####bimap
+
+	Either[A,B].bimap(leftFn: A->C, rightFn: B->D): Either[C,D]
+
+####isRight
+
+	Either[E,A].isRight(): Boolean
+
+Returns true if this Either is right, false otherwise.
+
+####isLeft
+
+	Either[E,A].isLeft(): Boolean
+
+Returns true if this Either is left, false otherwise.
+
+####right
+
+	Either[E,A].right(): A
+
+Returns the value in the right side, otherwise throws an exception.
+
+####left
+
+	Either[E,A].left(): E
+
+Returns the value in the left side, otherwise throws an exception.
+
+####toValidation
+
+	Either[E,A].toValidation(): Validation[E,A]
+
+Converts the `Either` to a `Validation`.
+
+####toMaybe
+
+	Either[E,A].toMaybe(): Maybe[A]
+
+Converts to a `Maybe` dropping the left side.
 
 ## Validation
 Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods.  It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors.  We will represent a Validation like this: `Validation[E,A]` where `E` represents the error type and `A` represents the success type.
@@ -234,9 +409,9 @@ or with pimped methods on an object
 For example:
 
 	Validation.success(123).map(function(val) { return val + 1})
-	//result: 124
+	//result: Success(124)
 
-####bind *alias: flatMap*
+####bind *alias: flatMap, chain*
 
 	Validation[E,A].bind(fn:A -> Validation[E,B]) : Validation[E,B]
 
@@ -317,6 +492,316 @@ For example:
 		return "yay! " + success
 	})
 
+####toEither
+
+	Validation[E,A].toEither(): Either[E,A]
+
+Converts an `Either` to a `Validation`
+
+####toMaybe
+
+	Validation[E,A].toMaybe(): Maybe[A]
+
+Converts to a `Maybe` dropping the failure side.
+
+## Immutable lists
+
+An immutable list is a list that has a head element and a tail. A tail is another list.  The empty list is represented by the `Nil` constructor.  An immutable list is also known as a "cons" list.  Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
+
+#### Creating a list
+
+The easiest way to create a list is with the pimped method on Array, available in monet-pimp.js.
+
+	var myList = [1,2,3].list()
+
+which is equivalent to:
+
+	var myList = List(1, List(2, List(3, Nil)))
+
+As you can see from the second example each List object contains a head element and the tail is just another list element.
+
+###Functions
+####cons
+
+	List[A].cons(a: A) : List[A]
+
+`cons` will prepend the element to the front of the list and return a new list.  The existing list remains unchanged.
+
+For example:
+
+	var newList = myList.cons(4)
+	// newList.toArray() == [4,1,2,3]
+	// myList.toArray() == [1,2,3]
+
+`cons` is also available as a pimped method on `Object.prototype`:
+
+	var myList = ["a","b","c"].list()
+	var newList = "z".cons(myList)
+	newList.toArray() == ["z","a","b","c"]
+
+####map
+
+	List[A].map(fn: A->B): List[B]
+
+Maps the supplied function over the list.
+
+	var list = [1,2,3].list().map(function(a) {
+		return a+1
+	})
+	// list == [2,3,4]
+
+####flatMap *alias: bind*
+
+	List[A].flatMap(fn: A -> List[B]): List[B]
+
+Maps the supplied function over the list and then flattens the returned list.  The supplied function must return a new list.
+
+####head
+
+	List[A].head(): A
+
+Returns the head of the list.
+
+For example:
+
+	[1,2,3].list().head()
+	//result: 1
+
+####headMaybe
+
+	List[A].headMaybe(): Maybe[A]
+
+Returns the optional head of the list.
+
+
+For example:
+
+	[1,2,3,4].list().headMaybe()
+	// result: Some(1)
+
+	Nil.headMaybe()
+	// result: None()
+
+####foldLeft
+
+	List[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
+
+`foldLeft` takes an initial value and a function and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first value and the current element in the list as its second argument.  The returned value from the function will be pass into the accumulator on the subsequent pass.
+
+
+For example, say you wanted to add up a list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
+
+	var myList = [1,2,3,4].list()
+	var sum = myList.foldLeft(0)(function(acc, e) {
+		return e+acc
+	})
+	// sum == 10
+
+####foldRight(initialValue)(function(e, acc))
+
+	List[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
+
+Performs a fold right across the list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
+
+####append *alias: concat()*
+
+	List[A].append(list: List[A]) : List[A]
+
+Will append the second list to the current list.  Both list must be of the same type.
+
+For example:
+
+	var list1 = [1,2,3].list()
+	var list2 = [4,5,6].list()
+	var list3 = list1.append(list2)
+	// list3.toArray() == [1,2,3,4,5,6]
+
+
+####sequence
+
+	List[Monad[A].sequence(Monad): Monad[List[A]]
+
+Will `sequence` a list of monads.  The signature above is slightly hard to represent, but this function will sequence a list of any type of monad, but you will need to supply the name of the monad you are sequencing.
+
+**Note: This version of sequence will only work with Monads that can cope with eager evaluations.  For lazy monads such as `IO` and `Reader` please use `lazySequence` or the explicit versions, such as `sequenceIO`.**
+
+For example:
+
+	[1.right(), 2.left()].list().sequence(Either) // For Eithers
+	[1.some(), 2.none()].list().sequence(Maybe)
+
+Or you can use the convenience methods like `sequenceMaybe` or `sequenceEither` below.  Note that since Validation is not a true monad it will not work as expected for this method; use `sequenceValidation` instead.
+
+####lazySequence
+
+	List[Monad[A].lazySequence(Monad): Monad[List[A]]
+
+This is the same as `sequence` except it caters for Monads that require laziness, such as `IO` and `Reader`.
+
+####sequenceMaybe
+
+	List[Maybe[A]].sequenceMaybe(): Maybe[List[A]]
+
+Takes a list of `Maybe`s and turns it into a `Maybe` `List`.  If the list contains at least one `None` value then a `None` will be returned, otherwise a `Some` will be returned with a list of all the values.
+
+For example:
+
+	var sequenced = [Some(1), Some(2), Some(3)].list().sequenceMaybe()
+	// sequenced == Some([1,2,3]) <- That's an immutable list not an array
+
+	var sequenced = [Some(1), Some(2), None, Some(3), None].list().sequenceMaybe()
+	// sequenced == None
+
+This is the same as calling:
+
+	[Some(1), Some(2)].sequence(Maybe)
+
+####sequenceEither
+
+	List[Either[E,A]].sequenceEither(): Either[E, List[A]]
+
+This will sequence a `List` of `Either`s stopping on the first `Left` that it finds.  It will return either a `List` of the `Right` values or the first `Left` value it encounters.
+
+For example:
+
+	[1.right(), 2.right(), 3.right()].list().sequenceEither() == Right(List(1,2,3))
+	[1.right(), 2.left(), 3.left()].list() == Left(2)
+
+Note: Unlike `sequenceValidation` it does not accumulate the `Left` (or "failing") values, but rather stops execution and returns the first `Left`.
+
+####sequenceValidation
+
+	List[Validation[E,A]].sequenceValidation(): Validation[List[E], List[A]]
+
+Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure` side, if there are **any** failures.
+
+	var sequenced = ["a".success(), "b".success(), "c".success()]
+		.list().sequenceValidation()
+	// sequenced == Success(["a", "b", "c"])
+
+	var sequenced = ["a".success(),
+	                 "b".success(),
+                     "c".fail(),
+                     "d".fail(),
+                     "e".success()]
+					.list().sequenceValidation()
+	// sequenced == Fail(["c","d"])
+
+####sequenceIO
+
+	List[IO[A]].sequenceIO(): IO[List[A]]
+
+Will sequence a list of `IO` actions.
+
+####sequenceReader
+
+	List[Reader[A]].sequenceReader(): Reader[List[A]]
+
+Will sequence a list of `Reader`s.
+
+####reverse
+
+	List[A].reverse(): List[A]
+
+Returns a new list reversed.
+
+	var list = [1,2,3].list().reverse()
+	// list.toArray() == [3,2,1]
+
+
+## Non Empty Lists
+
+Much like the immutable list, a Non Empty List can never be empty.  It implements the `comonad` pattern.  It has a guaranteed head (total)
+and a guaranteed (total) tail.
+
+#### Creating a NonEmptyList
+
+	var nonEmptyList = NonEmptyList(1, [2,3,4].list())
+	// alias
+	var nonEmptyList = NEL(1, [2,3,4].list())
+	// or
+	var nonEmptyList = NonEmptyList(1, Nil)
+	// or fromList which returns a Maybe[NonEmptyList].
+	var maybeNonEmptyList = NonEmptyList.fromList([1,2,3,4].list())
+
+Trying to create an empty `NonEmptyList` will throw an exception.
+
+###Functions
+####map
+
+	NEL[A].map(fn: A -> B): NEL[B]
+
+Maps a function over a NonEmptyList.
+
+####bind *alias: flatMap, chain*
+
+	NEL[A].bind(fn: A -> NEL[B]): NEL[B]
+
+Performs a monadic bind over the NonEmptyList.
+
+####head *alias: copure, extract*
+
+	NEL[A].head(): A
+
+Returns the head of the NonEmptyList.  Also known as `copure` or `extract` this is part of the comonad pattern.
+
+####tail
+
+	NEL[A].tail(): List[A]
+
+Returns the tail of the `NonEmptyList`.
+
+####tails *alias: cojoin*
+
+	NEL[A].tails(): NEL[NEL[A]]
+
+Returns all the tails of the `NonEmptyList`.  Also known as `cojoin` this is part of the comonad pattern.  A list is considered
+a tail of itself.
+
+For example:
+
+	NEL(1, [2,3,4].list()).tails()
+	//result: [
+	//          [ 1, 2, 3, 4 ],
+	//          [ 2, 3, 4 ],
+	//          [ 3, 4 ],
+	//          [ 4 ]
+	//        ]
+
+####mapTails *alias: cobind, coflatMap*
+
+	NEL[A].mapTails(fn: NEL[A] -> B): NEL[B]
+
+Maps a function over the tails of the `NonEmptyList`.  Also known as `cobind` this is part of the comonad pattern.
+
+For example:
+
+	nonEmptyList.cobind(function (nel) {
+	            return nel.foldLeft(0)(function(a,b){
+	                return a+b
+	            })
+	        }
+	//result: [10,9,7,4]
+
+####append *alias: concat*
+
+	NEL[A].append(n: NEL[A]): NEL[A]
+
+Appends two NonEmptyLists together.
+
+####reverse
+
+	NEL[A].reverse(): NEL[A]
+
+Reverses the `NonEmptyList`.
+
+####fromList
+
+	NEL.fromList(List[A]): Maybe[NEL[A]]
+
+Returns an optional `NonEmptyList`.  If the supplied `List` is empty the result will be a `None`, otherwise a `NonEmptyList` wrapped in
+a `Some` (or `Just`).
+
 ## IO
 The `IO` monad is for isolating effects to maintain referential transparency in your software.  Essentially you create a description of your effects of which is performed as the last action in your programme.  The IO is lazy and will not be evaluated until the `perform` (*alias* `run`) method is called.
 
@@ -347,7 +832,6 @@ Performs a map over the result of the effect.  This will happen lazily and will 
 
 ####run *alias: perform*
 Evaluates the effect inside the `IO` monad.  This can only be run once in your programme and at the very end.
-
 
 ###"Pimped" functions
 ####fn.io()
@@ -404,219 +888,148 @@ Now our DOM should be updated with the text converted to upper case.
 
 It becomes much clearer which functions deal with IO and which functions simply deal with data.  `read` and `write` return an `IO` effect but `toUpper` simply converts a supplied string to upper case.  This pattern is what you will often find in your software, having an effect when you start (i.e. reading from a data source, network etc), performing transformations on the results of that effect and finally having an effect at the end (such as writing result to a database, disk, or DOM).
 
-## Immutable lists
+##Reader
 
-An immutable list is a list that has a head element and a tail. A tail is another list.  The empty list is represented by the `Nil` constructor.  An immutable list is also known as a "cons" list.  Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
+The `Reader` monad is a wonderful solution to inject dependencies into your functions.  There are plenty of great resources to get your
+teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
 
-#### Creating a list
+The `Reader` monad provides a way to "weave" your configuration throughout your programme.
 
-The easiest way to create a list is with the pimped method on Array, available in monet-pimp.js.
+### Creating a Reader
 
-	var myList = [1,2,3].list()
+Say you had this function which requires configuration:
 
-which is equivalent to:
+	function createPrettyName(name, printer) {
+		return printer.write("hello " + name)
+	}
 
-	var myList = List(1, List(2, List(3, Nil)))
+Calling this function from other functions that don't need the dependency `printer` is kind of awkward.
 
-As you can see from the second example each List object contains a head element and the tail is just another list element.
+	function render(printer) {
+		return createPrettyName("Tom", printer)
+	}
+
+One quick win would be to `curry` the `createPrettyName` function, and make `render` partially apply the function and let the caller of
+`render` supply the printer.
+
+	function createPrettyName(name, printer) {
+		return printer.write("hello " + name)
+	}.curry()
+
+	function render() {
+		return createPrettyName("Tom")
+	}
+
+This is better, but what if `render` wants to perform some sort of operation on the result of `createPrettyName`?  It would have to apply
+the final parameter (i.e. the `printer`) before `createPrettyName` would execute.
+
+This where the `Reader` monad comes in.  We could rewrite `createPrettyName` thusly:
+
+	function createPrettyName(name) {
+		return Reader(function(printer) {
+			return printer.write("hello " + name)
+		})
+	}
+
+To sweeten up the syntax a little we can also write:
+
+	function createPrettyName(name, printer) {
+		return printer.write("hello " + name)
+	}.reader()
+
+So now, when a name is supplied to `createPrettyName` the `Reader` monad is returned and being a monad it supports all the monadic goodness.
+
+We can now get access to the result of `createPrettyName` through a `map`.
+
+	function reader() {
+		return createPrettyName("Tom").map(function (s) { return "---"+s+"---"})
+	}
+
+The top level of our programme would co-ordinate the injecting of the dependency by calling `run` on the resulting `Reader.`
+
+	reader().run(new BoldPrinter())
 
 ###Functions
-####cons
-
-	List[A].cons(a: A) : List[A]
-
-`cons` will prepend the element to the front of the list and return a new list.  The existing list remains unchanged.
-
-For example:
-
-	var newList = myList.cons(4)
-	// newList.toArray() == [4,1,2,3]
-	// myList.toArray() == [1,2,3]
-
-`cons` is also available as a pimped method on `Object.prototype`:
-
-	var myList = ["a","b","c"].list()
-	var newList = "z".cons(myList)
-	newList.toArray() == ["z","a","b","c"]
-
 ####map
 
-	List[A].map(fn: A->B): List[B]
+	Reader[A].map(f: A -> B): Reader[B]
 
-Maps the supplied function over the list.
+Maps the supplied function over the `Reader`.
 
-	var list = [1,2,3].list().map(function(a) {
-		return a+1
-	})
-	// list == [2,3,4]
+####bind *alias: flatMap, chain*
 
-####flatMap *alias: bind*
+	Reader[A].bind(f: A -> Reader[B]): Reader[B]
 
-	List[A].flatMap(fn: A -> List[B]): List[B]
+Performs a monadic bind over the `Reader`.
 
-Maps the supplied function over the list and then flattens the returned list.  The supplied function must return a new list.
+####ap
 
-####foldLeft
+	Reader[A].ap(a: Reader[A->B]): Reader[B]
 
-	List[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
+Applies the function inside the supplied `Reader` to the value `A` in the outer `Reader`.  Applicative Functor pattern.
 
-`foldLeft` takes an initial value and a function and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first value and the current element in the list as its second argument.  The returned value from the function will be pass into the accumulator on the subsequent pass.
+####run
 
+	Reader[A].run(config)
 
-For example, say you wanted to add up a list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
+Executes the function wrapped in the `Reader` with the supplied `config`.
 
-	var myList = [1,2,3,4].list()
-	var sum = myList.foldLeft(0)(function(acc, e) {
-		return e+acc
-	})
-	// sum == 10
+## Free
+The `Free` monad is a monad that is able to separate instructions from their interpreter.  There are many applications for this monad, and one of them is for implementing Trampolines, (which is a way to make recursion constant stack for languages that don't support tail call elimination, like JavaScript!).
 
-####foldRight(initialValue)(function(e, acc))
+Please see [Ken Scambler](http://twitter.com/KenScambler)'s [excellent talk](http://www.slideshare.net/kenbot/running-free-with-the-monads) and [example project](https://github.com/kenbot/free) to get an in-depth understanding of this very useful monad.
 
-	List[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
+#### Creating a Free monad
 
-Performs a fold right across the list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
+The `Free` monad has two constructors, `Suspend` and `Return`, which represents the continuation of a calculation and the completion of one, respectively.
 
-####append *alias: concat()*
+	Return(a: A): Free[F[_], A]
+	Suspend(f: F[Free[F,A]]): Free[F[_], A]
 
-	List[A].append(list: List[A]) : List[A]
-
-Will append the second list to the current list.  Both list must be of the same type.
-
-For example:
-
-	var list1 = [1,2,3].list()
-	var list2 = [4,5,6].list()
-	var list3 = list1.append(list2)
-	// list3.toArray() == [1,2,3,4,5,6]
-
-####sequenceMaybe() : Maybe
-
-	List[Maybe[A]].sequenceMaybe(): Maybe[List[A]]
-
-Takes a list of `Maybe`s and turns it into a `Maybe` `List`.  If the list contains at least one `None` value then a `None` will be returned, otherwise a `Some` will be returned with a list of all the values.
-
-For example:
-
-	var sequenced = [Some(1), Some(2), Some(3)].list().sequenceMaybe()
-	// sequenced == Some([1,2,3]) <- That's an immutable list not an array
-
-	var sequenced = [Some(1), Some(2), None, Some(3), None].list().sequenceMaybe()
-	// sequenced == None
-
-####sequenceValidation() : Validation
-Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure` side, if there are **any** failures.
-
-	List[Validation[E,A]].sequenceValidation(): Validation[List[E], List[A]]
-
-	var sequenced = ["a".success(), "b".success(), "c".success()]
-		.list().sequenceValidation()
-	// sequenced == Success(["a", "b", "c"])
-
-	var sequenced = ["a".success(),
-	                 "b".success(),
-                     "c".fail(),
-                     "d".fail(),
-                     "e".success()]
-					.list().sequenceValidation()
-	// sequenced == Fail(["c","d"])
-
-####reverse
-
-	List[A].reverse(): List[A]
-
-Returns a new list reversed.
-
-	var list = [1,2,3].list().reverse()
-	// list.toArray() == [3,2,1]
-
-
-## Non Empty Lists
-
-Much like the immutable list, a Non Empty List can never be empty.  It implements the `comonad` pattern.  It has a guaranteed head (total)
-and a guaranteed (total) tail.
-
-#### Creating a NonEmptyList
-
-	var nonEmptyList = NonEmptyList(1, [2,3,4].list())
-	// alias
-	var nonEmptyList = NEL(1, [2,3,4].list())
+	var a = Return(1)
+	var sum = Suspend(Identity(Return(1))
 	// or
-	var nonEmptyList = NonEmptyList(1, Nil)
-	// or fromList which returns a Maybe[NonEmptyList].
-	var maybeNonEmptyList = NonEmptyList.fromList([1,2,3,4].list())
+	var sum = Free.liftF(Identity(1))
 
-Trying to create an empty `NonEmptyList` will throw an exception.
+As you may see, `Return` wraps a value A, where as `Suspend`, wraps a `Functor` containing another `Free`.
 
 ###Functions
+
 ####map
 
-	NEL[A].map(fn: A -> B): NEL[B]
+	Free[F[_], A].map(f: A -> B): Free[F[_],B]
 
-Maps a function over a NonEmptyList.
+Performs a map across the value inside the functor.
 
-###bind *alias: flatMap, chain*
+####bind *alias: flatMap, chain*
 
-	NEL[A].bind(fn: A -> NEL[B]): NEL[B]
+	Free[F[_],A].bind(f: A -> Free[F[_], B]): Free[F[_],B]
 
-Performs a monadic bind over the NonEmptyList.
+Performs a monadic bind over the `Free`.
 
-####head *alias: copure, extract*
+####Free.liftF
 
-	NEL[A].head(): A
+	Free.liftF(F[A]): Free[F,A]
 
-Returns the head of the NonEmptyList.  Also known as `copure` or `extract` this is part of the comonad pattern.
+Lifts a Funtor `F` into a `Free`.
 
-####tail
+####resume
 
-	NEL[A].tail(): List[A]
+	Free[F[_],A].resume(): Either[F[Free[F,A]] , A]
 
-Returns the tail of the `NonEmptyList`.
+Evalutates a single layer in the computation, returning either a suspension or a result.
 
-####tails *alias: cojoin*
+####go
 
-	NEL[A].tails(): NEL[NEL[A]]
+	Free[F[_],A].go(f: F[Free[F, A]] -> Free[F, A]) : A
 
-Returns all the tails of the `NonEmptyList`.  Also known as `cojoin` this is part of the comonad pattern.  A list is considered
-a tail of itself.
+Runs the computation to the end, returning the final result, using the supplied functor `f` to extract the next `Free` from the suspension.
 
-For example:
+####run
 
-	NEL(1, [2,3,4].list()).tails()
-	//result: [
-	//          [ 1, 2, 3, 4 ],
-	//          [ 2, 3, 4 ],
-	//          [ 3, 4 ],
-	//          [ 4 ]
-	//        ]
+	Free[Function, A].run(): A
 
-####mapTails *alias: cobind, coflatMap*
-
-	NEL[A].mapTails(fn: NEL[A] -> B): NEL[B]
-
-Maps a function over the tails of the `NonEmptyList`.  Also known as `cobind` this is part of the comonad pattern.
-
-For example:
-
-	nonEmptyList.cobind(function (nel) {
-	            return nel.foldLeft(0)(function(a,b){
-	                return a+b
-	            })
-	        }
-	//result: [10,9,7,4]
-
-####reverse
-
-	NEL[A].reverse(): NEL[A]
-
-Reverses the `NonEmptyList`.
-
-####fromList
-
-	NEL.fromList(List[A]): Maybe[NEL[A]]
-
-Returns an optional `NonEmptyList`.  If the supplied `List` is empty the result will be a `None`, otherwise a `NonEmptyList` wrapped in
-a `Some` (or `Just`).
+This function only makes sense for Tampolined computations where the supplied functor is a Function.  This will run the computation to the end returning the result `A`.
 
 ##Other useful functions
 ###Functions
@@ -660,7 +1073,7 @@ a method to be applied in the following ways:
 
 ##Author
 
-Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers).
+Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
 
 
 [functionalJava]: http://functionaljava.org/
