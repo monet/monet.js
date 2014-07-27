@@ -18,7 +18,7 @@ Download the [zip][gitZip] or [tar][gitTar] ball.
 
 ##Source code
 
-The source is available at: [http://github.com/cwmyers/monet.js](http://github.com/cwmyers/monet.js).
+The source is available at: [https://github.com/cwmyers/monet.js](https://github.com/cwmyers/monet.js).
 
 ##Installation
 
@@ -975,7 +975,7 @@ Executes the function wrapped in the `Reader` with the supplied `config`.
 ## Free
 The `Free` monad is a monad that is able to separate instructions from their interpreter.  There are many applications for this monad, and one of them is for implementing Trampolines, (which is a way to make recursion constant stack for languages that don't support tail call elimination, like JavaScript!).
 
-Please see [Ken Scambler](http://twitter.com/KenScambler)'s [excellent talk](http://www.slideshare.net/kenbot/running-free-with-the-monads) and [example project](https://github.com/kenbot/free) to get an in-depth understanding of this very useful monad.
+Please see [Ken Scambler](https://twitter.com/KenScambler)'s [excellent talk](http://www.slideshare.net/kenbot/running-free-with-the-monads) and [example project](https://github.com/kenbot/free) to get an in-depth understanding of this very useful monad.
 
 #### Creating a Free monad
 
@@ -1071,7 +1071,7 @@ a method to be applied in the following ways:
 
 ##Author
 
-Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
+Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers). Follow Monet.js at [@monetjs](https://twitter.com/monetjs).
 
 
 [functionalJava]: http://functionaljava.org/
