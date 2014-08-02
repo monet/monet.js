@@ -1,6 +1,6 @@
 {
   "author": "Chris Myers",
-  "name": "monet.js",
+  "name": "monet",
   "description": "Monadic types library for JavaScript",
   "version": "0.8.1",
   "homepage": "https://github.com/cwmyers/monet.js",
@@ -8,6 +8,6 @@
     "type": "git",
     "url": "git@github.com:cwmyers/monet.js.git"
   },
-  "main": "monet.js",
+  "main": "src/main/javascript/monet.js",
   "dependencies": {}
 }
