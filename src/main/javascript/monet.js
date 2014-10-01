@@ -3,7 +3,7 @@
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
 //     For all details and documentation:
-//     http://cwmyers.github.com/monet.js
+//     https://cwmyers.github.com/monet.js
 
 (function(root, factory) {
 
@@ -11,16 +11,8 @@
         module.exports = factory(root);
     } else if (typeof define === 'function' && define.amd) {
         define(factory);
-    } else {
-        root.curry = factory(root);
     }
 }(this, function(root) {
-    var curry = function (fn, args) {
-        return function () {
-            var args1 = args.append(List.fromArray(Array.prototype.slice.call(arguments)));
-            return args1.size() == fn.length ? fn.apply(this, args1.toArray()) : curry(fn, args1);
-        };
-    };
     return this;
 }));
 
@@ -35,7 +27,15 @@
     }
 }(this, function(root) {
 
-    var isFunction = function (f) {
+    var curry = function (fn, args) {
+      return function () {
+        var args1 = args.append(List.fromArray(Array.prototype.slice.call(arguments)));
+        return args1.size() == fn.length ? fn.apply(this, args1.toArray()) : curry(fn, args1);
+      };
+    };
+
+
+   var isFunction = function (f) {
         return !!(f && f.constructor && f.call && f.apply)
     };
 
