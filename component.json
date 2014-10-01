@@ -1,0 +1,8 @@
+{
+    "name": "monet",
+    "version": "0.8.1",
+    "scripts": [
+        "src/main/javascript/monet.js",
+        "src/main/javascript/monet-pimp.js"
+    ]
+}
