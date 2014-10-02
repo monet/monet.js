@@ -5,7 +5,7 @@
 //     (c) 2012-2014 Chris Myers
 //     Monet-pimp.js may be freely distributed under the MIT license.
 //     For all details and documentation:
-//     http://cwmyers.github.com/monet.js
+//     https://cwmyers.github.com/monet.js
 
 
 (function (window) {
