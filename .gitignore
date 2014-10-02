@@ -13,3 +13,4 @@ out
 .project
 RUNNING_PID
 .settings
+*.swp

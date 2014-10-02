@@ -1,30 +1,33 @@
-//     Monet.js 0.8.1
+//     Monet.js 0.8.2
 
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
 //     For all details and documentation:
-//     http://cwmyers.github.com/monet.js
+//     https://cwmyers.github.com/monet.js
 
 
-(function (window) {
+(function(root, factory) {
+
+    if (typeof exports === 'object') {
+        module.exports = factory(root);
+    } else if (typeof define === 'function' && define.amd) {
+        define(factory);
+    } else {
+        root.curry = factory(root);
+    }
+}(this, function(root) {
 
     var curry = function (fn, args) {
-        return function () {
-            var args1 = args.append(List.fromArray(Array.prototype.slice.call(arguments)));
-            return args1.size() == fn.length ? fn.apply(this, args1.toArray()) : curry(fn, args1)
-        }
-    }
-    window.curry = curry
+      return function () {
+        var args1 = args.append(List.fromArray(Array.prototype.slice.call(arguments)));
+        return args1.size() == fn.length ? fn.apply(this, args1.toArray()) : curry(fn, args1);
+      };
+    };
 
-    return this
 
-})(window || this);
-
-(function (window) {
-
-    var isFunction = function (f) {
+   var isFunction = function (f) {
         return !!(f && f.constructor && f.call && f.apply)
-    }
+    };
 
     var idFunction = function (value) {
         return value
@@ -36,7 +39,7 @@
         return false
     };
 
-    var Monet = window.Monet = {}
+    var Monet = root.Monet = {}
 
     var swap = Monet.swap = function (f) {
         return function (a, b) {
@@ -58,7 +61,7 @@
 
     // List monad
 
-    var List = list = window.List = function (head, tail) {
+    var List = list = root.List = function (head, tail) {
         return new List.fn.init(head, tail)
     }
 
@@ -250,7 +253,7 @@
     }
 
     List.fn.init.prototype = List.fn;
-    var Nil = window.Nil = new List.fn.init()
+    var Nil = root.Nil = new List.fn.init()
 
     // Aliases
 
@@ -280,7 +283,7 @@
      *
      */
 
-    var NEL = window.NEL = NonEmptyList = window.NonEmptyList = function (head, tail) {
+    var NEL = root.NEL = NonEmptyList = root.NonEmptyList = function (head, tail) {
         if (head == undefined || head == null) {
             throw "Cannot create an empty Non-Empty List."
         }
@@ -368,7 +371,7 @@
 
     /* Maybe Monad */
 
-    var Maybe = window.Maybe = {}
+    var Maybe = root.Maybe = {}
 
     Maybe.fromNull = function (val) {
         return (val == undefined || val == null) ? Maybe.None() : Maybe.Some(val)
@@ -378,11 +381,11 @@
         return Some(a)
     }
 
-    var Some = Just = Maybe.Just = Maybe.Some = window.Some = window.Just = function (val) {
+    var Some = Just = Maybe.Just = Maybe.Some = root.Some = root.Just = function (val) {
         return new Maybe.fn.init(true, val)
     };
 
-    var None = Nothing = Maybe.Nothing = Maybe.None = window.None = function () {
+    var None = Nothing = Maybe.Nothing = Maybe.None = root.None = function () {
         return new Maybe.fn.init(false, null)
     };
 
@@ -452,13 +455,13 @@
 
     Maybe.fn.init.prototype = Maybe.fn
 
-    var Validation = window.Validation = {};
+    var Validation = root.Validation = {};
 
-    var Success = Validation.Success = Validation.success = window.Success = function (val) {
+    var Success = Validation.Success = Validation.success = root.Success = function (val) {
         return new Validation.fn.init(val, true)
     }
 
-    var Fail = Validation.Fail = Validation.fail = window.Fail = function (error) {
+    var Fail = Validation.Fail = Validation.fail = root.Fail = function (error) {
         return new Validation.fn.init(error, false)
     }
 
@@ -531,7 +534,7 @@
     Validation.fn.init.prototype = Validation.fn;
 
 
-    var Semigroup = window.Semigroup = {}
+    var Semigroup = root.Semigroup = {}
 
     Semigroup.append = function (a, b) {
         if (a instanceof Array) {
@@ -546,7 +549,7 @@
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
     }
 
-    var MonadT = monadT = monadTransformer = MonadTransformer = window.monadTransformer = window.MonadT = window.monadT = function (monad) {
+    var MonadT = monadT = monadTransformer = MonadTransformer = root.monadTransformer = root.MonadT = root.monadT = function (monad) {
         return new MonadT.fn.init(monad)
     }
 
@@ -582,7 +585,7 @@
 
     MonadT.fn.init.prototype = MonadT.fn;
 
-    var IO = io = window.IO = window.io = function (effectFn) {
+    var IO = io = root.IO = root.io = function (effectFn) {
         return new IO.fn.init(effectFn)
     }
 
@@ -625,16 +628,16 @@
 
     /* Either Monad */
 
-    var Either = window.Either = {}
+    var Either = root.Either = {}
 
     Either.of = function (a) {
         return Right(a)
     }
 
-    var Right = Either.Right = window.Right = function (val) {
+    var Right = Either.Right = root.Right = function (val) {
         return new Either.fn.init(val, true)
     };
-    var Left = Either.Left = window.Left = function (val) {
+    var Left = Either.Left = root.Left = function (val) {
         return new Either.fn.init(val, false)
     };
 
@@ -691,7 +694,7 @@
 
     Either.fn.init.prototype = Either.fn;
 
-    var Reader = reader = window.Reader = function (fn) {
+    var Reader = reader = root.Reader = function (fn) {
         return new Reader.fn.init(fn)
     }
 
@@ -730,12 +733,12 @@
 
     Reader.fn.init.prototype = Reader.fn;
 
-    var Free = window.Free = {}
+    var Free = root.Free = {}
 
-    var Suspend = Free.Suspend = window.Suspend = function (functor) {
+    var Suspend = Free.Suspend = root.Suspend = function (functor) {
         return new Free.fn.init(functor, true)
     }
-    var Return = Free.Return = window.Return = function (val) {
+    var Return = Free.Return = root.Return = function (val) {
         return new Free.fn.init(val, false)
     }
 
@@ -797,7 +800,7 @@
 
     Free.fn.init.prototype = Free.fn;
 
-    var Identity = window.Identity = function (a) {
+    var Identity = root.Identity = function (a) {
         return new Identity.fn.init(a)
     }
 
@@ -933,6 +936,6 @@
     decorate(Free)
     decorate(Identity)
 
-    return this
-}(window || this));
+    return root
+}));
 
