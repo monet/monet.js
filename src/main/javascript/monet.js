@@ -5,16 +5,6 @@
 //     For all details and documentation:
 //     https://cwmyers.github.com/monet.js
 
-(function(root, factory) {
-
-    if (typeof exports === 'object') {
-        module.exports = factory(root);
-    } else if (typeof define === 'function' && define.amd) {
-        define(factory);
-    }
-}(this, function(root) {
-    return this;
-}));
 
 (function(root, factory) {
 
