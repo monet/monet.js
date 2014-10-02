@@ -1,7 +1,7 @@
 ---
 title: Home
 layout: index
-version: 0.8.1
+version: 0.8.2
 ---
 
 ## Introduction
@@ -18,7 +18,7 @@ Download the [zip][gitZip] or [tar][gitTar] ball.
 
 ##Source code
 
-The source is available at: [https://github.com/cwmyers/monet.js](https://github.com/cwmyers/monet.js).
+The source is available at: [http://github.com/cwmyers/monet.js](http://github.com/cwmyers/monet.js).
 
 ##Installation
 
@@ -36,7 +36,7 @@ Using [bower]:
 or to install a specific version
 
 	bower install monet#{{ page.version }}
-	
+
 ## A note on types
 
 #### Well it's JavaScript - there ain't any
@@ -59,13 +59,13 @@ Which means a `List` of `A`s.  Though of course you will have to keep track of t
 And functions on a Monadic type that has been constructed with `A`
 
 	Maybe[A].fromNull(a: A): Maybe[A]
-	
+
 ##### Anonymous functions
-	
+
 For functions that take other functions as parameters (which are called *Higher order functions*) we will use an abbreviated way to represent that function
 using a pseudo type lambda:
 
-	A -> B 
+	A -> B
 
 So,
 
@@ -130,7 +130,7 @@ For example:
 
 	Monad[A].takeRight(m: Monad[B]): Monad[B]
 
-Performs a combination of both monads and takes the right one. 
+Performs a combination of both monads and takes the right one.
 
 For example:
 
@@ -140,7 +140,7 @@ For example:
 	// result: None
 	None().takeRight(Some(2))
 	//result: None
-	
+
 
 ## Maybe
 
@@ -153,12 +153,12 @@ The `Maybe` type is the most common way of representing *nothingness* (or the `n
 	var maybe = Maybe.Some(val);
 	var maybe = Maybe.None();
 	var maybe = Maybe.fromNull(val);  // none if val is null, some otherwise
-	
+
 or more simply with the pimped method on Object.
 
 	var maybe = "hello world".some()
 	var maybe = val.some()
-	
+
 ### Functions
 #### map
 
@@ -179,7 +179,7 @@ For example:
 	Maybe[A].bind(fn: A -> Maybe[B]): Maybe[B]
 
 `bind` takes a function that takes a value and returns an `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on.
-            
+
 
 For example:
 
@@ -225,11 +225,11 @@ For example:
 
 	Maybe.some("hi").some()
 	//result: "hi"
-	
+
 ####orSome *alias: orJust*
 
 	Maybe[A].orSome(a:A) : A
-	
+
 Will return the containing value inside the `Maybe` or return the supplied value.
 
 	maybe.some("hi").orSome("bye")
@@ -247,7 +247,7 @@ Returns the Maybe if it is a Some otherwise returns the supplied Maybe.
 
 	Maybe[A].ap(Maybe[A->B]): Maybe[B]
 
-The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another `Maybe` type which contains a function, and then applies that function to the value contained in the calling `Maybe`. 
+The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another `Maybe` type which contains a function, and then applies that function to the value contained in the calling `Maybe`.
 
 It may seem odd to want to apply a function to a monad that exists inside another monad, but this is particular useful for when you have a curried function being applied across many monads.
 
@@ -260,11 +260,11 @@ Here is an example for creating a string out of the result of a couple of `Maybe
     var maybeAddress = Maybe.just('Dulwich, London')
     var maybeSurname = Maybe.just('Baker')
     var maybeForename = Maybe.just('Tom')
-    
+
     var personString = maybeAddress
                       .ap(maybeSurname
 	                     .ap(maybeForename.map(person))).just()
-    
+
     // result: "Tom Baker lives in Dulwich, London"
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
@@ -363,7 +363,7 @@ Returns true if this Either is left, false otherwise.
 ####right
 
 	Either[E,A].right(): A
-	
+
 Returns the value in the right side, otherwise throws an exception.
 
 ####left
@@ -414,7 +414,7 @@ For example:
 	Validation[E,A].bind(fn:A -> Validation[E,B]) : Validation[E,B]
 
 `bind` takes a function that takes a value and returns an `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
-            
+
 For example:
 
 	validation.bind(function(val) {
@@ -430,7 +430,7 @@ For example:
 
 	Validation[E,A].isSuccess() : Boolean
 
-Will return `true` if this is a successful validation, `false` otherwise. 
+Will return `true` if this is a successful validation, `false` otherwise.
 
 ####isFail
 
@@ -460,22 +460,22 @@ Implements the applicative functor pattern.  `ap` will apply a function over the
 	var person = function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
     }.curry();
-    
+
 
     var validateAddress = Validation.success('Dulwich, London')
     var validateSurname = Validation.success('Baker')
     var validateForename = Validation.success('Tom')
-    
+
     var personString = validateAddress.ap(validateSurname
     	.ap(validateForename.map(person))).success()
-    
+
     // result: "Tom Baker lives at Dulwich, London"
-    
+
     var result = Validation.fail(["no address"])
     	.ap(Validation.fail(["no surname"])
     	.ap(validateForename.map(person)))
     // result: Validation(["no address", "no surname"])
-    
+
 ####cata
 
 	Validation[E,A].cata(failureFn: E->X, successFn: A->X): X
@@ -501,7 +501,7 @@ Converts an `Either` to a `Validation`
 	Validation[E,A].toMaybe(): Maybe[A]
 
 Converts to a `Maybe` dropping the failure side.
-	
+
 ## Immutable lists
 
 An immutable list is a list that has a head element and a tail. A tail is another list.  The empty list is represented by the `Nil` constructor.  An immutable list is also known as a "cons" list.  Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
@@ -546,7 +546,7 @@ Maps the supplied function over the list.
 	var list = [1,2,3].list().map(function(a) {
 		return a+1
 	})
-	// list == [2,3,4]	
+	// list == [2,3,4]
 
 ####flatMap *alias: bind*
 
@@ -576,10 +576,10 @@ For example:
 
 	[1,2,3,4].list().headMaybe()
 	// result: Some(1)
-	
+
 	Nil.headMaybe()
 	// result: None()
-	
+
 ####foldLeft
 
 	List[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
@@ -594,7 +594,7 @@ For example, say you wanted to add up a list of integers, your initial value wou
 		return e+acc
 	})
 	// sum == 10
-	
+
 ####foldRight(initialValue)(function(e, acc))
 
 	List[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
@@ -646,7 +646,7 @@ For example:
 
 	var sequenced = [Some(1), Some(2), Some(3)].list().sequenceMaybe()
 	// sequenced == Some([1,2,3]) <- That's an immutable list not an array
-	
+
 	var sequenced = [Some(1), Some(2), None, Some(3), None].list().sequenceMaybe()
 	// sequenced == None
 
@@ -676,11 +676,11 @@ Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will 
 	var sequenced = ["a".success(), "b".success(), "c".success()]
 		.list().sequenceValidation()
 	// sequenced == Success(["a", "b", "c"])
-	
-	var sequenced = ["a".success(), 
-	                 "b".success(), 
-                     "c".fail(), 
-                     "d".fail(), 
+
+	var sequenced = ["a".success(),
+	                 "b".success(),
+                     "c".fail(),
+                     "d".fail(),
                      "e".success()]
 					.list().sequenceValidation()
 	// sequenced == Fail(["c","d"])
@@ -705,7 +705,7 @@ Returns a new list reversed.
 
 	var list = [1,2,3].list().reverse()
 	// list.toArray() == [3,2,1]
-	
+
 
 ## Non Empty Lists
 
@@ -834,9 +834,9 @@ Evaluates the effect inside the `IO` monad.  This can only be run once in your p
 ###"Pimped" functions
 ####fn.io()
 Wraps a supplied function in an `IO`.  Assumes no arguments will be supplied to the function.
-	
+
 	function() { return $("#id") }.io()
-	
+
 ####fn.io1()
 Returns a function that will return an `IO` when one parameter is supplied.
 
@@ -852,7 +852,7 @@ Say we have a function to read from the DOM and a function to write to the DOM. 
 	var read = function(id) {
 		return $(id).text()
 	}
-	
+
 	var write = function(id, value) {
 		$(id).text(value)
 	}
@@ -862,7 +862,7 @@ On their own both functions would have a side effect because they violate refere
 We can modify this functions so that instead of performing these side-effects they will just return an `IO` with the yet-to-be-executed function inside it.
 
 	var read = IO(function (id) { return $(id).text() })
-	
+
 	var write = function(id) {
 		return IO(function(value) {
 			$(id).text(value)
@@ -875,13 +875,13 @@ We can now call `map` and `flatMap` to chain this two effects together.  Say we 
 
 	var toUpper = function (text) { return text.toUpperCase() }
 	var changeToUpperIO = read("#myId").map(toUpper).flatMap(write("#myId"))
-	
+
 So what is the type of `changeToUpperIO`?  Well it is the `IO` type.  And that means at this stage, **nothing has been executed yet**.  The DOM has not been read from, the text has not been mapped and the DOM has not been updated.  What we have is a **referentially transparent description** of our programme.
 
 In other pure functional languages such as Haskell we would simply return this type back to the runtime, but in JavaScript we have to manage this ourselves.  So now let's run our effect.
 
 	changeToUpperIO.run()
-	
+
 Now our DOM should be updated with the text converted to upper case.
 
 It becomes much clearer which functions deal with IO and which functions simply deal with data.  `read` and `write` return an `IO` effect but `toUpper` simply converts a supplied string to upper case.  This pattern is what you will often find in your software, having an effect when you start (i.e. reading from a data source, network etc), performing transformations on the results of that effect and finally having an effect at the end (such as writing result to a database, disk, or DOM).
@@ -913,7 +913,7 @@ One quick win would be to `curry` the `createPrettyName` function, and make `ren
 	function createPrettyName(name, printer) {
 		return printer.write("hello " + name)
 	}.curry()
-	
+
 	function render() {
 		return createPrettyName("Tom")
 	}
@@ -975,7 +975,7 @@ Executes the function wrapped in the `Reader` with the supplied `config`.
 ## Free
 The `Free` monad is a monad that is able to separate instructions from their interpreter.  There are many applications for this monad, and one of them is for implementing Trampolines, (which is a way to make recursion constant stack for languages that don't support tail call elimination, like JavaScript!).
 
-Please see [Ken Scambler](https://twitter.com/KenScambler)'s [excellent talk](http://www.slideshare.net/kenbot/running-free-with-the-monads) and [example project](https://github.com/kenbot/free) to get an in-depth understanding of this very useful monad.
+Please see [Ken Scambler](http://twitter.com/KenScambler)'s [excellent talk](http://www.slideshare.net/kenbot/running-free-with-the-monads) and [example project](https://github.com/kenbot/free) to get an in-depth understanding of this very useful monad.
 
 #### Creating a Free monad
 
@@ -1071,7 +1071,7 @@ a method to be applied in the following ways:
 
 ##Author
 
-Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers). Follow Monet.js at [@monetjs](https://twitter.com/monetjs).
+Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
 
 
 [functionalJava]: http://functionaljava.org/
