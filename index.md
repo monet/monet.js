@@ -838,6 +838,7 @@ Performs a map over the result of the effect.  This will happen lazily and will 
 Evaluates the effect inside the `IO` monad.  This can only be run once in your programme and at the very end.
 
 ###"Pimped" functions
+
 ####fn.io()
 Wraps a supplied function in an `IO`.  Assumes no arguments will be supplied to the function.
 
