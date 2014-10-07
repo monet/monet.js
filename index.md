@@ -160,6 +160,7 @@ or more simply with the pimped method on Object.
 	var maybe = val.some()
 
 ### Functions
+
 #### map
 
 	Maybe[A].map(fn: A -> B) : Maybe[B]
@@ -304,6 +305,7 @@ or with the pimped methods on object:
 	var failure = "some error".left()
 
 ###Functions
+
 ####map
 
 	Either[E,A].map(fn: A -> B): Either[E,B]
@@ -398,6 +400,7 @@ or with pimped methods on an object
 	var failure = "some error".fail();
 
 ###Functions
+
 ####map
 
 	Validation[E,A].map(fn:A -> B): Validation[E,A]
@@ -519,6 +522,7 @@ which is equivalent to:
 As you can see from the second example each List object contains a head element and the tail is just another list element.
 
 ###Functions
+
 ####cons
 
 	List[A].cons(a: A) : List[A]
@@ -725,6 +729,7 @@ and a guaranteed (total) tail.
 Trying to create an empty `NonEmptyList` will throw an exception.
 
 ###Functions
+
 ####map
 
 	NEL[A].map(fn: A -> B): NEL[B]
@@ -808,6 +813,7 @@ The `IO` monad is for isolating effects to maintain referential transparency in 
 	var ioAction = IO(function () { return $("#id").val() })
 
 ###Functions
+
 ####IO *alias: io*
 
 	IO[A](fn: () -> A): IO[A]
@@ -948,6 +954,7 @@ The top level of our programme would co-ordinate the injecting of the dependency
 	reader().run(new BoldPrinter())
 
 ###Functions
+
 ####map
 
 	Reader[A].map(f: A -> B): Reader[B]
@@ -1030,7 +1037,9 @@ Runs the computation to the end, returning the final result, using the supplied 
 This function only makes sense for Tampolined computations where the supplied functor is a Function.  This will run the computation to the end returning the result `A`.
 
 ##Other useful functions
+
 ###Functions
+
 ####fn.compose(f1) *alias fn.o(fn1)*
 Function composition.  `f.compose(g)` is equivalent to:
 
