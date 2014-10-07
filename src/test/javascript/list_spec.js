@@ -196,6 +196,9 @@ describe("An immutable list", function () {
         it("will return None for headMaybe", function () {
             expect(Nil.headMaybe()).toBeNoneMaybe()
         })
+        it("will return an empty list on filter", function() {
+          expect(Nil.filter(function() {return true})).toEqual(Nil)
+        })
     })
 
     describe("that has multiple elements", function () {
@@ -203,7 +206,12 @@ describe("An immutable list", function () {
             expect(list.headMaybe()).toBeSomeMaybeWith(1)
 
         })
+      it("will return the elements that pass the filter", function () {
+        expect(list.filter(function (a) {return a%2==0}).toArray()).toEqual([2,4])
+
+      })
     })
+
     describe("that is huge, must not blow the stack", function () {
         var list1 = [], list2 = []
         var size = 1000;
