@@ -264,7 +264,7 @@
 
     List.fromArray = function (array) {
         var l = Nil
-        for (i = array.length; i--; i <= 0) {
+        for (var i = array.length; i--; i <= 0) {
             l = l.cons(array[i])
         }
         return l
