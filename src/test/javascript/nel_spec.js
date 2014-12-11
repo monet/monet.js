@@ -76,5 +76,11 @@ describe("A Non-Empty immutable list", function () {
         expect(nAppend.toArray()).toEqual([1,2,3,4,5,6,7,8])
     })
 
+  it("will be filtered", function() {
+    var n1 = NEL.fromList([1,2,3,4,5,6,7,8].list()).some()
+    expect(n1.filter(function(a){return a%2==0}).toArray()).toEqual([2,4,6,8])
+
+  })
+
 })
 

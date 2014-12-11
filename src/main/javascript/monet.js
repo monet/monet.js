@@ -1,4 +1,4 @@
-//     Monet.js 0.8.2
+//     Monet.js 0.8.3
 
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -25,7 +25,7 @@
     };
 
 
-   var isFunction = function (f) {
+    var isFunction = function (f) {
         return !!(f && f.constructor && f.call && f.apply)
     };
 
@@ -147,6 +147,12 @@
         return list.foldLeft(Nil)(swap(cons))
     }
 
+    var listFilter = function(list, fn) {
+      return list.foldRight(Nil)(function(a, acc) {
+        return fn(a) ? cons(a,acc): acc
+      })
+    }
+
     var cons = function (head, tail) {
         return tail.cons(head)
     }
@@ -199,6 +205,9 @@
         },
         append: function (list2) {
             return append(this, list2)
+        },
+        filter: function(fn) {
+          return listFilter(this, fn)
         },
         flatten: function () {
             return foldRight(append, this, Nil)
@@ -344,6 +353,9 @@
         },
         foldLeft: function (initialValue) {
             return this.toList().foldLeft(initialValue)
+        },
+        filter: function (fn) {
+            return listFilter(this.toList(), fn)
         },
         append: function (list2) {
             return NEL.fromList(this.toList().append(list2.toList())).some()
