@@ -1,4 +1,4 @@
-//     monet-pimp.js 0.8.2
+//     monet-pimp.js 0.8.3
 
 //     This file needs to be included after monet.js
 
