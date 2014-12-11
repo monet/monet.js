@@ -74,6 +74,12 @@ describe('An Either', function () {
                 return "right " + s
             })).toBeRightWith("right abcd")
         })
+        it('can be converted to Maybe.Some', function() {
+          expect(rightString.toMaybe().isSome()).toBe(true)
+        })
+        it('can be converted to Validation.Success', function() {
+          expect(rightString.toValidation().success()).not.toBeUndefined()
+        })
     })
 
     var leftString = Either.Left("error dude")
@@ -129,6 +135,13 @@ describe('An Either', function () {
             }, function () {
                 throw "right"
             })).toBeLeftWith("left: error dude")
+        })
+        
+        it('can be converted to Maybe.None', function() {
+          expect(leftString.toMaybe().isNone()).toBe(true)
+        })
+        it('can be converted to Validation.Fail', function() {
+          expect(leftString.toValidation().fail()).not.toBeUndefined()
         })
 
     })
