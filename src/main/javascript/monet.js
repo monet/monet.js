@@ -273,7 +273,7 @@
 
     List.fromArray = function (array) {
         var l = Nil
-        for (i = array.length; i--; i <= 0) {
+        for (var i = array.length; i--; i <= 0) {
             l = l.cons(array[i])
         }
         return l
@@ -697,10 +697,10 @@
             return this.isRightValue ? this.map(rightFn) : this.leftMap(leftFn)
         },
         toMaybe: function () {
-            return this.isRight() ? Some(this.val) : None()
+            return this.isRight() ? Some(this.value) : None()
         },
         toValidation: function () {
-            return this.isRight() ? Success(this.val) : Fail(this.val)
+            return this.isRight() ? Success(this.value) : Fail(this.value)
         }
     }
 
