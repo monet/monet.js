@@ -58,6 +58,18 @@ describe("An immutable list", function () {
         })).toEqual(10)
     })
 
+    it("can be reversed using foldLeft and cons", function () {
+        expect(list.foldLeft(Nil)(function (acc, e) {
+            return acc.cons(e)
+        }).toArray()).toEqual([4,3,2,1])
+    })
+
+    it("can not be reversed using foldRight and cons", function () {
+        expect(list.foldRight(Nil)(function (e, acc) {
+            return acc.cons(e)
+        }).toArray()).toEqual([1,2,3,4])
+    })
+
     it("will have cons available on objects", function () {
         expect("fun".cons(list).toArray()).toEqual(["fun", 1, 2, 3, 4])
     })
