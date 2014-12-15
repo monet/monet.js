@@ -44,7 +44,7 @@ Using [npm]:
 
 or to install a specific version
 
-	npm install monet@#{{ page. version }}
+	npm install monet@{{ page.version }}
 
 ## A note on types
 
