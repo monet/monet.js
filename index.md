@@ -1115,8 +1115,8 @@ Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers). Fo
 
 
 [functionalJava]: http://functionaljava.org/
-[gitZip]: https://github.com/cwmyers/monet.js/zipball/master (zip format)
-[gitTar]: https://github.com/cwmyers/monet.js/tarball/master (tar format)
+[gitZip]: https://github.com/cwmyers/monet.js/archive/{{ page.version }}.zip
+[gitTar]: https://github.com/cwmyers/monet.js/archive/{{ page.version }}.tar.gz
 [bower]: http://bower.io
 [npm]: https://www.npmjs.com/
 [scalaz]: https://github.com/scalaz/scalaz
