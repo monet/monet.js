@@ -37,7 +37,16 @@ Using [bower]:
 
 or to install a specific version
 
-	bower install monet#{{ page.version }}
+	bower install monet#0.8.5
+
+### Node installation
+Using [npm]:
+
+	npm install monet
+
+or to install a specific version
+
+	npm install monet@0.8.5
 
 ## A note on types
 
@@ -162,6 +171,7 @@ or more simply with the pimped method on Object.
 	var maybe = val.some()
 
 ### Functions
+
 #### map
 
 	Maybe[A].map(fn: A -> B) : Maybe[B]
@@ -306,6 +316,7 @@ or with the pimped methods on object:
 	var failure = "some error".left()
 
 ###Functions
+
 ####map
 
 	Either[E,A].map(fn: A -> B): Either[E,B]
@@ -400,6 +411,7 @@ or with pimped methods on an object
 	var failure = "some error".fail();
 
 ###Functions
+
 ####map
 
 	Validation[E,A].map(fn:A -> B): Validation[E,A]
@@ -521,6 +533,7 @@ which is equivalent to:
 As you can see from the second example each List object contains a head element and the tail is just another list element.
 
 ###Functions
+
 ####cons
 
 	List[A].cons(a: A) : List[A]
@@ -727,6 +740,7 @@ and a guaranteed (total) tail.
 Trying to create an empty `NonEmptyList` will throw an exception.
 
 ###Functions
+
 ####map
 
 	NEL[A].map(fn: A -> B): NEL[B]
@@ -783,6 +797,37 @@ For example:
 	        }
 	//result: [10,9,7,4]
 
+####foldLeft
+
+	NEL[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
+
+`foldLeft` takes an initial value and a function and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first value and the current element in the list as its second argument.  The returned value from the function will be pass into the accumulator on the subsequent pass.
+
+
+For example, say you wanted to add up a non empty list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
+
+	var sum = nonEmptyList.foldLeft(0)(function(acc, e) {
+		return e+acc
+	})
+	// sum == 10
+
+####foldRight(initialValue)(function(e, acc))
+
+	NEL[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
+
+Performs a fold right across the non empty list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
+
+####reduceLeft(function(e,acc))
+
+	NEL[A].reduceLeft(fn: (element: A, acc: A) -> A): A
+
+Reduces a `NonEmptyList` of type `A` down to a single `A`.
+
+	var nonEmptyList = NonEmptyList(1, [2,3,4].list())
+	nonEmptyList.reduceLeft(function (a,b) {return a+b}) 
+	// result: 10
+
+
 ####append *alias: concat*
 
 	NEL[A].append(n: NEL[A]): NEL[A]
@@ -810,6 +855,7 @@ The `IO` monad is for isolating effects to maintain referential transparency in 
 	var ioAction = IO(function () { return $("#id").val() })
 
 ###Functions
+
 ####IO *alias: io*
 
 	IO[A](fn: () -> A): IO[A]
@@ -834,6 +880,7 @@ Performs a map over the result of the effect.  This will happen lazily and will 
 Evaluates the effect inside the `IO` monad.  This can only be run once in your programme and at the very end.
 
 ###"Pimped" functions
+
 ####fn.io()
 Wraps a supplied function in an `IO`.  Assumes no arguments will be supplied to the function.
 
@@ -893,7 +940,7 @@ It becomes much clearer which functions deal with IO and which functions simply 
 The `Reader` monad is a wonderful solution to inject dependencies into your functions.  There are plenty of great resources to get your
 teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
 
-The `Reader` monad provides a way to "weave" your configuration throughout your programme.
+The `Reader` monad provides a way to "weave" your configuration throughout your programme.  
 
 ### Creating a Reader
 
@@ -950,6 +997,7 @@ The top level of our programme would co-ordinate the injecting of the dependency
 	reader().run(new BoldPrinter())
 
 ###Functions
+
 ####map
 
 	Reader[A].map(f: A -> B): Reader[B]
@@ -1032,7 +1080,9 @@ Runs the computation to the end, returning the final result, using the supplied 
 This function only makes sense for Tampolined computations where the supplied functor is a Function.  This will run the computation to the end returning the result `A`.
 
 ##Other useful functions
+
 ###Functions
+
 ####fn.compose(f1) *alias fn.o(fn1)*
 Function composition.  `f.compose(g)` is equivalent to:
 
@@ -1077,7 +1127,8 @@ Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers). Fo
 
 
 [functionalJava]: http://functionaljava.org/
-[gitZip]: https://github.com/cwmyers/monet.js/zipball/master (zip format)
-[gitTar]: https://github.com/cwmyers/monet.js/tarball/master (tar format)
+[gitZip]: https://github.com/cwmyers/monet.js/archive/{{ page.version }}.zip
+[gitTar]: https://github.com/cwmyers/monet.js/archive/{{ page.version }}.tar.gz
 [bower]: http://bower.io
+[npm]: https://www.npmjs.com/
 [scalaz]: https://github.com/scalaz/scalaz
