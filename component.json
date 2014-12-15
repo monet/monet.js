@@ -1,6 +1,6 @@
 {
     "name": "monet",
-    "version": "$VERSION$",
+    "version": "0.8.4",
     "scripts": [
         "src/main/javascript/monet.js",
         "src/main/javascript/monet-pimp.js"
