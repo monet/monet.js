@@ -1,7 +1,7 @@
 ---
 title: Home
 layout: index
-version: 0.8.4
+version: 0.8.5
 ---
 
 ## Introduction
@@ -814,6 +814,16 @@ For example, say you wanted to add up a non empty list of integers, your initial
 	NEL[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
 
 Performs a fold right across the non empty list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
+
+####reduceLeft(function(e,acc))
+
+	NEL[A].reduceLeft(fn: (element: A, acc: A) -> A): A
+
+Reduces a `NonEmptyList` of type `A` down to a single `A`.
+
+	var nonEmptyList = NonEmptyList(1, [2,3,4].list())
+	nonEmptyList.reduceLeft(function (a,b) {return a+b}) 
+	// result: 10
 
 
 ####append *alias: concat*
