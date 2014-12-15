@@ -357,6 +357,9 @@
         foldRight: function (initialValue) {
             return this.toList().foldRight(initialValue)
         },
+        reduceLeft: function (fn) {
+          return this.tail().foldLeft(this.head())(fn)
+        },
         filter: function (fn) {
             return listFilter(this.toList(), fn)
         },

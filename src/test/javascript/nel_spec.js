@@ -94,5 +94,10 @@ describe("A Non-Empty immutable list", function () {
     }).toArray()).toEqual([1,2,3,4])
   })
 
+  it("can be reduced using reduceLeft", function () {
+    expect(nonEmptyList.reduceLeft(function (a,b) {return a+b})).toEqual(10)
+  })
+
+
 })
 
