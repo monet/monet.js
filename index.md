@@ -786,6 +786,27 @@ For example:
 	        }
 	//result: [10,9,7,4]
 
+####foldLeft
+
+	NEL[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
+
+`foldLeft` takes an initial value and a function and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first value and the current element in the list as its second argument.  The returned value from the function will be pass into the accumulator on the subsequent pass.
+
+
+For example, say you wanted to add up a non empty list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
+
+	var sum = nonEmptyList.foldLeft(0)(function(acc, e) {
+		return e+acc
+	})
+	// sum == 10
+
+####foldRight(initialValue)(function(e, acc))
+
+	NEL[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
+
+Performs a fold right across the non empty list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
+
+
 ####append *alias: concat*
 
 	NEL[A].append(n: NEL[A]): NEL[A]
