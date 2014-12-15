@@ -1,4 +1,4 @@
-//     Monet.js 0.8.3
+//     Monet.js $VERSION$
 
 //     (c) 2012-2014 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
@@ -353,6 +353,9 @@
         },
         foldLeft: function (initialValue) {
             return this.toList().foldLeft(initialValue)
+        },
+        foldRight: function (initialValue) {
+            return this.toList().foldRight(initialValue)
         },
         filter: function (fn) {
             return listFilter(this.toList(), fn)

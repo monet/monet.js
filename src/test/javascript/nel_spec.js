@@ -82,5 +82,17 @@ describe("A Non-Empty immutable list", function () {
 
   })
 
+  it("can be reversed using foldLeft and cons", function () {
+    expect(nonEmptyList.foldLeft(Nil)(function (acc, e) {
+      return acc.cons(e)
+    }).toArray()).toEqual([4,3,2,1])
+  })
+
+  it("can not be reversed using foldRight and cons", function () {
+    expect(nonEmptyList.foldRight(Nil)(function (e, acc) {
+      return acc.cons(e)
+    }).toArray()).toEqual([1,2,3,4])
+  })
+
 })
 
