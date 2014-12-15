@@ -38,7 +38,7 @@ or to install a specific version
 	bower install monet#{{ page.version }}
 
 ### Node installation
-Using [npm]
+Using [npm]:
 
 	npm install monet
 
