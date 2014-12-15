@@ -37,6 +37,15 @@ or to install a specific version
 
 	bower install monet#{{ page.version }}
 
+### Node installation
+Using [npm]
+
+	npm install monet
+
+or to install a specific version
+
+	npm install monet@{{ page. version }}
+
 ## A note on types
 
 #### Well it's JavaScript - there ain't any
