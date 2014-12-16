@@ -1,81 +1,97 @@
 <!DOCTYPE html>
-<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
-<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
-<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<!--[if lt IE 7 ]>
+<html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>
+<html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>
+<html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en"> <!--<![endif]-->
 <head>
 
-	<!-- Basic Page Needs
+    <!-- Basic Page Needs
   ================================================== -->
-	<meta charset="utf-8">
-	<title>monet.js - For when you have no choice but to use JavaScript</title>
-	<meta name="description" content="Monadic library for functional programming in JavaScript.">
-	<meta name="author" content="Chris Myers">
+    <meta charset="utf-8">
+    <title>monet.js - For when you have no choice but to use JavaScript</title>
+    <meta name="description" content="Monadic library for functional programming in JavaScript.">
+    <meta name="author" content="Chris Myers">
 
-	<!-- Mobile Specific Metas
+    <!-- Mobile Specific Metas
   ================================================== -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-	<!-- CSS
+    <!-- CSS
   ================================================== -->
-  <link href='//fonts.googleapis.com/css?family=Quicksand:300' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="stylesheets/base.css">
-	<link rel="stylesheet" href="stylesheets/skeleton.css">
-	<link rel="stylesheet" href="stylesheets/layout.css">
-	<link rel="stylesheet/less" type="text/css" href="stylesheets/monet-site.less">
-	
+    <link href='//fonts.googleapis.com/css?family=Quicksand:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="stylesheets/normalize.css">
+    <link rel="stylesheet" href="stylesheets/skeleton.css">
+    <link rel="stylesheet" href="stylesheets/layout.css">
+    <link rel="stylesheet/less" type="text/css" href="stylesheets/monet-site.less">
 
-	<!--[if lt IE 9]>
-		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
 
-	<!-- Favicons
-	================================================== -->
-	<link rel="shortcut icon" href="images/favicon.ico">
-	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-    <link href="stylesheets/prettify.css" type="text/css" rel="stylesheet" />
+    <!-- Favicons
+    ================================================== -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+
+    <link href="stylesheets/prettify.css" type="text/css" rel="stylesheet"/>
 
 
 </head>
 <body>
 
-<a href="https://github.com/cwmyers/monet.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="//s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+<a href="https://github.com/cwmyers/monet.js"><img style="position: absolute; top: 0; right: 0; border: 0;"
+                                                   src="//s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"
+                                                   alt="Fork me on GitHub"/></a>
 
 
-	<!-- Primary Page Layout
-	================================================== -->
+<!-- Primary Page Layout
+================================================== -->
 
-	<div class="container">
-		<div class="sixteen columns">
-			<h1 class="remove-bottom" style="margin-top: 40px">monet.js</h1>
-			<h5>Version {{page.version}}</h5>
-			<hr />
-		</div>
-		<div class="two columns">
-			<ul id="contents"></ul>			
-		</div>
+<div class="section hero header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <h1 class="remove-bottom">monet.js</h1>
+                <h4>Powerful abstractions for JavaScript</h4>
+                <h5>Version {{page.version}}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="two columns contents">
+                <ul id="contents"></ul>
+            </div>
 
 
-		<div class="twelve columns" >
-             {{ content }}
-		</div>
+            <div class="ten columns doco">
+                {{ content }}
+            </div>
+        </div>
+    </div>
 
-	</div><!-- container -->
+</div>
+<!-- container -->
 
 
-
-	<!-- JS
-	================================================== -->
-	<script src="//code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="javascripts/tabs.js"></script>
-    <script type="text/javascript" src="javascripts/prettify.js"></script>
-    <script type="text/javascript" src="javascripts/monet.js"></script>
-    <script type="text/javascript" src="javascripts/monet-pimp.js"></script>
-    <script type="text/javascript" src="javascripts/monet-site.js"></script>
-    <script type="text/javascript" src="javascripts/less-1.2.1.min.js"></script>
+<!-- JS
+================================================== -->
+<script src="//code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="javascripts/tabs.js"></script>
+<script type="text/javascript" src="javascripts/prettify.js"></script>
+<script type="text/javascript" src="javascripts/monet.js"></script>
+<script type="text/javascript" src="javascripts/monet-pimp.js"></script>
+<script type="text/javascript" src="javascripts/monet-site.js"></script>
+<script type="text/javascript" src="javascripts/less-1.2.1.min.js"></script>
 
 <!-- End Document
 ================================================== -->

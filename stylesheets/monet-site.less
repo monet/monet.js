@@ -1,41 +1,157 @@
-@code-font: 'Bitstream Vera Sans Mono','DejaVu Sans Mono','Monaco',Courier,monospace, Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+@code-font: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', 'Monaco', Courier, monospace, Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
 @code-background-colour: #eee;
 @code-padding: 10px;
 @title-font: 'Quicksand', sans-serif;
 code {
-	font-family: @code-font;
-	background-color: @code-background-colour;
+  font-family: @code-font;
+  background-color: @code-background-colour;
 }
 
 pre {
-	code {
-		background-color: transparent;
+  code {
+    background-color: transparent;
+    border: 0 0 0 0;
 
-	}
+  }
 }
 
 .prettyprint {
-	border-radius: 10px 0 10px 0;
-	background-color: @code-background-colour;
-	margin-bottom: 10px;
-	padding-top: @code-padding !important;
-	padding-bottom: @code-padding !important;
-	padding-left: 20px !important;
+  border-radius: 10px 0 10px 0;
+  background-color: @code-background-colour;
+  margin-bottom: 10px;
+  padding-top: @code-padding !important;
+  padding-bottom: @code-padding !important;
+  padding-left: 20px !important;
 
 }
 
-h1 {
-	font-family: @title-font;
-	font-size: 92px;
-	text-align: right;
-}
+
 
 #contents {
-	a:hover {
-		color: #fff;
-		background-color: #000;
-		width: 100%;
-		display:block;
-		
-	}
+  a:hover {
+    color: #fff;
+    background-color: #000;
+    width: 100%;
+    display: block;
+
+  }
+  li {
+    display: block;
+  }
+}
+
+a {
+  font-style: none;
+}
+
+.contents {
+  padding-top: 2rem;
+}
+
+.header {
+  color: #fff;
+  background-color: #777;
+  background-image: url("/images/house-of-parliament-sun.jpg");
+  background-blend-mode: multiply;
+  background-size: cover;
+  h1 {
+    font-family: @title-font;
+    font-size: 92px;
+    text-align: right;
+  }
+  h5 {
+//    padding-top: 14rem;
+    float: left;
+  }
+  h4 {
+    text-align: right;
+  }
+}
+
+
+/* Larger than mobile */
+@media (min-width: 400px) {
+  .header {
+    padding-top: 1rem;
+    h1 {
+      font-size: 35px;
+      text-align: center;
+
+    }
+    h4, h5{
+      font-size: 18px;
+      float: none;
+      text-align: center;
+
+    }
+
+    h5 {
+      font-size: 12px;
+    }
+  }
+
+}
+
+/* Larger than phablet (also point when grid becomes active) */
+@media (min-width: 550px) {
+  .header {
+    padding-top: 5rem;
+    h1 {
+      font-size: 60px;
+    }
+    h4 {
+      font-size: 25px;
+      text-align: center;
+
+    }
+    h5{
+      font-size: 15px;
+      text-align: center;
+
+    }
+  }
+}
+
+/* Larger than tablet */
+@media (min-width: 750px) {
+  .header {
+
+    padding-top: 15rem;
+    h1 {
+      font-size: 80px;
+      text-align: right;
+    }
+    h4 {
+      font-size: 25px;
+      text-align: right;
+    }
+    h5{
+      font-size: 15px;
+      float: left;
+    }
+  }
+}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {
+  .header {
+    padding-top: 20rem;
+    h1 {
+      font-size: 92px;
+    }
+  }
+
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {
+  .header {
+    padding-top: 20rem;
+  }
+}
+
+
+
+.doco {
+  margin-top: 2rem;
 }
