@@ -720,6 +720,10 @@
         return Reader(fn)
     }
 
+    Reader.ask = function () {
+      return Reader(idFunction)
+    }
+
     Reader.fn = Reader.prototype = {
         init: function (fn) {
             this.f = fn
@@ -745,6 +749,12 @@
             var self = this
             return Reader(function (config) {
                 return fn(self.run(config))
+            })
+        },
+        local: function(fn) {
+            var self = this
+             return Reader(function(c) {
+                 return self.run(fn(c))
             })
         }
     }
