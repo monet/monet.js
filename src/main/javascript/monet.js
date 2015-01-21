@@ -462,6 +462,12 @@
             return function (fn) {
                 return self.isSome() ? fn(self.val) : defaultValue
             }
+        },
+        filter: function(fn) {
+          var self = this
+          return self.flatMap(function(a) {
+            return fn(a) ? self : None()
+          })
         }
     };
 
