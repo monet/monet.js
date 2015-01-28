@@ -59,10 +59,10 @@ describe('A Maybe', function () {
             expect(someString.orElse(none)).toBeSomeMaybeWith("abcd")
         })
         it('will return a none on a failed filter', function() {
-            expect(someString.filter(function(a) {return a.contains("123")})).toBeNoneMaybe()
+            expect(someString.filter(function(a) {return a === "123"})).toBeNoneMaybe()
         })
         it('will return a some on a successful filter', function() {
-            expect(someString.filter(function(a) {return a.contains("abcd")})).toBe(someString)
+            expect(someString.filter(function(a) {return a === "abcd"})).toBe(someString)
         })
     })
 
