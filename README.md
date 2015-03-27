@@ -1059,7 +1059,7 @@ Performs a monadic bind over the `Free`.
 
 	Free.liftF(F[A]): Free[F,A]
 
-Lifts a Funtor `F` into a `Free`.
+Lifts a Functor `F` into a `Free`.
 
 ####resume
 
