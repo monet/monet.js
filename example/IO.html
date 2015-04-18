@@ -56,38 +56,42 @@
     var getId = $.io1()
 
     var getTextForId = function (id) {
-        return getId(id).map(getText)
+        return getId(id).flatMap(getText)
     }
 
     var getValForId = function (id) {
-        return getId(id).map(getVal)
+        return getId(id).flatMap(getVal)
     }
 
     var getText = function (o) {
         return o.text()
-    }
+    }.io1()
 
     var setHtml = function (html, o) {
-        return o.html(html)
+        return IO(function () {
+            return o.html(html)
+        })
     }.curry()
 
     var setText = function (text, e) {
-        return e.text(text)
+        return IO(function () {
+            return e.text(text)
+        })
     }.curry()
 
     var getVal = function (o) {
         return o.val()
-    }
+    }.io1()
 
     var writer = function (writeFn, id, content) {
-        return getId(id).map(writeFn(content))
+        return getId(id).flatMap(writeFn(content))
     }.curry()
 
     var addAwesomeness = function (text) {
         return text + " now with awesomeness"
     }
 
-    getId("#SomeId").map(getText.andThen(addAwesomeness)).flatMap(writer(setText)("#SomeId")).run()
+    getTextForId("#SomeId").map(addAwesomeness).flatMap(writer(setText)("#SomeId")).run()
 
 </script>
 
