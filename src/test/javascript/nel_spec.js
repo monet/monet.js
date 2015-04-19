@@ -16,7 +16,12 @@ describe("A Non-Empty immutable list", function () {
 
     var nonEmptyList = NEL(1, List(2, List(3, List(4, Nil))))
 
-    it("cannot be create with zero elements", function () {
+    var plus = function (a, b) {
+      return a + b
+    }
+
+
+  it("cannot be create with zero elements", function () {
         expect(function () {
             new NEL()
         }).toThrow("Cannot create an empty Non-Empty List.")
@@ -95,7 +100,11 @@ describe("A Non-Empty immutable list", function () {
   })
 
   it("can be reduced using reduceLeft", function () {
-    expect(nonEmptyList.reduceLeft(function (a,b) {return a+b})).toEqual(10)
+    expect(nonEmptyList.reduceLeft(plus)).toEqual(10)
+  })
+
+  it("single element NEL will reduce to the single element", function () {
+    expect(NEL(1, Nil).reduceLeft(plus)).toEqual(1)
   })
 
 

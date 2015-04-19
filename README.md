@@ -37,7 +37,7 @@ Using [bower]:
 
 or to install a specific version
 
-	bower install monet#0.8.5
+	bower install monet#0.8.6
 
 ### Node installation
 Using [npm]:
@@ -46,7 +46,7 @@ Using [npm]:
 
 or to install a specific version
 
-	npm install monet@0.8.5
+	npm install monet@0.8.6
 
 ## A note on types
 
@@ -1127,8 +1127,8 @@ Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers). Fo
 
 
 [functionalJava]: http://functionaljava.org/
-[gitZip]: https://github.com/cwmyers/monet.js/archive/{{ page.version }}.zip
-[gitTar]: https://github.com/cwmyers/monet.js/archive/{{ page.version }}.tar.gz
+[gitZip]: https://github.com/cwmyers/monet.js/archive/0.8.5.zip
+[gitTar]: https://github.com/cwmyers/monet.js/archive/0.8.5.tar.gz
 [bower]: http://bower.io
 [npm]: https://www.npmjs.com/
 [scalaz]: https://github.com/scalaz/scalaz

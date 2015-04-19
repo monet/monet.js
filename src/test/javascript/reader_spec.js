@@ -7,7 +7,8 @@ describe("A Reader Monad", function () {
   }
   var config2 = {
     url: "http://test2.com",
-    port: 8081
+    port: 8081,
+    key: "not so secret"
   }
   var connect = function (endpoint, config) {
     return "POST " + config.url + ":" + config.port + "/" + endpoint
@@ -46,6 +47,25 @@ describe("A Reader Monad", function () {
 
     }))
     expect(reader.run(config1)).toBe("**POST http://test1.com:8080/something**")
+
+  })
+
+  it("must support local", function () {
+    var reader = connect("something").flatMap(function (connectionString) {
+      return Reader(function (key) {
+        return connectionString + "?secretKey=" + key
+      }).local(function(c) {return c.key})
+    })
+
+    expect(reader.run(config1)).toBe("POST http://test1.com:8080/something?secretKey=s3cr3t")
+
+  })
+
+  it("can ask for config", function() {
+    var reader = Reader.ask().map(function(config) {
+      return config.key
+    })
+    expect(reader.run(config1)).toBe("s3cr3t")
 
   })
 
