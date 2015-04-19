@@ -127,12 +127,6 @@
         return list.foldRight(type.of(Nil))(type.map2(cons))
     }
 
-    var lazySequence = function (list, type) {
-        return list.foldRight(type.of(function () {
-            return Nil
-        }))(type.map2(cons))
-    }
-
     var sequenceValidation = function (list) {
         return list.foldLeft(Success(Nil))(function (acc, a) {
             return  acc.ap(a.map(function (v) {
@@ -235,16 +229,13 @@
             return sequence(this, Either)
         },
         sequenceIO: function () {
-            return lazySequence(this, IO)
+            return sequence(this, IO)
         },
         sequenceReader: function () {
-            return lazySequence(this, Reader)
+            return sequence(this, Reader)
         },
         sequence: function (monadType) {
             return sequence(this, monadType)
-        },
-        lazySequence: function (monadType) {
-            return lazySequence(this, monadType)
         },
         head: function () {
             return this.head_
@@ -297,6 +288,10 @@
             throw "Cannot create an empty Non-Empty List."
         }
         return new NEL.fn.init(head, tail)
+    }
+
+    NEL.of = function(a) {
+      return NEL(a, Nil)
     }
 
     NEL.fn = NEL.prototype = {
@@ -613,8 +608,10 @@
         return new IO.fn.init(effectFn)
     }
 
-    IO.of = function (fn) {
-        return IO(fn)
+    IO.of = function (a) {
+        return IO(function() {
+          return a
+        })
     }
 
     IO.fn = IO.prototype = {
@@ -722,8 +719,10 @@
         return new Reader.fn.init(fn)
     }
 
-    Reader.of = function (fn) {
-        return Reader(fn)
+    Reader.of = function (x) {
+      return Reader(function (_) {
+        return x
+      })
     }
 
     Reader.ask = function () {
