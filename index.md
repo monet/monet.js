@@ -1,7 +1,7 @@
 ---
 title: Home
 layout: index
-version: 0.8.5
+version: 0.8.6
 ---
 
 ## Introduction
@@ -181,7 +181,7 @@ For example:
 	Maybe.Some(123).map(function(val) {
 		return val+1
 	})
-	=> 124
+	//result: Some(124)
 
 
 ####bind *alias: flatMap, chain*
@@ -279,6 +279,15 @@ Here is an example for creating a string out of the result of a couple of `Maybe
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
 
+####filter
+
+	Maybe[A].filter(fn: A -> Boolean): Maybe[A]
+
+Very similiar to the filtering of a list, `filter` on `Maybe` will filter out any elements that do not meet the predicate.
+
+For example:
+
+	
 ####toEither
 
 	Maybe[A].toEither(fail: E): Either[E,A]
@@ -593,6 +602,18 @@ For example:
 	Nil.headMaybe()
 	// result: None()
 
+####filter
+
+	List[A].filter(fn: element:A -> Boolean): List[A]	
+
+`filter` will filter out any elements that do not meet the predicate function.
+
+For example:
+
+	var list = [1,2,3,4].list()
+	list.filter(function (a) {return a%2==0}).toArray()
+	//result: [2,4]
+
 ####foldLeft
 
 	List[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
@@ -634,20 +655,12 @@ For example:
 
 Will `sequence` a list of monads.  The signature above is slightly hard to represent, but this function will sequence a list of any type of monad, but you will need to supply the name of the monad you are sequencing.
 
-**Note: This version of sequence will only work with Monads that can cope with eager evaluations.  For lazy monads such as `IO` and `Reader` please use `lazySequence` or the explicit versions, such as `sequenceIO`.**
-
 For example:
 
 	[1.right(), 2.left()].list().sequence(Either) // For Eithers
 	[1.some(), 2.none()].list().sequence(Maybe)
 
 Or you can use the convenience methods like `sequenceMaybe` or `sequenceEither` below.  Note that since Validation is not a true monad it will not work as expected for this method; use `sequenceValidation` instead.
-
-####lazySequence
-
-	List[Monad[A].lazySequence(Monad): Monad[List[A]]
-
-This is the same as `sequence` except it caters for Monads that require laziness, such as `IO` and `Reader`.
 
 ####sequenceMaybe
 
