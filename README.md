@@ -632,7 +632,7 @@ For example:
 
 ####sequence
 
-	List[Monad[A].sequence(Monad): Monad[List[A]]
+	List[Monad[A]].sequence(Monad): Monad[List[A]]
 
 Will `sequence` a list of monads.  The signature above is slightly hard to represent, but this function will sequence a list of any type of monad, but you will need to supply the name of the monad you are sequencing.
 
