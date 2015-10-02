@@ -154,14 +154,14 @@
 
     List.fn = List.prototype = {
         init: function (head, tail) {
-            if (head == undefined || head == null) {
+            if (head == null) {
                 this.isNil = true
                 this.size_ = 0
             } else {
                 this.isNil = false
                 this.head_ = head
-                this.tail_ = (tail == undefined || tail == null) ? Nil : tail
-                this.size_ = (tail == undefined || tail == null) ? 0 : tail.size() + 1
+                this.tail_ = tail == null ? Nil : tail
+                this.size_ = tail == null ? 0 : tail.size() + 1
             }
         },
         of: function (value) {
@@ -284,7 +284,7 @@
      */
 
     var NEL = root.NEL = NonEmptyList = root.NonEmptyList = function (head, tail) {
-        if (head == undefined || head == null) {
+        if (head == null) {
             throw "Cannot create an empty Non-Empty List."
         }
         return new NEL.fn.init(head, tail)
@@ -296,13 +296,13 @@
 
     NEL.fn = NEL.prototype = {
         init: function (head, tail) {
-            if (head == undefined || head == null) {
+            if (head == null) {
                 this.isNil = true
                 this.size_ = 0
             } else {
                 this.isNil = false
                 this.head_ = head
-                this.tail_ = (tail == undefined || tail == null) ? Nil : tail
+                this.tail_ = tail == null ? Nil : tail
                 this.size_ = this.tail_.size() + 1
             }
         },
@@ -387,7 +387,7 @@
     var Maybe = root.Maybe = {}
 
     Maybe.fromNull = function (val) {
-        return (val == undefined || val == null) ? Maybe.None() : Maybe.Some(val)
+        return val == null ? Maybe.None() : Maybe.Some(val)
     };
 
     Maybe.of = function (a) {
@@ -905,7 +905,7 @@
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
         type.pure = type.unit = type.of
         type.prototype.of = type.of
-        if (type.prototype.append != undefined) {
+        if (type.prototype.append != null) {
             type.prototype.concat = type.prototype.append
         }
         type.prototype.point = type.prototype.pure = type.prototype.unit = type.prototype.of
@@ -930,7 +930,7 @@
     }
 
     function addFunctorOps(type) {
-        if (type.prototype.map == undefined) {
+        if (type.prototype.map == null) {
             type.prototype.map = function (fn) {
                 return map.call(this, fn)
             }
