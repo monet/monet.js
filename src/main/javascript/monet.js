@@ -454,8 +454,9 @@
         },
         fold: function (defaultValue) {
             var self = this
+            var value = typeof defaultValue === 'function'? defaultValue() : defaultValue
             return function (fn) {
-                return self.isSome() ? fn(self.val) : defaultValue
+                return self.isSome() ? fn(self.val) : value
             }
         },
         filter: function(fn) {
