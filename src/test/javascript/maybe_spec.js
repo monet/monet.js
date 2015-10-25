@@ -64,6 +64,10 @@ describe('A Maybe', function () {
         it('will return a some on a successful filter', function() {
             expect(someString.filter(function(a) {return a === "abcd"})).toBe(someString)
         })
+        it('will run the some side of cata', function(){
+            expect(someString.cata(function() {return 'efg'}, 
+                function(val){ return 'hij'})).toBe('hij')
+        })
     })
 
     describe('without a value', function () {
@@ -105,6 +109,10 @@ describe('A Maybe', function () {
         })
         it('will always return a None on filter', function() {
           expect(none.filter(function(a){return true})).toBeNoneMaybe()
+        })
+        it('will run the none side of cata', function(){
+            expect(none.cata(function() {return 'efg'}, 
+                function(val){ return 'hij'})).toBe('efg')
         })
     })
 

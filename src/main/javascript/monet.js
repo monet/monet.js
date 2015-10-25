@@ -454,11 +454,12 @@
         },
         fold: function (defaultValue) {
             var self = this
-            var thunk = function(){ return defaultValue}
-            var defn = typeof defaultValue === 'function'? defaultValue : thunk
             return function (fn) {
-                return self.isSome() ? fn(self.val) : defn()
+                return self.isSome() ? fn(self.val) : defaultValue
             }
+        },
+        cata: function (none, some) {
+            return this.isSome() ? some(this.val) : none()
         },
         filter: function(fn) {
           var self = this
