@@ -458,6 +458,9 @@
                 return self.isSome() ? fn(self.val) : defaultValue
             }
         },
+        cata: function (none, some) {
+            return this.isSome() ? some(this.val) : none()
+        },
         filter: function(fn) {
           var self = this
           return self.flatMap(function(a) {
