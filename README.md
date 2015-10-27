@@ -508,7 +508,7 @@ For example:
 
 	Validation[E,A].toEither(): Either[E,A]
 
-Converts an `Either` to a `Validation`
+Converts an `Validation` to a `Either`
 
 ####toMaybe
 
