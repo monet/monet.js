@@ -190,7 +190,7 @@ For example:
 
 	Maybe[A].bind(fn: A -> Maybe[B]): Maybe[B]
 
-`bind` takes a function that takes a value and returns an `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on.
+`bind` takes a function that takes a value and returns a `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on.
 
 
 For example:
@@ -427,7 +427,7 @@ For example:
 
 	Validation[E,A].bind(fn:A -> Validation[E,B]) : Validation[E,B]
 
-`bind` takes a function that takes a value and returns an `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
+`bind` takes a function that takes a value and returns a `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
 
 For example:
 
@@ -508,7 +508,7 @@ For example:
 
 	Validation[E,A].toEither(): Either[E,A]
 
-Converts an `Validation` to a `Either`
+Converts a `Validation` to an `Either`
 
 ####toMaybe
 
