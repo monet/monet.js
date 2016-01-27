@@ -37,7 +37,7 @@ Using [bower]:
 
 or to install a specific version
 
-	bower install monet#0.8.6
+	bower install monet#0.8.7
 
 ### Node installation
 Using [npm]:
@@ -46,7 +46,7 @@ Using [npm]:
 
 or to install a specific version
 
-	npm install monet@0.8.6
+	npm install monet@0.8.7
 
 ## A note on types
 
