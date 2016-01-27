@@ -1,7 +1,7 @@
 ---
 title: Home
 layout: index
-version: 0.8.6
+version: 0.8.7
 ---
 
 ## Introduction
@@ -157,7 +157,7 @@ The `Maybe` type is the most common way of representing *nothingness* (or the `n
 
 `Maybe` is effectively abstract and has two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
 
-#### Creating an Maybe
+#### Creating a Maybe
 
 	var maybe = Maybe.Some(val);
 	var maybe = Maybe.None();
@@ -434,7 +434,7 @@ For example:
 
 	Validation[E,A].bind(fn:A -> Validation[E,B]) : Validation[E,B]
 
-`bind` takes a function that takes a value and returns an `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
+`bind` takes a function that takes a value and returns a `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
 
 For example:
 
