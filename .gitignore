@@ -14,3 +14,4 @@ out
 RUNNING_PID
 .settings
 *.swp
+node_modules/
