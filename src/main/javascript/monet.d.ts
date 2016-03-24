@@ -5,12 +5,33 @@ declare namespace monet {
 
     function apply2<T>(a1: Monad<T>, a2: Monad<T>, f: Function): Monad<T>;
 
-    interface Monad<T> {
+    /* The (covariant) functor typeclass */
+    interface Functor<T> {
+        map<V>(fn: (val: T) => V): Functor<V>;
+    }
+
+    /* Typeclass for binding, the core monadic transformation */
+    interface Bind<T> {
+        bind<V>(fn: (val: T) => Bind<V>): Bind<V>
+        chain<V>(fn: (val: T) => Bind<V>): Bind<V>    // alias of bind
+        flatMap<V>(fn: (val: T) => Bind<V>): Bind<V>  // alias of bind
+        join<V>(): Bind<V>  // works only if T = Bind<V>
+    }
+
+    /* Applicative allows applying wrapped functions to wrapped elements */
+    interface Applicative<T> {
+        ap<V>(afn: Applicative<(val: T) => V>): Applicative<T>
+    }
+
+    interface Monad<T> extends Functor<T>, Bind<T>, Applicative<T> {
+        /* These all are defined in Functor, Bind and Applicative: */
         bind<V>(fn: (val: T) => Monad<V>): Monad<V>;
         flatMap<V>(fn: (val: T) => Monad<V>): Monad<V>;
         chain<V>(fn: (val: T) => Monad<V>): Monad<V>;
         map<V>(fn: (val: T) => V): Monad<V>;
-        join<V>(): Monad<V>; // if T is Monad<V>
+        join<V>(): Monad<V>; // only if T = Monad<V>
+
+        /* These are monet-Monad-specific: */
         takeLeft(m: Monad<T>): Monad<T>;
         takeRight(m: Monad<T>): Monad<T>;
     }
