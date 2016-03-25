@@ -3,7 +3,7 @@
 
 declare namespace monet {
 
-    function apply2<T>(a1: Monad<T>, a2: Monad<T>, f: Function): Monad<T>;
+    function apply2<T>(a1: IMonad<T>, a2: IMonad<T>, f: Function): IMonad<T>;
 
     /* The (covariant) functor typeclass */
     interface Functor<T> {
@@ -23,55 +23,64 @@ declare namespace monet {
         ap<V>(afn: Applicative<(val: T) => V>): Applicative<T>
     }
 
-    interface Monad<T> extends Functor<T>, Bind<T>, Applicative<T> {
+    /****************************************************************
+     * Basic Monad Interface
+     */
+
+    interface IMonad<T> extends Functor<T>, Bind<T>, Applicative<T> {
         /* These all are defined in Functor, Bind and Applicative: */
-        bind<V>(fn: (val: T) => Monad<V>): Monad<V>;
-        flatMap<V>(fn: (val: T) => Monad<V>): Monad<V>;
-        chain<V>(fn: (val: T) => Monad<V>): Monad<V>;
-        map<V>(fn: (val: T) => V): Monad<V>;
-        join<V>(): Monad<V>; // only if T = Monad<V>
+        bind<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
+        flatMap<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
+        chain<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
+        map<V>(fn: (val: T) => V): IMonad<V>;
+        join<V>(): IMonad<V>; // only if T = IMonad<V>
 
         /* These are monet-Monad-specific: */
-        takeLeft(m: Monad<T>): Monad<T>;
-        takeRight(m: Monad<T>): Monad<T>;
+        takeLeft(m: IMonad<T>): IMonad<T>;
+        takeRight(m: IMonad<T>): IMonad<T>;
     }
 
     interface IMonadStatic extends Function {
-        <T>(val: T): Monad<T>;
-        new <T>(val: T): Monad<T>;
-        //of()
-        map2<T, V, N>(fn: (val1: T, val2: V) => N): (m1: Monad<T>, m2: Monad<V>) => Monad<N>;
+        <T>(val: T): IMonad<T>;
+        new <T>(val: T): IMonad<T>;
+        unit<T>(val: T): IMonad<T>;
+        of<T>(val: T): IMonad<T>;    // alias for unit
+        pure<T>(val: T): IMonad<T>;  // alias for unit
+        map2<T, V, N>(fn: (val1: T, val2: V) => N): (m1: IMonad<T>, m2: IMonad<V>) => IMonad<N>;
     }
 
-    /**
+    /****************************************************************
      * Identity
      */
 
-    interface Identity<T> extends Monad<T> {
-        map<V>(fn: (val: T) => V): Identity<V>;
+    interface Identity<T> extends IMonad<T> {
+        /* Inherited from Monad: */
         bind<V>(fn: (val: T) => Identity<V>): Identity<V>;
         flatMap<V>(fn: (val: T) => Identity<V>): Identity<V>;
         chain<V>(fn: (val: T) => Identity<V>): Identity<V>;
-        init<V>(val: V): void;
-        get(): T;
+        map<V>(fn: (val: T) => V): Identity<V>;
         join<V>(): Identity<V>; // if T is Identity<V>
         takeLeft(m: Identity<T>): Identity<T>;
         takeRight(m: Identity<T>): Identity<T>;
+        
+        /* Identity specific */
+        get(): T;
     }
 
     interface IIdentityStatic extends IMonadStatic {
         <V>(value: V): Identity<V>;
-        new <V>(value: V): Identity<V>;
+        unit: IIdentityStatic;
+        of: IIdentityStatic;    // alias for unit
+        pure: IIdentityStatic;  // alias for unit
     }
 
     var Identity: IIdentityStatic;
 
-    /**
+    /****************************************************************
      * Maybe
      */
 
-    interface Maybe<T> extends Monad<T> {
-        init<T>(isValue: boolean, val?: T): void;
+    interface Maybe<T> extends IMonad<T> {
         map<V>(fn: (val: T) => V): Maybe<V>;
         filter(fn: (val: T) => boolean): Maybe<T>;
         bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
@@ -125,7 +134,7 @@ declare namespace monet {
      * Either
      */
 
-    interface Either<E, T> extends Monad<T> {
+    interface Either<E, T> extends IMonad<T> {
         map<V>(fn: (val: T) => V): Either<E, V>;
         bind<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
         flatMap<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
@@ -173,7 +182,7 @@ declare namespace monet {
         (): IValidationAcc;
     }
 
-    interface Validation<E, T> extends Monad<T> {
+    interface Validation<E, T> extends IMonad<T> {
         isSuccess(): boolean;
         isFail(): boolean;
         success(): T;
@@ -249,13 +258,13 @@ declare namespace monet {
         foldRight<V>(initial: V): (fn: ListFoldRightFn<T, V>) => V;
         append(list: List<T>): List<T>;
         concat(list: List<T>): List<T>;
-        // if T extends Monad<V>
-        //sequence<V>(m: IMonadStatic): Monad<List<V>>;
+        // if T extends IMonad<V>
+        //sequence<V>(m: IMonadStatic): IMonad<List<V>>;
         //sequence<E, V>(m: IMaybeStatic): Maybe<List<V>>;
         //sequence<E, V>(m: IEitherStatic): Either<E, List<V>>;
         //sequence<E, V>(m: IValidationStatic): Validation<List<E>, List<V>>;
         //
-        //sequence<U extends IMonadStatic, R extends Monad<List<any>>>(m: U): R;
+        //sequence<U extends IMonadStatic, R extends IMonad<List<any>>>(m: U): R;
         //sequenceMaybe<V, T extends Maybe<V>>(): Maybe<List<V>>;
         //sequenceEither<E, V, T extends Either<E, V>>(): Either<E, List<V>>;
         //sequenceValidation<E, V, T extends Validation<E, V>>(): Validation<List<E>, List<V>>;
@@ -275,7 +284,7 @@ declare namespace monet {
      * IO
      */
 
-    interface IO<T> extends Monad<T> {
+    interface IO<T> extends IMonad<T> {
         bind<V>(fn: (val: T) => IO<V>): IO<V>;
         flatMap<V>(fn: (val: T) => IO<V>): IO<V>;
         chain<V>(fn: (val: T) => IO<V>): IO<V>;
@@ -298,13 +307,13 @@ declare namespace monet {
      * Reader
      */
     
-    interface Reader<E, A> extends Monad<A> {
+    interface Reader<E, A> extends IMonad<A> {
         /* Inherited from Monad: */
         bind<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
         flatMap<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
         chain<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
         map<B>(fn: (val: A) => B): Reader<E, B>;
-        join<B>(): Reader<E, B>; // if A is Reader<B>
+        join<B>(): Reader<E, B>; // if A is Reader<E, B>
         takeLeft<X>(m: Reader<E, X>): Reader<E, A>;
         takeRight<B>(m: Reader<E, B>): Reader<E, B>;
         ap<B>(rfn: Reader<E, (val: A) => B>): Reader<E, B>;
@@ -331,7 +340,7 @@ declare namespace monet {
     /**
      * Free
      */
-    interface Free<A> extends Monad<A> {
+    interface Free<A> extends IMonad<A> {
         /* A free monad over functor F.
          * It holds values of type F<A> for some functor F.
          * 
