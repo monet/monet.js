@@ -12,6 +12,6 @@
   "license": "MIT",
   "dependencies": {},
   "scripts": {
-    "test": "node node_modules/typescript/bin/tsc -m system --noEmit"
+    "test": "node node_modules/typescript/bin/tsc -m system --noEmit --listFiles"
   }
 }
