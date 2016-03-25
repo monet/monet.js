@@ -81,14 +81,17 @@ declare namespace monet {
      */
 
     interface Maybe<T> extends IMonad<T> {
-        map<V>(fn: (val: T) => V): Maybe<V>;
-        filter(fn: (val: T) => boolean): Maybe<T>;
+        /* Inherited from Monad: */
         bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
         flatMap<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
         chain<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
+        map<V>(fn: (val: T) => V): Maybe<V>;
         join<V>(): Maybe<V>; // if T is Identity<V>
         takeLeft(m: Maybe<T>): Maybe<T>;
         takeRight(m: Maybe<T>): Maybe<T>;
+
+        /* Maybe specific */
+        filter(fn: (val: T) => boolean): Maybe<T>;
         cata<Z>(none: () => Z, some: (val: T) => Z): Z;
         isSome(): boolean;
         isJust(): boolean;
@@ -101,36 +104,37 @@ declare namespace monet {
         orElse(maybe: Maybe<T>): Maybe<T>;
         ap<V>(maybeFn: Maybe<(val: T) => V>): Maybe<V>;
         toList(): List<T>;
-        toEither<E>(fail?: E): Either<E, T>;
+        toEither<E>(left?: E): Either<E, T>;
         toValidation<E>(fail?: E): Validation<E, T>;
         fold<V>(val: V): (fn: (val: T) => V) => V;
     }
 
     interface ISomeStatic {
         <V>(value: V): Maybe<V>;
-        new <V>(value: V): Maybe<V>;
+    }
+
+    interface INoneStatic {
+        <V>(): Maybe<V>;
+    }
+
+    interface IMaybeStatic extends IMonadStatic {
+        Some: ISomeStatic;
+        Just: ISomeStatic;
+        None: INoneStatic;
+        Nothing: INoneStatic;
+        fromNull<V>(val: V): Maybe<V>;
+        unit: ISomeStatic;
+        of: ISomeStatic;    // alias for unit
+        pure: ISomeStatic;  // alias for unit
     }
 
     var Some: ISomeStatic;
     var Just: ISomeStatic;
-
-    interface INoneStatic {
-        <V>(): Maybe<V>;
-        new <V>(): Maybe<V>;
-    }
-
     var None: INoneStatic;
     var Nothing: INoneStatic;
-
-    interface IMaybeStatic extends IMonadStatic {
-        Some<V>(value: V): Maybe<V>;
-        None<V>(): Maybe<V>;
-        fromNull<V>(val: V): Maybe<V>;
-    }
-
     var Maybe: IMaybeStatic;
 
-    /**
+    /****************************************************************
      * Either
      */
 
@@ -174,7 +178,7 @@ declare namespace monet {
 
     var Either: IEitherStatic;
 
-    /**
+    /****************************************************************
      * Validation
      */
      
@@ -234,7 +238,7 @@ declare namespace monet {
 
     var Validation: IValidationStatic;
 
-    /**
+    /****************************************************************
      * List
      */
 
@@ -280,7 +284,7 @@ declare namespace monet {
 
     var List: IListStatic;
 
-    /**
+    /****************************************************************
      * IO
      */
 
@@ -303,7 +307,7 @@ declare namespace monet {
 
     var IO: IIOStatic;
     
-    /**
+    /****************************************************************
      * Reader
      */
     
@@ -337,7 +341,7 @@ declare namespace monet {
     var Reader: ReaderStatic;
 
 
-    /**
+    /****************************************************************
      * Free
      */
     interface Free<A> extends IMonad<A> {
@@ -402,6 +406,7 @@ declare module "monet" {
 }
 
 declare var Identity: monet.IIdentityStatic;
+
 declare var Maybe: monet.IMaybeStatic;
 declare var Just: monet.ISomeStatic;
 declare var Some: monet.ISomeStatic;
