@@ -2,6 +2,7 @@
   "files": [
     "src/main/javascript/monet.d.ts",
     "src/test/typescript/identity-spec.ts",
-    "src/test/typescript/monad-laws.ts"
+    "src/test/typescript/monad-laws.ts",
+    "src/test/typescript/reader-spec.ts"
   ]
 }

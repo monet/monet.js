@@ -298,14 +298,31 @@ declare namespace monet {
      * Reader
      */
     
-    interface Reader<E, A> {
-        map<B>(fn: (A) => B): Reader<E, B>;
-        flatMap<B>(fn: (A) => Reader<E, B>): Reader<E, B>;
+    interface Reader<E, A> extends Monad<A> {
+        /* Inherited from Monad: */
+        bind<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
+        flatMap<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
+        chain<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
+        map<B>(fn: (val: A) => B): Reader<E, B>;
+        join<B>(): Reader<E, B>; // if A is Reader<B>
+        takeLeft<X>(m: Reader<E, X>): Reader<E, A>;
+        takeRight<B>(m: Reader<E, B>): Reader<E, B>;
+        ap<B>(rfn: Reader<E, (val: A) => B>): Reader<E, B>;
+
+        /* Reader-specific: */
         run(config: E): A;
+        local<X>(fn: (val: X) => E): Reader<X, A>;
     }
     
     interface ReaderStatic {
-        <E, A>(fn: (E) => A): Reader<E, A>;
+        <E, A>(fn: (env: E) => A): Reader<E, A>;
+        unit<E, A>(val: A): Reader<E, A>;
+        of<E, A>(val: A): Reader<E, A>;   // alias for unit
+        pure<E, A>(val: A): Reader<E, A>  // alias for unit
+        point<E, A>(val: A): Reader<E, A> // alias for unit
+        ask<E>(): Reader<E, E>;
+        new <E, A>(fn: (env: E) => A): Reader<E, A>;
+        
     }
     
     var Reader: ReaderStatic;
@@ -330,5 +347,7 @@ declare var Validation: monet.IValidationStatic;
 declare var List: monet.IListStatic;
 
 declare var IO: monet.IIOStatic;
+
+declare var Reader: monet.ReaderStatic;
 
 
