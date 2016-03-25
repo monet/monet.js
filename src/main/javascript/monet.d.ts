@@ -327,6 +327,65 @@ declare namespace monet {
     
     var Reader: ReaderStatic;
 
+
+    /**
+     * Free
+     */
+    interface Free<A> extends Monad<A> {
+        /* A free monad over functor F.
+         * It holds values of type F<A> for some functor F.
+         * 
+         *
+         * Typing caveats:
+         * TypeScript does not support higher-kinded types, meaning you can't
+         * just specify the type of the functor. This leads to the following issues:
+         *
+         * 1. Some methods operating on type T require FT or FFT as type parameters.
+         *    FT = F<T> and FFT = F<Free<T>>, but we can't simply infer that.
+         * 2. The Free<A> interface does not include the information on what kind
+         *    of functor is used. So it is possible to `bind` two free monads
+         *    over different functors. This will most likely crash, and we can't
+         *    statically prohibit it. As a general rule, free monads over different
+         *    functors are totally incompatible.
+         */
+        bind<V>(fn: (val: A) => Free<V>): Free<V>;
+        flatMap<V>(fn: (val: A) => Free<V>): Free<V>;
+        chain<V>(fn: (val: A) => Free<V>): Free<V>;
+        join<V>(): Free<V>; // only if A = Free<V> on the same functor
+        map<V>(fn: (val: A) => V): Free<V>;
+        takeLeft<X>(other: Free<X>): Free<A>;
+        takeRight<B>(other: Free<B>): Free<B>;
+
+
+        /* Free-specific: */
+        // evaluates a single layer
+        resume<FFA>(): Either<FFA, A>; 
+        // runs to completion using given extraction function:
+        go<FFA>(extract: (sus: FFA) => Free<A>): A;
+    }
+
+    interface IFreeStatic {
+        Return: IReturnStatic;
+        Suspend: ISuspendStatic;
+        of<A, FFA>(ffa: FFA): Free<A>; // alias of Suspend
+        liftF<A, FA>(fa: FA): Free<A>; // FA = F<A>
+
+    }
+
+    interface IReturnStatic {
+      <A>(a: A): Free<A>;
+      new <A>(a: A): Free<A>;
+    }
+
+    interface ISuspendStatic {
+      <A, FFA>(ffa: FFA): Free<A>;
+      new <A, FFA>(ffa: FFA): Free<A>;
+    }
+
+    var Free: IFreeStatic;
+    var Return: IReturnStatic;
+    var Suspend: ISuspendStatic;
+
 }
 
 declare module "monet" {
@@ -350,4 +409,7 @@ declare var IO: monet.IIOStatic;
 
 declare var Reader: monet.ReaderStatic;
 
+declare var Free: monet.IFreeStatic;
+declare var Return: monet.IReturnStatic;
+declare var Suspend: monet.ISuspendStatic;
 
