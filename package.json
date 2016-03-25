@@ -10,5 +10,8 @@
   },
   "main": "src/main/javascript/monet.js",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {},
+  "scripts": {
+    "test": "node node_modules/typescript/bin/tsc -m system --noEmit"
+  }
 }

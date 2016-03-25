@@ -184,7 +184,7 @@ declare namespace monet {
         toMaybe(): Maybe<T>;
         
         acc(): Validation<E, IValidationAcc>;
-        bimap<F, V>(fn: (fail: E) => F, fn: (val: T) => V): Validation<F, V>;
+        bimap<F, V>(fnF: (fail: E) => F, fnS: (val: T) => V): Validation<F, V>;
         failMap<F>(fn: (fail: E) => F): Validation<F, T>;
         
         // Common monad methods
@@ -197,8 +197,8 @@ declare namespace monet {
         takeRight(m: Validation<E, T>): Validation<E, T>;
         
         // Private ?
-        init(fail: F, isSuccess: false): void; // Side Effect Warning
-        init(value: V, isSuccess: true): void; // Side Effect Warning
+        init<F, V>(fail: F, isSuccess: boolean): void; // Side Effect Warning
+        init<F, V>(value: V, isSuccess: boolean): void; // Side Effect Warning
         of<F, V>(value: V): Validation<F, V>;
         point<F, V>(value: V): Validation<F, V>;
         pure<F, V>(value: V): Validation<F, V>;
@@ -219,8 +219,8 @@ declare namespace monet {
         pure<F, V>(value: V): Validation<F, V>;
         unit<F, V>(value: V): Validation<F, V>;
         
-        fn: Validation;
-        prototype: Validation;
+        fn: Validation<any, any>;
+        prototype: Validation<any, any>;
     }
 
     var Validation: IValidationStatic;
