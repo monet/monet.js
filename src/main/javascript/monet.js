@@ -1,6 +1,6 @@
-//     Monet.js 0.8.5
+//     Monet.js 0.8.8
 
-//     (c) 2012-2014 Chris Myers
+//     (c) 2012-2016 Chris Myers
 //     Monet.js may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     https://cwmyers.github.com/monet.js
@@ -127,12 +127,6 @@
         return list.foldRight(type.of(Nil))(type.map2(cons))
     }
 
-    var lazySequence = function (list, type) {
-        return list.foldRight(type.of(function () {
-            return Nil
-        }))(type.map2(cons))
-    }
-
     var sequenceValidation = function (list) {
         return list.foldLeft(Success(Nil))(function (acc, a) {
             return  acc.ap(a.map(function (v) {
@@ -160,14 +154,14 @@
 
     List.fn = List.prototype = {
         init: function (head, tail) {
-            if (head == undefined || head == null) {
+            if (head == null) {
                 this.isNil = true
                 this.size_ = 0
             } else {
                 this.isNil = false
                 this.head_ = head
-                this.tail_ = (tail == undefined || tail == null) ? Nil : tail
-                this.size_ = (tail == undefined || tail == null) ? 0 : tail.size() + 1
+                this.tail_ = tail == null ? Nil : tail
+                this.size_ = tail == null ? 0 : tail.size() + 1
             }
         },
         of: function (value) {
@@ -235,16 +229,13 @@
             return sequence(this, Either)
         },
         sequenceIO: function () {
-            return lazySequence(this, IO)
+            return sequence(this, IO)
         },
         sequenceReader: function () {
-            return lazySequence(this, Reader)
+            return sequence(this, Reader)
         },
         sequence: function (monadType) {
             return sequence(this, monadType)
-        },
-        lazySequence: function (monadType) {
-            return lazySequence(this, monadType)
         },
         head: function () {
             return this.head_
@@ -293,21 +284,25 @@
      */
 
     var NEL = root.NEL = NonEmptyList = root.NonEmptyList = function (head, tail) {
-        if (head == undefined || head == null) {
+        if (head == null) {
             throw "Cannot create an empty Non-Empty List."
         }
         return new NEL.fn.init(head, tail)
     }
 
+    NEL.of = function(a) {
+      return NEL(a, Nil)
+    }
+
     NEL.fn = NEL.prototype = {
         init: function (head, tail) {
-            if (head == undefined || head == null) {
+            if (head == null) {
                 this.isNil = true
                 this.size_ = 0
             } else {
                 this.isNil = false
                 this.head_ = head
-                this.tail_ = (tail == undefined || tail == null) ? Nil : tail
+                this.tail_ = tail == null ? Nil : tail
                 this.size_ = this.tail_.size() + 1
             }
         },
@@ -392,7 +387,7 @@
     var Maybe = root.Maybe = {}
 
     Maybe.fromNull = function (val) {
-        return (val == undefined || val == null) ? Maybe.None() : Maybe.Some(val)
+        return val == null ? Maybe.None() : Maybe.Some(val)
     };
 
     Maybe.of = function (a) {
@@ -462,6 +457,15 @@
             return function (fn) {
                 return self.isSome() ? fn(self.val) : defaultValue
             }
+        },
+        cata: function (none, some) {
+            return this.isSome() ? some(this.val) : none()
+        },
+        filter: function(fn) {
+          var self = this
+          return self.flatMap(function(a) {
+            return fn(a) ? self : None()
+          })
         }
     };
 
@@ -607,8 +611,10 @@
         return new IO.fn.init(effectFn)
     }
 
-    IO.of = function (fn) {
-        return IO(fn)
+    IO.of = function (a) {
+        return IO(function() {
+          return a
+        })
     }
 
     IO.fn = IO.prototype = {
@@ -716,8 +722,14 @@
         return new Reader.fn.init(fn)
     }
 
-    Reader.of = function (fn) {
-        return Reader(fn)
+    Reader.of = function (x) {
+      return Reader(function (_) {
+        return x
+      })
+    }
+
+    Reader.ask = function () {
+      return Reader(idFunction)
     }
 
     Reader.fn = Reader.prototype = {
@@ -745,6 +757,12 @@
             var self = this
             return Reader(function (config) {
                 return fn(self.run(config))
+            })
+        },
+        local: function(fn) {
+            var self = this
+             return Reader(function(c) {
+                 return self.run(fn(c))
             })
         }
     }
@@ -890,7 +908,7 @@
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
         type.pure = type.unit = type.of
         type.prototype.of = type.of
-        if (type.prototype.append != undefined) {
+        if (type.prototype.append != null) {
             type.prototype.concat = type.prototype.append
         }
         type.prototype.point = type.prototype.pure = type.prototype.unit = type.prototype.of
@@ -915,7 +933,7 @@
     }
 
     function addFunctorOps(type) {
-        if (type.prototype.map == undefined) {
+        if (type.prototype.map == null) {
             type.prototype.map = function (fn) {
                 return map.call(this, fn)
             }

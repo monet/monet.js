@@ -37,7 +37,7 @@ Using [bower]:
 
 or to install a specific version
 
-	bower install monet#0.8.5
+	bower install monet#0.8.7
 
 ### Node installation
 Using [npm]:
@@ -46,7 +46,7 @@ Using [npm]:
 
 or to install a specific version
 
-	npm install monet@0.8.5
+	npm install monet@0.8.7
 
 ## A note on types
 
@@ -190,7 +190,7 @@ For example:
 
 	Maybe[A].bind(fn: A -> Maybe[B]): Maybe[B]
 
-`bind` takes a function that takes a value and returns an `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on.
+`bind` takes a function that takes a value and returns a `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on.
 
 
 For example:
@@ -427,7 +427,7 @@ For example:
 
 	Validation[E,A].bind(fn:A -> Validation[E,B]) : Validation[E,B]
 
-`bind` takes a function that takes a value and returns an `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
+`bind` takes a function that takes a value and returns a `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
 
 For example:
 
@@ -508,7 +508,7 @@ For example:
 
 	Validation[E,A].toEither(): Either[E,A]
 
-Converts an `Either` to a `Validation`
+Converts a `Validation` to an `Either`
 
 ####toMaybe
 
@@ -632,7 +632,7 @@ For example:
 
 ####sequence
 
-	List[Monad[A].sequence(Monad): Monad[List[A]]
+	List[Monad[A]].sequence(Monad): Monad[List[A]]
 
 Will `sequence` a list of monads.  The signature above is slightly hard to represent, but this function will sequence a list of any type of monad, but you will need to supply the name of the monad you are sequencing.
 
@@ -1059,7 +1059,7 @@ Performs a monadic bind over the `Free`.
 
 	Free.liftF(F[A]): Free[F,A]
 
-Lifts a Funtor `F` into a `Free`.
+Lifts a Functor `F` into a `Free`.
 
 ####resume
 

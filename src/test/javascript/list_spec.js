@@ -169,13 +169,13 @@ describe("An immutable list", function () {
                 var io1 = IO(function () {
                     return "hi"
                 })
-                expect([io1].list().lazySequence(IO).run().toArray()).toEqual(["hi"])
+                expect([io1].list().sequence(IO).run().toArray()).toEqual(["hi"])
             })
             it("with two IOs", function () {
                 var io1 = IO(function () {
                     return "hi"
                 })
-                expect([io1, io1].list().lazySequence(IO).run().toArray()).toEqual(["hi", "hi"])
+                expect([io1, io1].list().sequence(IO).run().toArray()).toEqual(["hi", "hi"])
             })
         })
         describe("of Readers", function () {
@@ -183,7 +183,7 @@ describe("An immutable list", function () {
                 var r = Reader(function (config) {
                     return config.text
                 })
-                expect([r].list().lazySequence(Reader).run({text: "Hi Reader"}).toArray()).toEqual(["Hi Reader"])
+                expect([r].list().sequence(Reader).run({text: "Hi Reader"}).toArray()).toEqual(["Hi Reader"])
 
             })
             it("with two Readers", function () {
@@ -193,7 +193,7 @@ describe("An immutable list", function () {
                 var r2 = Reader(function (config) {
                     return config.name
                 })
-                expect([r1, r2].list().lazySequence(Reader).run({text: "Hi Reader", name: "Tom"}).toArray()).toEqual(["Hi Reader", "Tom"])
+                expect([r1, r2].list().sequence(Reader).run({text: "Hi Reader", name: "Tom"}).toArray()).toEqual(["Hi Reader", "Tom"])
 
             })
         })

@@ -1,8 +1,8 @@
-//     monet-pimp.js 0.8.5
+//     monet-pimp.js 0.8.8
 
 //     This file needs to be included after monet.js
 
-//     (c) 2012-2014 Chris Myers
+//     (c) 2012-2016 Chris Myers
 //     Monet-pimp.js may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     https://cwmyers.github.com/monet.js

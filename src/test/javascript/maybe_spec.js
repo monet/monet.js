@@ -58,6 +58,16 @@ describe('A Maybe', function () {
         it('will return the first monad on orElse', function () {
             expect(someString.orElse(none)).toBeSomeMaybeWith("abcd")
         })
+        it('will return a none on a failed filter', function() {
+            expect(someString.filter(function(a) {return a === "123"})).toBeNoneMaybe()
+        })
+        it('will return a some on a successful filter', function() {
+            expect(someString.filter(function(a) {return a === "abcd"})).toBe(someString)
+        })
+        it('will run the some side of cata', function(){
+            expect(someString.cata(function() {return 'efg'}, 
+                function(val){ return 'hij'})).toBe('hij')
+        })
     })
 
     describe('without a value', function () {
@@ -96,6 +106,13 @@ describe('A Maybe', function () {
 
         it('will return the supplied monad on orElse', function () {
             expect(none.orElse(someString)).toBeSomeMaybeWith('abcd')
+        })
+        it('will always return a None on filter', function() {
+          expect(none.filter(function(a){return true})).toBeNoneMaybe()
+        })
+        it('will run the none side of cata', function(){
+            expect(none.cata(function() {return 'efg'}, 
+                function(val){ return 'hij'})).toBe('efg')
         })
     })
 
