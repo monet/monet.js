@@ -1,7 +1,7 @@
 ---
 title: Home
 layout: index
-version: 0.8.7
+version: 0.8.8
 ---
 
 ## Introduction
