@@ -12,15 +12,15 @@ This library is inspired by those that have come before, especially the [Functio
 
 While functional programming may be alien to you, this library is a simple way to introduce monads and pure functional programming into your daily practises.
 
-##Download
+## Download
 
 Download the [zip][gitZip] or [tar][gitTar] ball.
 
-##Source code
+## Source code
 
 The source is available at: [http://github.com/cwmyers/monet.js](http://github.com/cwmyers/monet.js).
 
-##Installation
+## Installation
 
 Simply download and add to your html pages or we also support [bower].  You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
 
