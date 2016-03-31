@@ -40,13 +40,14 @@ declare namespace monet {
         takeRight(m: IMonad<T>): IMonad<T>;
     }
 
-    interface IMonadStatic extends Function {
+    interface IMonadFactory extends Function {
         <T>(val: T): IMonad<T>;
-        new <T>(val: T): IMonad<T>;
-        unit<T>(val: T): IMonad<T>;
-        of<T>(val: T): IMonad<T>;    // alias for unit
-        pure<T>(val: T): IMonad<T>;  // alias for unit
-        map2<T, V, N>(fn: (val1: T, val2: V) => N): (m1: IMonad<T>, m2: IMonad<V>) => IMonad<N>;
+    }
+
+    interface IMonadStatic {
+        unit: IMonadFactory;
+        of: IMonadFactory;    // alias for unit
+        pure: IMonadFactory;  // alias for unit
     }
 
     /****************************************************************
@@ -62,16 +63,19 @@ declare namespace monet {
         join<V>(): Identity<V>; // if T is Identity<V>
         takeLeft(m: Identity<T>): Identity<T>;
         takeRight(m: Identity<T>): Identity<T>;
-        
+
         /* Identity specific */
         get(): T;
     }
 
-    interface IIdentityStatic extends IMonadStatic {
+    interface IIdentityFactory extends IMonadFactory {
         <V>(value: V): Identity<V>;
-        unit: IIdentityStatic;
-        of: IIdentityStatic;    // alias for unit
-        pure: IIdentityStatic;  // alias for unit
+    }
+
+    interface IIdentityStatic extends IIdentityFactory, IMonadStatic {
+        unit: IIdentityFactory;
+        of: IIdentityFactory;    // alias for unit
+        pure: IIdentityFactory;  // alias for unit
     }
 
     var Identity: IIdentityStatic;
@@ -114,11 +118,11 @@ declare namespace monet {
         toValidation<E>(fail?: E): Validation<E, T>;
     }
 
-    interface ISomeStatic {
+    interface ISomeStatic extends IMonadFactory {
         <V>(value: V): Maybe<V>;
     }
 
-    interface INoneStatic {
+    interface INoneStatic extends IMonadFactory {
         <V>(): Maybe<V>;
     }
 
@@ -179,11 +183,11 @@ declare namespace monet {
         pure: IRightStatic;  // alias for unit
     }
 
-    interface IRightStatic {
+    interface IRightStatic extends IMonadFactory {
         <F, V>(val: V): Either<F, V>;
     }
 
-    interface ILeftStatic {
+    interface ILeftStatic extends IMonadFactory {
         <F, V>(val: F): Either<F, V>;
     }
 
@@ -194,7 +198,7 @@ declare namespace monet {
     /****************************************************************
      * Validation
      */
-     
+
     interface IValidationAcc extends Function {
         (): IValidationAcc;
     }
@@ -234,17 +238,17 @@ declare namespace monet {
         Fail: IFailStatic;
         success: ISuccessStatic;
         fail: IFailStatic;
-        of: ISuccessStatic;
-        pure: ISuccessStatic;
         unit: ISuccessStatic;
-        point: ISuccessStatic;
+        of: ISuccessStatic;     // alias for unit
+        pure: ISuccessStatic;   // alias for unit
+        point: ISuccessStatic;  // alias for unit
     }
 
-    interface ISuccessStatic {
+    interface ISuccessStatic extends IMonadFactory {
         <E, T>(val: T): Validation<E, T>;
     }
 
-    interface IFailStatic {
+    interface IFailStatic extends IMonadFactory {
         <E, T>(err: E): Validation<E, T>;
     }
 
@@ -303,28 +307,41 @@ declare namespace monet {
      */
 
     interface IO<T> extends IMonad<T> {
+        /* Inherited from Monad: */
         bind<V>(fn: (val: T) => IO<V>): IO<V>;
         flatMap<V>(fn: (val: T) => IO<V>): IO<V>;
         chain<V>(fn: (val: T) => IO<V>): IO<V>;
-        map<V>(fn: (val: T) => V): IO<V>;
-        run(): void;
-        perform(): void;
+        map<V>(fn: (v: T) => V): IO<V>;
         join<V>(): IO<V>; // if T is IO<V>
-        takeLeft(m: IO<T>): IO<T>;
-        takeRight(m: IO<T>): IO<T>;
+        takeLeft<X>(m: IO<X>): IO<T>;
+        takeRight<V>(m: IO<V>): IO<V>;
+
+        /* Inherited from Applicative: */
+        ap<V>(ioFn: IO<(v: T) => V>): IO<V>;
+
+        /* IO specific: */
+        run(): T;
+        perform(): T;         // Alias for run()
+        performUnsafeIO(): T; // Alias for run()
     }
 
-    interface IIOStatic {
+    interface IIOFactory extends IMonadFactory {
         <T>(fn: () => T): IO<T>;
-        new <T>(fn: () => T): IO<T>;
+    }
+
+    interface IIOStatic extends IIOFactory, IMonadStatic {
+        unit: IIOFactory;
+        of: IIOFactory;    // alias for unit
+        pure: IIOFactory;  // alias for unit
+        io: IIOFactory;    // alias for unit
     }
 
     var IO: IIOStatic;
-    
+
     /****************************************************************
      * Reader
      */
-    
+
     interface Reader<E, A> extends IMonad<A> {
         /* Inherited from Monad: */
         bind<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
@@ -340,7 +357,7 @@ declare namespace monet {
         run(config: E): A;
         local<X>(fn: (val: X) => E): Reader<X, A>;
     }
-    
+
     interface ReaderStatic {
         <E, A>(fn: (env: E) => A): Reader<E, A>;
         unit<E, A>(val: A): Reader<E, A>;
@@ -349,9 +366,9 @@ declare namespace monet {
         point<E, A>(val: A): Reader<E, A> // alias for unit
         ask<E>(): Reader<E, E>;
         new <E, A>(fn: (env: E) => A): Reader<E, A>;
-        
+
     }
-    
+
     var Reader: ReaderStatic;
 
 
@@ -386,7 +403,7 @@ declare namespace monet {
 
         /* Free-specific: */
         // evaluates a single layer
-        resume<FFA>(): Either<FFA, A>; 
+        resume<FFA>(): Either<FFA, A>;
         // runs to completion using given extraction function:
         go<FFA>(extract: (sus: FFA) => Free<A>): A;
     }
@@ -400,13 +417,13 @@ declare namespace monet {
     }
 
     interface IReturnStatic {
-      <A>(a: A): Free<A>;
-      new <A>(a: A): Free<A>;
+        <A>(a: A): Free<A>;
+        new <A>(a: A): Free<A>;
     }
 
     interface ISuspendStatic {
-      <A, FFA>(ffa: FFA): Free<A>;
-      new <A, FFA>(ffa: FFA): Free<A>;
+        <A, FFA>(ffa: FFA): Free<A>;
+        new <A, FFA>(ffa: FFA): Free<A>;
     }
 
     var Free: IFreeStatic;
