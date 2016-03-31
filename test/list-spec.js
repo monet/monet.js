@@ -26,13 +26,13 @@ describe("An immutable list", function () {
     it("will return all the possible tails on tails()", function () {
         expect(list.tails().map(function (m) {
             return m.toArray()
-        }).toArray()).toEqual([
-                [ 1, 2, 3, 4 ],
-                [ 2, 3, 4 ],
-                [ 3, 4 ],
-                [ 4 ],
-                [ ]
-            ])
+        }).equals([
+            [ 1, 2, 3, 4 ],
+            [ 2, 3, 4 ],
+            [ 3, 4 ],
+            [ 4 ],
+            [ ]
+        ].list())).toBeTruthy()
     })
 
 
@@ -41,7 +41,7 @@ describe("An immutable list", function () {
     })
 
     it("can be created from an Array", function () {
-        expect([1, 2, 3, 4].list()).toEqual(list)
+        expect([1, 2, 3, 4].list().equals(list)).toBeTruthy()
     })
 
     it("can be mapped", function () {
