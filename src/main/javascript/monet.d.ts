@@ -90,9 +90,15 @@ declare namespace monet {
         takeLeft(m: Maybe<T>): Maybe<T>;
         takeRight(m: Maybe<T>): Maybe<T>;
 
+        /* Inherited from Applicative */
+        ap<V>(maybeFn: Maybe<(val: T) => V>): Maybe<V>;
+
         /* Maybe specific */
-        filter(fn: (val: T) => boolean): Maybe<T>;
         cata<Z>(none: () => Z, some: (val: T) => Z): Z;
+        fold<V>(val: V): (fn: (val: T) => V) => V;
+
+        filter(fn: (val: T) => boolean): Maybe<T>;
+
         isSome(): boolean;
         isJust(): boolean;
         isNone(): boolean;
@@ -102,11 +108,10 @@ declare namespace monet {
         orSome(val: T): T;
         orJust(val: T): T;
         orElse(maybe: Maybe<T>): Maybe<T>;
-        ap<V>(maybeFn: Maybe<(val: T) => V>): Maybe<V>;
+
         toList(): List<T>;
         toEither<E>(left?: E): Either<E, T>;
         toValidation<E>(fail?: E): Validation<E, T>;
-        fold<V>(val: V): (fn: (val: T) => V) => V;
     }
 
     interface ISomeStatic {
@@ -139,44 +144,52 @@ declare namespace monet {
      */
 
     interface Either<E, T> extends IMonad<T> {
-        map<V>(fn: (val: T) => V): Either<E, V>;
+        /* Inherited from Monad: */
         bind<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
         flatMap<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
         chain<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
+        map<V>(fn: (val: T) => V): Either<E, V>;
         join<V>(): Either<E, V>; // if T is Either<V>
         takeLeft(m: Either<E, T>): Either<E, T>;
         takeRight(m: Either<E, T>): Either<E, T>;
+
+        /* Inherited from Applicative */
         ap<V>(eitherFn: Either<E, (val: T) => V>): Either<E, V>;
+
+        /* Either specific */
         cata<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
+
         bimap<Z, V>(leftFn: (err: E) => Z, rightFn: (val: T) => V): Either<Z, V>;
+        leftMap<F>(fn: (leftVal: E) => F): Either<F, T>;
+
         isRight(): boolean;
         isLeft(): boolean;
         right(): T;
         left(): E;
+
         toValidation(): Validation<E, T>;
         toMaybe(): Maybe<T>;
     }
 
-    interface IRightStatic {
-        <F, V>(val: V): Either<F, V>;
-        new <F, V>(val: V): Either<F, V>;
+    interface IEitherStatic extends IMonadStatic {
+        Right: IRightStatic;
+        Left: ILeftStatic;
+        unit: IRightStatic;
+        of: IRightStatic;    // alias for unit
+        pure: IRightStatic;  // alias for unit
     }
 
-    var Right: IRightStatic;
+    interface IRightStatic {
+        <F, V>(val: V): Either<F, V>;
+    }
 
     interface ILeftStatic {
         <F, V>(val: F): Either<F, V>;
-        new <F, V>(val: F): Either<F, V>;
-    }
-
-    var Left: ILeftStatic;
-
-    interface IEitherStatic extends IMonadStatic {
-        Right<F, V>(val: V): Either<F, V>;
-        Left<F, V>(val: F): Either<F, V>;
     }
 
     var Either: IEitherStatic;
+    var Right: IRightStatic;
+    var Left: ILeftStatic;
 
     /****************************************************************
      * Validation
@@ -187,56 +200,57 @@ declare namespace monet {
     }
 
     interface Validation<E, T> extends IMonad<T> {
-        isSuccess(): boolean;
-        isFail(): boolean;
-        success(): T;
-        fail(): E;
-        ap<V>(eitherFn: Validation<E, (val: T) => V>): Validation<E, V>;
-        cata<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
-        toEither(): Either<E, T>;
-        toMaybe(): Maybe<T>;
-        
-        acc(): Validation<E, IValidationAcc>;
-        bimap<F, V>(fnF: (fail: E) => F, fnS: (val: T) => V): Validation<F, V>;
-        failMap<F>(fn: (fail: E) => F): Validation<F, T>;
-        
-        // Common monad methods
+        /* Inherited from Monad: */
         bind<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
         flatMap<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
         chain<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
         map<V>(fn: (val: T) => V): Validation<E, V>;
-        join<V>(): Validation<E, V>; // if T is Validation<E, V> -> its alias for .flatMap(value => value);
+        join<V>(): Validation<E, V>; // if T is Validation<E, V>
         takeLeft(m: Validation<E, T>): Validation<E, T>;
         takeRight(m: Validation<E, T>): Validation<E, T>;
-        
-        // Private ?
-        init<F, V>(fail: F, isSuccess: boolean): void; // Side Effect Warning
-        init<F, V>(value: V, isSuccess: boolean): void; // Side Effect Warning
-        of<F, V>(value: V): Validation<F, V>;
-        point<F, V>(value: V): Validation<F, V>;
-        pure<F, V>(value: V): Validation<F, V>;
-        unit<F, V>(value: V): Validation<F, V>;
+
+        /* Inherited from Applicative */
+        ap<V>(eitherFn: Validation<E, (val: T) => V>): Validation<E, V>;
+
+        /* Validation specific */
+        cata<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
+
+        bimap<F, V>(fnF: (fail: E) => F, fnS: (val: T) => V): Validation<F, V>;
+        failMap<F>(fn: (fail: E) => F): Validation<F, T>;
+
+        isSuccess(): boolean;
+        isFail(): boolean;
+        success(): T;
+        fail(): E;
+
+        acc(): Validation<E, IValidationAcc>;
+
+        toEither(): Either<E, T>;
+        toMaybe(): Maybe<T>;
     }
 
     interface IValidationStatic extends IMonadStatic {
-        Success<E, T>(val: T): Validation<E, T>;
-        Fail<E, T>(err: E): Validation<E, T>;
-        success<E, T>(val: T): Validation<E, T>;
-        fail<E, T>(err: E): Validation<E, T>;
-        
-        // Private ?
-        map2(...args: any[]): any;
-        
-        of<F, V>(value: V): Validation<F, V>;
-        point<F, V>(value: V): Validation<F, V>;
-        pure<F, V>(value: V): Validation<F, V>;
-        unit<F, V>(value: V): Validation<F, V>;
-        
-        fn: Validation<any, any>;
-        prototype: Validation<any, any>;
+        Success: ISuccessStatic;
+        Fail: IFailStatic;
+        success: ISuccessStatic;
+        fail: IFailStatic;
+        of: ISuccessStatic;
+        pure: ISuccessStatic;
+        unit: ISuccessStatic;
+        point: ISuccessStatic;
+    }
+
+    interface ISuccessStatic {
+        <E, T>(val: T): Validation<E, T>;
+    }
+
+    interface IFailStatic {
+        <E, T>(err: E): Validation<E, T>;
     }
 
     var Validation: IValidationStatic;
+    var Success: ISuccessStatic;
+    var Fail: IFailStatic;
 
     /****************************************************************
      * List
@@ -405,25 +419,23 @@ declare module "monet" {
     export = monet;
 }
 
-declare var Identity: monet.IIdentityStatic;
 
+/* Browser global variables */
+declare var Identity: monet.IIdentityStatic;
 declare var Maybe: monet.IMaybeStatic;
 declare var Just: monet.ISomeStatic;
 declare var Some: monet.ISomeStatic;
 declare var None: monet.INoneStatic;
 declare var Nothing: monet.INoneStatic;
-
 declare var Either: monet.IEitherStatic;
-
+declare var Right: monet.IRightStatic;
+declare var Left: monet.ILeftStatic;
 declare var Validation: monet.IValidationStatic;
-
+declare var Success: monet.ISuccessStatic;
+declare var Fail: monet.IFailStatic;
 declare var List: monet.IListStatic;
-
 declare var IO: monet.IIOStatic;
-
 declare var Reader: monet.ReaderStatic;
-
 declare var Free: monet.IFreeStatic;
 declare var Return: monet.IReturnStatic;
 declare var Suspend: monet.ISuspendStatic;
-
