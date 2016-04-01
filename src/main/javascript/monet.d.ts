@@ -358,15 +358,16 @@ declare namespace monet {
         local<X>(fn: (val: X) => E): Reader<X, A>;
     }
 
-    interface ReaderStatic {
+    interface IReaderFactory extends IMonadFactory {
         <E, A>(fn: (env: E) => A): Reader<E, A>;
-        unit<E, A>(val: A): Reader<E, A>;
-        of<E, A>(val: A): Reader<E, A>;   // alias for unit
-        pure<E, A>(val: A): Reader<E, A>  // alias for unit
-        point<E, A>(val: A): Reader<E, A> // alias for unit
-        ask<E>(): Reader<E, E>;
-        new <E, A>(fn: (env: E) => A): Reader<E, A>;
+    }
 
+    interface ReaderStatic extends IReaderFactory, IMonadStatic {
+        unit: IReaderFactory;
+        of: IReaderFactory;    // alias for unit
+        pure: IReaderFactory;  // alias for unit
+        point: IReaderFactory; // alias for unit
+        ask<E>(): Reader<E, E>;
     }
 
     var Reader: ReaderStatic;
@@ -400,7 +401,6 @@ declare namespace monet {
         takeLeft<X>(other: Free<X>): Free<A>;
         takeRight<B>(other: Free<B>): Free<B>;
 
-
         /* Free-specific: */
         // evaluates a single layer
         resume<FFA>(): Either<FFA, A>;
@@ -408,22 +408,21 @@ declare namespace monet {
         go<FFA>(extract: (sus: FFA) => Free<A>): A;
     }
 
-    interface IFreeStatic {
+    interface IFreeStatic extends IMonadStatic {
         Return: IReturnStatic;
         Suspend: ISuspendStatic;
-        of<A, FFA>(ffa: FFA): Free<A>; // alias of Suspend
+        unit: IReturnStatic;
+        of: IReturnStatic;    // alias for unit
+        pure: IReturnStatic;  // alias for unit
         liftF<A, FA>(fa: FA): Free<A>; // FA = F<A>
-
     }
 
-    interface IReturnStatic {
+    interface IReturnStatic extends IMonadFactory {
         <A>(a: A): Free<A>;
-        new <A>(a: A): Free<A>;
     }
 
-    interface ISuspendStatic {
+    interface ISuspendStatic extends IMonadFactory {
         <A, FFA>(ffa: FFA): Free<A>;
-        new <A, FFA>(ffa: FFA): Free<A>;
     }
 
     var Free: IFreeStatic;
