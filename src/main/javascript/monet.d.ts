@@ -269,38 +269,66 @@ declare namespace monet {
     }
 
     interface List<T> {
-        cons(a: T): List<T>;
-        map<V>(fn: (val: T) => V): List<V>;
+        /* Inherited from Monad: */
         bind<V>(fn: (val: T) => List<V>): List<V>;
         flatMap<V>(fn: (val: T) => List<V>): List<V>;
-        head(): T;
-        headMaybe(): Maybe<T>;
-        filter(fn: (val: T) => boolean): List<T>;
+        chain<V>(fn: (val: T) => List<V>): List<V>;
+        map<V>(fn: (val: T) => V): List<V>;
+        join<V>(): List<V>; // if T is List<V>
+        takeLeft<V>(m: List<V>): List<T>;
+        takeRight<V>(m: List<V>): List<V>;
+
+        /* Inherited from Applicative */
+        ap<V>(listFn: List<(val: T) => V>): List<V>;
+
+        /* Validation specific */
         foldLeft<V>(initial: V): (fn: ListFoldLeftFn<T, V>) => V;
         foldRight<V>(initial: V): (fn: ListFoldRightFn<T, V>) => V;
+
+        filter(fn: (val: T) => boolean): List<T>;
+        cons(a: T): List<T>;
+        snoc(a: T): List<T>;
+        isNEL(): boolean;
+        size(): number;
+        head(): T;
+        headMaybe(): Maybe<T>;
         append(list: List<T>): List<T>;
         concat(list: List<T>): List<T>;
-        // if T extends IMonad<V>
-        //sequence<V>(m: IMonadStatic): IMonad<List<V>>;
-        //sequence<E, V>(m: IMaybeStatic): Maybe<List<V>>;
-        //sequence<E, V>(m: IEitherStatic): Either<E, List<V>>;
-        //sequence<E, V>(m: IValidationStatic): Validation<List<E>, List<V>>;
-        //
-        //sequence<U extends IMonadStatic, R extends IMonad<List<any>>>(m: U): R;
-        //sequenceMaybe<V, T extends Maybe<V>>(): Maybe<List<V>>;
-        //sequenceEither<E, V, T extends Either<E, V>>(): Either<E, List<V>>;
-        //sequenceValidation<E, V, T extends Validation<E, V>>(): Validation<List<E>, List<V>>;
-        //sequenceIO<V, T extends IO<V>>(): IO<List<V>>;
-        //sequenceReader<V, T extends Reader<V>>(): Reader<List<V>>;
         reverse(): List<T>;
+        tails(): List<List<T>>;
+        toArray(): T[];
+        flatten<V>(): List<V>;
+        flattenMaybe<V>(): List<V>;
+
+        sequence<E, V>(m: IMaybeStatic): Maybe<List<V>>;
+        sequence<E, V>(m: IEitherStatic): Either<E, List<V>>;
+        sequence<E, V>(m: IValidationStatic): Validation<List<E>, List<V>>;
+        sequenceMaybe<V>(): Maybe<List<V>>;
+        sequenceEither<E, V>(): Either<E, List<V>>;
+        sequenceValidation<E, V>(): Validation<List<E>, List<V>>;
+        sequenceIO<V>(): IO<List<V>>;
+        sequenceReader<E, A>(): Reader<E, List<A>>;
     }
 
-    interface IListStatic {
-        <T>(val: T, tail: List<T>): List<T>;
-        new <T>(val: T, tail: List<T>): List<T>;
+    interface Nil extends List<void> {
+        cons<T>(a: T): List<T>;
+        append<T>(list: List<T>): List<T>;
+        concat<T>(list: List<T>): List<T>;
+    }
+
+    interface IListFactory extends IMonadFactory {
+        <T>(val?: T, tail?: List<T>): List<T>;
+    }
+
+    interface IListStatic extends IListFactory, IMonadStatic {
+        fromArray<T>(arr: T[]): List<T>;
+        unit: IListFactory;
+        of: IListFactory;    // alias for unit
+        pure: IListFactory;  // alias for unit
     }
 
     var List: IListStatic;
+    var Nil: Nil;
 
     /****************************************************************
      * IO
