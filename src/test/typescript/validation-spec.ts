@@ -1,9 +1,5 @@
 import { Validation, Success, Fail, IO } from 'monet';
 
-console.assert(Validation.fail('ERR') === Fail('ERR'));
-console.assert(Validation.success('a') === Success('a'));
-console.assert(!(Success<string, string>('A') === Fail<string, string>('ERR')));
-
 function getType(action) {
     return action.type === 'MESSAGE' ? Success<string, string>(action.type) : Fail<string, string>('BadType');
 }

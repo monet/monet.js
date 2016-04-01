@@ -1,9 +1,5 @@
 import { Either, Right, Left, IO } from 'monet';
 
-console.assert(Either.Left('ERR') === Left('ERR'));
-console.assert(Either.Right('a') === Right('a'));
-console.assert(!(Right<string, string>('A') === Left<string, string>('ERR')));
-
 function getType(action) {
     return action.type === 'MESSAGE' ? Right<string, string>(action.type) : Left<string, string>('BadType');
 }
@@ -67,4 +63,4 @@ const messageCopy: string = Left<number, string>(404)
     .ap(unpacked.map(m => p => p + ' ' + m))
     .cata(e => e, v => v);
 
-console.assert(nameError === messageCopy);
+console.log(nameError, messageCopy);

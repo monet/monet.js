@@ -1,13 +1,5 @@
 import { Maybe, Some, None, Just, Nothing, IO } from 'monet';
 
-console.assert(None() === Nothing());
-console.assert(Some('a') === Just('a'));
-console.assert(None() === Maybe.fromNull('a'));
-console.assert(None() === Just('a'));
-console.assert(Nothing() === Some('a'));
-console.assert(Nothing() === Some('a'));
-console.assert(Just('a') === Maybe.fromNull('a'));
-
 function getType(action) {
     return Maybe.fromNull(action.type).filter(t => t !== 'MESSAGE');
 }
@@ -51,7 +43,7 @@ interface IMessage {
 
 function getMessage(msg: IMessage): Maybe<IMessage> {
     if (msg && msg.hasOwnProperty('type')) {
-        return Some(msg);
+        return Just(msg);
     }
     return None<IMessage>();
 }
@@ -75,7 +67,7 @@ log3b(getMessage({type: 'x', payload: null}).chain(getType));
 
 const name: string = None<string>().orSome('NAME');
 const surname: string = Nothing<string>().orJust('SURNAME');
-const message: string = Some(0).filter(Boolean).map(String).orElse(unpacked).orJust('Hi!');
+const message: string = Maybe.Just(0).filter(Boolean).map(String).orElse(unpacked).orJust('Hi!');
 const messageCopy: string = Nothing().ap(unpacked.map(m => () => m)).orSome('Hi!');
 
 console.log(name, surname, message, messageCopy);
