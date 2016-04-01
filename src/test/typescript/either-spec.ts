@@ -62,4 +62,9 @@ log3(getMessage({type: 'x', payload: null}).chain(getType));
 
 const nameError: string = Left('-- Adamovisch').leftMap(n => n.split(' ').shift()).left();
 
-console.log(nameError);
+const messageCopy: string = Left<number, string>(404)
+    .leftMap(String)
+    .ap(unpacked.map(m => p => p + ' ' + m))
+    .cata(e => e, v => v);
+
+console.assert(nameError === messageCopy);

@@ -62,4 +62,18 @@ log3(getMessage({type: 'x', payload: null}).chain(getType));
 
 const nameError: string = Fail('-- Adamovisch').failMap(n => n.split(' ').shift()).fail();
 
-console.log(nameError);
+function getHttpError(code: number) {
+    return Fail<number, string>(code);
+}
+
+const messageErrors: string = getHttpError(404).failMap<string>(String).failMap(Array)
+    .ap(getHttpError(400).failMap(String).failMap(Array).map(v => t => v + t))
+    .ap(getHttpError(500).failMap(String).failMap(Array).map(v => t => v + t))
+    .cata(e => e.join(), v => v);
+
+const messageCopy: string = Success<number[], string>('message: Yo man!')
+    .ap(Success<number[], (v: string) => string[]>(m => m.split(': ')))
+    .ap(Success<number[], (v: string[]) => string>(m => m.pop()))
+    .cata(e => e.join(), v => v);
+
+console.log(nameError, messageCopy, messageErrors);
