@@ -260,15 +260,7 @@ declare namespace monet {
      * List
      */
 
-    interface ListFoldLeftFn<A, B> {
-        (acc: B, element: A): B;
-    }
-
-    interface ListFoldRightFn<A, B> {
-        (element: A, acc: B): B;
-    }
-
-    interface List<T> {
+    interface List<T> extends IMonad<T> {
         /* Inherited from Monad: */
         bind<V>(fn: (val: T) => List<V>): List<V>;
         flatMap<V>(fn: (val: T) => List<V>): List<V>;
@@ -282,8 +274,8 @@ declare namespace monet {
         ap<V>(listFn: List<(val: T) => V>): List<V>;
 
         /* Validation specific */
-        foldLeft<V>(initial: V): (fn: ListFoldLeftFn<T, V>) => V;
-        foldRight<V>(initial: V): (fn: ListFoldRightFn<T, V>) => V;
+        foldLeft<V>(initial: V): (fn: (acc: V, element: T) => V) => V;
+        foldRight<V>(initial: V): (fn: (element: T, acc: V) => V) => V;
 
         filter(fn: (val: T) => boolean): List<T>;
         cons(a: T): List<T>;
@@ -295,12 +287,12 @@ declare namespace monet {
         append(list: List<T>): List<T>;
         concat(list: List<T>): List<T>;
         reverse(): List<T>;
+        tail(): List<T>;
         tails(): List<List<T>>;
-        toArray(): T[];
-        flatten<V>(): List<V>;
-        flattenMaybe<V>(): List<V>;
+        flatten<V>(): List<V>;   // === join
+        flattenMaybe<V>(): List<V>; // if T is Maybe<V>
 
-        sequence<E, V>(m: IMaybeStatic): Maybe<List<V>>;
+        sequence<V>(m: IMaybeStatic): Maybe<List<V>>;
         sequence<E, V>(m: IEitherStatic): Either<E, List<V>>;
         sequence<E, V>(m: IValidationStatic): Validation<List<E>, List<V>>;
         sequenceMaybe<V>(): Maybe<List<V>>;
@@ -308,6 +300,8 @@ declare namespace monet {
         sequenceValidation<E, V>(): Validation<List<E>, List<V>>;
         sequenceIO<V>(): IO<List<V>>;
         sequenceReader<E, A>(): Reader<E, List<A>>;
+
+        toArray(): T[];
     }
 
     interface Nil extends List<void> {
@@ -329,6 +323,70 @@ declare namespace monet {
 
     var List: IListStatic;
     var Nil: Nil;
+
+    /****************************************************************
+     * NEL
+     */
+
+    interface NEL<T> extends IMonad<T> {
+        /* Inherited from Monad: */
+        bind<V>(fn: (val: T) => NEL<V>): NEL<V>;
+        flatMap<V>(fn: (val: T) => NEL<V>): NEL<V>;
+        chain<V>(fn: (val: T) => NEL<V>): NEL<V>;
+        map<V>(fn: (val: T) => V): NEL<V>;
+        // FIXME: `.join()` is broken due to lack of `.cons()`
+        // join<V>(): NEL<V>; // if T is NEL<V>
+        takeLeft<V>(m: NEL<V>): NEL<T>;
+        takeRight<V>(m: NEL<V>): NEL<V>;
+
+        /* from CoMonad: */
+        mapTails<V>(fn: (val: NEL<T>) => V): NEL<V>;
+        cobind<V>(fn: (val: NEL<T>) => V): NEL<V>;
+        coflatMap<V>(fn: (val: NEL<T>) => V): NEL<V>;
+        cojoin(): NEL<NEL<T>>;      // === tails
+        extract(): T;               // === head
+
+        /* Inherited from Applicative */
+        // ap<V>(listFn: List<(val: T) => V>): List<V>;
+
+        /* Validation specific */
+        foldLeft<V>(initial: V): (fn: (acc: V, element: T) => V) => V;
+        foldRight<V>(initial: V): (fn: (element: T, acc: V) => V) => V;
+        reduceLeft(fn: (acc: T, element: T) => T): T;
+
+        filter(fn: (val: T) => boolean): List<T>;
+        // cons(a: T): NEL<T>;
+        // snoc(a: T): NEL<T>;
+        isNEL(): boolean;
+        size(): number;
+        head(): T;
+        append(list: NEL<T>): NEL<T>;
+        concat(list: NEL<T>): NEL<T>;
+        reverse(): NEL<T>;
+        tail(): List<T>;
+        tails(): NEL<NEL<T>>;
+        // flatten<V>(): NEL<V>;
+        // flattenMaybe<V>(): NEL<V>;
+
+        toArray(): T[];
+        toList(): List<T>;
+    }
+
+    type NonEmptyList<T> = NEL<T>;
+
+    interface INELFactory extends IMonadFactory {
+        <T>(val: T, tail?: NEL<T>): NEL<T>;
+    }
+
+    interface INELStatic extends INELFactory, IMonadStatic {
+        fromList<T>(arr: T[]): Maybe<NEL<T>>;
+        unit: INELFactory;
+        of: INELFactory;    // alias for unit
+        pure: INELFactory;  // alias for unit
+    }
+
+    var NonEmptyList: INELStatic;
+    var NEL: INELStatic;
 
     /****************************************************************
      * IO
@@ -478,6 +536,8 @@ declare var Validation: monet.IValidationStatic;
 declare var Success: monet.ISuccessStatic;
 declare var Fail: monet.IFailStatic;
 declare var List: monet.IListStatic;
+declare var NonEmptyList: monet.INELStatic;
+declare var NEL: monet.INELStatic;
 declare var IO: monet.IIOStatic;
 declare var Reader: monet.ReaderStatic;
 declare var Free: monet.IFreeStatic;
