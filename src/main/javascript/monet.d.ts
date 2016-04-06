@@ -295,6 +295,8 @@ declare namespace monet {
         sequence<V>(m: IMaybeStatic): Maybe<List<V>>;
         sequence<E, V>(m: IEitherStatic): Either<E, List<V>>;
         sequence<E, V>(m: IValidationStatic): Validation<List<E>, List<V>>;
+        sequence<V>(m: IIOStatic): IO<List<V>>;
+        sequence<E, A>(m: IReaderStatic): Reader<E, List<A>>;
         sequenceMaybe<V>(): Maybe<List<V>>;
         sequenceEither<E, V>(): Either<E, List<V>>;
         sequenceValidation<E, V>(): Validation<List<E>, List<V>>;
@@ -448,7 +450,7 @@ declare namespace monet {
         <E, A>(fn: (env: E) => A): Reader<E, A>;
     }
 
-    interface ReaderStatic extends IReaderFactory, IMonadStatic {
+    interface IReaderStatic extends IReaderFactory, IMonadStatic {
         unit: IReaderFactory;
         of: IReaderFactory;    // alias for unit
         pure: IReaderFactory;  // alias for unit
@@ -456,7 +458,7 @@ declare namespace monet {
         ask<E>(): Reader<E, E>;
     }
 
-    var Reader: ReaderStatic;
+    var Reader: IReaderStatic;
 
 
     /****************************************************************
@@ -539,7 +541,7 @@ declare var List: monet.IListStatic;
 declare var NonEmptyList: monet.INELStatic;
 declare var NEL: monet.INELStatic;
 declare var IO: monet.IIOStatic;
-declare var Reader: monet.ReaderStatic;
+declare var Reader: monet.IReaderStatic;
 declare var Free: monet.IFreeStatic;
 declare var Return: monet.IReturnStatic;
 declare var Suspend: monet.ISuspendStatic;
