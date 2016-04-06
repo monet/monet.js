@@ -375,11 +375,11 @@ declare namespace monet {
     type NonEmptyList<T> = NEL<T>;
 
     interface INELFactory extends IMonadFactory {
-        <T>(val: T, tail?: NEL<T>): NEL<T>;
+        <T>(val: T, tail?: List<T>): NEL<T>;
     }
 
     interface INELStatic extends INELFactory, IMonadStatic {
-        fromList<T>(arr: T[]): Maybe<NEL<T>>;
+        fromList<T>(arr: List<T>): Maybe<NEL<T>>;
         unit: INELFactory;
         of: INELFactory;    // alias for unit
         pure: INELFactory;  // alias for unit
