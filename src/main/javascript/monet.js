@@ -147,6 +147,14 @@
       })
     }
 
+    var listAp = function(list1, list2) {
+        return list1.bind(function(x) {
+          return list2.map(function(f) {
+                return f(x)
+            })
+        })
+    }
+
     var cons = function (head, tail) {
         return tail.cons(head)
     }
@@ -248,6 +256,9 @@
         },
         tails: function () {
             return this.isNil ? List(Nil, Nil) : this.tail().tails().cons(this)
+        },
+        ap: function(list) {
+            return listAp(this, list)
         },
         isNEL: falseFunction
     }
@@ -380,6 +391,7 @@
     NEL.prototype.extract = NEL.prototype.copure = NEL.prototype.head
     NEL.prototype.cojoin = NEL.prototype.tails
     NEL.prototype.coflatMap = NEL.prototype.mapTails = NEL.prototype.cobind
+    NEL.prototype.ap = List.prototype.ap
 
 
     /* Maybe Monad */
@@ -809,6 +821,14 @@
                         })) :
                 fn(this.val)
         },
+        ap: function(ff) {
+          return this.bind(function(x) {
+            return ff.map(function(f) {
+              return f(x)
+            })
+          })
+        },
+
         resume: function () {
             return this.isSuspend ? Left(this.functor) : Right(this.val)
         },
