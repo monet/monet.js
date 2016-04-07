@@ -349,7 +349,7 @@ declare namespace monet {
         extract(): T;               // === head
 
         /* Inherited from Applicative */
-        // ap<V>(listFn: List<(val: T) => V>): List<V>;
+        ap<V>(listFn: NEL<(val: T) => V>): NEL<V>;
 
         /* Validation specific */
         foldLeft<V>(initial: V): (fn: (acc: V, element: T) => V) => V;
