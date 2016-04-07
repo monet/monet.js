@@ -1,4 +1,4 @@
-import { Validation, Success, Fail, IO } from 'monet';
+import { Validation, Success, Fail, IO } from '../../../index';
 
 function getType(action) {
     return action.type === 'MESSAGE' ? Success<string, string>(action.type) : Fail<string, string>('BadType');

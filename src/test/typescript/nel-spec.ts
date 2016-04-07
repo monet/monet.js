@@ -1,4 +1,4 @@
-import { NonEmptyList, NEL, List, Nil, Maybe } from 'monet';
+import { NonEmptyList, NEL, List, Nil, Maybe } from '../../../index';
 
 const nel: NEL<string> = NonEmptyList('a', List('b'));
 const nonempty: NonEmptyList<number> = NEL(0, List(12));

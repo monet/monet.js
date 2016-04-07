@@ -1,4 +1,4 @@
-import { Maybe, Some, None, Just, Nothing, IO } from 'monet';
+import { Maybe, Some, None, Just, Nothing, IO } from '../../../index';
 
 function getType(action) {
     return Maybe.fromNull(action.type).filter(t => t !== 'MESSAGE');

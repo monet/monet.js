@@ -1,6 +1,5 @@
 {
   "files": [
-    "src/main/javascript/monet.d.ts",
     "src/test/typescript/identity-spec.ts",
     "src/test/typescript/maybe-spec.ts",
     "src/test/typescript/either-spec.ts",

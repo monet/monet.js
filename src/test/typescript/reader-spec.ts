@@ -1,4 +1,4 @@
-import { Reader } from 'monet';
+import { Reader } from '../../../index';
 
 interface Config {
   host: string;

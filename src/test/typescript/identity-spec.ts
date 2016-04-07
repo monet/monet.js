@@ -1,4 +1,4 @@
-import { Identity } from 'monet';
+import { Identity } from '../../../index';
 
 function getType(action) {
     return Identity(action.type);

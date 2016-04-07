@@ -1,4 +1,4 @@
-import { Free, Functor } from 'monet';
+import { Free, Functor } from '../../../index';
 
 // I hope you don't write real app this way, but this
 // is not a good place to pull in Coyonedas and IO

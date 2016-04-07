@@ -1,4 +1,4 @@
-import { Either, Right, Left, IO } from 'monet';
+import { Either, Right, Left, IO } from '../../../index';
 
 function getType(action) {
     return action.type === 'MESSAGE' ? Right<string, string>(action.type) : Left<string, string>('BadType');
