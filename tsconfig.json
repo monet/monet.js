@@ -1,0 +1,13 @@
+{
+  "files": [
+    "src/test/typescript/identity-spec.ts",
+    "src/test/typescript/maybe-spec.ts",
+    "src/test/typescript/either-spec.ts",
+    "src/test/typescript/validation-spec.ts",
+    "src/test/typescript/list-spec.ts",
+    "src/test/typescript/nel-spec.ts",
+    "src/test/typescript/io-spec.ts",
+    "src/test/typescript/reader-spec.ts",
+    "src/test/typescript/free-spec.ts"
+  ]
+}
