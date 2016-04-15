@@ -6,7 +6,6 @@
 //     https://cwmyers.github.com/monet.js
 
 
-"use strict";
 (function(root, factory) {
 
     if (typeof exports === 'object') {
@@ -17,6 +16,7 @@
         root.curry = factory(root);
     }
 }(this, function(root) {
+    "use strict";
 
     var curry = function (fn, args) {
       return function () {
