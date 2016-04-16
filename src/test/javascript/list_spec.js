@@ -1,21 +1,21 @@
 describe("An immutable list", function () {
 
     beforeEach(function () {
-        this.addMatchers({
-            toBeSomeMaybe: function (expected) {
-                return this.actual.isSome();
-            },
-            toBeSomeMaybeWith: function (expected) {
-                return this.actual.some() == expected
-            },
-            toBeSomeMaybeWithList: function (expected) {
-                return this.actual.some().toArray() === expected
-            },
-            toBeNoneMaybe: function () {
-                return this.actual.isNone()
-            }
+        jasmine.addMatchers({
+            toBeSomeMaybe: getCustomMatcher(function (actual) {
+                return actual.isSome();
+            }),
+            toBeSomeMaybeWith: getCustomMatcher(function (actual, expected) {
+                return actual.some() == expected;
+            }),
+            toBeSomeMaybeWithList: getCustomMatcher(function (actual, expected) {
+                return actual.some().toArray() === expected;
+            }),
+            toBeNoneMaybe: getCustomMatcher(function (actual) {
+                return actual.isNone();
+            })
         });
-    })
+    });
 
     var list = List(1, List(2, List(3, List(4, Nil))))
 

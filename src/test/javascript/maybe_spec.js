@@ -2,16 +2,16 @@ describe('A Maybe', function () {
 
 
     beforeEach(function () {
-        this.addMatchers({
-            toBeSomeMaybe: function (expected) {
-                return this.actual.isSome();
-            },
-            toBeSomeMaybeWith: function (expected) {
-                return this.actual.some() == expected
-            },
-            toBeNoneMaybe: function () {
-                return this.actual.isNone()
-            }
+        jasmine.addMatchers({
+            toBeSomeMaybe: getCustomMatcher(function (actual) {
+                return actual.isSome();
+            }),
+            toBeSomeMaybeWith: getCustomMatcher(function (actual, expected) {
+                return actual.some() == expected;
+            }),
+            toBeNoneMaybe: getCustomMatcher(function (actual) {
+                return actual.isNone();
+            })
         });
     });
 

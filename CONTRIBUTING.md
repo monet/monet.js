@@ -1,8 +1,4 @@
-# Maven tests
-
-- …
-
-# Typings tests
+# Tests
 
 - `npm install`
 - `npm test`

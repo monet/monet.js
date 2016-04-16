@@ -11,7 +11,21 @@
   "main": "src/main/javascript/monet.js",
   "license": "MIT",
   "dependencies": {},
+  "devDependencies": {
+    "jasmine-core": "2.4.1",
+    "karma": "0.13.22",
+    "karma-chrome-launcher": "0.2.3",
+    "karma-firefox-launcher": "0.1.7",
+    "karma-jasmine": "0.3.8",
+    "karma-phantomjs-launcher": "1.0.0",
+    "karma-safari-launcher": "0.1.1",
+    "phantomjs-prebuilt": "2.1.7",
+    "typescript": "1.8.10"
+  },
   "scripts": {
-    "test": "node node_modules/typescript/bin/tsc -m system --noEmit --listFiles"
+    "test": "karma start && tsc -m system --noEmit --listFiles",
+    "test-typings": "tsc -m system --noEmit --listFiles",
+    "tdd": "karma start --auto-watch  --no-single-run --browsers Chrome,Firefox,PhantomJS",
+    "tdd-osx": "karma start --auto-watch  --no-single-run --browsers Chrome,Firefox,PhantomJS,Safari"
   }
 }
