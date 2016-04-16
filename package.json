@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git@github.com:cwmyers/monet.js.git"
   },
-  "main": "src/main/javascript/monet.js",
+  "main": "src/monet.js",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {

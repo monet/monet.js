@@ -1,11 +1,12 @@
 module.exports = function (config) {
+
   config.set({
     basePath: '',
     frameworks: ['jasmine'],
     files: [
-      'src/main/javascript/*.js',
-      'src/test/**/*helper.js',
-      'src/test/**/*spec.js'
+      'src/*.js',
+      'test/*-helper.js',
+      'test/*-spec.js'
     ],
     exclude: [],
     reporters: ['progress'],
@@ -16,5 +17,6 @@ module.exports = function (config) {
     browsers: ['PhantomJS'],
     singleRun: true,
     concurrency: 6e6
-  })
-}
+  });
+
+};
