@@ -16,6 +16,7 @@
         root.curry = factory(root);
     }
 }(this, function(root) {
+    "use strict";
 
     var curry = function (fn, args) {
       return function () {
@@ -61,6 +62,7 @@
 
     // List monad
 
+    var list;
     var List = list = root.List = function (head, tail) {
         return new List.fn.init(head, tail)
     }
@@ -294,6 +296,7 @@
      *
      */
 
+    var NonEmptyList;
     var NEL = root.NEL = NonEmptyList = root.NonEmptyList = function (head, tail) {
         if (head == null) {
             throw "Cannot create an empty Non-Empty List."
@@ -406,10 +409,12 @@
         return Some(a)
     }
 
+    var Just;
     var Some = Just = Maybe.Just = Maybe.Some = root.Some = root.Just = function (val) {
         return new Maybe.fn.init(true, val)
     };
 
+    var Nothing;
     var None = Nothing = Maybe.Nothing = Maybe.None = root.None = function () {
         return new Maybe.fn.init(false, null)
     };
@@ -583,6 +588,7 @@
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
     }
 
+    var monadT, monadTransformer, MonadTransformer;
     var MonadT = monadT = monadTransformer = MonadTransformer = root.monadTransformer = root.MonadT = root.monadT = function (monad) {
         return new MonadT.fn.init(monad)
     }
@@ -619,6 +625,7 @@
 
     MonadT.fn.init.prototype = MonadT.fn;
 
+    var io;
     var IO = io = root.IO = root.io = function (effectFn) {
         return new IO.fn.init(effectFn)
     }
@@ -730,6 +737,7 @@
 
     Either.fn.init.prototype = Either.fn;
 
+    var reader;
     var Reader = reader = root.Reader = function (fn) {
         return new Reader.fn.init(fn)
     }
