@@ -1,19 +1,19 @@
 describe('A Validation', function () {
 
     beforeEach(function () {
-        this.addMatchers({
-            toBeSuccess: function (expected) {
-                return this.actual.isSuccess();
-            },
-            toBeSuccessWith: function (expected) {
-                return this.actual.success() == expected
-            },
-            toBeFailure: function () {
-                return this.actual.isFail()
-            },
-            toBeFailureWith: function (expected) {
-                return this.actual.fail() == expected
-            }
+        jasmine.addMatchers({
+            toBeSuccess: getCustomMatcher(function (actual) {
+                return actual.isSuccess();
+            }),
+            toBeSuccessWith: getCustomMatcher(function (actual, expected) {
+                return actual.success() == expected;
+            }),
+            toBeFailure: getCustomMatcher(function (actual) {
+                return actual.isFail()
+            }),
+            toBeFailureWith: getCustomMatcher(function (actual, expected) {
+                return actual.fail() == expected
+            })
         });
     });
     var successString = Validation.success("abcd")

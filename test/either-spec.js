@@ -5,21 +5,22 @@
 describe('An Either', function () {
 
     beforeEach(function () {
-        this.addMatchers({
-            toBeRight: function (expected) {
-                return this.actual.isRight();
-            },
-            toBeRightWith: function (expected) {
-                return this.actual.right() == expected
-            },
-            toBeLeft: function () {
-                return this.actual.isLeft()
-            },
-            toBeLeftWith: function (expected) {
-                return this.actual.left() == expected
-            }
+        jasmine.addMatchers({
+            toBeRight: getCustomMatcher(function (actual) {
+                return actual.isRight();
+            }),
+            toBeRightWith: getCustomMatcher(function (actual, expected) {
+                return actual.right() == expected;
+            }),
+            toBeLeft: getCustomMatcher(function (actual) {
+                return actual.isLeft();
+            }),
+            toBeLeftWith: getCustomMatcher(function (actual, expected) {
+                return actual.left() == expected;
+            })
         });
     });
+
     var rightString = Either.Right("abcd")
     describe('that is right', function () {
         it('will be transformed by a map', function () {
@@ -136,7 +137,7 @@ describe('An Either', function () {
                 throw "right"
             })).toBeLeftWith("left: error dude")
         })
-        
+
         it('can be converted to Maybe.None', function() {
           expect(leftString.toMaybe().isNone()).toBe(true)
         })
