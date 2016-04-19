@@ -1,5 +1,6 @@
 describe('A Maybe', function () {
-
+    var someString;
+    var none;
 
     beforeEach(function () {
         jasmine.addMatchers({
@@ -13,10 +14,15 @@ describe('A Maybe', function () {
                 return actual.isNone();
             })
         });
+        someString = Maybe.Some("abcd");
+        none = Maybe.None();
     });
 
-    var someString = Maybe.Some("abcd")
-    var none = Maybe.None()
+    afterEach(function () {
+        someString = undefined;
+        none = undefined;
+    });
+
     describe('with a value', function () {
         it('will be transformed by a map', function () {
             expect(someString.map(function (val) {
@@ -77,7 +83,7 @@ describe('A Maybe', function () {
             }).isNone()).toBeTruthy()
         })
         it('will throw an exception when Some() is called', function () {
-            expect(none.some).toThrow("Illegal state exception")
+            expect(function () { none.some() }).toThrow("Illegal state exception")
         })
         it('will be true for isNone()', function () {
             expect(none.isNone()).toBeTruthy()
