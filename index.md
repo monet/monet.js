@@ -421,7 +421,7 @@ or with pimped methods on an object
 
 ####map
 
-	Validation[E,A].map(fn:A -> B): Validation[E,A]
+	Validation[E,A].map(fn:A -> B): Validation[E,B]
 
 `map` takes a function (A -> B) and applies that function to the value inside the `success` side of the `Validation` and returns another `Validation`.
 
