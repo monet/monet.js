@@ -1,7 +1,7 @@
 ---
 title: Home
 layout: index
-version: 0.8.8
+version: v0.8.9
 ---
 
 ## Introduction
@@ -96,31 +96,31 @@ or
 
 Everything that is a monad in will implement the following functions.  The specific monads will be discussed in detail below.
 
-####bind *alias: flatMap, chain*
+#### bind *alias: flatMap, chain*
 
 	Monad[A].bind(f: A -> Monad[B]): Monad[B]
 
 Performs a monadic bind.
 
-####map
+#### map
 
 	Monad[A].map(f: A -> B): Monad[B]
 
-####unit *alias: pure, of*
+#### unit *alias: pure, of*
 
 	Monad.unit(A): Monad[A]
 
-####ap
+#### ap
 
 	Monad[A].ap(m: Monad[A -> B]): Monad[B]
 
-####join
+#### join
 
 	Monad[Monad[A]].join(): Monad[A]
 
 The inner and outer monads are the same type.
 
-####takeLeft
+#### takeLeft
 
 	Monad[A].takeLeft(m: Monad[B]): Monad[A]
 
@@ -135,7 +135,7 @@ For example:
 	None().takeLeft(Some(3))
 	// result: None
 
-####takeRight
+#### takeRight
 
 	Monad[A].takeRight(m: Monad[B]): Monad[B]
 
@@ -184,7 +184,7 @@ For example:
 	//result: Some(124)
 
 
-####bind *alias: flatMap, chain*
+#### bind *alias: flatMap, chain*
 
 	Maybe[A].bind(fn: A -> Maybe[B]): Maybe[B]
 
@@ -214,7 +214,7 @@ For example:
 	//result: true
 
 
-####isNone *alias: isNothing*
+#### isNone *alias: isNothing*
 
 	Maybe[A].isNone(): Boolean
 
@@ -225,7 +225,7 @@ For example:
 	Maybe.none().isNone()
 	//result: true
 
-####some *alias: just*
+#### some *alias: just*
 
 	Maybe[A].some(): A
 
@@ -236,7 +236,7 @@ For example:
 	Maybe.some("hi").some()
 	//result: "hi"
 
-####orSome *alias: orJust*
+#### orSome *alias: orJust*
 
 	Maybe[A].orSome(a:A) : A
 
@@ -247,13 +247,13 @@ Will return the containing value inside the `Maybe` or return the supplied value
 	Maybe.none().orSome("bye")
 	=> "bye"
 
-####orElse
+#### orElse
 
 	Maybe[A].orElse(Maybe[A]): Maybe[A]
 
 Returns the Maybe if it is a Some otherwise returns the supplied Maybe.
 
-####ap
+#### ap
 
 	Maybe[A].ap(Maybe[A->B]): Maybe[B]
 
@@ -279,7 +279,7 @@ Here is an example for creating a string out of the result of a couple of `Maybe
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
 
-####filter
+#### filter
 
 	Maybe[A].filter(fn: A -> Boolean): Maybe[A]
 
@@ -288,19 +288,19 @@ Very similiar to the filtering of a list, `filter` on `Maybe` will filter out an
 For example:
 
 	
-####toEither
+#### toEither
 
 	Maybe[A].toEither(fail: E): Either[E,A]
 
 Converts a Maybe to an Either
 
-####toValidation
+#### toValidation
 
 	Maybe[A].toValidation(fail: E): Validation[E,A]
 
 Converts a Maybe to a Validation.
 
-####toList
+#### toList
 
 	Maybe[A].toList: List[A]
 
@@ -312,7 +312,7 @@ it is used to represent computations that can fail with an error.  Think of it a
 as having two sides, the success is held on the right and the failure on the left.  This is a right biased either which means that `map`
 and `flatMap` (`bind`) will operate on the right side of the either.
 
-####Creating an Either
+#### Creating an Either
 
 	var success = Either.Right(val);
 	var failure = Either.Left(val);
@@ -322,9 +322,9 @@ or with the pimped methods on object:
 	var success = val.right()
 	var failure = "some error".left()
 
-###Functions
+### Functions
 
-####map
+#### map
 
 	Either[E,A].map(fn: A -> B): Either[E,B]
 
@@ -337,20 +337,20 @@ For example:
 	Left("grr").map(function (e) {return e+1})
 	// result: Left("grr")
 
-####flatMap *alias: bind, chain*
+#### flatMap *alias: bind, chain*
 
 	Either[E,A].flatMap(fn: A -> Either[E,B]): Either[E,B]
 
 This will perform a monadic bind over the right side of the either, otherwise it will do nothing.
 
-####ap
+#### ap
 
 	Either[E,A].ap(v: Either[E, A -> B]): Either[E,B]
 
 This takes an either that has a function on the right side of the either and then applies it to the right side of itself. This implements
 the applicative functor pattern.
 
-####cata
+#### cata
 
 	Either[E,A].cata(leftFn: E -> X, rightFn: A ->X): X
 
@@ -364,41 +364,41 @@ The catamorphism for either.  If the either is `right` the right function will b
 			return "yay! " + success
 		})
 
-####bimap
+#### bimap
 
 	Either[A,B].bimap(leftFn: A->C, rightFn: B->D): Either[C,D]
 
-####isRight
+#### isRight
 
 	Either[E,A].isRight(): Boolean
 
 Returns true if this Either is right, false otherwise.
 
-####isLeft
+#### isLeft
 
 	Either[E,A].isLeft(): Boolean
 
 Returns true if this Either is left, false otherwise.
 
-####right
+#### right
 
 	Either[E,A].right(): A
 
 Returns the value in the right side, otherwise throws an exception.
 
-####left
+#### left
 
 	Either[E,A].left(): E
 
 Returns the value in the left side, otherwise throws an exception.
 
-####toValidation
+#### toValidation
 
 	Either[E,A].toValidation(): Validation[E,A]
 
 Converts the `Either` to a `Validation`.
 
-####toMaybe
+#### toMaybe
 
 	Either[E,A].toMaybe(): Maybe[A]
 
@@ -417,9 +417,9 @@ or with pimped methods on an object
 	var success = val.success();
 	var failure = "some error".fail();
 
-###Functions
+### Functions
 
-####map
+#### map
 
 	Validation[E,A].map(fn:A -> B): Validation[E,B]
 
@@ -430,7 +430,7 @@ For example:
 	Validation.success(123).map(function(val) { return val + 1})
 	//result: Success(124)
 
-####bind *alias: flatMap, chain*
+#### bind *alias: flatMap, chain*
 
 	Validation[E,A].bind(fn:A -> Validation[E,B]) : Validation[E,B]
 
@@ -447,32 +447,32 @@ For example:
 	})
 
 
-####isSuccess
+#### isSuccess
 
 	Validation[E,A].isSuccess() : Boolean
 
 Will return `true` if this is a successful validation, `false` otherwise.
 
-####isFail
+#### isFail
 
 	Validation[E,A].isFail() : Boolean
 
 Will return `false` if this is a failed validation, `true` otherwise.
 
-####success
+#### success
 
 	Validation[E,A].success() : A
 
 Will return the successful value.
 
 
-####fail
+#### fail
 
 	Validation[E,A].fail() : E
 
 Will return the failed value, usually an error message.
 
-####ap
+#### ap
 
 	Validation[E,A].ap(v: Validation[E, A->B]) : Validation[E,B]
 
@@ -497,7 +497,7 @@ Implements the applicative functor pattern.  `ap` will apply a function over the
     	.ap(validateForename.map(person)))
     // result: Validation(["no address", "no surname"])
 
-####cata
+#### cata
 
 	Validation[E,A].cata(failureFn: E->X, successFn: A->X): X
 
@@ -511,13 +511,13 @@ For example:
 		return "yay! " + success
 	})
 
-####toEither
+#### toEither
 
 	Validation[E,A].toEither(): Either[E,A]
 
 Converts an `Either` to a `Validation`
 
-####toMaybe
+#### toMaybe
 
 	Validation[E,A].toMaybe(): Maybe[A]
 
@@ -539,9 +539,9 @@ which is equivalent to:
 
 As you can see from the second example each List object contains a head element and the tail is just another list element.
 
-###Functions
+### Functions
 
-####cons
+#### cons
 
 	List[A].cons(a: A) : List[A]
 
@@ -559,7 +559,7 @@ For example:
 	var newList = "z".cons(myList)
 	newList.toArray() == ["z","a","b","c"]
 
-####map
+#### map
 
 	List[A].map(fn: A->B): List[B]
 
@@ -570,13 +570,13 @@ Maps the supplied function over the list.
 	})
 	// list == [2,3,4]
 
-####flatMap *alias: bind*
+#### flatMap *alias: bind*
 
 	List[A].flatMap(fn: A -> List[B]): List[B]
 
 Maps the supplied function over the list and then flattens the returned list.  The supplied function must return a new list.
 
-####head
+#### head
 
 	List[A].head(): A
 
@@ -587,7 +587,7 @@ For example:
 	[1,2,3].list().head()
 	//result: 1
 
-####headMaybe
+#### headMaybe
 
 	List[A].headMaybe(): Maybe[A]
 
@@ -602,7 +602,7 @@ For example:
 	Nil.headMaybe()
 	// result: None()
 
-####filter
+#### filter
 
 	List[A].filter(fn: element:A -> Boolean): List[A]	
 
@@ -614,7 +614,7 @@ For example:
 	list.filter(function (a) {return a%2==0}).toArray()
 	//result: [2,4]
 
-####foldLeft
+#### foldLeft
 
 	List[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
 
@@ -629,13 +629,13 @@ For example, say you wanted to add up a list of integers, your initial value wou
 	})
 	// sum == 10
 
-####foldRight(initialValue)(function(e, acc))
+#### foldRight(initialValue)(function(e, acc))
 
 	List[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
 
 Performs a fold right across the list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
 
-####append *alias: concat()*
+#### append *alias: concat()*
 
 	List[A].append(list: List[A]) : List[A]
 
@@ -649,7 +649,7 @@ For example:
 	// list3.toArray() == [1,2,3,4,5,6]
 
 
-####sequence
+#### sequence
 
 	List[Monad[A].sequence(Monad): Monad[List[A]]
 
@@ -662,7 +662,7 @@ For example:
 
 Or you can use the convenience methods like `sequenceMaybe` or `sequenceEither` below.  Note that since Validation is not a true monad it will not work as expected for this method; use `sequenceValidation` instead.
 
-####sequenceMaybe
+#### sequenceMaybe
 
 	List[Maybe[A]].sequenceMaybe(): Maybe[List[A]]
 
@@ -680,7 +680,7 @@ This is the same as calling:
 
 	[Some(1), Some(2)].sequence(Maybe)
 
-####sequenceEither
+#### sequenceEither
 
 	List[Either[E,A]].sequenceEither(): Either[E, List[A]]
 
@@ -693,7 +693,7 @@ For example:
 
 Note: Unlike `sequenceValidation` it does not accumulate the `Left` (or "failing") values, but rather stops execution and returns the first `Left`.
 
-####sequenceValidation
+#### sequenceValidation
 
 	List[Validation[E,A]].sequenceValidation(): Validation[List[E], List[A]]
 
@@ -711,19 +711,19 @@ Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will 
 					.list().sequenceValidation()
 	// sequenced == Fail(["c","d"])
 
-####sequenceIO
+#### sequenceIO
 
 	List[IO[A]].sequenceIO(): IO[List[A]]
 
 Will sequence a list of `IO` actions.
 
-####sequenceReader
+#### sequenceReader
 
 	List[Reader[A]].sequenceReader(): Reader[List[A]]
 
 Will sequence a list of `Reader`s.
 
-####reverse
+#### reverse
 
 	List[A].reverse(): List[A]
 
@@ -750,33 +750,33 @@ and a guaranteed (total) tail.
 
 Trying to create an empty `NonEmptyList` will throw an exception.
 
-###Functions
+### Functions
 
-####map
+#### map
 
 	NEL[A].map(fn: A -> B): NEL[B]
 
 Maps a function over a NonEmptyList.
 
-####bind *alias: flatMap, chain*
+#### bind *alias: flatMap, chain*
 
 	NEL[A].bind(fn: A -> NEL[B]): NEL[B]
 
 Performs a monadic bind over the NonEmptyList.
 
-####head *alias: copure, extract*
+#### head *alias: copure, extract*
 
 	NEL[A].head(): A
 
 Returns the head of the NonEmptyList.  Also known as `copure` or `extract` this is part of the comonad pattern.
 
-####tail
+#### tail
 
 	NEL[A].tail(): List[A]
 
 Returns the tail of the `NonEmptyList`.
 
-####tails *alias: cojoin*
+#### tails *alias: cojoin*
 
 	NEL[A].tails(): NEL[NEL[A]]
 
@@ -793,7 +793,7 @@ For example:
 	//          [ 4 ]
 	//        ]
 
-####mapTails *alias: cobind, coflatMap*
+#### mapTails *alias: cobind, coflatMap*
 
 	NEL[A].mapTails(fn: NEL[A] -> B): NEL[B]
 
@@ -808,7 +808,7 @@ For example:
 	        }
 	//result: [10,9,7,4]
 
-####foldLeft
+#### foldLeft
 
 	NEL[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
 
@@ -822,13 +822,13 @@ For example, say you wanted to add up a non empty list of integers, your initial
 	})
 	// sum == 10
 
-####foldRight(initialValue)(function(e, acc))
+#### foldRight(initialValue)(function(e, acc))
 
 	NEL[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
 
 Performs a fold right across the non empty list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
 
-####reduceLeft(function(e,acc))
+#### reduceLeft(function(e,acc))
 
 	NEL[A].reduceLeft(fn: (element: A, acc: A) -> A): A
 
@@ -839,19 +839,19 @@ Reduces a `NonEmptyList` of type `A` down to a single `A`.
 	// result: 10
 
 
-####append *alias: concat*
+#### append *alias: concat*
 
 	NEL[A].append(n: NEL[A]): NEL[A]
 
 Appends two NonEmptyLists together.
 
-####reverse
+#### reverse
 
 	NEL[A].reverse(): NEL[A]
 
 Reverses the `NonEmptyList`.
 
-####fromList
+#### fromList
 
 	NEL.fromList(List[A]): Maybe[NEL[A]]
 
@@ -865,15 +865,15 @@ The `IO` monad is for isolating effects to maintain referential transparency in 
 
 	var ioAction = IO(function () { return $("#id").val() })
 
-###Functions
+### Functions
 
-####IO *alias: io*
+#### IO *alias: io*
 
 	IO[A](fn: () -> A): IO[A]
 
 The constructor for the `IO` monad.  It is a purely functional wrapper around the supplied effect and enables referential transparency in your software.
 
-####bind *alias: flatMap*
+#### bind *alias: flatMap*
 
 	IO[A](fn: A -> IO[B]): IO[B]
 
@@ -881,23 +881,23 @@ Perform a monadic bind (flatMap) over the effect.  It takes a function that retu
 
 Examples: see below
 
-####map
+#### map
 
 	IO[A](fn: A -> B): IO[B]
 
 Performs a map over the result of the effect.  This will happen lazily and will not evaluate the effect.
 
-####run *alias: perform*
+#### run *alias: perform*
 Evaluates the effect inside the `IO` monad.  This can only be run once in your programme and at the very end.
 
-###"Pimped" functions
+### "Pimped" functions
 
-####fn.io()
+#### fn.io()
 Wraps a supplied function in an `IO`.  Assumes no arguments will be supplied to the function.
 
 	function() { return $("#id") }.io()
 
-####fn.io1()
+#### fn.io1()
 Returns a function that will return an `IO` when one parameter is supplied.
 
 	function(id) { return $(id) }.io1()
@@ -946,7 +946,7 @@ Now our DOM should be updated with the text converted to upper case.
 
 It becomes much clearer which functions deal with IO and which functions simply deal with data.  `read` and `write` return an `IO` effect but `toUpper` simply converts a supplied string to upper case.  This pattern is what you will often find in your software, having an effect when you start (i.e. reading from a data source, network etc), performing transformations on the results of that effect and finally having an effect at the end (such as writing result to a database, disk, or DOM).
 
-##Reader
+## Reader
 
 The `Reader` monad is a wonderful solution to inject dependencies into your functions.  There are plenty of great resources to get your
 teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
@@ -1007,27 +1007,27 @@ The top level of our programme would co-ordinate the injecting of the dependency
 
 	reader().run(new BoldPrinter())
 
-###Functions
+### Functions
 
-####map
+#### map
 
 	Reader[A].map(f: A -> B): Reader[B]
 
 Maps the supplied function over the `Reader`.
 
-####bind *alias: flatMap, chain*
+#### bind *alias: flatMap, chain*
 
 	Reader[A].bind(f: A -> Reader[B]): Reader[B]
 
 Performs a monadic bind over the `Reader`.
 
-####ap
+#### ap
 
 	Reader[A].ap(a: Reader[A->B]): Reader[B]
 
 Applies the function inside the supplied `Reader` to the value `A` in the outer `Reader`.  Applicative Functor pattern.
 
-####run
+#### run
 
 	Reader[A].run(config)
 
@@ -1052,63 +1052,63 @@ The `Free` monad has two constructors, `Suspend` and `Return`, which represents 
 
 As you may see, `Return` wraps a value A, where as `Suspend`, wraps a `Functor` containing another `Free`.
 
-###Functions
+### Functions
 
-####map
+#### map
 
 	Free[F[_], A].map(f: A -> B): Free[F[_],B]
 
 Performs a map across the value inside the functor.
 
-####bind *alias: flatMap, chain*
+#### bind *alias: flatMap, chain*
 
 	Free[F[_],A].bind(f: A -> Free[F[_], B]): Free[F[_],B]
 
 Performs a monadic bind over the `Free`.
 
-####Free.liftF
+#### Free.liftF
 
 	Free.liftF(F[A]): Free[F,A]
 
 Lifts a Funtor `F` into a `Free`.
 
-####resume
+#### resume
 
 	Free[F[_],A].resume(): Either[F[Free[F,A]] , A]
 
 Evalutates a single layer in the computation, returning either a suspension or a result.
 
-####go
+#### go
 
 	Free[F[_],A].go(f: F[Free[F, A]] -> Free[F, A]) : A
 
 Runs the computation to the end, returning the final result, using the supplied functor `f` to extract the next `Free` from the suspension.
 
-####run
+#### run
 
 	Free[Function, A].run(): A
 
 This function only makes sense for Tampolined computations where the supplied functor is a Function.  This will run the computation to the end returning the result `A`.
 
-##Other useful functions
+## Other useful functions
 
-###Functions
+### Functions
 
-####fn.compose(f1) *alias fn.o(fn1)*
+#### fn.compose(f1) *alias fn.o(fn1)*
 Function composition.  `f.compose(g)` is equivalent to:
 
 	function compose(x) {
 		return f(g(x))
 	}
 
-####fn.andThen(fn1)
+#### fn.andThen(fn1)
 Function composition flipped. `f.andThen(g)` is equivalent to:
 
 	function compose(x) {
 		return g(f(x))
 	}
 
-####fn.curry()
+#### fn.curry()
 This method on function will curry that function so that it can be partially applied. This implementation is quite flexible and allows
 a method to be applied in the following ways:
 
@@ -1132,7 +1132,7 @@ a method to be applied in the following ways:
     // or nearly any other combination...
     // will return 6
 
-##Author
+## Author
 
 Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
 
