@@ -1,4 +1,4 @@
-//     monet-pimp.js 0.8.8
+//     monet-pimp.js 0.8.10
 
 //     This file needs to be included after monet.js
 
@@ -9,6 +9,7 @@
 
 
 (function (window) {
+    "use strict";
 
     Object.prototype.cons = function (list) {
         return list.cons(this)
