@@ -41,7 +41,7 @@ describe('The Monad', function () {
         var mf = monad.of(f)
         var a = m.ap(mf)
         var b = m.bind(function(t) { return m.unit(f(t)) })
-        expect(reduction(a)).toBe(reduction(b))
+        expect(equals(a, b)).toBeTruthy()
       })
     }
 
