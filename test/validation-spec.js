@@ -128,10 +128,9 @@ describe('A Validation', function () {
 
     })
 
-    var person = function (forename, surname, address) {
+    var person = Monet.curry(function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
-    }.curry();
-
+    })
 
     var validateAddress = Validation.success('Dulwich, London')
     var validateSurname = Validation.success('Baker')

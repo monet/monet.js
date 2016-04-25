@@ -39,6 +39,10 @@
         return List.fromArray(this)
     }
 
+    Function.prototype.curry = function() {
+        return Monet.curry(this)
+    }
+
     return this
 
 })(window || this);

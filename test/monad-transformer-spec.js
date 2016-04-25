@@ -31,7 +31,7 @@ describe('A Monad Transformer', function () {
     })
 
     it('will allow a containing value to be applied (applicative functor style)', function() {
-        var plus = function(a,b) { return a + b}.curry()
+        var plus = Monet.curry(function(a,b) { return a + b })
         var maybeIOWithFn = create(plus)
         var maybeIO1 = create(20)
         var maybeIO2 = create(22)

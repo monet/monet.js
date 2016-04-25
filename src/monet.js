@@ -17,26 +17,36 @@
 }(this, function(root) {
     "use strict";
 
-    var curry = function (fn, args) {
-      return function () {
-        var args1 = args.append(List.fromArray(Array.prototype.slice.call(arguments)));
-        return args1.size() >= fn.length ? fn.apply(this, args1.toArray().slice(0, args1.size())) : curry(fn, args1);
-      };
-    };
+    var Monet = root.Monet = {
+        apply2: apply2,
+        curry: curry(swap(curry), [])([]),
+        swap: swap
+    }
 
-    var isFunction = function (f) {
+    function getArgs(args) {
+        return Array.prototype.slice.call(args)
+    }
+
+    function curry(fn, args) {
+        return function () {
+            var args1 = args.concat(getArgs(arguments))
+            return args1.length >= fn.length ?
+              fn.apply(this, args1.slice(0, args1.length)) :
+              curry(fn, args1)
+        }
+    }
+
+    function isFunction(f) {
         return !!(f && f.constructor && f.call && f.apply)
-    };
+    }
 
-    var idFunction = function (value) {
+    function idFunction(value) {
         return value
-    };
-    var trueFunction = function () {
+    }
+
+    function trueFunction() {
         return true
-    };
-    var falseFunction = function () {
-        return false
-    };
+    }
 
     /* Curried equality check - useful for comparing monads */
     var equals = function(a) {
@@ -48,28 +58,22 @@
         }
     }
 
-    var Monet = root.Monet = {}
+    function falseFunction() {
+        return false
+    }
 
-    var swap = Monet.swap = function (f) {
+    function swap(f) {
         return function (a, b) {
             return f(b, a)
         }
     }
 
-    var map = function (fn) {
+    function apply2(a1, a2, f) {
+        return a2.ap(a1.map(curry(f, [])))
+    }
+
+    function map(fn) {
         return this.bind(this.of.compose(fn))
-    }
-
-    var apply2 = Monet.apply2 = function(a1, a2, f) {
-        return a2.ap(a1.map(f.curry()))
-    }
-
-    Monet.curry = function (fn) {
-        return curry(fn, Nil);
-    }
-
-    Function.prototype.curry = function () {
-        return curry(this, Nil)
     }
 
     // List monad
@@ -86,7 +90,7 @@
     var listMapC = function (fn, l) {
         return l.isNil ? Return(l) : Suspend(function () {
             return listMapC(fn, l.tail())
-        }).map(cons.curry()(fn(l.head())))
+        }).map(curry(cons, [])(fn(l.head())))
     }
 
     var listEach = function (effectFn, l) {
@@ -977,7 +981,7 @@
         var f = this
         var wrapReader = function (fn, args) {
             return function () {
-                var args1 = args.append(List.fromArray(Array.prototype.slice.call(arguments)));
+                var args1 = args.append(List.fromArray(getArgs(arguments)));
                 var self = this
                 return args1.size() + 1 == fn.length ?
                     Reader(function (c) {
