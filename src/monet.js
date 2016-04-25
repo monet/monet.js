@@ -38,6 +38,16 @@
         return false
     };
 
+    /* Curried equality check - useful for comparing monads */
+    var equals = function(a) {
+        return function(b) {
+            if (isFunction(a.equals)) {
+                return a.equals(b)
+            }
+            return a === b
+        }
+    }
+
     var Monet = root.Monet = {}
 
     var swap = Monet.swap = function (f) {
@@ -163,6 +173,18 @@
         return tail.cons(head)
     }
 
+    var listEquals = function(list1, list2) {
+      var a = list1
+      var b = list2
+      while (!a.isNil && !b.isNil) {
+        if(!equals(a.head(), b.head())) {
+          return false
+        }
+        a = a.tail()
+        b = b.tail()
+      }
+      return a.isNil && b.isNil
+    }
 
     List.fn = List.prototype = {
         init: function (head, tail) {
@@ -181,6 +203,12 @@
         },
         size: function () {
             return this.size_
+        },
+        equals: function(other) {
+            if (!isFunction(other.head)) {
+                return false;
+            }
+            return listEquals(this, other)
         },
         cons: function (head) {
             return List(head, this)
@@ -322,6 +350,12 @@
                 this.size_ = this.tail_.size() + 1
             }
         },
+        equals: function(other) {
+            if (!isFunction(other.head)) {
+                return false
+            }
+            return listEquals(this, other)
+        },
         map: function (fn) {
             return NEL(fn(this.head_), listMap(fn, this.tail_))
         },
@@ -461,6 +495,15 @@
                 return fn(value)
             }) : this
         },
+        equals: function(other) {
+            if (!isFunction(other.isNone) || !isFunction(other.map)) {
+                return false
+            }
+            if (this.isNone()) {
+                return other.isNone()
+            }
+            return this.ap(other.map(equals)).orElse(false)
+        },
 
         toList: function () {
             return this.map(List).orSome(Nil)
@@ -563,6 +606,16 @@
         },
         bimap: function (fail, success) {
             return this.isSuccessValue ? this.map(success) : this.failMap(fail)
+        },
+        equals: function(other) {
+            return this.cata(
+                function(fail) {
+                    return other.cata(equals(fail), falseFunction)
+                },
+                function(success) {
+                    return other.cata(falseFunction, equals(success))
+                }
+            )
         },
         toMaybe: function () {
             return this.isSuccess() ? Some(this.val) : None()
@@ -726,6 +779,19 @@
         cata: function (leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
         },
+        equals: function(other) {
+            if (!isFunction(other.isRight) || !isFunction(other.cata)) {
+                return false
+            }
+            return this.cata(
+                function(left) {
+                    return other.cata(equals(left), falseFunction)
+                },
+                function(right) {
+                    return other.cata(falseFunction, equals(right))
+                }
+            )
+        },
         bimap: function (leftFn, rightFn) {
             return this.isRightValue ? this.map(rightFn) : this.leftMap(leftFn)
         },
@@ -883,6 +949,9 @@
         },
         get: function () {
             return this.val
+        },
+        equals: function(other) {
+            return (isFunction(other.get) && equals(this.get())(other.get()))
         }
     }
 

@@ -1,4 +1,4 @@
-import { Either, Right, Left, IO } from '../../../index';
+import { Either, Right, Left, IO } from '../index';
 
 function getType(action) {
     return action.type === 'MESSAGE' ? Right<string, string>(action.type) : Left<string, string>('BadType');
@@ -43,6 +43,7 @@ function getMessage(msg: IMessage) {
 const wrapped = getMessage({type: 'MESSAGE', payload: 'Hello World'});
 
 console.assert(!(wrapped.isRight() === wrapped.isLeft()));
+console.assert(wrapped.equals(Right<string, IMessage>({type: 'MESSAGE', payload: 'Hello World'})))
 
 const wrappedGreeting: Either<string, string> = wrapped.bind(v => v.payload ?
     Right<string, string>(v.payload) :

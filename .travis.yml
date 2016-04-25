@@ -1,11 +1,3 @@
-language: java
-install:
-  - npm install typescript
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-script:
-  - mvn test -B
-  - npm test
-# blacklist
-branches:
-  except:
-    - /.*pages$/
+language: node_js
+node_js:
+  - "5"

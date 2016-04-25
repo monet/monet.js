@@ -1,22 +1,28 @@
 describe('A Maybe', function () {
-
+    var someString;
+    var none;
 
     beforeEach(function () {
-        this.addMatchers({
-            toBeSomeMaybe: function (expected) {
-                return this.actual.isSome();
-            },
-            toBeSomeMaybeWith: function (expected) {
-                return this.actual.some() == expected
-            },
-            toBeNoneMaybe: function () {
-                return this.actual.isNone()
-            }
+        jasmine.addMatchers({
+            toBeSomeMaybe: getCustomMatcher(function (actual) {
+                return actual.isSome();
+            }),
+            toBeSomeMaybeWith: getCustomMatcher(function (actual, expected) {
+                return actual.some() == expected;
+            }),
+            toBeNoneMaybe: getCustomMatcher(function (actual) {
+                return actual.isNone();
+            })
         });
+        someString = Maybe.Some("abcd");
+        none = Maybe.None();
     });
 
-    var someString = Maybe.Some("abcd")
-    var none = Maybe.None()
+    afterEach(function () {
+        someString = undefined;
+        none = undefined;
+    });
+
     describe('with a value', function () {
         it('will be transformed by a map', function () {
             expect(someString.map(function (val) {
@@ -68,6 +74,10 @@ describe('A Maybe', function () {
             expect(someString.cata(function() {return 'efg'}, 
                 function(val){ return 'hij'})).toBe('hij')
         })
+        it('will compare for equality', function() {
+          expect(someString.equals(Some('abcd'))).toBeTruthy()
+          expect(someString.equals(None())).toBeFalsy()
+        })
     })
 
     describe('without a value', function () {
@@ -77,7 +87,7 @@ describe('A Maybe', function () {
             }).isNone()).toBeTruthy()
         })
         it('will throw an exception when Some() is called', function () {
-            expect(none.some).toThrow("Illegal state exception")
+            expect(function () { none.some() }).toThrow("Illegal state exception")
         })
         it('will be true for isNone()', function () {
             expect(none.isNone()).toBeTruthy()
@@ -113,6 +123,11 @@ describe('A Maybe', function () {
         it('will run the none side of cata', function(){
             expect(none.cata(function() {return 'efg'}, 
                 function(val){ return 'hij'})).toBe('efg')
+        })
+
+        it('will compare for equality', function() {
+          expect(none.equals(Maybe.None())).toBeTruthy()
+          expect(none.equals(Maybe.Just(1))).toBeFalsy()
         })
     })
 
