@@ -1,3 +1,6 @@
+interface IEquals<A> {
+  equals(a: A): boolean
+}
 /* The (covariant) functor typeclass */
 interface Functor<T> {
     map<V>(fn: (val: T) => V): Functor<V>;
@@ -77,7 +80,7 @@ export var Identity: IIdentityStatic;
  * Maybe
  */
 
-export interface Maybe<T> extends IMonad<T> {
+export interface Maybe<T> extends IMonad<T>, IEquals<Maybe<T>>{
     /* Inherited from Monad: */
     bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
     flatMap<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
@@ -140,7 +143,7 @@ export var Maybe: IMaybeStatic;
  * Either
  */
 
-export interface Either<E, T> extends IMonad<T> {
+export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>{
     /* Inherited from Monad: */
     bind<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
     flatMap<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
@@ -196,7 +199,7 @@ interface IValidationAcc extends Function {
     (): IValidationAcc;
 }
 
-export interface Validation<E, T> extends IMonad<T> {
+export interface Validation<E, T> extends IMonad<T>, IEquals<Validation<E, T>>{
     /* Inherited from Monad: */
     bind<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
     flatMap<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
@@ -253,7 +256,7 @@ export var Fail: IFailStatic;
  * List
  */
 
-export interface List<T> extends IMonad<T> {
+export interface List<T> extends IMonad<T>, IEquals<List<T>> {
     /* Inherited from Monad: */
     bind<V>(fn: (val: T) => List<V>): List<V>;
     flatMap<V>(fn: (val: T) => List<V>): List<V>;
@@ -323,7 +326,7 @@ export var Nil: Nil;
  * NEL
  */
 
-export interface NEL<T> extends IMonad<T> {
+export interface NEL<T> extends IMonad<T>, IEquals<NEL<T>> {
     /* Inherited from Monad: */
     bind<V>(fn: (val: T) => NEL<V>): NEL<V>;
     flatMap<V>(fn: (val: T) => NEL<V>): NEL<V>;
