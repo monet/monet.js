@@ -2,3 +2,4 @@
 _site
 .idea
 *.iml
+node_modules/

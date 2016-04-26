@@ -1,7 +1,7 @@
 ---
 title: Home
 layout: index
-version: v0.8.9
+version: v0.8.10
 ---
 
 ## Introduction
@@ -1134,7 +1134,7 @@ a method to be applied in the following ways:
 
 ## Author
 
-Written and maintained by Chris Myers [@cwmyers](http://twitter.com/cwmyers). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
+Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers) and Jakub Strojewski [@ulfryk](https://twitter.com/ulfryk). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
 
 
 [functionalJava]: http://functionaljava.org/
