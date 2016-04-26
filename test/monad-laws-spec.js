@@ -1,22 +1,29 @@
 describe('The Monad', function () {
 
-    var test = function(monad, reduction) {
+    var test = function(monad) {
+      var equals = function(a, b) {
+        if (a.equals) {
+          return a.equals(b);
+        }
+        return a.run() === b.run()
+      }
+
       var fa = function (x) {
         return monad.of(x + 1)
       }
 
       it("must obey left identity", function() {
 
-        var f = reduction(monad.of(123).bind(fa))
-        var fapply = reduction(fa(123))
-        expect(f).toBe(fapply)
+        var f = monad.of(123).bind(fa)
+        var fapply = fa(123)
+        expect(equals(f, fapply)).toBeTruthy()
       })
 
       it("must obey right identity", function() {
         var m = monad.of(123)
         var m1 = m.bind(function (x) { return monad.of(x)})
 
-        expect(reduction(m)).toBe(reduction(m1))
+        expect(equals(m, m1)).toBeTruthy()
 
       })
 
@@ -24,7 +31,7 @@ describe('The Monad', function () {
         var m = monad.of(123)
         var a = (m.bind(function(x) { return monad.of(x*2)})).bind(fa)
         var b = (m.bind(function(x) { return monad.of(x*2).bind(fa)}))
-        expect(reduction(a)).toBe(reduction(b))
+        expect(equals(a, b)).toBeTruthy()
 
       })
 
@@ -34,39 +41,39 @@ describe('The Monad', function () {
         var mf = monad.of(f)
         var a = m.ap(mf)
         var b = m.bind(function(t) { return m.unit(f(t)) })
-        expect(reduction(a)).toBe(reduction(b))
+        expect(equals(a, b)).toBeTruthy()
       })
     }
 
     describe('Maybe', function() {
-      test(Maybe, function(m) {return m.some()})
+      test(Maybe)
     })
 
     describe('Either', function() {
-      test(Either, function(m) {return m.right()})
+      test(Either)
     })
 
     describe('IO', function() {
-      test(IO, function(m) {return m.run()})
+      test(IO)
     })
     describe('Reader', function() {
-     test(Reader, function (m) {return m.run()})
+     test(Reader)
     })
 
     describe('List', function() {
-      test(List, function(m) {return m.head()})
+      test(List)
     })
 
     describe('NonEmptyList', function() {
-      test(NEL, function(m) {return m.head()})
+      test(NEL)
     })
 
     describe('Free', function() {
-      test(Free, function(m) {return m.run()})
+      test(Free)
     })
 
     describe('Validation', function() {
-      test(Validation, function(m) {return m.success()})
+      test(Validation)
     })
 
 })

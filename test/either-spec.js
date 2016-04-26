@@ -81,6 +81,14 @@ describe('An Either', function () {
         it('can be converted to Validation.Success', function() {
           expect(rightString.toValidation().success()).not.toBeUndefined()
         })
+        it('equals to Right with the same value', function() {
+          expect(rightString.equals(Either.Right('abcd'))).toBeTruthy()
+          expect(Right(Just(2)).equals(Right(Just(2)))).toBeTruthy()
+        })
+        it('does not equal to Rights with different values or Lefts', function() {
+          expect(rightString.equals(Either.Left('abcd'))).toBeFalsy()
+          expect(rightString.equals(Either.Right('x'))).toBeFalsy()
+        })
     })
 
     var leftString = Either.Left("error dude")
@@ -143,6 +151,14 @@ describe('An Either', function () {
         })
         it('can be converted to Validation.Fail', function() {
           expect(leftString.toValidation().fail()).not.toBeUndefined()
+        })
+        it('equals to Left with the same value', function() {
+          expect(leftString.equals(Either.Left('error dude'))).toBeTruthy()
+          expect(Left(Just(2)).equals(Left(Just(2)))).toBeTruthy()
+        })
+        it('does not equal to Rights with different values or Lefts', function() {
+          expect(leftString.equals(Either.Left('x'))).toBeFalsy()
+          expect(leftString.equals(Either.Right('error dude'))).toBeFalsy()
         })
 
     })
