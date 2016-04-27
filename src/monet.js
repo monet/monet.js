@@ -37,7 +37,7 @@
     }
 
     function isFunction(f) {
-        return !!(f && f.constructor && f.call && f.apply)
+        return Boolean(f && f.constructor && f.call && f.apply)
     }
 
     function idFunction(value) {
@@ -49,12 +49,9 @@
     }
 
     /* Curried equality check - useful for comparing monads */
-    var equals = function(a) {
+    function equals(a) {
         return function(b) {
-            if (isFunction(a.equals)) {
-                return a.equals(b)
-            }
-            return a === b
+            return isFunction(a.equals) ? a.equals(b) : a === b
         }
     }
 
@@ -181,7 +178,7 @@
       var a = list1
       var b = list2
       while (!a.isNil && !b.isNil) {
-        if(!equals(a.head(), b.head())) {
+        if(!equals(a.head())(b.head())) {
           return false
         }
         a = a.tail()
@@ -209,10 +206,7 @@
             return this.size_
         },
         equals: function(other) {
-            if (!isFunction(other.head)) {
-                return false;
-            }
-            return listEquals(this, other)
+            return isFunction(other.head) && listEquals(this, other);
         },
         cons: function (head) {
             return List(head, this)

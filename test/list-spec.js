@@ -24,15 +24,13 @@ describe("An immutable list", function () {
     };
 
     it("will return all the possible tails on tails()", function () {
-        expect(list.tails().map(function (m) {
-            return m.toArray()
-        }).equals([
+        expect(list.tails().equals(List.fromArray([
             [ 1, 2, 3, 4 ],
             [ 2, 3, 4 ],
             [ 3, 4 ],
             [ 4 ],
             [ ]
-        ].list())).toBeTruthy()
+        ]).map(List.fromArray))).toBeTruthy()
     })
 
 
