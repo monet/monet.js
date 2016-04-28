@@ -17,9 +17,23 @@
 }(this, function(root) {
     "use strict";
 
+    var isArray = (function () {
+        if (isFunction(Array.isArray)) {
+            return Array.isArray;
+        }
+        var objectToStringFn = Object.prototype.toString
+        var arrayToStringResult = objectToStringFn.call([])
+        return function (a) {
+            return objectToStringFn.call(a) === arrayToStringResult
+        }
+    }())
+
     var Monet = root.Monet = {
         apply2: apply2,
+        compose: compose,
         curry: curry(swap(curry), [])([]),
+        isArray: isArray,
+        isFunction: isFunction,
         swap: swap
     }
 
@@ -36,10 +50,15 @@
         }
     }
 
+    function compose(f, g) {
+        return function (x) {
+            return f(g(x))
+        }
+    }
+
     function isFunction(f) {
         return Boolean(f && f.constructor && f.call && f.apply)
     }
-
     function idFunction(value) {
         return value
     }
@@ -70,7 +89,7 @@
     }
 
     function map(fn) {
-        return this.bind(this.of.compose(fn))
+        return this.bind(compose(this.of, fn))
     }
 
     // List monad
@@ -629,7 +648,7 @@
     var Semigroup = root.Semigroup = {}
 
     Semigroup.append = function (a, b) {
-        if (a instanceof Array) {
+        if (isArray(a)) {
             return a.concat(b)
         }
         if (typeof a === "string") {
@@ -985,13 +1004,6 @@
             }
         }
         return wrapReader(f, Nil)
-    }
-
-    Function.prototype.compose = Function.prototype.o = function (g) {
-        var f = this
-        return function (x) {
-            return f(g(x))
-        }
     }
 
     Function.prototype.andThen = Function.prototype.map = function (g) {

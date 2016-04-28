@@ -43,6 +43,10 @@
         return Monet.curry(this)
     }
 
+    Function.prototype.compose = function(g) {
+        return Monet.compose(this, g)
+    }
+
     return this
 
 })(window || this);
