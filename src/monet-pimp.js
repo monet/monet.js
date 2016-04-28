@@ -47,6 +47,28 @@
         return Monet.compose(this, g)
     }
 
+    Function.prototype.andThen = Function.prototype.map = function (g) {
+        var f = this
+        return function (x) {
+            return g(f(x))
+        }
+    }
+
+    Function.prototype.io = function () {
+        return IO(this)
+    }
+
+    Function.prototype.io1 = function () {
+        var f = this;
+        return function (x) {
+            return IO(
+              function () {
+                  return f(x)
+              }
+            )
+        }
+    }
+
     return this
 
 })(window || this);
