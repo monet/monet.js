@@ -39,34 +39,36 @@
         return List.fromArray(this)
     }
 
-    Function.prototype.curry = function() {
+    Function.prototype.curry = function() { // TODO: TEST IT !!!!
         return Monet.curry(this)
     }
 
-    Function.prototype.compose = function(g) {
+    Function.prototype.compose = function(g) { // TODO: TEST IT !!!!
         return Monet.compose(this, g)
     }
 
-    Function.prototype.andThen = Function.prototype.map = function (g) {
+    Function.prototype.andThen = Function.prototype.map = function (g) { // TODO: TEST IT !!!!
         var f = this
         return function (x) {
             return g(f(x))
         }
     }
 
-    Function.prototype.io = function () {
+    Function.prototype.io = function () { // TODO: TEST IT !!!!
         return IO(this)
     }
 
-    Function.prototype.io1 = function () {
+    Function.prototype.io1 = function () { // TODO: TEST IT !!!!
         var f = this;
         return function (x) {
-            return IO(
-              function () {
-                  return f(x)
-              }
-            )
+            return IO(function () {
+                return f(x)
+            })
         }
+    }
+
+    Function.prototype.reader = function () { // TODO: TEST IT !!!!
+        return Monet.wrapReader(this)
     }
 
     return this

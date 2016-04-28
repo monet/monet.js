@@ -34,7 +34,8 @@
         curry: curry(swap(curry), [])([]),
         isArray: isArray,
         isFunction: isFunction,
-        swap: swap
+        swap: swap,
+        wrapReader: wrapReader
     }
 
     function getArgs(args) {
@@ -50,6 +51,19 @@
         }
     }
 
+    function wrapReader(fn, args) {
+        args = args || [];
+        return function () {
+            var args1 = args.concat(getArgs(arguments)); // WILL NOT WORK !!!
+            var self = this
+            return args1.length + 1 >= fn.length ?
+              Reader(function (c) {
+                  return fn.apply(self, args1.concat(c))
+              }) :
+              wrapReader(fn, args1)
+        }
+    }
+
     function compose(f, g) {
         return function (x) {
             return f(g(x))
@@ -59,6 +73,7 @@
     function isFunction(f) {
         return Boolean(f && f.constructor && f.call && f.apply)
     }
+
     function idFunction(value) {
         return value
     }
@@ -92,21 +107,45 @@
         return this.bind(compose(this.of, fn))
     }
 
-    // List monad
+    // List and NEL monads commons
 
-    var list;
-    var List = list = root.List = function (head, tail) {
-        return new List.fn.init(head, tail)
+    function listEquals(list1, list2) {
+        var a = list1
+        var b = list2
+        while (!a.isNil && !b.isNil) {
+            if(!equals(a.head())(b.head())) {
+                return false
+            }
+            a = a.tail()
+            b = b.tail()
+        }
+        return a.isNil && b.isNil
     }
 
-    var listMap = function (fn, l) {
-        return listMapC(fn, l).run()
-    }
-
-    var listMapC = function (fn, l) {
+    function listMapC(fn, l) {
         return l.isNil ? Return(l) : Suspend(function () {
             return listMapC(fn, l.tail())
         }).map(curry(cons, [])(fn(l.head())))
+    }
+
+    function listMap(fn, l) {
+        return listMapC(fn, l).run()
+    }
+
+    function listFilter(list, fn) {
+        return list.foldRight(Nil)(function(a, acc) {
+            return fn(a) ? cons(a,acc): acc
+        })
+    }
+
+    function cons(head, tail) {
+        return tail.cons(head)
+    }
+
+    // List monad
+
+    var list = root.List = function List(head, tail) {
+        return new List.fn.init(head, tail)
     }
 
     var listEach = function (effectFn, l) {
@@ -119,10 +158,10 @@
     var foldLeft = function (fn, acc, l) {
         function fL(acc, l) {
             return l.isNil ?
-                Return(acc) :
-                Suspend(function () {
-                    return fL(fn(acc, l.head()), l.tail())
-                })
+              Return(acc) :
+              Suspend(function () {
+                  return fL(fn(acc, l.head()), l.tail())
+              })
         }
 
         return fL(acc, l).run()
@@ -131,12 +170,12 @@
     var foldRight = function (fn, l, acc) {
         function fR(l, acc) {
             return l.isNil ?
-                Return(acc) :
-                Suspend(function () {
-                    return fR(l.tail(), acc)
-                }).map(function (acc1) {
-                        return fn(l.head(), acc1)
-                    })
+              Return(acc) :
+              Suspend(function () {
+                  return fR(l.tail(), acc)
+              }).map(function (acc1) {
+                  return fn(l.head(), acc1)
+              })
         }
 
         return fR(l, acc).run()
@@ -146,12 +185,12 @@
     var append = function (list1, list2) {
         function append1(list1, list2) {
             return list1.isNil ?
-                Return(list2) :
-                Suspend(function () {
-                    return append1(list1.tail(), list2).map(function (list) {
-                        return list.cons(list1.head())
-                    })
-                })
+              Return(list2) :
+              Suspend(function () {
+                  return append1(list1.tail(), list2).map(function (list) {
+                      return list.cons(list1.head())
+                  })
+              })
         }
 
         return append1(list1, list2).run()
@@ -175,36 +214,15 @@
         return list.foldLeft(Nil)(swap(cons))
     }
 
-    var listFilter = function(list, fn) {
-      return list.foldRight(Nil)(function(a, acc) {
-        return fn(a) ? cons(a,acc): acc
-      })
-    }
-
     var listAp = function(list1, list2) {
         return list1.bind(function(x) {
-          return list2.map(function(f) {
+            return list2.map(function(f) {
                 return f(x)
             })
         })
     }
 
-    var cons = function (head, tail) {
-        return tail.cons(head)
-    }
-
-    var listEquals = function(list1, list2) {
-      var a = list1
-      var b = list2
-      while (!a.isNil && !b.isNil) {
-        if(!equals(a.head())(b.head())) {
-          return false
-        }
-        a = a.tail()
-        b = b.tail()
-      }
-      return a.isNil && b.isNil
-    }
+    var Nil
 
     List.fn = List.prototype = {
         init: function (head, tail) {
@@ -258,7 +276,7 @@
             return append(this, list2)
         },
         filter: function(fn) {
-          return listFilter(this, fn)
+            return listFilter(this, fn)
         },
         flatten: function () {
             return foldRight(append, this, Nil)
@@ -313,14 +331,12 @@
     }
 
     List.fn.init.prototype = List.fn;
-    var Nil = root.Nil = new List.fn.init()
 
     // Aliases
 
     List.prototype.empty = function () {
         return Nil
     }
-
 
     List.fromArray = function (array) {
         var l = Nil
@@ -331,10 +347,11 @@
 
     }
 
-
     List.of = function (a) {
         return new List(a, Nil)
     }
+
+    Nil = root.Nil = new List.fn.init()
 
     /*
      * Non-Empty List monad
@@ -343,8 +360,7 @@
      *
      */
 
-    var NonEmptyList;
-    var NEL = root.NEL = NonEmptyList = root.NonEmptyList = function (head, tail) {
+    var NonEmptyList = root.NEL = root.NonEmptyList = function NEL(head, tail) {
         if (head == null) {
             throw "Cannot create an empty Non-Empty List."
         }
@@ -352,7 +368,7 @@
     }
 
     NEL.of = function(a) {
-      return NEL(a, Nil)
+        return NEL(a, Nil)
     }
 
     NEL.fn = NEL.prototype = {
@@ -420,7 +436,7 @@
             return this.toList().foldRight(initialValue)
         },
         reduceLeft: function (fn) {
-          return this.tail().foldLeft(this.head())(fn)
+            return this.tail().foldLeft(this.head())(fn)
         },
         filter: function (fn) {
             return listFilter(this.toList(), fn)
@@ -448,7 +464,6 @@
     NEL.prototype.cojoin = NEL.prototype.tails
     NEL.prototype.coflatMap = NEL.prototype.mapTails = NEL.prototype.cobind
     NEL.prototype.ap = List.prototype.ap
-
 
     /* Maybe Monad */
 
@@ -643,7 +658,6 @@
     };
 
     Validation.fn.init.prototype = Validation.fn;
-
 
     var Semigroup = root.Semigroup = {}
 
@@ -949,7 +963,7 @@
 
     Free.fn.init.prototype = Free.fn;
 
-    var Identity = root.Identity = function (a) {
+    root.Identity = function Identity(a) {
         return new Identity.fn.init(a)
     }
 
@@ -967,28 +981,14 @@
         get: function () {
             return this.val
         },
-        equals: function(other) {
+        equals: function (other) {
             return (isFunction(other.get) && equals(this.get())(other.get()))
         }
     }
 
     Identity.fn.init.prototype = Identity.fn;
 
-    Function.prototype.reader = function () {
-        var f = this
-        var wrapReader = function (fn, args) {
-            return function () {
-                var args1 = args.append(List.fromArray(getArgs(arguments)));
-                var self = this
-                return args1.size() + 1 == fn.length ?
-                    Reader(function (c) {
-                        return fn.apply(self, (args1.append(List(c))).toArray())
-                    }) :
-                    wrapReader(fn, args1)
-            }
-        }
-        return wrapReader(f, Nil)
-    }
+    // Add aliases
 
     function addAliases(type) {
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
@@ -999,7 +999,6 @@
         }
         type.prototype.point = type.prototype.pure = type.prototype.unit = type.prototype.of
     }
-
 
     // Wire up aliases
     function addMonadOps(type) {
