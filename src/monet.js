@@ -457,7 +457,13 @@
         size: function () {
             return this.size_
         },
-        isNEL: trueFunction
+        isNEL: trueFunction,
+        toString: function () {
+          return 'NEL(' + this.toArray().join(', ') + ')'
+        },
+        inspect: function () {
+          return this.toString()
+        }
     }
 
     NEL.fromList = function (list) {
