@@ -78,6 +78,9 @@ describe('A Maybe', function () {
           expect(someString.equals(Some('abcd'))).toBeTruthy()
           expect(someString.equals(None())).toBeFalsy()
         })
+        it('will render as Just(x)', function() {
+            expect(someString.inspect()).toBe('Just(abcd)')
+        })
     })
 
     describe('without a value', function () {
@@ -124,10 +127,12 @@ describe('A Maybe', function () {
             expect(none.cata(function() {return 'efg'}, 
                 function(val){ return 'hij'})).toBe('efg')
         })
-
         it('will compare for equality', function() {
           expect(none.equals(Maybe.None())).toBeTruthy()
           expect(none.equals(Maybe.Just(1))).toBeFalsy()
+        })
+        it('will render as Nothing', function() {
+            expect(none.inspect()).toBe('Nothing')
         })
     })
 

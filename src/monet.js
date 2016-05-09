@@ -560,6 +560,12 @@
             return self.flatMap(function (a) {
                 return fn(a) ? self : None()
             })
+        },
+        toString: function() {
+            return this.isSome() ? 'Just(' + this.val + ')' : 'Nothing'
+        },
+        inspect: function() {
+            return this.toString()
         }
     };
 
