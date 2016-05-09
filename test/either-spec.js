@@ -89,6 +89,9 @@ describe('An Either', function () {
           expect(rightString.equals(Either.Left('abcd'))).toBeFalsy()
           expect(rightString.equals(Either.Right('x'))).toBeFalsy()
         })
+        it('renders as Right(value)', function() {
+          expect(rightString.toString()).toBe('Right(abcd)')
+        })
     })
 
     var leftString = Either.Left("error dude")
@@ -159,6 +162,9 @@ describe('An Either', function () {
         it('does not equal to Rights with different values or Lefts', function() {
           expect(leftString.equals(Either.Left('x'))).toBeFalsy()
           expect(leftString.equals(Either.Right('error dude'))).toBeFalsy()
+        })
+        it('renders as Left(x)', function() {
+          expect(leftString.toString()).toBe('Left(error dude)')
         })
 
     })

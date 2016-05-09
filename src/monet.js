@@ -831,6 +831,15 @@
         },
         toValidation: function () {
             return this.isRight() ? Success(this.value) : Fail(this.value)
+        },
+        toString: function () {
+            return this.cata(
+                function(left) { return 'Left(' + left + ')' },
+                function(right) { return 'Right(' + right + ')' }
+            )
+        },
+        inspect: function() {
+            return this.toString()
         }
     }
 
