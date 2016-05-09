@@ -327,7 +327,13 @@
         ap: function (list) {
             return listAp(this, list)
         },
-        isNEL: falseFunction
+        isNEL: falseFunction,
+        toString: function () {
+            return this.isNil ? 'Nil' : 'List(' + this.toArray().join(', ') + ')'
+        },
+        inspect: function () {
+            return this.toString()
+        }
     }
 
     List.fn.init.prototype = List.fn;
@@ -1004,6 +1010,12 @@
         },
         equals: function (other) {
             return (isFunction(other.get) && equals(this.get())(other.get()))
+        },
+        toString: function () {
+            return 'Identity(' + this.val + ')'
+        },
+        inspect: function () {
+            return this.toString()
         }
     }
 
