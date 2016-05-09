@@ -660,6 +660,12 @@
         },
         toEither: function () {
             return (this.isSuccess() ? Right : Left)(this.val)
+        },
+        toString: function () {
+            return (this.isSuccess() ? 'Success(' : 'Fail(') + this.val + ')'
+        },
+        inspect: function () {
+          return this.toString()
         }
     };
 
