@@ -6,7 +6,7 @@
 //     https://cwmyers.github.com/monet.js
 
 
-(function(root, factory) {
+(function (root, factory) {
     if (typeof exports === 'object') {
         module.exports = factory(root);
     } else if (typeof define === 'function' && define.amd) {
@@ -14,7 +14,7 @@
     } else {
         root.curry = factory(root);
     }
-}(this, function(root) {
+}(this, function (root) {
     "use strict";
 
     var isArray = (function () {
@@ -46,21 +46,21 @@
         return function () {
             var args1 = args.concat(getArgs(arguments))
             return args1.length >= fn.length ?
-              fn.apply(this, args1.slice(0, args1.length)) :
-              curry(fn, args1)
+                fn.apply(this, args1.slice(0, args1.length)) :
+                curry(fn, args1)
         }
     }
 
     function wrapReader(fn, args) {
         args = args || [];
         return function () {
-            var args1 = args.concat(getArgs(arguments)); // WILL NOT WORK !!!
+            var args1 = args.concat(getArgs(arguments))
             var self = this
             return args1.length + 1 >= fn.length ?
-              Reader(function (c) {
-                  return fn.apply(self, args1.concat(c))
-              }) :
-              wrapReader(fn, args1)
+                Reader(function (c) {
+                    return fn.apply(self, args1.concat(c))
+                }) :
+                wrapReader(fn, args1)
         }
     }
 
@@ -84,7 +84,7 @@
 
     /* Curried equality check - useful for comparing monads */
     function equals(a) {
-        return function(b) {
+        return function (b) {
             return isFunction(a.equals) ? a.equals(b) : a === b
         }
     }
@@ -113,7 +113,7 @@
         var a = list1
         var b = list2
         while (!a.isNil && !b.isNil) {
-            if(!equals(a.head())(b.head())) {
+            if (!equals(a.head())(b.head())) {
                 return false
             }
             a = a.tail()
@@ -133,8 +133,8 @@
     }
 
     function listFilter(list, fn) {
-        return list.foldRight(Nil)(function(a, acc) {
-            return fn(a) ? cons(a,acc): acc
+        return list.foldRight(Nil)(function (a, acc) {
+            return fn(a) ? cons(a, acc) : acc
         })
     }
 
@@ -158,10 +158,10 @@
     var foldLeft = function (fn, acc, l) {
         function fL(acc, l) {
             return l.isNil ?
-              Return(acc) :
-              Suspend(function () {
-                  return fL(fn(acc, l.head()), l.tail())
-              })
+                Return(acc) :
+                Suspend(function () {
+                    return fL(fn(acc, l.head()), l.tail())
+                })
         }
 
         return fL(acc, l).run()
@@ -170,12 +170,12 @@
     var foldRight = function (fn, l, acc) {
         function fR(l, acc) {
             return l.isNil ?
-              Return(acc) :
-              Suspend(function () {
-                  return fR(l.tail(), acc)
-              }).map(function (acc1) {
-                  return fn(l.head(), acc1)
-              })
+                Return(acc) :
+                Suspend(function () {
+                    return fR(l.tail(), acc)
+                }).map(function (acc1) {
+                    return fn(l.head(), acc1)
+                })
         }
 
         return fR(l, acc).run()
@@ -185,12 +185,12 @@
     var append = function (list1, list2) {
         function append1(list1, list2) {
             return list1.isNil ?
-              Return(list2) :
-              Suspend(function () {
-                  return append1(list1.tail(), list2).map(function (list) {
-                      return list.cons(list1.head())
-                  })
-              })
+                Return(list2) :
+                Suspend(function () {
+                    return append1(list1.tail(), list2).map(function (list) {
+                        return list.cons(list1.head())
+                    })
+                })
         }
 
         return append1(list1, list2).run()
@@ -202,7 +202,7 @@
 
     var sequenceValidation = function (list) {
         return list.foldLeft(Success(Nil))(function (acc, a) {
-            return  acc.ap(a.map(function (v) {
+            return acc.ap(a.map(function (v) {
                 return function (t) {
                     return cons(v, t)
                 }
@@ -214,9 +214,9 @@
         return list.foldLeft(Nil)(swap(cons))
     }
 
-    var listAp = function(list1, list2) {
-        return list1.bind(function(x) {
-            return list2.map(function(f) {
+    var listAp = function (list1, list2) {
+        return list1.bind(function (x) {
+            return list2.map(function (f) {
                 return f(x)
             })
         })
@@ -242,7 +242,7 @@
         size: function () {
             return this.size_
         },
-        equals: function(other) {
+        equals: function (other) {
             return isFunction(other.head) && listEquals(this, other);
         },
         cons: function (head) {
@@ -275,7 +275,7 @@
         append: function (list2) {
             return append(this, list2)
         },
-        filter: function(fn) {
+        filter: function (fn) {
             return listFilter(this, fn)
         },
         flatten: function () {
@@ -324,7 +324,7 @@
         tails: function () {
             return this.isNil ? List(Nil, Nil) : this.tail().tails().cons(this)
         },
-        ap: function(list) {
+        ap: function (list) {
             return listAp(this, list)
         },
         isNEL: falseFunction
@@ -367,7 +367,7 @@
         return new NEL.fn.init(head, tail)
     }
 
-    NEL.of = function(a) {
+    NEL.of = function (a) {
         return NEL(a, Nil)
     }
 
@@ -383,7 +383,7 @@
                 this.size_ = this.tail_.size() + 1
             }
         },
-        equals: function(other) {
+        equals: function (other) {
             if (!isFunction(other.head)) {
                 return false
             }
@@ -416,7 +416,7 @@
         //NEL[A] -> NEL[NEL[A]]
         tails: function () {
             var listsOfNels = this.toList().tails().map(NEL.fromList).flattenMaybe();
-            return  NEL(listsOfNels.head(), listsOfNels.tail())
+            return NEL(listsOfNels.head(), listsOfNels.tail())
         },
         toList: function () {
             return List(this.head_, this.tail_)
@@ -527,7 +527,7 @@
                 return fn(value)
             }) : this
         },
-        equals: function(other) {
+        equals: function (other) {
             if (!isFunction(other.isNone) || !isFunction(other.map)) {
                 return false
             }
@@ -555,11 +555,11 @@
         cata: function (none, some) {
             return this.isSome() ? some(this.val) : none()
         },
-        filter: function(fn) {
-          var self = this
-          return self.flatMap(function(a) {
-            return fn(a) ? self : None()
-          })
+        filter: function (fn) {
+            var self = this
+            return self.flatMap(function (a) {
+                return fn(a) ? self : None()
+            })
         }
     };
 
@@ -639,12 +639,12 @@
         bimap: function (fail, success) {
             return this.isSuccessValue ? this.map(success) : this.failMap(fail)
         },
-        equals: function(other) {
+        equals: function (other) {
             return this.cata(
-                function(fail) {
+                function (fail) {
                     return other.cata(equals(fail), falseFunction)
                 },
-                function(success) {
+                function (success) {
                     return other.cata(falseFunction, equals(success))
                 }
             )
@@ -717,8 +717,8 @@
     }
 
     IO.of = function (a) {
-        return IO(function() {
-          return a
+        return IO(function () {
+            return a
         })
     }
 
@@ -810,15 +810,15 @@
         cata: function (leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
         },
-        equals: function(other) {
+        equals: function (other) {
             if (!isFunction(other.isRight) || !isFunction(other.cata)) {
                 return false
             }
             return this.cata(
-                function(left) {
+                function (left) {
                     return other.cata(equals(left), falseFunction)
                 },
-                function(right) {
+                function (right) {
                     return other.cata(falseFunction, equals(right))
                 }
             )
@@ -842,13 +842,13 @@
     }
 
     Reader.of = function (x) {
-      return Reader(function (_) {
-        return x
-      })
+        return Reader(function (_) {
+            return x
+        })
     }
 
     Reader.ask = function () {
-      return Reader(idFunction)
+        return Reader(idFunction)
     }
 
     Reader.fn = Reader.prototype = {
@@ -878,10 +878,10 @@
                 return fn(self.run(config))
             })
         },
-        local: function(fn) {
+        local: function (fn) {
             var self = this
-             return Reader(function(c) {
-                 return self.run(fn(c))
+            return Reader(function (c) {
+                return self.run(fn(c))
             })
         }
     }
@@ -928,12 +928,12 @@
                         })) :
                 fn(this.val)
         },
-        ap: function(ff) {
-          return this.bind(function(x) {
-            return ff.map(function(f) {
-              return f(x)
+        ap: function (ff) {
+            return this.bind(function (x) {
+                return ff.map(function (f) {
+                    return f(x)
+                })
             })
-          })
         },
 
         resume: function () {
