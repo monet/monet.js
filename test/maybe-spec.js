@@ -142,9 +142,9 @@ describe('A Maybe', function () {
         })
     })
 
-    var person = function (forename, surname, address) {
+    var person = Monet.curry(function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
-    }.curry()
+    })
 
     var maybeAddress = Maybe.Just('Dulwich, London')
     var maybeSurname = Maybe.Just('Baker')

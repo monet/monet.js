@@ -163,9 +163,9 @@ describe('An Either', function () {
 
     })
 
-    var person = function (forename, surname, address) {
+    var person = Monet.curry(function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
-    }.curry();
+    })
 
 
     var validateAddress = Either.Right('Dulwich, London')
