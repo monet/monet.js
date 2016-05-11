@@ -107,6 +107,8 @@ describe("A Non-Empty immutable list", function () {
     expect(NEL(1, Nil).reduceLeft(plus)).toEqual(1)
   })
 
-
+  it("will render as NEL(x1, x2, x3)", function () {
+    expect(NEL(1, NEL(false, Nil)).inspect()).toBe('NEL(1, false)')
+  })
 })
 

@@ -195,6 +195,9 @@ describe("An immutable list", function () {
 
             })
         })
+        it('will render as List(x1, x2, x3)', function () {
+          expect(List.fromArray([1, false, 'xyz']).inspect()).toBe('List(1, false, xyz)')
+        })
     })
     describe("that is empty", function () {
         it("will return Nil on tail()", function () {
@@ -208,6 +211,9 @@ describe("An immutable list", function () {
         })
         it("will return an empty list on filter", function() {
           expect(Nil.filter(function() {return true})).toEqual(Nil)
+        })
+        it('will render as Nil', function () {
+            expect(Nil.inspect()).toBe('Nil')
         })
     })
 

@@ -327,7 +327,13 @@
         ap: function (list) {
             return listAp(this, list)
         },
-        isNEL: falseFunction
+        isNEL: falseFunction,
+        toString: function () {
+            return this.isNil ? 'Nil' : 'List(' + this.toArray().join(', ') + ')'
+        },
+        inspect: function () {
+            return this.toString()
+        }
     }
 
     List.fn.init.prototype = List.fn;
@@ -451,7 +457,13 @@
         size: function () {
             return this.size_
         },
-        isNEL: trueFunction
+        isNEL: trueFunction,
+        toString: function () {
+          return 'NEL(' + this.toArray().join(', ') + ')'
+        },
+        inspect: function () {
+          return this.toString()
+        }
     }
 
     NEL.fromList = function (list) {
@@ -560,6 +572,12 @@
             return self.flatMap(function (a) {
                 return fn(a) ? self : None()
             })
+        },
+        toString: function() {
+            return this.isSome() ? 'Just(' + this.val + ')' : 'Nothing'
+        },
+        inspect: function() {
+            return this.toString()
         }
     };
 
@@ -654,6 +672,12 @@
         },
         toEither: function () {
             return (this.isSuccess() ? Right : Left)(this.val)
+        },
+        toString: function () {
+            return (this.isSuccess() ? 'Success(' : 'Fail(') + this.val + ')'
+        },
+        inspect: function () {
+          return this.toString()
         }
     };
 
@@ -831,6 +855,15 @@
         },
         toValidation: function () {
             return this.isRight() ? Success(this.value) : Fail(this.value)
+        },
+        toString: function () {
+            return this.cata(
+                function(left) { return 'Left(' + left + ')' },
+                function(right) { return 'Right(' + right + ')' }
+            )
+        },
+        inspect: function() {
+            return this.toString()
         }
     }
 
@@ -983,6 +1016,12 @@
         },
         equals: function (other) {
             return (isFunction(other.get) && equals(this.get())(other.get()))
+        },
+        toString: function () {
+            return 'Identity(' + this.val + ')'
+        },
+        inspect: function () {
+            return this.toString()
         }
     }
 

@@ -70,7 +70,9 @@ describe('A Validation', function () {
                 throw "fail"
             }, successMap)).toBeSuccessWith("success abcd")
         })
-
+        it('will render as Success(x)', function () {
+          expect(successString.inspect()).toBe('Success(abcd)')
+        })
     })
 
     var failString = Validation.fail("error dude")
@@ -124,6 +126,9 @@ describe('A Validation', function () {
 
         it('can be failMapped', function() {
             expect(failString.failMap(failMap)).toBeFailureWith("fail: error dude")
+        })
+        it('renders as Fail(x)', function () {
+            expect(failString.inspect()).toBe('Fail(error dude)')
         })
 
     })
