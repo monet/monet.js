@@ -1,5 +1,6 @@
 {
   "author": "Chris Myers",
+  "contributors": ["Jakub Strojewski <jakub.strojewski@gmail.com>"],
   "name": "monet",
   "description": "Monadic types library for JavaScript",
   "version": "0.8.10",

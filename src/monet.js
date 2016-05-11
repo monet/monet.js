@@ -5,38 +5,58 @@
 //     For all details and documentation:
 //     https://cwmyers.github.com/monet.js
 
-
 (function (root, factory) {
-    if (typeof exports === 'object') {
-        module.exports = factory(root);
-    } else if (typeof define === 'function' && define.amd) {
-        define(factory);
+    if (typeof define === 'function' && define.amd) {
+        define(factory)
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = factory({})
     } else {
-        root.curry = factory(root);
+        root.Monet = factory(root)
     }
-}(this, function (root) {
-    "use strict";
+}(this, function (rootGlobalObject) {
+    'use strict'
 
-    var isArray = (function () {
-        if (isFunction(Array.isArray)) {
-            return Array.isArray;
+    var root = {}
+
+    var isArray = (function (nativeIsArray) {
+        if (isFunction(nativeIsArray)) {
+            return nativeIsArray
         }
         var objectToStringFn = Object.prototype.toString
         var arrayToStringResult = objectToStringFn.call([])
         return function (a) {
             return objectToStringFn.call(a) === arrayToStringResult
         }
-    }())
+    }(Array.isArray))
 
-    var Monet = root.Monet = {
+    var assign = (function (nativeAssign) {
+        if (isFunction(nativeAssign)) {
+            return nativeAssign
+        }
+        // yes exactly as native one - mutating target :(
+        return function (target, source) { // we need only one level of composition
+            var key
+            for (key in source) {
+                if (source.hasOwnProperty(key) && source[key] !== undefined) {
+                    target[key] = source[key]
+                }
+            }
+            return target
+        }
+    }(Object.assign))
+
+    var Monet = {
         apply2: apply2,
+        assign: assign,
         compose: compose,
         curry: curry(swap(curry), [])([]),
+        idFunction: idFunction,
         isArray: isArray,
         isFunction: isFunction,
         swap: swap,
         wrapReader: wrapReader
     }
+
 
     function getArgs(args) {
         return Array.prototype.slice.call(args)
@@ -52,7 +72,7 @@
     }
 
     function wrapReader(fn, args) {
-        args = args || [];
+        args = args || []
         return function () {
             var args1 = args.concat(getArgs(arguments))
             var self = this
@@ -144,9 +164,11 @@
 
     // List monad
 
-    var list = root.List = function List(head, tail) {
+    function List(head, tail) {
         return new List.fn.init(head, tail)
     }
+
+    var list = root.List = List
 
     var listEach = function (effectFn, l) {
         if (!l.isNil) {
@@ -243,7 +265,7 @@
             return this.size_
         },
         equals: function (other) {
-            return isFunction(other.head) && listEquals(this, other);
+            return isFunction(other.head) && listEquals(this, other)
         },
         cons: function (head) {
             return List(head, this)
@@ -330,7 +352,7 @@
         isNEL: falseFunction
     }
 
-    List.fn.init.prototype = List.fn;
+    List.fn.init.prototype = List.fn
 
     // Aliases
 
@@ -339,12 +361,9 @@
     }
 
     List.fromArray = function (array) {
-        var l = Nil
-        for (var i = array.length; i--; i <= 0) {
-            l = l.cons(array[i])
-        }
-        return l
-
+        return array.reduceRight(function (acc, next) {
+            return acc.cons(next)
+        }, Nil)
     }
 
     List.of = function (a) {
@@ -360,12 +379,14 @@
      *
      */
 
-    var NonEmptyList = root.NEL = root.NonEmptyList = function NEL(head, tail) {
+    function NEL(head, tail) {
         if (head == null) {
-            throw "Cannot create an empty Non-Empty List."
+            throw 'Cannot create an empty Non-Empty List.'
         }
         return new NEL.fn.init(head, tail)
     }
+
+    var NonEmptyList = root.NEL = root.NonEmptyList = NEL
 
     NEL.of = function (a) {
         return NEL(a, Nil)
@@ -396,7 +417,7 @@
         bind: function (fn) {
             var p = fn(this.head_)
             if (!p.isNEL()) {
-                throw "function must return a NonEmptyList."
+                throw 'function must return a NonEmptyList.'
             }
             var list = this.tail().foldLeft(Nil.snoc(p.head()).append(p.tail()))(function (acc, e) {
                 var list2 = fn(e).toList()
@@ -415,7 +436,7 @@
         },
         //NEL[A] -> NEL[NEL[A]]
         tails: function () {
-            var listsOfNels = this.toList().tails().map(NEL.fromList).flattenMaybe();
+            var listsOfNels = this.toList().tails().map(NEL.fromList).flattenMaybe()
             return NEL(listsOfNels.head(), listsOfNels.tail())
         },
         toList: function () {
@@ -458,7 +479,7 @@
         return list.isNil ? None() : Some(NEL(list.head(), list.tail()))
     }
 
-    NEL.fn.init.prototype = NEL.fn;
+    NEL.fn.init.prototype = NEL.fn
     NEL.prototype.toArray = List.prototype.toArray
     NEL.prototype.extract = NEL.prototype.copure = NEL.prototype.head
     NEL.prototype.cojoin = NEL.prototype.tails
@@ -471,21 +492,21 @@
 
     Maybe.fromNull = function (val) {
         return val == null ? Maybe.None() : Maybe.Some(val)
-    };
+    }
 
     Maybe.of = function (a) {
         return Some(a)
     }
 
-    var Just;
+    var Just
     var Some = Just = Maybe.Just = Maybe.Some = root.Some = root.Just = function (val) {
         return new Maybe.fn.init(true, val)
-    };
+    }
 
-    var Nothing;
+    var Nothing
     var None = Nothing = Maybe.Nothing = Maybe.None = root.None = function () {
         return new Maybe.fn.init(false, null)
-    };
+    }
 
     Maybe.toList = function (maybe) {
         return maybe.toList()
@@ -495,7 +516,7 @@
         init: function (isValue, val) {
             this.isValue = isValue
             if (val == null && isValue) {
-                throw "Illegal state exception"
+                throw 'Illegal state exception'
             }
             this.val = val
         },
@@ -512,7 +533,7 @@
             if (this.isValue) {
                 return this.val
             } else {
-                throw "Illegal state exception"
+                throw 'Illegal state exception'
             }
         },
         orSome: function (otherValue) {
@@ -561,7 +582,7 @@
                 return fn(a) ? self : None()
             })
         }
-    };
+    }
 
     // aliases
     Maybe.prototype.orJust = Maybe.prototype.orSome
@@ -571,7 +592,7 @@
 
     Maybe.fn.init.prototype = Maybe.fn
 
-    var Validation = root.Validation = {};
+    var Validation = root.Validation = {}
 
     var Success = Validation.Success = Validation.success = root.Success = function (val) {
         return new Validation.fn.init(val, true)
@@ -592,7 +613,7 @@
         },
         success: function () {
             if (this.isSuccess())
-                return this.val;
+                return this.val
             else
                 throw 'Illegal state. Cannot call success() on a Validation.fail'
         },
@@ -615,7 +636,7 @@
             var value = this.val
             return this.isSuccess() ?
                 validationWithFn.map(function (fn) {
-                    return fn(value);
+                    return fn(value)
                 })
                 :
                 (validationWithFn.isFail() ?
@@ -655,9 +676,9 @@
         toEither: function () {
             return (this.isSuccess() ? Right : Left)(this.val)
         }
-    };
+    }
 
-    Validation.fn.init.prototype = Validation.fn;
+    Validation.fn.init.prototype = Validation.fn
 
     var Semigroup = root.Semigroup = {}
 
@@ -665,16 +686,16 @@
         if (isArray(a)) {
             return a.concat(b)
         }
-        if (typeof a === "string") {
+        if (typeof a === 'string') {
             return a + b
         }
         if (isFunction(a.concat)) {
             return a.concat(b)
         }
-        throw "Couldn't find a semigroup appender in the environment, please specify your own append function"
+        throw 'Couldn\'t find a semigroup appender in the environment, please specify your own append function'
     }
 
-    var monadT, monadTransformer, MonadTransformer;
+    var monadT, monadTransformer, MonadTransformer
     var MonadT = monadT = monadTransformer = MonadTransformer = root.monadTransformer = root.MonadT = root.monadT = function (monad) {
         return new MonadT.fn.init(monad)
     }
@@ -705,13 +726,13 @@
             }))
         },
         perform: function () {
-            return this.monad;
+            return this.monad
         }
     }
 
-    MonadT.fn.init.prototype = MonadT.fn;
+    MonadT.fn.init.prototype = MonadT.fn
 
-    var io;
+    var io
     var IO = io = root.IO = root.io = function (effectFn) {
         return new IO.fn.init(effectFn)
     }
@@ -725,11 +746,11 @@
     IO.fn = IO.prototype = {
         init: function (effectFn) {
             if (!isFunction(effectFn))
-                throw "IO requires a function"
-            this.effectFn = effectFn;
+                throw 'IO requires a function'
+            this.effectFn = effectFn
         },
         map: function (fn) {
-            var self = this;
+            var self = this
             return IO(function () {
                 return fn(self.effectFn())
             })
@@ -738,7 +759,7 @@
             var self = this
             return IO(function () {
                 return fn(self.effectFn()).run()
-            });
+            })
         },
         ap: function (ioWithFn) {
             var self = this
@@ -751,7 +772,7 @@
         }
     }
 
-    IO.fn.init.prototype = IO.fn;
+    IO.fn.init.prototype = IO.fn
 
     IO.prototype.perform = IO.prototype.performUnsafeIO = IO.prototype.run
 
@@ -765,10 +786,10 @@
 
     var Right = Either.Right = root.Right = function (val) {
         return new Either.fn.init(val, true)
-    };
+    }
     var Left = Either.Left = root.Left = function (val) {
         return new Either.fn.init(val, false)
-    };
+    }
 
     Either.fn = Either.prototype = {
         init: function (val, isRightValue) {
@@ -797,12 +818,12 @@
             if (this.isRightValue) {
                 return this.value
             } else {
-                throw "Illegal state. Cannot call right() on a Either.left"
+                throw 'Illegal state. Cannot call right() on a Either.left'
             }
         },
         left: function () {
             if (this.isRightValue) {
-                throw "Illegal state. Cannot call left() on a Either.right"
+                throw 'Illegal state. Cannot call left() on a Either.right'
             } else {
                 return this.value
             }
@@ -834,9 +855,9 @@
         }
     }
 
-    Either.fn.init.prototype = Either.fn;
+    Either.fn.init.prototype = Either.fn
 
-    var reader;
+    var reader
     var Reader = reader = root.Reader = function (fn) {
         return new Reader.fn.init(fn)
     }
@@ -886,7 +907,7 @@
         }
     }
 
-    Reader.fn.init.prototype = Reader.fn;
+    Reader.fn.init.prototype = Reader.fn
 
     var Free = root.Free = {}
 
@@ -961,11 +982,13 @@
 
     }
 
-    Free.fn.init.prototype = Free.fn;
+    Free.fn.init.prototype = Free.fn
 
-    root.Identity = function Identity(a) {
+    function Identity(a) {
         return new Identity.fn.init(a)
     }
+
+    root.Identity = Identity
 
     Identity.of = function (a) {
         return new Identity(a)
@@ -976,7 +999,7 @@
             this.val = val
         },
         bind: function (fn) {
-            return fn(this.val);
+            return fn(this.val)
         },
         get: function () {
             return this.val
@@ -986,7 +1009,7 @@
         }
     }
 
-    Identity.fn.init.prototype = Identity.fn;
+    Identity.fn.init.prototype = Identity.fn
 
     // Add aliases
 
@@ -1041,9 +1064,9 @@
 
     function decorate(type) {
         addAliases(type)
-        addMonadOps(type);
-        addFunctorOps(type);
-        addApplicativeOps(type);
+        addMonadOps(type)
+        addFunctorOps(type)
+        addApplicativeOps(type)
     }
 
     decorate(MonadT)
@@ -1057,6 +1080,12 @@
     decorate(Free)
     decorate(Identity)
 
-    return root
-}));
+    if (rootGlobalObject.useMonetGlobalObject) {
+        assign(Monet, root)
+    } else {
+        assign(rootGlobalObject, root)
+    }
+
+    return Monet
+}))
 
