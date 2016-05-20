@@ -1,9 +1,11 @@
-//     Monet.js 0.8.10
-
-//     (c) 2012-2016 Chris Myers
-//     Monet.js may be freely distributed under the MIT license.
-//     For all details and documentation:
-//     https://cwmyers.github.com/monet.js
+/**
+ * Monet.js 0.8.10
+ *
+ * (c) 2012-2016 Chris Myers
+ * @license Monet.js may be freely distributed under the MIT license.
+ * For all details and documentation:
+ * https://cwmyers.github.com/monet.js
+ */
 
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -168,7 +170,7 @@
         return new List.fn.init(head, tail)
     }
 
-    var list = root.List = List
+    root.List = List
 
     var listEach = function (effectFn, l) {
         if (!l.isNil) {
@@ -386,7 +388,7 @@
         return new NEL.fn.init(head, tail)
     }
 
-    var NonEmptyList = root.NEL = root.NonEmptyList = NEL
+    root.NEL = root.NonEmptyList = NEL
 
     NEL.of = function (a) {
         return NEL(a, Nil)
