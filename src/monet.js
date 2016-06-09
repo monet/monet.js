@@ -11,8 +11,9 @@
     if (typeof define === 'function' && define.amd) {
         define(factory)
     } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory({})
+        module.exports = factory()
     } else {
+        root.notUseMonetGlobalObject = !root.useMonetGlobalObject;
         root.Monet = factory(root)
     }
 }(this, function (rootGlobalObject) {
@@ -1082,12 +1083,11 @@
     decorate(Free)
     decorate(Identity)
 
-    if (rootGlobalObject.useMonetGlobalObject) {
-        assign(Monet, root)
-    } else {
-        assign(rootGlobalObject, root)
-    }
-
-    return Monet
+    return Maybe.fromNull(rootGlobalObject)
+        .filter(function (rootObj) { return Boolean(rootObj.notUseMonetGlobalObject) })
+        .cata(function () { return assign(Monet, root) }, function (rootObj) {
+            assign(rootGlobalObject, root)
+            return Monet
+        })
 }))
 
