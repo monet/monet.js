@@ -25,29 +25,21 @@ The source is available at: [http://github.com/cwmyers/monet.js](http://github.c
 ## Installation
 
 Simply download and add to your html pages or we also support [bower].  You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
-
-    <script type="text/javascript" src="monet.js"></script>
-    <!-- Optionally -->
-    <script type="text/javascript" src="monet-pimp.js"></script>
-
+```html
+<script type="text/javascript" src="monet.js"></script>
+<!-- Optionally -->
+<script type="text/javascript" src="monet-pimp.js"></script>
+```
 ### Bower installation
 Using [bower]:
-
-	bower install monet
-
-or to install a specific version
-
-	bower install monet#0.8.10
-
+```bash
+bower install monet --save
+```
 ### Node installation
 Using [npm]:
-
-	npm install monet
-
-or to install a specific version
-
-	npm install monet@0.8.10
-
+```bash
+npm install monet --save
+```
 ## A note on types
 
 #### Well it's JavaScript - there ain't any
