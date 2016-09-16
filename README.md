@@ -47,6 +47,12 @@ Using [npm]:
 or to install a specific version
 
 	npm install monet@0.8.10
+	
+### Angular installation
+
+	npm install ng-monet
+	
+Then follow the directions provided at https://www.npmjs.com/package/ng-monet
 
 ## A note on types
 
