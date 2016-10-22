@@ -12,6 +12,7 @@
     "url": "git@github.com:cwmyers/monet.js.git"
   },
   "main": "dist/monet.js",
+  "typings": "dist/monet.d.ts",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
@@ -34,9 +35,10 @@
     "minify:monet": "uglifyjs dist/monet.js -o dist/monet.min.js --source-map dist/monet.min.js.map -m -c unsafe -v --comments --keep-fnames",
     "minify:monet-pimp": "uglifyjs dist/monet-pimp.js -o dist/monet-pimp.min.js --source-map dist/monet-pimp.min.js.map -m -c unsafe -v --comments --keep-fnames",
     "minify": "npm run minify:monet && npm run minify:monet-pimp",
+    "copy:types": "cp src/monet.d.ts dist/",
     "copy:monet": "uglifyjs src/monet.js -o dist/monet.js  --lint --comments -b bracketize=true",
     "copy:monet-pimp": "uglifyjs src/monet-pimp.js -o dist/monet-pimp.js  --lint --comments -b bracketize=true",
-    "copy": "npm run copy:monet && npm run copy:monet-pimp",
-    "pub": "npm run copy && npm run minify"
+    "copy": "npm run copy:monet && npm run copy:monet-pimp && npm run copy:types",
+    "publ": "npm run copy && npm run minify"
   }
 }
