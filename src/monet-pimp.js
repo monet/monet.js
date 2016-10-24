@@ -1,14 +1,15 @@
-//     monet-pimp.js 0.8.10
+/**
+ * monet-pimp.js 0.8.10
+ *
+ * This file needs to be included after monet.js
+ *
+ * (c) 2012-2016 Chris Myers
+ * @license Monet-pimp.js may be freely distributed under the MIT license.
+ * For all details and documentation:
+ * https://cwmyers.github.com/monet.js
+ */
 
-//     This file needs to be included after monet.js
-
-//     (c) 2012-2016 Chris Myers
-//     Monet-pimp.js may be freely distributed under the MIT license.
-//     For all details and documentation:
-//     https://cwmyers.github.com/monet.js
-
-
-(function (window) {
+(function () {
     "use strict";
 
     Object.prototype.cons = function (list) {
@@ -73,4 +74,4 @@
 
     return this
 
-})(window || this);
+})();
