@@ -1,5 +1,5 @@
 /**
- * Monet.js 0.9.0-alpha.0
+ * Monet.js 0.9.0-alpha.1
  *
  * (c) 2012-2016 Chris Myers
  * @license Monet.js may be freely distributed under the MIT license.
@@ -978,11 +978,13 @@
         },
         bind: function (fn) {
             return this.isSuspend ?
-                Suspend(
-                    this.functor.map(
-                        function (free) {
-                            return free.bind(fn)
-                        })) :
+                Suspend(isFunction(this.functor) ?
+                    compose(function (free) {
+                        return free.bind(fn)
+                    }, this.functor) :
+                    this.functor.map(function (free) {
+                        return free.bind(fn)
+                    })) :
                 fn(this.val)
         },
         ap: function (ff) {
