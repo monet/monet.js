@@ -1,5 +1,5 @@
 /**
- * Monet.js 0.8.10
+ * Monet.js 0.9.0-alpha.1
  *
  * (c) 2012-2016 Chris Myers
  * @license Monet.js may be freely distributed under the MIT license.
@@ -298,7 +298,13 @@
         ap: function(list) {
             return listAp(this, list);
         },
-        isNEL: falseFunction
+        isNEL: falseFunction,
+        toString: function() {
+            return this.isNil ? "Nil" : "List(" + this.toArray().join(", ") + ")";
+        },
+        inspect: function() {
+            return this.toString();
+        }
     };
     List.fn.init.prototype = List.fn;
     List.prototype.empty = function() {
@@ -397,7 +403,13 @@
         size: function() {
             return this.size_;
         },
-        isNEL: trueFunction
+        isNEL: trueFunction,
+        toString: function() {
+            return "NEL(" + this.toArray().join(", ") + ")";
+        },
+        inspect: function() {
+            return this.toString();
+        }
     };
     NEL.fromList = function(list) {
         return list.isNil ? None() : Some(NEL(list.head(), list.tail()));
@@ -494,6 +506,12 @@
             return self.flatMap(function(a) {
                 return fn(a) ? self : None();
             });
+        },
+        toString: function() {
+            return this.isSome() ? "Just(" + this.val + ")" : "Nothing";
+        },
+        inspect: function() {
+            return this.toString();
         }
     };
     Maybe.prototype.orJust = Maybe.prototype.orSome;
@@ -572,6 +590,12 @@
         },
         toEither: function() {
             return (this.isSuccess() ? Right : Left)(this.val);
+        },
+        toString: function() {
+            return (this.isSuccess() ? "Success(" : "Fail(") + this.val + ")";
+        },
+        inspect: function() {
+            return this.toString();
         }
     };
     Validation.fn.init.prototype = Validation.fn;
@@ -729,6 +753,16 @@
         },
         toValidation: function() {
             return this.isRight() ? Success(this.value) : Fail(this.value);
+        },
+        toString: function() {
+            return this.cata(function(left) {
+                return "Left(" + left + ")";
+            }, function(right) {
+                return "Right(" + right + ")";
+            });
+        },
+        inspect: function() {
+            return this.toString();
         }
     };
     Either.fn.init.prototype = Either.fn;
@@ -807,7 +841,9 @@
             });
         },
         bind: function(fn) {
-            return this.isSuspend ? Suspend(this.functor.map(function(free) {
+            return this.isSuspend ? Suspend(isFunction(this.functor) ? compose(function(free) {
+                return free.bind(fn);
+            }, this.functor) : this.functor.map(function(free) {
                 return free.bind(fn);
             })) : fn(this.val);
         },
@@ -858,6 +894,12 @@
         },
         equals: function(other) {
             return isFunction(other.get) && equals(this.get())(other.get());
+        },
+        toString: function() {
+            return "Identity(" + this.val + ")";
+        },
+        inspect: function() {
+            return this.toString();
         }
     };
     Identity.fn.init.prototype = Identity.fn;
