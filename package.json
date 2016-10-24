@@ -1,17 +1,44 @@
 {
   "author": "Chris Myers",
+  "contributors": [
+    "Jakub Strojewski <jakub.strojewski@gmail.com>"
+  ],
   "name": "monet",
   "description": "Monadic types library for JavaScript",
-  "version": "0.8.10",
+  "version": "0.9.0-alpha.0",
   "homepage": "https://github.com/cwmyers/monet.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:cwmyers/monet.js.git"
   },
-  "main": "src/main/javascript/monet.js",
+  "main": "dist/monet.js",
+  "typings": "dist/monet.d.ts",
   "license": "MIT",
   "dependencies": {},
+  "devDependencies": {
+    "jasmine-core": "2.4.1",
+    "karma": "0.13.22",
+    "karma-chrome-launcher": "0.2.3",
+    "karma-firefox-launcher": "0.1.7",
+    "karma-jasmine": "0.3.8",
+    "karma-phantomjs-launcher": "1.0.0",
+    "karma-safari-launcher": "0.1.1",
+    "phantomjs-prebuilt": "2.1.7",
+    "typescript": "1.8.10",
+    "uglify-js": "2.6.2"
+  },
   "scripts": {
-    "test": "node node_modules/typescript/bin/tsc -m system --noEmit --listFiles"
+    "test": "karma start && tsc -m system --noEmit --listFiles",
+    "test-typings": "tsc -m system --noEmit --listFiles",
+    "tdd": "karma start --auto-watch  --no-single-run --browsers Chrome,Firefox,PhantomJS",
+    "tdd-osx": "karma start --auto-watch  --no-single-run --browsers Chrome,Firefox,PhantomJS,Safari",
+    "minify:monet": "uglifyjs dist/monet.js -o dist/monet.min.js --source-map dist/monet.min.js.map -m -c unsafe -v --comments --keep-fnames",
+    "minify:monet-pimp": "uglifyjs dist/monet-pimp.js -o dist/monet-pimp.min.js --source-map dist/monet-pimp.min.js.map -m -c unsafe -v --comments --keep-fnames",
+    "minify": "npm run minify:monet && npm run minify:monet-pimp",
+    "copy:types": "cp src/monet.d.ts dist/",
+    "copy:monet": "uglifyjs src/monet.js -o dist/monet.js  --lint --comments -b bracketize=true",
+    "copy:monet-pimp": "uglifyjs src/monet-pimp.js -o dist/monet-pimp.js  --lint --comments -b bracketize=true",
+    "copy": "npm run copy:monet && npm run copy:monet-pimp && npm run copy:types",
+    "publ": "npm run copy && npm run minify"
   }
 }

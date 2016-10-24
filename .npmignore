@@ -1,0 +1,9 @@
+.gitignore
+.travis.yml
+bower.json
+CONTRIBUTING.md
+karma.conf.js
+tsconfig.json
+
+src/
+test/

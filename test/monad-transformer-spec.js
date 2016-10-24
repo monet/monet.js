@@ -1,16 +1,16 @@
 describe('A Monad Transformer', function () {
 
     beforeEach(function() {
-        this.addMatchers({
-            toBeSomeMaybe: function(expected) {
-                return this.actual.isSome();
-            },
-            toBeSomeMaybeWith: function(expected) {
-                return this.actual.some() == expected
-            },
-            toBeNoneMaybe: function() {
-                return this.actual.isNone()
-            }
+        jasmine.addMatchers({
+            toBeSomeMaybe: getCustomMatcher(function(actual) {
+                return actual.isSome();
+            }),
+            toBeSomeMaybeWith: getCustomMatcher(function(actual, expected) {
+                return actual.some() == expected;
+            }),
+            toBeNoneMaybe: getCustomMatcher(function(actual) {
+                return actual.isNone();
+            })
         });
     });
 
@@ -31,7 +31,7 @@ describe('A Monad Transformer', function () {
     })
 
     it('will allow a containing value to be applied (applicative functor style)', function() {
-        var plus = function(a,b) { return a + b}.curry()
+        var plus = Monet.curry(function(a,b) { return a + b })
         var maybeIOWithFn = create(plus)
         var maybeIO1 = create(20)
         var maybeIO2 = create(22)

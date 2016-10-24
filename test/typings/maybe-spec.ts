@@ -1,4 +1,4 @@
-import { Maybe, Some, None, Just, Nothing, IO } from '../../../index';
+import { Maybe, Some, None, Just, Nothing, IO } from 'src/monet';
 
 function getType(action) {
     return Maybe.fromNull(action.type).filter(t => t !== 'MESSAGE');
@@ -53,6 +53,7 @@ const wrapped = getMessage({type: 'MESSAGE', payload: 'Hello World'});
 console.assert(wrapped.isSome() === wrapped.isJust());
 console.assert(wrapped.isNone() === wrapped.isNothing());
 console.assert(!(wrapped.isNone() === wrapped.isJust()));
+console.assert(wrapped.equals(Some({type: 'MESSAGE', payload: 'Hello World'})))
 
 const wrappedGreeting: Maybe<string> = wrapped.bind(v => Maybe.fromNull(v.payload));
 

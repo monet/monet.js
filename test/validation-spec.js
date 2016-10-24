@@ -1,19 +1,19 @@
 describe('A Validation', function () {
 
     beforeEach(function () {
-        this.addMatchers({
-            toBeSuccess: function (expected) {
-                return this.actual.isSuccess();
-            },
-            toBeSuccessWith: function (expected) {
-                return this.actual.success() == expected
-            },
-            toBeFailure: function () {
-                return this.actual.isFail()
-            },
-            toBeFailureWith: function (expected) {
-                return this.actual.fail() == expected
-            }
+        jasmine.addMatchers({
+            toBeSuccess: getCustomMatcher(function (actual) {
+                return actual.isSuccess();
+            }),
+            toBeSuccessWith: getCustomMatcher(function (actual, expected) {
+                return actual.success() == expected;
+            }),
+            toBeFailure: getCustomMatcher(function (actual) {
+                return actual.isFail()
+            }),
+            toBeFailureWith: getCustomMatcher(function (actual, expected) {
+                return actual.fail() == expected
+            })
         });
     });
     var successString = Validation.success("abcd")
@@ -70,7 +70,9 @@ describe('A Validation', function () {
                 throw "fail"
             }, successMap)).toBeSuccessWith("success abcd")
         })
-
+        it('will render as Success(x)', function () {
+          expect(successString.inspect()).toBe('Success(abcd)')
+        })
     })
 
     var failString = Validation.fail("error dude")
@@ -125,13 +127,15 @@ describe('A Validation', function () {
         it('can be failMapped', function() {
             expect(failString.failMap(failMap)).toBeFailureWith("fail: error dude")
         })
+        it('renders as Fail(x)', function () {
+            expect(failString.inspect()).toBe('Fail(error dude)')
+        })
 
     })
 
-    var person = function (forename, surname, address) {
+    var person = Monet.curry(function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
-    }.curry();
-
+    })
 
     var validateAddress = Validation.success('Dulwich, London')
     var validateSurname = Validation.success('Baker')

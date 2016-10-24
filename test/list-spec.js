@@ -1,21 +1,21 @@
 describe("An immutable list", function () {
 
     beforeEach(function () {
-        this.addMatchers({
-            toBeSomeMaybe: function (expected) {
-                return this.actual.isSome();
-            },
-            toBeSomeMaybeWith: function (expected) {
-                return this.actual.some() == expected
-            },
-            toBeSomeMaybeWithList: function (expected) {
-                return this.actual.some().toArray() === expected
-            },
-            toBeNoneMaybe: function () {
-                return this.actual.isNone()
-            }
+        jasmine.addMatchers({
+            toBeSomeMaybe: getCustomMatcher(function (actual) {
+                return actual.isSome();
+            }),
+            toBeSomeMaybeWith: getCustomMatcher(function (actual, expected) {
+                return actual.some() == expected;
+            }),
+            toBeSomeMaybeWithList: getCustomMatcher(function (actual, expected) {
+                return actual.some().toArray() === expected;
+            }),
+            toBeNoneMaybe: getCustomMatcher(function (actual) {
+                return actual.isNone();
+            })
         });
-    })
+    });
 
     var list = List(1, List(2, List(3, List(4, Nil))))
 
@@ -24,15 +24,13 @@ describe("An immutable list", function () {
     };
 
     it("will return all the possible tails on tails()", function () {
-        expect(list.tails().map(function (m) {
-            return m.toArray()
-        }).toArray()).toEqual([
-                [ 1, 2, 3, 4 ],
-                [ 2, 3, 4 ],
-                [ 3, 4 ],
-                [ 4 ],
-                [ ]
-            ])
+        expect(list.tails().equals(List.fromArray([
+            [ 1, 2, 3, 4 ],
+            [ 2, 3, 4 ],
+            [ 3, 4 ],
+            [ 4 ],
+            [ ]
+        ]).map(List.fromArray))).toBeTruthy()
     })
 
 
@@ -41,7 +39,7 @@ describe("An immutable list", function () {
     })
 
     it("can be created from an Array", function () {
-        expect([1, 2, 3, 4].list()).toEqual(list)
+        expect([1, 2, 3, 4].list().equals(list)).toBeTruthy()
     })
 
     it("can be mapped", function () {
@@ -197,6 +195,9 @@ describe("An immutable list", function () {
 
             })
         })
+        it('will render as List(x1, x2, x3)', function () {
+          expect(List.fromArray([1, false, 'xyz']).inspect()).toBe('List(1, false, xyz)')
+        })
     })
     describe("that is empty", function () {
         it("will return Nil on tail()", function () {
@@ -210,6 +211,9 @@ describe("An immutable list", function () {
         })
         it("will return an empty list on filter", function() {
           expect(Nil.filter(function() {return true})).toEqual(Nil)
+        })
+        it('will render as Nil', function () {
+            expect(Nil.inspect()).toBe('Nil')
         })
     })
 

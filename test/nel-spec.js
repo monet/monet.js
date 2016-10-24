@@ -1,18 +1,18 @@
 describe("A Non-Empty immutable list", function () {
 
     beforeEach(function () {
-        this.addMatchers({
-            toBeSomeMaybe: function (expected) {
-                return this.actual.isSome();
-            },
-            toBeSomeMaybeWith: function (expected) {
-                return this.actual.some() == expected
-            },
-            toBeNoneMaybe: function () {
-                return this.actual.isNone()
-            }
+        jasmine.addMatchers({
+            toBeSomeMaybe: getCustomMatcher(function (actual) {
+                return actual.isSome();
+            }),
+            toBeSomeMaybeWith: getCustomMatcher(function (actual, expected) {
+                return actual.some() == expected;
+            }),
+            toBeNoneMaybe: getCustomMatcher(function (actual) {
+                return actual.isNone();
+            })
         });
-    })
+    });
 
     var nonEmptyList = NEL(1, List(2, List(3, List(4, Nil))))
 
@@ -107,6 +107,8 @@ describe("A Non-Empty immutable list", function () {
     expect(NEL(1, Nil).reduceLeft(plus)).toEqual(1)
   })
 
-
+  it("will render as NEL(x1, x2, x3)", function () {
+    expect(NEL(1, NEL(false, Nil)).inspect()).toBe('NEL(1, false)')
+  })
 })
 

@@ -31,15 +31,22 @@ Simply download and add to your html pages or we also support [bower].  You can 
 <script type="text/javascript" src="monet-pimp.js"></script>
 ```
 ### Bower installation
-Using [bower]:
 ```bash
 bower install monet --save
+
+# or to install a specific version
+bower install monet#0.9.0-alpha.0
 ```
+
 ### Node installation
-Using [npm]:
+
 ```bash
 npm install monet --save
+
+# or to install a specific version
+npm install monet@0.9.0-alpha.0
 ```
+
 ## A note on types
 
 #### Well it's JavaScript - there ain't any
@@ -816,7 +823,7 @@ Performs a fold right across the non empty list.  Similar to `foldLeft` except t
 Reduces a `NonEmptyList` of type `A` down to a single `A`.
 
 	var nonEmptyList = NonEmptyList(1, [2,3,4].list())
-	nonEmptyList.reduceLeft(function (a,b) {return a+b}) 
+	nonEmptyList.reduceLeft(function (a,b) {return a+b})
 	// result: 10
 
 
@@ -932,7 +939,7 @@ It becomes much clearer which functions deal with IO and which functions simply 
 The `Reader` monad is a wonderful solution to inject dependencies into your functions.  There are plenty of great resources to get your
 teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
 
-The `Reader` monad provides a way to "weave" your configuration throughout your programme.  
+The `Reader` monad provides a way to "weave" your configuration throughout your programme.
 
 ### Creating a Reader
 

@@ -10,13 +10,11 @@ describe("A Reader Monad", function () {
     port: 8081,
     key: "not so secret"
   }
-  var connect = function (endpoint, config) {
-    return "POST " + config.url + ":" + config.port + "/" + endpoint
-  }.reader()
-
-  var format = function (url) {
-    return "!" + url + "!"
-  }.reader()
+  var connect = function (endpoint) {
+    return Reader(function (config) {
+      return "POST " + config.url + ":" + config.port + "/" + endpoint
+    })
+  }
 
   it("must inject config with run()", function () {
     expect(connect("user").run(config1)).toBe("POST http://test1.com:8080/user")
@@ -32,10 +30,11 @@ describe("A Reader Monad", function () {
   })
 
   it("must be flatMappable", function () {
-    var reader = connect("something").flatMap(
-      function (connectionString, config) {
+    var reader = connect("something").flatMap(function (connectionString) {
+      return Reader(function (config) {
         return connectionString + "?secretKey=" + config.key
-      }.reader())
+      })
+    })
     expect(reader.run(config1)).toBe("POST http://test1.com:8080/something?secretKey=s3cr3t")
   })
 

@@ -1,4 +1,4 @@
-import { IO } from '../../../index';
+import { IO } from 'src/monet';
 
 const logX = IO(() => console.log('X'));
 const getY = logX.map(() => 'Y');

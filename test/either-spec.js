@@ -5,21 +5,22 @@
 describe('An Either', function () {
 
     beforeEach(function () {
-        this.addMatchers({
-            toBeRight: function (expected) {
-                return this.actual.isRight();
-            },
-            toBeRightWith: function (expected) {
-                return this.actual.right() == expected
-            },
-            toBeLeft: function () {
-                return this.actual.isLeft()
-            },
-            toBeLeftWith: function (expected) {
-                return this.actual.left() == expected
-            }
+        jasmine.addMatchers({
+            toBeRight: getCustomMatcher(function (actual) {
+                return actual.isRight();
+            }),
+            toBeRightWith: getCustomMatcher(function (actual, expected) {
+                return actual.right() == expected;
+            }),
+            toBeLeft: getCustomMatcher(function (actual) {
+                return actual.isLeft();
+            }),
+            toBeLeftWith: getCustomMatcher(function (actual, expected) {
+                return actual.left() == expected;
+            })
         });
     });
+
     var rightString = Either.Right("abcd")
     describe('that is right', function () {
         it('will be transformed by a map', function () {
@@ -80,6 +81,17 @@ describe('An Either', function () {
         it('can be converted to Validation.Success', function() {
           expect(rightString.toValidation().success()).not.toBeUndefined()
         })
+        it('equals to Right with the same value', function() {
+          expect(rightString.equals(Either.Right('abcd'))).toBeTruthy()
+          expect(Right(Just(2)).equals(Right(Just(2)))).toBeTruthy()
+        })
+        it('does not equal to Rights with different values or Lefts', function() {
+          expect(rightString.equals(Either.Left('abcd'))).toBeFalsy()
+          expect(rightString.equals(Either.Right('x'))).toBeFalsy()
+        })
+        it('renders as Right(value)', function() {
+          expect(rightString.toString()).toBe('Right(abcd)')
+        })
     })
 
     var leftString = Either.Left("error dude")
@@ -136,19 +148,30 @@ describe('An Either', function () {
                 throw "right"
             })).toBeLeftWith("left: error dude")
         })
-        
+
         it('can be converted to Maybe.None', function() {
           expect(leftString.toMaybe().isNone()).toBe(true)
         })
         it('can be converted to Validation.Fail', function() {
           expect(leftString.toValidation().fail()).not.toBeUndefined()
         })
+        it('equals to Left with the same value', function() {
+          expect(leftString.equals(Either.Left('error dude'))).toBeTruthy()
+          expect(Left(Just(2)).equals(Left(Just(2)))).toBeTruthy()
+        })
+        it('does not equal to Rights with different values or Lefts', function() {
+          expect(leftString.equals(Either.Left('x'))).toBeFalsy()
+          expect(leftString.equals(Either.Right('error dude'))).toBeFalsy()
+        })
+        it('renders as Left(x)', function() {
+          expect(leftString.toString()).toBe('Left(error dude)')
+        })
 
     })
 
-    var person = function (forename, surname, address) {
+    var person = Monet.curry(function (forename, surname, address) {
         return forename + " " + surname + " lives at " + address
-    }.curry();
+    })
 
 
     var validateAddress = Either.Right('Dulwich, London')
