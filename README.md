@@ -25,28 +25,27 @@ The source is available at: [http://github.com/cwmyers/monet.js](http://github.c
 ## Installation
 
 Simply download and add to your html pages or we also support [bower].  You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
-
-    <script type="text/javascript" src="monet.js"></script>
-    <!-- Optionally -->
-    <script type="text/javascript" src="monet-pimp.js"></script>
-
+```html
+<script type="text/javascript" src="monet.js"></script>
+<!-- Optionally -->
+<script type="text/javascript" src="monet-pimp.js"></script>
+```
 ### Bower installation
-Using [bower]:
+```bash
+bower install monet --save
 
-	bower install monet
-
-or to install a specific version
-
-	bower install monet#0.9.0-alpha.0
+# or to install a specific version
+bower install monet#0.9.0-alpha.0
+```
 
 ### Node installation
-Using [npm]:
 
-	npm install monet
+```bash
+npm install monet --save
 
-or to install a specific version
-
-	npm install monet@0.9.0-alpha.0
+# or to install a specific version
+npm install monet@0.9.0-alpha.0
+```
 
 ## A note on types
 
@@ -163,7 +162,7 @@ The `Maybe` type is the most common way of representing *nothingness* (or the `n
 
 	var maybe = Maybe.Some(val);
 	var maybe = Maybe.None();
-	var maybe = Maybe.fromNull(val);  // none if val is null, some otherwise
+	var maybe = Maybe.fromNull(val);  // none if val is null or undefined, some otherwise
 
 or more simply with the pimped method on Object.
 
