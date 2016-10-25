@@ -166,9 +166,12 @@
     }
 
     // List monad
-
-    function List(head, tail) {
-        return new List.fn.init(head, tail)
+    function List() {
+        switch (arguments.length) {
+            case 0: return new List.fn.init()
+            case 1: return new List.fn.init(arguments[0])
+            default: return new List.fn.init(arguments[0], arguments[1])
+        }
     }
 
     root.List = List
@@ -250,15 +253,17 @@
     var Nil
 
     List.fn = List.prototype = {
-        init: function (head, tail) {
-            if (head == null) {
+        init: function () {
+            var head = arguments[0];
+            var tail = arguments[1];
+            if (arguments.length === 0) {
                 this.isNil = true
                 this.size_ = 0
             } else {
                 this.isNil = false
                 this.head_ = head
-                this.tail_ = tail == null ? Nil : tail
-                this.size_ = tail == null ? 0 : tail.size() + 1
+                this.tail_ = tail || Nil
+                this.size_ = this.tail_.size() + 1
             }
         },
         of: function (value) {
@@ -899,7 +904,7 @@
     }
 
     Reader.of = function (x) {
-        return Reader(function (_) {
+        return Reader(function (_ /* do not remove - it's for currying purposes */) {
             return x
         })
     }
@@ -1134,7 +1139,7 @@
     return Maybe.fromNull(rootGlobalObject)
         .filter(function (rootObj) { return Boolean(rootObj.notUseMonetGlobalObject) })
         .cata(function () { return assign(Monet, root) }, function (rootObj) {
-            assign(rootGlobalObject, root)
+            assign(rootObj, root)
             return Monet
         })
 }))

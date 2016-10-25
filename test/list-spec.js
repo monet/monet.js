@@ -33,6 +33,12 @@ describe("An immutable list", function () {
         ]).map(List.fromArray))).toBeTruthy()
     })
 
+    it("will return proper size on size()", function () {
+        expect(List().size()).toEqual(0)
+        expect(List("a").size()).toEqual(1)
+        expect(List("a", List("b")).size()).toEqual(2)
+        expect(List("a", List("b", List("c"))).size()).toEqual(3)
+    })
 
     it("can be converted to Array", function () {
         expect(list.toArray()).toEqual([1, 2, 3, 4])
@@ -89,6 +95,45 @@ describe("An immutable list", function () {
         })
         it("with one element", function () {
             expect(List.fromArray([List.fromArray([1, 2])]).flatten().toArray()).toEqual([1, 2])
+        })
+
+    })
+
+    describe("can be created with any values, including null and undefined", function () {
+
+        it("from array", function () {
+            expect(List.fromArray([]).size()).toEqual(0)
+            expect(List.fromArray([undefined, undefined]).size()).toEqual(2)
+            expect(List.fromArray([null, null, null]).size()).toEqual(3)
+            expect(List.fromArray([null, undefined, null, undefined]).size()).toEqual(4)
+        })
+
+        it("with basic constructor", function () {
+            expect(List().size()).toEqual(0)
+            expect(List(null).size()).toEqual(1)
+            expect(List(null, List(undefined)).size()).toEqual(2)
+            expect(List(undefined, List(null, List())).size()).toEqual(2)
+            expect(List(undefined, List(null, List(undefined))).size()).toEqual(3)
+        })
+
+    })
+
+    describe("allows mapping to any value, including", function () {
+
+        var constant = function (value) {
+            return function () {
+                return value
+            }
+        }
+
+        it("null", function () {
+            expect(List.fromArray(['a', 'b', 'c']).map(constant(null)).size()).toEqual(3)
+            expect(List.fromArray(['a', 'b', 'c']).map(constant(null)).toArray()).toEqual([null, null, null])
+        })
+
+        it("undefined", function () {
+            expect(List.fromArray(['a', 'b', 'c']).map(constant(undefined)).size()).toEqual(3)
+            expect(List.fromArray(['a', 'b', 'c']).map(constant(undefined)).toArray()).toEqual([undefined, undefined, undefined])
         })
 
     })
