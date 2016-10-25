@@ -33,13 +33,19 @@ describe("An immutable list", function () {
         ]).map(List.fromArray))).toBeTruthy()
     })
 
+    it("will return proper size on size()", function () {
+        expect(List().size()).toEqual(0)
+        expect(List("a").size()).toEqual(1)
+        expect(List("a", List("b")).size()).toEqual(2)
+        expect(List("a", List("b", List("c"))).size()).toEqual(3)
+    })
 
     it("can be converted to Array", function () {
         expect(list.toArray()).toEqual([1, 2, 3, 4])
     })
 
     it("can be created from an Array", function () {
-        expect([1, 2, 3, 4].list().equals(list)).toBeTruthy()
+        expect(List.fromArray([1, 2, 3, 4]).equals(list)).toBeTruthy()
     })
 
     it("can be mapped", function () {
@@ -68,26 +74,66 @@ describe("An immutable list", function () {
         }).toArray()).toEqual([1,2,3,4])
     })
 
-    it("will have cons available on objects", function () {
+    // TODO: Provide additional test suite for `monet-pimp`
+    xit("will have cons available on objects", function () {
         expect("fun".cons(list).toArray()).toEqual(["fun", 1, 2, 3, 4])
     })
 
     it("will be transformed by a flatMap", function () {
         expect(list.flatMap(function (e) {
-            return [e * e, e + e].list()
+            return List.fromArray([e * e, e + e])
         }).toArray()).toEqual([1, 2, 4, 4, 9, 6, 16, 8])
     })
 
     it("will be append another list", function () {
-        expect(list.append([5, 6, 7].list()).toArray()).toEqual([1, 2, 3, 4, 5, 6, 7])
+        expect(list.append(List.fromArray([5, 6, 7])).toArray()).toEqual([1, 2, 3, 4, 5, 6, 7])
     })
 
     describe("will flatten inner lists", function () {
         it("with two elements", function () {
-            expect([[1, 2].list(), [3, 4].list()].list().flatten().toArray()).toEqual([1, 2, 3, 4])
+            expect(List.fromArray([List.fromArray([1, 2]), List.fromArray([3, 4])]).flatten().toArray()).toEqual([1, 2, 3, 4])
         })
         it("with one element", function () {
-            expect([[1, 2].list()].list().flatten().toArray()).toEqual([1, 2])
+            expect(List.fromArray([List.fromArray([1, 2])]).flatten().toArray()).toEqual([1, 2])
+        })
+
+    })
+
+    describe("can be created with any values, including null and undefined", function () {
+
+        it("from array", function () {
+            expect(List.fromArray([]).size()).toEqual(0)
+            expect(List.fromArray([undefined, undefined]).size()).toEqual(2)
+            expect(List.fromArray([null, null, null]).size()).toEqual(3)
+            expect(List.fromArray([null, undefined, null, undefined]).size()).toEqual(4)
+        })
+
+        it("with basic constructor", function () {
+            expect(List().size()).toEqual(0)
+            expect(List(null).size()).toEqual(1)
+            expect(List(null, List(undefined)).size()).toEqual(2)
+            expect(List(undefined, List(null, List())).size()).toEqual(2)
+            expect(List(undefined, List(null, List(undefined))).size()).toEqual(3)
+        })
+
+    })
+
+    describe("allows mapping to any value, including", function () {
+
+        var constant = function (value) {
+            return function () {
+                return value
+            }
+        }
+
+        it("null", function () {
+            expect(List.fromArray(['a', 'b', 'c']).map(constant(null)).size()).toEqual(3)
+            expect(List.fromArray(['a', 'b', 'c']).map(constant(null)).toArray()).toEqual([null, null, null])
+        })
+
+        it("undefined", function () {
+            expect(List.fromArray(['a', 'b', 'c']).map(constant(undefined)).size()).toEqual(3)
+            expect(List.fromArray(['a', 'b', 'c']).map(constant(undefined)).toArray()).toEqual([undefined, undefined, undefined])
         })
 
     })
@@ -105,83 +151,143 @@ describe("An immutable list", function () {
     })
 
     describe("will sequence a list", function () {
+
         describe("of Maybes", function () {
+
             it("with one defined element", function () {
                 expect(List(Some("hello"), Nil).sequenceMaybe().some().toArray()).toEqual(["hello"])
             })
+
             it("with multiple defined elements", function () {
-                expect([Some(1), Some(2), Some(3)].list().sequenceMaybe().some().toArray()).toEqual([1, 2, 3])
+                expect(List.fromArray([Some(1), Some(2), Some(3)]).sequenceMaybe().some().toArray()).toEqual([1, 2, 3])
             })
-            it("with multiple defined elements (pimped)", function () {
-                expect(["1".some(), "2".some(), "3".some()].list().sequenceMaybe().some().toArray()).toEqual(["1", "2", "3"])
+
+            // TODO: Provide additional test suite for `monet-pimp`
+            xit("with multiple defined elements (pimped)", function () {
+                expect(List.fromArray(["1".some(), "2".some(), "3".some()]).sequenceMaybe().some().toArray()).toEqual(["1", "2", "3"])
             })
+
             it("with multiple defined elements and one undefined element", function () {
-                expect([Some(1), Some(2), None()].list().sequenceMaybe()).toBeNoneMaybe()
+                expect(List.fromArray([Some(1), Some(2), None()]).sequenceMaybe()).toBeNoneMaybe()
             })
+
             it("with no elements", function () {
-                expect([].list().sequenceMaybe().some().toArray()).toEqual([])
+                expect(List.fromArray([]).sequenceMaybe().some().toArray()).toEqual([])
             })
+
         })
+
         describe("of Validations", function () {
+
             it("with one success element", function () {
-                expect(List("hello".success(), Nil).sequenceValidation().success().toArray()).toEqual(["hello"])
+                expect(List(Success("hello"), Nil).sequenceValidation().success().toArray()).toEqual(["hello"])
             })
+
             it("with two success elements", function () {
-                expect(["1".success(), "2".success()].list().sequenceValidation().success().toArray()).toEqual(["1", "2"])
+                expect(List.fromArray([
+                    Success("1"),
+                    Success("2")
+                ]).sequenceValidation().success().toArray()).toEqual(["1", "2"])
             })
+
             it("with one success element and one fail (in array) element", function () {
-                expect(["happy".success(), ["sad"].fail()].list().sequenceValidation().fail()).toEqual(["sad"])
+                expect(List.fromArray([
+                    Success("happy"),
+                    Fail(["sad"])
+                ]).sequenceValidation().fail()).toEqual(["sad"])
             })
+
             it("with one success element and two failed (in array) element", function () {
-                expect(["happy".success(), ["sad"].fail(), ["really sad"].fail()].list().sequenceValidation().fail()).toEqual(["sad", "really sad"])
+                expect(List.fromArray([
+                    Success("happy"),
+                    Fail(["sad"]),
+                    Fail(["really sad"])
+                ]).sequenceValidation().fail()).toEqual(["sad", "really sad"])
             })
+
             it("with one success element and one fail (in list) element", function () {
-                expect(["happy".success(), ["sad"].list().fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad"])
+                expect(List.fromArray([
+                    Success("happy"),
+                    Fail(List.fromArray(["sad"]))
+                ]).sequenceValidation().fail().toArray()).toEqual(["sad"])
             })
+
             it("with one success element and two failed (in list) element", function () {
-                expect(["happy".success(), ["sad"].list().fail(), ["really sad"].list().fail()].list().sequenceValidation().fail().toArray()).toEqual(["sad", "really sad"])
+                expect(List.fromArray([
+                    Success("happy"),
+                    Fail(List.fromArray(["sad"])),
+                    Fail(List.fromArray(["really sad"]))
+                ]).sequenceValidation().fail().toArray()).toEqual(["sad", "really sad"])
             })
+
         })
+
         describe("of Eithers", function () {
+
             it("with one right element", function () {
-                expect(List("hello".right(), Nil).sequenceEither().right().toArray()).toEqual(["hello"])
+                expect(List(Right("hello"), Nil).sequenceEither().right().toArray()).toEqual(["hello"])
             })
+
             it("with two right elements", function () {
-                expect(["1".right(), "2".right()].list().sequenceEither().right().toArray()).toEqual(["1", "2"])
+                expect(List.fromArray([
+                    Right("1"),
+                    Right("2")
+                ]).sequenceEither().right().toArray()).toEqual(["1", "2"])
             })
+
             it("with one right element and one left element", function () {
-                expect(["happy".right(), "sad".left()].list().sequenceEither().left()).toEqual("sad")
+                expect(List.fromArray([
+                    Right("happy"),
+                    Left("sad")
+                ]).sequenceEither().left()).toEqual("sad")
             })
+
             it("with one right element and two left element", function () {
-                expect(["happy".right(), "sad".left(), "really sad".left()].list().sequenceEither().left()).toEqual("sad")
+                expect(List.fromArray([
+                    Right("happy"),
+                    Left("sad"),
+                      Left("really sad")
+                ]).sequenceEither().left()).toEqual("sad")
             })
+
             it("with one right element and one left (in list) element", function () {
-                expect(["happy".right(), ["sad"].list().left()].list().sequenceEither().left().toArray()).toEqual(["sad"])
+                expect(List.fromArray([
+                    Right("happy"),
+                    Left(List.fromArray(["sad"]))
+                ]).sequenceEither().left().toArray()).toEqual(["sad"])
             })
+
             it("with one right element and two left (in list) element", function () {
-                expect(["happy".right(), ["sad"].list().left(), ["really sad"].list().left()].list().sequenceEither().left().toArray()).toEqual(["sad"])
+                expect(List.fromArray([
+                    Right("happy"),
+                    Left(List.fromArray(["sad"])),
+                    Left(List.fromArray(["really sad"]))
+                ]).sequenceEither().left().toArray()).toEqual(["sad"])
             })
+
         })
+
         describe("of IOs", function () {
             it("with one IO", function () {
                 var io1 = IO(function () {
                     return "hi"
                 })
-                expect([io1].list().sequence(IO).run().toArray()).toEqual(["hi"])
+                expect(List.fromArray([io1]).sequence(IO).run().toArray()).toEqual(["hi"])
             })
             it("with two IOs", function () {
                 var io1 = IO(function () {
                     return "hi"
                 })
-                expect([io1, io1].list().sequence(IO).run().toArray()).toEqual(["hi", "hi"])
+                expect(List.fromArray([io1, io1]).sequence(IO).run().toArray()).toEqual(["hi", "hi"])
             })
         })
+
         describe("of Readers", function () {
             it("with one Reader", function () {
                 var r = Reader(function (config) {
                     return config.text
                 })
-                expect([r].list().sequence(Reader).run({text: "Hi Reader"}).toArray()).toEqual(["Hi Reader"])
+                expect(List.fromArray([r]).sequence(Reader).run({text: "Hi Reader"}).toArray()).toEqual(["Hi Reader"])
 
             })
             it("with two Readers", function () {
@@ -191,14 +297,17 @@ describe("An immutable list", function () {
                 var r2 = Reader(function (config) {
                     return config.name
                 })
-                expect([r1, r2].list().sequence(Reader).run({text: "Hi Reader", name: "Tom"}).toArray()).toEqual(["Hi Reader", "Tom"])
+                expect(List.fromArray([r1, r2]).sequence(Reader).run({text: "Hi Reader", name: "Tom"}).toArray()).toEqual(["Hi Reader", "Tom"])
 
             })
         })
+
         it('will render as List(x1, x2, x3)', function () {
           expect(List.fromArray([1, false, 'xyz']).inspect()).toBe('List(1, false, xyz)')
         })
+
     })
+
     describe("that is empty", function () {
         it("will return Nil on tail()", function () {
             expect(Nil.tail()).toBe(Nil)
@@ -237,18 +346,22 @@ describe("An immutable list", function () {
 
         }
         it("for an append", function () {
-            expect(list1.list().append(list2.list()).size()).toBe(size*2)
+            expect(List.fromArray(list1).append(List.fromArray(list2)).size()).toBe(size*2)
         })
     })
 
     describe("complies with FantasyLand spec for", function () {
+
         it("'of'", function () {
             expect(List.of("some val").toArray()).toEqual(["some val"])
         })
+
         describe("'chain'", function () {
+
             it("being associative", function () {
 
             })
+
         })
     })
 

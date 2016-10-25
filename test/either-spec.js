@@ -198,7 +198,8 @@ describe('An Either', function () {
 
     })
 
-    describe("will pimp an object", function () {
+    // TODO: Provide additional test suite for `monet-pimp`
+    xdescribe("will pimp an object", function () {
         it("with right", function () {
             expect("hello".right()).toBeRightWith("hello")
         })

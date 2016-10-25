@@ -30,8 +30,9 @@
   "scripts": {
     "test": "karma start && tsc -m system --noEmit --listFiles",
     "test-typings": "tsc -m system --noEmit --listFiles",
-    "tdd": "karma start --auto-watch  --no-single-run --browsers Chrome,Firefox,PhantomJS",
-    "tdd-osx": "karma start --auto-watch  --no-single-run --browsers Chrome,Firefox,PhantomJS,Safari",
+    "tdd": "karma start --auto-watch --no-single-run",
+    "tdd-full": "karma start --auto-watch --no-single-run --browsers Chrome,Firefox,PhantomJS",
+    "tdd-full-osx": "karma start --auto-watch --no-single-run --browsers Chrome,Firefox,PhantomJS,Safari",
     "minify:monet": "uglifyjs dist/monet.js -o dist/monet.min.js --source-map dist/monet.min.js.map -m -c unsafe -v --comments --keep-fnames",
     "minify:monet-pimp": "uglifyjs dist/monet-pimp.js -o dist/monet-pimp.min.js --source-map dist/monet-pimp.min.js.map -m -c unsafe -v --comments --keep-fnames",
     "minify": "npm run minify:monet && npm run minify:monet-pimp",

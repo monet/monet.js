@@ -135,8 +135,17 @@
     function cons(head, tail) {
         return tail.cons(head);
     }
-    function List(head, tail) {
-        return new List.fn.init(head, tail);
+    function List() {
+        switch (arguments.length) {
+          case 0:
+            return new List.fn.init();
+
+          case 1:
+            return new List.fn.init(arguments[0]);
+
+          default:
+            return new List.fn.init(arguments[0], arguments[1]);
+        }
     }
     root.List = List;
     var listEach = function(effectFn, l) {
@@ -197,15 +206,17 @@
     };
     var Nil;
     List.fn = List.prototype = {
-        init: function(head, tail) {
-            if (head == null) {
+        init: function() {
+            var head = arguments[0];
+            var tail = arguments[1];
+            if (arguments.length === 0) {
                 this.isNil = true;
                 this.size_ = 0;
             } else {
                 this.isNil = false;
                 this.head_ = head;
-                this.tail_ = tail == null ? Nil : tail;
-                this.size_ = tail == null ? 0 : tail.size() + 1;
+                this.tail_ = tail || Nil;
+                this.size_ = this.tail_.size() + 1;
             }
         },
         of: function(value) {
@@ -824,7 +835,7 @@
         return Return(a);
     };
     Free.liftF = function(functor) {
-        return Suspend(functor.map(Return));
+        return isFunction(functor) ? Suspend(compose(Return, functor)) : Suspend(functor.map(Return));
     };
     Free.fn = Free.prototype = {
         init: function(val, isSuspend) {
@@ -841,9 +852,9 @@
             });
         },
         bind: function(fn) {
-            return this.isSuspend ? Suspend(isFunction(this.functor) ? compose(function(free) {
+            return this.isSuspend ? isFunction(this.functor) ? Suspend(compose(function(free) {
                 return free.bind(fn);
-            }, this.functor) : this.functor.map(function(free) {
+            }, this.functor)) : Suspend(this.functor.map(function(free) {
                 return free.bind(fn);
             })) : fn(this.val);
         },
@@ -966,7 +977,7 @@
     }).cata(function() {
         return assign(Monet, root);
     }, function(rootObj) {
-        assign(rootGlobalObject, root);
+        assign(rootObj, root);
         return Monet;
     });
 });
