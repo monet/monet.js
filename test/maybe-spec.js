@@ -71,7 +71,7 @@ describe('A Maybe', function () {
             expect(someString.filter(function(a) {return a === "abcd"})).toBe(someString)
         })
         it('will run the some side of cata', function(){
-            expect(someString.cata(function() {return 'efg'}, 
+            expect(someString.cata(function() {return 'efg'},
                 function(val){ return 'hij'})).toBe('hij')
         })
         it('will compare for equality', function() {
@@ -124,7 +124,7 @@ describe('A Maybe', function () {
           expect(none.filter(function(a){return true})).toBeNoneMaybe()
         })
         it('will run the none side of cata', function(){
-            expect(none.cata(function() {return 'efg'}, 
+            expect(none.cata(function() {return 'efg'},
                 function(val){ return 'hij'})).toBe('efg')
         })
         it('will compare for equality', function() {
@@ -209,7 +209,8 @@ describe('A Maybe', function () {
         })
     })
 
-    describe("will pimp an object", function () {
+    // TODO: Provide additional test suite for `monet-pimp`
+    xdescribe("will pimp an object", function () {
         it("with some", function () {
             expect("hello".some()).toBeSomeMaybeWith("hello")
         })
@@ -235,7 +236,7 @@ describe('A Maybe', function () {
 
     describe("with a Maybe", function () {
         it("will join", function () {
-            expect(Some("hello".just()).join()).toBeSomeMaybeWith("hello")
+            expect(Some(Just("hello")).join()).toBeSomeMaybeWith("hello")
         })
     })
 

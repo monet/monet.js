@@ -21,7 +21,7 @@ describe("A Non-Empty immutable list", function () {
     }
 
 
-  it("cannot be create with zero elements", function () {
+    it("cannot be create with zero elements", function () {
         expect(function () {
             new NEL()
         }).toThrow("Cannot create an empty Non-Empty List.")
@@ -49,7 +49,7 @@ describe("A Non-Empty immutable list", function () {
     })
 
     it("can be created from a list", function () {
-        expect(NEL.fromList([1, 2, 3, 4].list()).some().toArray()).toEqual([1, 2, 3, 4])
+        expect(NEL.fromList(List.fromArray([1, 2, 3, 4])).some().toArray()).toEqual([1, 2, 3, 4])
         expect(NEL.fromList(List())).toBeNoneMaybe()
     })
 
@@ -73,8 +73,8 @@ describe("A Non-Empty immutable list", function () {
     })
 
     it("will append two NELs together", function() {
-        var n1 = NEL.fromList([1,2,3,4].list()).some()
-        var n2 = NEL.fromList([5,6,7,8].list()).some()
+        var n1 = NEL.fromList(List.fromArray([1,2,3,4])).some()
+        var n2 = NEL.fromList(List.fromArray([5,6,7,8])).some()
         var nAppend = n1.append(n2)
         expect(nAppend.isNEL).toBeTruthy()
         expect(nAppend.size()).toBe(8)
@@ -82,7 +82,7 @@ describe("A Non-Empty immutable list", function () {
     })
 
   it("will be filtered", function() {
-    var n1 = NEL.fromList([1,2,3,4,5,6,7,8].list()).some()
+    var n1 = NEL.fromList(List.fromArray([1,2,3,4,5,6,7,8])).some()
     expect(n1.filter(function(a){return a%2==0}).toArray()).toEqual([2,4,6,8])
 
   })
