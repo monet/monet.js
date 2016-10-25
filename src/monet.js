@@ -959,7 +959,9 @@
     }
 
     Free.liftF = function (functor) {
-        return Suspend(functor.map(Return))
+        return isFunction(functor) ?
+            Suspend(compose(Return, functor)) :
+            Suspend(functor.map(Return))
     }
 
     Free.fn = Free.prototype = {
@@ -977,14 +979,19 @@
             })
         },
         bind: function (fn) {
+
             return this.isSuspend ?
-                Suspend(isFunction(this.functor) ?
-                    compose(function (free) {
+
+                isFunction(this.functor) ?
+
+                    Suspend(compose(function (free) {
                         return free.bind(fn)
-                    }, this.functor) :
-                    this.functor.map(function (free) {
+                    }, this.functor)) :
+
+                    Suspend(this.functor.map(function (free) {
                         return free.bind(fn)
                     })) :
+
                 fn(this.val)
         },
         ap: function (ff) {
