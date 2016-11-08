@@ -164,6 +164,7 @@ export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>{
 
   /* Either specific */
   cata<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
+  fold<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
 
   bimap<Z, V>(leftFn: (err: E) => Z, rightFn: (val: T) => V): Either<Z, V>;
   leftMap<F>(fn: (leftVal: E) => F): Either<F, T>;
@@ -223,6 +224,7 @@ export interface Validation<E, T> extends IMonad<T>, IEquals<Validation<E, T>>{
 
   /* Validation specific */
   cata<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
+  fold<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
 
   bimap<F, V>(fnF: (fail: E) => F, fnS: (val: T) => V): Validation<F, V>;
   failMap<F>(fn: (fail: E) => F): Validation<F, T>;

@@ -62,6 +62,9 @@ describe('A Validation', function () {
             expect(successString.cata(function (val) {
                 throw "fail"
             }, successMap)).toBe("success abcd")
+            expect(successString.fold(function (val) {
+                throw "fail"
+            }, successMap)).toBe("success abcd")
         })
         it('will not be failMapped', function () {
             expect(successString.failMap(function () {
@@ -133,6 +136,9 @@ describe('A Validation', function () {
         })
         it('will run the failure side of cata', function () {
             expect(failString.cata(failMap, function (val) {
+                throw "success"
+            })).toBe("fail: error dude")
+            expect(failString.fold(failMap, function (val) {
                 throw "success"
             })).toBe("fail: error dude")
         })

@@ -65,6 +65,11 @@ describe('An Either', function () {
             }, function (val) {
                 return "right " + val
             })).toBe("right abcd")
+            expect(rightString.fold(function (val) {
+                throw "left"
+            }, function (val) {
+                return "right " + val
+            })).toBe("right abcd")
         })
         it('will not be leftMapped', function () {
             expect(rightString.leftMap(function () {
@@ -152,6 +157,11 @@ describe('An Either', function () {
         })
         it('will run the left side of cata', function () {
             expect(leftString.cata(function (val) {
+                return "left: " + val
+            }, function (val) {
+                throw "right"
+            })).toBe("left: error dude")
+            expect(leftString.fold(function (val) {
                 return "left: " + val
             }, function (val) {
                 throw "right"

@@ -683,6 +683,7 @@
             return this.toString();
         }
     };
+    Validation.prototype.fold = Validation.prototype.cata;
     Validation.fn.init.prototype = Validation.fn;
     var Semigroup = root.Semigroup = {};
     Semigroup.append = function(a, b) {
@@ -859,6 +860,7 @@
             return this.toString();
         }
     };
+    Either.prototype.fold = Either.prototype.cata;
     Either.fn.init.prototype = Either.fn;
     var reader;
     var Reader = reader = root.Reader = function(fn) {
