@@ -107,6 +107,7 @@ export interface Maybe<T> extends IMonad<T>, IEquals<Maybe<T>>{
   just(): T;
   orSome(val: T): T;
   orJust(val: T): T;
+  orNull(): T|null;
   orElse(maybe: Maybe<T>): Maybe<T>;
 
   toList(): List<T>;
@@ -127,7 +128,7 @@ interface IMaybeStatic extends IMonadStatic {
   Just: ISomeStatic;
   None: INoneStatic;
   Nothing: INoneStatic;
-  fromNull<V>(val: V): Maybe<V>;
+  fromNull<V>(val: V|null|undefined): Maybe<V>;
   unit: ISomeStatic;
   of: ISomeStatic;    // alias for unit
   pure: ISomeStatic;  // alias for unit

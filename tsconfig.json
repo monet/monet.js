@@ -1,4 +1,7 @@
 {
+  "compilerOptions": {
+     "strictNullChecks": true
+  },
   "files": [
     "test/typings/identity-spec.ts",
     "test/typings/maybe-spec.ts",

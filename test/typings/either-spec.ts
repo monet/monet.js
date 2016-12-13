@@ -30,10 +30,10 @@ function log3(message: Either<string, string>): void {
 
 interface IMessage {
     type: string;
-    payload: string;
+    payload: string|null;
 }
 
-function getMessage(msg: IMessage) {
+function getMessage(msg: IMessage|null) {
     if (msg && msg.hasOwnProperty('type')) {
         return Right<string, IMessage>(msg);
     }
@@ -57,7 +57,7 @@ log(unpacked).run();
 log2(getMessage(null).flatMap(getType)).performUnsafeIO();
 log3(getMessage({type: 'x', payload: null}).chain(getType));
 
-const nameError: string = Left('-- Adamovisch').leftMap(n => n.split(' ').shift()).left();
+const nameError: string = Left('-- Adamovisch').leftMap((n:string) => n.split(' ').shift() || "").left();
 
 const messageCopy: string = Left<number, string>(404)
     .leftMap(String)
