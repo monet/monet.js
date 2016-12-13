@@ -30,10 +30,10 @@ function log3(message: Validation<string, string>): void {
 
 interface IMessage {
     type: string;
-    payload: string;
+    payload: string|null;
 }
 
-function getMessage(msg: IMessage) {
+function getMessage(msg: IMessage|null) {
     if (msg && msg.hasOwnProperty('type')) {
         return Success<string, IMessage>(msg);
     }
@@ -56,7 +56,7 @@ log(unpacked).run();
 log2(getMessage(null).flatMap(getType)).performUnsafeIO();
 log3(getMessage({type: 'x', payload: null}).chain(getType));
 
-const nameError: string = Fail('-- Adamovisch').failMap(n => n.split(' ').shift()).fail();
+const nameError: string = Fail('-- Adamovisch').failMap(n => n.split(' ').shift() || "").fail();
 
 function getHttpError(code: number) {
     return Fail<number, string>(code);
@@ -69,7 +69,7 @@ const messageErrors: string = getHttpError(404).failMap<string>(String).failMap(
 
 const messageCopy: string = Success<number[], string>('message: Yo man!')
     .ap(Success<number[], (v: string) => string[]>(m => m.split(': ')))
-    .ap(Success<number[], (v: string[]) => string>(m => m.pop()))
+    .ap(Success<number[], (v: string[]) => string>(m => m.pop() || ""))
     .cata(e => e.join(), v => v);
 
 console.log(nameError, messageCopy, messageErrors);
