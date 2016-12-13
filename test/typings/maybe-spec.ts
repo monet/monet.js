@@ -38,10 +38,10 @@ function log3b(message: Maybe<string>): void {
 
 interface IMessage {
     type: string;
-    payload: string;
+    payload: string|null;
 }
 
-function getMessage(msg: IMessage): Maybe<IMessage> {
+function getMessage(msg: IMessage|null): Maybe<IMessage> {
     if (msg && msg.hasOwnProperty('type')) {
         return Just(msg);
     }
