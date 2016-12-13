@@ -476,6 +476,9 @@
         orSome: function(otherValue) {
             return this.isValue ? this.val : otherValue;
         },
+        orNull: function() {
+            return this.isValue ? this.val : null;
+        },
         orElse: function(maybe) {
             return this.isValue ? this : maybe;
         },
