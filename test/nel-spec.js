@@ -87,6 +87,12 @@ describe("A Non-Empty immutable list", function () {
 
   })
 
+  it("can be searched", function() {
+    var n1 = NEL.fromList(List.fromArray([1,2,3,4,5,6,7,8])).some()
+      expect(n1.find(function(a){return a%2==0})).toBeSomeMaybeWith(2)
+
+  })
+
   it("can be reversed using foldLeft and cons", function () {
     expect(nonEmptyList.foldLeft(Nil)(function (acc, e) {
       return acc.cons(e)
@@ -111,4 +117,3 @@ describe("A Non-Empty immutable list", function () {
     expect(NEL(1, NEL(false, Nil)).inspect()).toBe('NEL(1, false)')
   })
 })
-

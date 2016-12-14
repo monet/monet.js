@@ -161,6 +161,22 @@
         })
     }
 
+    function listFindC(l, fn) {
+        if (l.isNil) {
+            return Return(None())
+        }
+        var h = l.head()
+        return fn(h) ?
+            Return(Some(h)) :
+            Suspend(function () {
+                return listFindC(l.tail(), fn);
+            })
+    }
+
+    function listFind(l, fn) {
+        return listFindC(l, fn).run()
+    }
+
     function cons(head, tail) {
         return tail.cons(head)
     }
@@ -307,6 +323,9 @@
         },
         filter: function (fn) {
             return listFilter(this, fn)
+        },
+        find: function(fn) {
+            return listFind(this, fn)
         },
         flatten: function () {
             return foldRight(append, this, Nil)
@@ -475,6 +494,9 @@
         },
         filter: function (fn) {
             return listFilter(this.toList(), fn)
+        },
+        find: function(fn) {
+            return listFind(this.toList(), fn)
         },
         append: function (list2) {
             return NEL.fromList(this.toList().append(list2.toList())).some()

@@ -628,6 +628,17 @@ For example:
 	var list3 = list1.append(list2)
 	// list3.toArray() == [1,2,3,4,5,6]
 
+#### filter
+
+	List[A].filter(fn: (element: A) -> Boolean): List[A]
+
+Returns a new list, keeping only elements for which the predicate returns true.
+
+#### find
+
+	List[A].find(fn: (element: A) -> Boolean): Maybe[A]
+
+Returns a `Maybe` containing the first element for which the predicate returns true, or `None`.
 
 #### sequence
 
@@ -815,6 +826,18 @@ For example, say you wanted to add up a non empty list of integers, your initial
 	NEL[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
 
 Performs a fold right across the non empty list.  Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
+
+#### filter
+
+	NEL[A].filter(fn: (element: A) -> Boolean): List[A]
+
+Returns a new list, keeping only elements for which the predicate returns true.
+
+#### find
+
+	NEL[A].find(fn: (element: A) -> Boolean): Maybe[A]
+
+Returns a `Maybe` containing the first element for which the predicate returns true, or `None`.
 
 #### reduceLeft(function(e,acc))
 
