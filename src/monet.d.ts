@@ -275,6 +275,7 @@ export interface List<T> extends IMonad<T>, IEquals<List<T>> {
   foldRight<V>(initial: V): (fn: (element: T, acc: V) => V) => V;
 
   filter(fn: (val: T) => boolean): List<T>;
+  find(fn: (val: T) => boolean): Maybe<T>;
   cons(a: T): List<T>;
   snoc(a: T): List<T>;
   isNEL(): boolean;
