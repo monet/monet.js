@@ -9,6 +9,7 @@ const nel3 = NEL.fromList(Nil).cata(() => NEL.pure(true), a => a);
 const taken: NonEmptyList<number> = nel2.takeLeft(nel3).takeRight(nonempty);
 const tail: List<number> = taken.tail();
 const xx: NEL<number> = taken.tails().map(e => e.head()).mapTails(t => t.extract()).cojoin().bind(t => t).reverse();
+const xy: Maybe<number> = xx.find(x => x>0);
 const yy: NEL<string> = xx.cobind(t => t.ap(NonEmptyList(String))).coflatMap(t => t.extract()).head();
 const foldedL: Maybe<NEL<string>> = NonEmptyList.fromList(tail).map(t =>
     t.tails().foldLeft(yy)((acc, n) => acc.concat(n.ap(NEL(String)))));

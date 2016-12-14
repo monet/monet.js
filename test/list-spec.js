@@ -321,6 +321,9 @@ describe("An immutable list", function () {
         it("will return an empty list on filter", function() {
           expect(Nil.filter(function() {return true})).toEqual(Nil)
         })
+        it("will return an none on find", function() {
+            expect(Nil.find(function() {return true})).toBeNoneMaybe()
+        })
         it('will render as Nil', function () {
             expect(Nil.inspect()).toBe('Nil')
         })
@@ -331,10 +334,16 @@ describe("An immutable list", function () {
             expect(list.headMaybe()).toBeSomeMaybeWith(1)
 
         })
-      it("will return the elements that pass the filter", function () {
-        expect(list.filter(function (a) {return a%2==0}).toArray()).toEqual([2,4])
+        it("will return the elements that pass the filter", function () {
+            expect(list.filter(function (a) {return a%2==0}).toArray()).toEqual([2,4])
 
-      })
+        })
+        it("will return the first elements that pass the predicate", function () {
+            expect(list.find(function (a) {return a%2==0})).toBeSomeMaybeWith(2)
+        })
+        it("will return none if no element pass the predicate", function () {
+            expect(list.find(function (a) {return a<0})).toBeNoneMaybe()
+        })
     })
 
     describe("that is huge, must not blow the stack", function () {
@@ -347,6 +356,9 @@ describe("An immutable list", function () {
         }
         it("for an append", function () {
             expect(List.fromArray(list1).append(List.fromArray(list2)).size()).toBe(size*2)
+        })
+        it("for a find", function () {
+            expect(List.fromArray(list1).find(function (x) { return false})).toBeNoneMaybe()
         })
     })
 
