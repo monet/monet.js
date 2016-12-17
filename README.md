@@ -248,6 +248,12 @@ Will return the containing value inside the `Maybe` or return the supplied value
 	Maybe.none().orSome("bye")
 	=> "bye"
 
+#### orNull
+
+	Maybe[A].orNull(): A | null
+
+Returns the value inside the `Maybe` if it is a Some otherwise returns null.
+
 #### orElse
 
 	Maybe[A].orElse(Maybe[A]): Maybe[A]
