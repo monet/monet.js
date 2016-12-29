@@ -80,6 +80,21 @@ describe('A Maybe', function () {
         it ('will return true on a contains with the right value', function() {
             expect(someString.contains('abcd')).toBe(true)
         })
+        it('will run the function supplied to fold', function () {
+            expect(someString.fold('efg')(function (val) {
+                return 'hij'
+            })).toBe('hij')
+        })
+        it('can be reduced using foldLeft', function () {
+            expect(someString.foldLeft('efg')(function (acc, val) {
+                return acc + val
+            })).toBe('efgabcd')
+        })
+        it('can be reduced using foldRight', function () {
+            expect(someString.foldRight('efg')(function (val, acc) {
+                return acc + val
+            })).toBe('efgabcd')
+        })
         it('will run the some side of cata', function(){
             expect(someString.cata(function() {return 'efg'},
                 function(val){ return 'hij'})).toBe('hij')
@@ -145,6 +160,21 @@ describe('A Maybe', function () {
         })
         it ('will return false on a contains', function() {
             expect(Maybe.None().contains('test')).toBe(false)
+        })
+        it('will return the default value supplied to fold', function () {
+            expect(none.fold('efg')(function (val) {
+                throw 'none has no value'
+            })).toBe('efg')
+        })
+        it('can be reduced using foldLeft', function () {
+            expect(none.foldLeft('efg')(function (acc, val) {
+                throw 'none should have nothing to accumulate'
+            })).toBe('efg')
+        })
+        it('can be reduced using foldRight', function () {
+            expect(none.foldRight('efg')(function (val, acc) {
+                throw 'none should have nothing to accumulate'
+            })).toBe('efg')
         })
         it('will run the none side of cata', function(){
             expect(none.cata(function() {return 'efg'},

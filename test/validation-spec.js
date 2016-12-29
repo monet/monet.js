@@ -58,6 +58,16 @@ describe('A Validation', function () {
                 return Validation.fail("big fail")
             })).toBeFailureWith("big fail")
         })
+        it('can be reduced using foldLeft', function () {
+            expect(successString.foldLeft("efgh")(function (acc, val) {
+                return acc + val
+            })).toBe("efghabcd")
+        })
+        it('can be reduced using foldRight', function () {
+            expect(successString.foldRight("efgh")(function (val, acc) {
+                return acc + val
+            })).toBe("efghabcd")
+        })
         it('will run the success side of cata', function () {
             expect(successString.cata(function (val) {
                 throw "fail"
@@ -133,6 +143,16 @@ describe('A Validation', function () {
             expect(function () {
                 return failString.success()
             }).toThrow('Illegal state. Cannot call success() on a Validation.fail')
+        })
+        it('can be reduced using foldLeft', function () {
+            expect(failString.foldLeft("efgh")(function (acc, val) {
+                throw "fail should have nothing to accumulate"
+            })).toBe("efgh")
+        })
+        it('can be reduced using foldRight', function () {
+            expect(failString.foldRight("efgh")(function (val, acc) {
+                throw "fail should have nothing to accumulate"
+            })).toBe("efgh")
         })
         it('will run the failure side of cata', function () {
             expect(failString.cata(failMap, function (val) {

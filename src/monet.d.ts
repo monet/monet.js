@@ -19,6 +19,12 @@ interface Applicative<T> {
   ap<V>(afn: Applicative<(val: T) => V>): Applicative<T>
 }
 
+/* Typeclass for traversables */
+export interface ITraversable<T> {
+  foldLeft<V>(initial: V): (fn: (acc: V, val: T) => V) => V;
+  foldRight<V>(initial: V): (fn: (val: T, acc: V) => V) => V;
+}
+
 /****************************************************************
  * Basic Monad Interface
  */
@@ -82,7 +88,7 @@ export var Identity: IIdentityStatic;
  * Maybe
  */
 
-export interface Maybe<T> extends IMonad<T>, IEquals<Maybe<T>>{
+export interface Maybe<T> extends IMonad<T>, IEquals<Maybe<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
   flatMap<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
@@ -149,7 +155,7 @@ export var Maybe: IMaybeStatic;
  * Either
  */
 
-export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>{
+export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
   flatMap<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
@@ -209,7 +215,7 @@ interface IValidationAcc extends Function {
   (): IValidationAcc;
 }
 
-export interface Validation<E, T> extends IMonad<T>, IEquals<Validation<E, T>>{
+export interface Validation<E, T> extends IMonad<T>, IEquals<Validation<E, T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
   flatMap<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
@@ -270,7 +276,7 @@ export var Fail: IFailStatic;
  * List
  */
 
-export interface List<T> extends IMonad<T>, IEquals<List<T>> {
+export interface List<T> extends IMonad<T>, IEquals<List<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => List<V>): List<V>;
   flatMap<V>(fn: (val: T) => List<V>): List<V>;
@@ -283,10 +289,7 @@ export interface List<T> extends IMonad<T>, IEquals<List<T>> {
   /* Inherited from Applicative */
   ap<V>(listFn: List<(val: T) => V>): List<V>;
 
-  /* Validation specific */
-  foldLeft<V>(initial: V): (fn: (acc: V, element: T) => V) => V;
-  foldRight<V>(initial: V): (fn: (element: T, acc: V) => V) => V;
-
+  /* List specific */
   filter(fn: (val: T) => boolean): List<T>;
   find(fn: (val: T) => boolean): Maybe<T>;
   cons(a: T): List<T>;
@@ -343,7 +346,7 @@ export var Nil: Nil;
  * NEL
  */
 
-export interface NEL<T> extends IMonad<T>, IEquals<NEL<T>> {
+export interface NEL<T> extends IMonad<T>, IEquals<NEL<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => NEL<V>): NEL<V>;
   flatMap<V>(fn: (val: T) => NEL<V>): NEL<V>;
@@ -364,9 +367,7 @@ export interface NEL<T> extends IMonad<T>, IEquals<NEL<T>> {
   /* Inherited from Applicative */
   ap<V>(listFn: NEL<(val: T) => V>): NEL<V>;
 
-  /* Validation specific */
-  foldLeft<V>(initial: V): (fn: (acc: V, element: T) => V) => V;
-  foldRight<V>(initial: V): (fn: (element: T, acc: V) => V) => V;
+  /* NEL specific */
   reduceLeft(fn: (acc: T, element: T) => T): T;
 
   filter(fn: (val: T) => boolean): List<T>;

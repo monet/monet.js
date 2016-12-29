@@ -59,6 +59,16 @@ describe('An Either', function () {
                 return Either.Left("big left")
             })).toBeLeftWith("big left")
         })
+        it('can be reduced using foldLeft', function () {
+            expect(rightString.foldLeft("efgh")(function (acc, val) {
+                return acc + val
+            })).toBe("efghabcd")
+        })
+        it('can be reduced using foldRight', function () {
+            expect(rightString.foldRight("efgh")(function (val, acc) {
+                return acc + val
+            })).toBe("efghabcd")
+        })
         it('will run the right side of cata', function () {
             expect(rightString.cata(function (val) {
                 throw "left"
@@ -154,6 +164,16 @@ describe('An Either', function () {
         })
         it('will return false on contains', function() {
             expect(leftString.contains('error dude')).toBe(false)
+        })
+        it('can be reduced using foldLeft', function () {
+            expect(leftString.foldLeft("efgh")(function (acc, val) {
+                throw "left should have nothing to accumulate"
+            })).toBe("efgh")
+        })
+        it('can be reduced using foldRight', function () {
+            expect(leftString.foldRight("efgh")(function (val, acc) {
+                throw "left should have nothing to accumulate"
+            })).toBe("efgh")
         })
         it('will run the left side of cata', function () {
             expect(leftString.cata(function (val) {

@@ -565,6 +565,12 @@
                 return self.isSome() ? fn(self.val) : defaultValue;
             };
         },
+        foldLeft: function(initialValue) {
+            return this.toList().foldLeft(initialValue);
+        },
+        foldRight: function(initialValue) {
+            return this.toList().foldRight(initialValue);
+        },
         cata: function(none, some) {
             return this.isSome() ? some(this.val) : none();
         },
@@ -644,6 +650,12 @@
                 return x;
             };
             return this.isSuccessValue ? Validation.success(x) : this;
+        },
+        foldLeft: function(initialValue) {
+            return this.toMaybe().toList().foldLeft(initialValue);
+        },
+        foldRight: function(initialValue) {
+            return this.toMaybe().toList().foldRight(initialValue);
         },
         cata: function(fail, success) {
             return this.isSuccessValue ? success(this.val) : fail(this.val);
@@ -817,6 +829,12 @@
             } else {
                 return this.value;
             }
+        },
+        foldLeft: function(initialValue) {
+            return this.toMaybe().toList().foldLeft(initialValue);
+        },
+        foldRight: function(initialValue) {
+            return this.toMaybe().toList().foldRight(initialValue);
         },
         cata: function(leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value);
