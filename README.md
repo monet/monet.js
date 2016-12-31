@@ -286,6 +286,12 @@ Here is an example for creating a string out of the result of a couple of `Maybe
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
 
+#### contains
+
+    Maybe[A].contains(val: A): Boolean
+
+Returns true if the `Maybe` is a Some containing the given value.
+
 #### toEither
 
 	Maybe[A].toEither(fail: E): Either[E,A]
@@ -389,6 +395,12 @@ Returns the value in the right side, otherwise throws an exception.
 	Either[E,A].left(): E
 
 Returns the value in the left side, otherwise throws an exception.
+
+#### contains
+
+    Either[E,A].contains(val: A): Boolean
+
+Returns true if the `Either` is a right containing the given value.
 
 #### toValidation
 
@@ -508,6 +520,12 @@ For example:
 	}, function(success) {
 		return "yay! " + success
 	})
+
+#### contains
+
+    Validation[E,A].contains(val: A): Boolean
+
+Returns true if the `Validation` is a success containing the given value.
 
 #### toEither
 
@@ -645,6 +663,12 @@ Returns a new list, keeping only elements for which the predicate returns true.
 	List[A].find(fn: (element: A) -> Boolean): Maybe[A]
 
 Returns a `Maybe` containing the first element for which the predicate returns true, or `None`.
+
+#### contains
+
+    List[A].contains(val: A): Boolean
+
+Returns true if the `List` contains the given value.
 
 #### sequence
 
@@ -844,6 +868,12 @@ Returns a new list, keeping only elements for which the predicate returns true.
 	NEL[A].find(fn: (element: A) -> Boolean): Maybe[A]
 
 Returns a `Maybe` containing the first element for which the predicate returns true, or `None`.
+
+#### contains
+
+    NEL[A].contains(val: A): Boolean
+
+Returns true if the `NonEmptyList` contains the given value.
 
 #### reduceLeft(function(e,acc))
 

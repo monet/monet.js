@@ -64,4 +64,6 @@ const messageCopy: string = Left<number, string>(404)
     .ap(unpacked.map(m => p => p + ' ' + m))
     .cata(e => e, v => v);
 
+const contains: boolean = wrappedGreeting.contains("test");
+
 console.log(nameError, messageCopy);

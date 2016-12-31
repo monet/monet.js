@@ -324,6 +324,9 @@ describe("An immutable list", function () {
         it("will return an none on find", function() {
             expect(Nil.find(function() {return true})).toBeNoneMaybe()
         })
+        it("will return false on contains", function() {
+            expect(Nil.contains("anything")).toEqual(false)
+        })
         it('will render as Nil', function () {
             expect(Nil.inspect()).toBe('Nil')
         })
@@ -343,6 +346,12 @@ describe("An immutable list", function () {
         })
         it("will return none if no element pass the predicate", function () {
             expect(list.find(function (a) {return a<0})).toBeNoneMaybe()
+        })
+        it("will return false on contains on a value not present in the list", function () {
+            expect(list.contains(-1)).toBe(false)
+        })
+        it("will return true on contains on a value present in the list", function () {
+            expect(list.contains(2)).toBe(true)
         })
     })
 

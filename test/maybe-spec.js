@@ -71,6 +71,12 @@ describe('A Maybe', function () {
         it('will return a some on a successful filter', function() {
             expect(someString.filter(function(a) {return a === "abcd"})).toBe(someString)
         })
+        it ('will return false on a contains with the wrong value', function() {
+            expect(someString.contains('test')).toBe(false)
+        })
+        it ('will return true on a contains with the right value', function() {
+            expect(someString.contains('abcd')).toBe(true)
+        })
         it('will run the some side of cata', function(){
             expect(someString.cata(function() {return 'efg'},
                 function(val){ return 'hij'})).toBe('hij')
@@ -124,6 +130,9 @@ describe('A Maybe', function () {
         })
         it('will always return a None on filter', function() {
           expect(none.filter(function(a){return true})).toBeNoneMaybe()
+        })
+        it ('will return false on a contains', function() {
+            expect(Maybe.None().contains('test')).toBe(false)
         })
         it('will run the none side of cata', function(){
             expect(none.cata(function() {return 'efg'},

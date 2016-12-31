@@ -70,6 +70,12 @@ describe('A Validation', function () {
                 throw "fail"
             }, successMap)).toBeSuccessWith("success abcd")
         })
+        it('does not contain another value', function() {
+            expect(successString.contains('x')).toBe(false)
+        })
+        it('does contain its value', function() {
+            expect(successString.contains('abcd')).toBe(true)
+        })
         it('will render as Success(x)', function () {
           expect(successString.inspect()).toBe('Success(abcd)')
         })
@@ -123,7 +129,9 @@ describe('A Validation', function () {
                 throw "success side"
             })).toBeFailureWith("fail: error dude")
         })
-
+        it('will return false on contains', function() {
+            expect(failString.contains('error dude')).toBe(false)
+        })
         it('can be failMapped', function() {
             expect(failString.failMap(failMap)).toBeFailureWith("fail: error dude")
         })

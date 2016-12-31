@@ -72,4 +72,6 @@ const messageCopy: string = Success<number[], string>('message: Yo man!')
     .ap(Success<number[], (v: string[]) => string>(m => m.pop() || ""))
     .cata(e => e.join(), v => v);
 
+const contains: boolean = wrappedGreeting.contains("test");
+
 console.log(nameError, messageCopy, messageErrors);
