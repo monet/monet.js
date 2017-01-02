@@ -7,13 +7,15 @@
  * https://cwmyers.github.com/monet.js
  */
 
+/* global define */
+
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         define(factory)
     } else if (typeof module === 'object' && module.exports) {
         module.exports = factory()
     } else {
-        root.notUseMonetGlobalObject = !root.useMonetGlobalObject;
+        root.notUseMonetGlobalObject = !root.useMonetGlobalObject
         root.Monet = factory(root)
     }
 }(this, function (rootGlobalObject) {
@@ -134,16 +136,16 @@
     function areEqual(a, b) {
         // a !== a && b !== b is about NaN
         if (a === b || (a !== a && b !== b)) {
-            return true;
+            return true
         }
         // optimisation to avoid function checks
         if (!a || !b) {
-            return false;
+            return false
         }
         if (isFunction(a.equals) && isFunction(b.equals)) {
-            return a.equals(b);
+            return a.equals(b)
         }
-        return false;
+        return false
     }
 
     // List and NEL monads commons
@@ -185,7 +187,7 @@
         return fn(h) ?
             Return(Some(h)) :
             Suspend(function () {
-                return listFindC(l.tail(), fn);
+                return listFindC(l.tail(), fn)
             })
     }
 
@@ -201,7 +203,7 @@
         return areEqual(h, val) ?
             Return(true) :
             Suspend(function () {
-                return listContainsC(l.tail(), val);
+                return listContainsC(l.tail(), val)
             })
     }
 
@@ -302,8 +304,8 @@
 
     List.fn = List.prototype = {
         init: function () {
-            var head = arguments[0];
-            var tail = arguments[1];
+            var head = arguments[0]
+            var tail = arguments[1]
             if (arguments.length === 0) {
                 this.isNil = true
                 this.size_ = 0
@@ -550,14 +552,14 @@
             return this.size_
         },
         forEach: function (fn) {
-            return this.toList().forEach(fn);
+            return this.toList().forEach(fn)
         },
         isNEL: trueFunction,
         toString: function () {
-          return 'NEL(' + this.toArray().join(', ') + ')'
+            return 'NEL(' + this.toArray().join(', ') + ')'
         },
         inspect: function () {
-          return this.toString()
+            return this.toString()
         }
     }
 
@@ -584,13 +586,11 @@
         return Some(a)
     }
 
-    var Just
-    var Some = Just = Maybe.Just = Maybe.Some = root.Some = root.Just = function (val) {
+    var Some = Maybe.Just = Maybe.Some = root.Some = root.Just = function (val) {
         return new Maybe.fn.init(true, val)
     }
 
-    var Nothing
-    var None = Nothing = Maybe.Nothing = Maybe.None = root.None = function () {
+    var None = Maybe.Nothing = Maybe.None = root.None = function () {
         return new Maybe.fn.init(false, null)
     }
 
@@ -678,7 +678,7 @@
             })
         },
         contains: function (val) {
-            return this.isSome() ? areEqual(this.val, val) : false;
+            return this.isSome() ? areEqual(this.val, val) : false
         },
         forEach: function (fn) {
             this.cata(noop, fn)
@@ -805,7 +805,7 @@
             return (this.isSuccess() ? 'Success(' : 'Fail(') + this.val + ')'
         },
         inspect: function () {
-          return this.toString()
+            return this.toString()
         }
     }
 
@@ -829,8 +829,7 @@
         throw 'Couldn\'t find a semigroup appender in the environment, please specify your own append function'
     }
 
-    var monadT, monadTransformer, MonadTransformer
-    var MonadT = monadT = monadTransformer = MonadTransformer = root.monadTransformer = root.MonadT = root.monadT = function (monad) {
+    var MonadT = root.monadTransformer = root.MonadT = root.monadT = function (monad) {
         return new MonadT.fn.init(monad)
     }
 
@@ -843,17 +842,17 @@
             this.monad = monad
         },
         map: function (fn) {
-            return monadT(this.monad.map(function (v) {
+            return MonadT(this.monad.map(function (v) {
                 return v.map(fn)
             }))
         },
         bind: function (fn) {
-            return monadT(this.monad.map(function (v) {
+            return MonadT(this.monad.map(function (v) {
                 return v.flatMap(fn)
             }))
         },
         ap: function (monadWithFn) {
-            return monadT(this.monad.flatMap(function (v) {
+            return MonadT(this.monad.flatMap(function (v) {
                 return monadWithFn.perform().map(function (v2) {
                     return v.ap(v2)
                 })
@@ -866,8 +865,7 @@
 
     MonadT.fn.init.prototype = MonadT.fn
 
-    var io
-    var IO = io = root.IO = root.io = function (effectFn) {
+    var IO = root.IO = root.io = function (effectFn) {
         return new IO.fn.init(effectFn)
     }
 
@@ -991,7 +989,7 @@
             )
         },
         contains: function (val) {
-            return this.isRight() ? areEqual(this.value, val) : false;
+            return this.isRight() ? areEqual(this.value, val) : false
         },
         bimap: function (leftFn, rightFn) {
             return this.isRightValue ? this.map(rightFn) : this.leftMap(leftFn)
@@ -1018,12 +1016,12 @@
 
     Either.fn.init.prototype = Either.fn
 
-    var reader
-    var Reader = reader = root.Reader = function (fn) {
+    var Reader = root.Reader = function (fn) {
         return new Reader.fn.init(fn)
     }
 
     Reader.of = function (x) {
+        // eslint-disable-next-line no-unused-vars
         return Reader(function (_ /* do not remove - it's for currying purposes */) {
             return x
         })
@@ -1232,7 +1230,8 @@
 
     function addApplicativeOps(type) {
         type.prototype.takeLeft = function (m) {
-            return apply2(this, m, function (a, b) {
+            // eslint-disable-next-line no-unused-vars
+            return apply2(this, m, function (a, b  /* do not remove `b` - it's for currying purposes */) {
                 return a
             })
         }

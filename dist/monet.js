@@ -491,12 +491,10 @@
     Maybe.of = function(a) {
         return Some(a);
     };
-    var Just;
-    var Some = Just = Maybe.Just = Maybe.Some = root.Some = root.Just = function(val) {
+    var Some = Maybe.Just = Maybe.Some = root.Some = root.Just = function(val) {
         return new Maybe.fn.init(true, val);
     };
-    var Nothing;
-    var None = Nothing = Maybe.Nothing = Maybe.None = root.None = function() {
+    var None = Maybe.Nothing = Maybe.None = root.None = function() {
         return new Maybe.fn.init(false, null);
     };
     Maybe.toList = function(maybe) {
@@ -710,8 +708,7 @@
         }
         throw "Couldn't find a semigroup appender in the environment, please specify your own append function";
     };
-    var monadT, monadTransformer, MonadTransformer;
-    var MonadT = monadT = monadTransformer = MonadTransformer = root.monadTransformer = root.MonadT = root.monadT = function(monad) {
+    var MonadT = root.monadTransformer = root.MonadT = root.monadT = function(monad) {
         return new MonadT.fn.init(monad);
     };
     MonadT.of = function(m) {
@@ -722,17 +719,17 @@
             this.monad = monad;
         },
         map: function(fn) {
-            return monadT(this.monad.map(function(v) {
+            return MonadT(this.monad.map(function(v) {
                 return v.map(fn);
             }));
         },
         bind: function(fn) {
-            return monadT(this.monad.map(function(v) {
+            return MonadT(this.monad.map(function(v) {
                 return v.flatMap(fn);
             }));
         },
         ap: function(monadWithFn) {
-            return monadT(this.monad.flatMap(function(v) {
+            return MonadT(this.monad.flatMap(function(v) {
                 return monadWithFn.perform().map(function(v2) {
                     return v.ap(v2);
                 });
@@ -743,8 +740,7 @@
         }
     };
     MonadT.fn.init.prototype = MonadT.fn;
-    var io;
-    var IO = io = root.IO = root.io = function(effectFn) {
+    var IO = root.IO = root.io = function(effectFn) {
         return new IO.fn.init(effectFn);
     };
     IO.of = function(a) {
@@ -880,8 +876,7 @@
     };
     Either.prototype.fold = Either.prototype.cata;
     Either.fn.init.prototype = Either.fn;
-    var reader;
-    var Reader = reader = root.Reader = function(fn) {
+    var Reader = root.Reader = function(fn) {
         return new Reader.fn.init(fn);
     };
     Reader.of = function(x) {

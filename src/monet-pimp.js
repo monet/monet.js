@@ -9,8 +9,10 @@
  * https://cwmyers.github.com/monet.js
  */
 
+/* global Some, Validation, Either, List, Monet, IO */
+
 (function () {
-    "use strict";
+    'use strict'
 
     Object.prototype.cons = function (list) {
         return list.cons(this)
@@ -60,7 +62,7 @@
     }
 
     Function.prototype.io1 = function () { // TODO: TEST IT !!!!
-        var f = this;
+        var f = this
         return function (x) {
             return IO(function () {
                 return f(x)
@@ -74,4 +76,4 @@
 
     return this
 
-})();
+})()
