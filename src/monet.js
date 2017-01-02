@@ -130,6 +130,21 @@
         return this.bind(compose(this.of, fn))
     }
 
+    function areEqual(a, b) {
+        // a !== a && b !== b is about NaN
+        if (a === b || (a !== a && b !== b)) {
+            return true;
+        }
+        // optimisation to avoid function checks
+        if (!a || !b) {
+            return false;
+        }
+        if (isFunction(a.equals) && isFunction(b.equals)) {
+            return a.equals(b);
+        }
+        return false;
+    }
+
     // List and NEL monads commons
 
     function listEquals(list1, list2) {
@@ -182,7 +197,7 @@
             return Return(false)
         }
         var h = l.head()
-        return h === val ?
+        return areEqual(h, val) ?
             Return(true) :
             Suspend(function () {
                 return listContainsC(l.tail(), val);
@@ -650,7 +665,7 @@
             })
         },
         contains: function (val) {
-            return this.isSome() ? this.val === val : false;
+            return this.isSome() ? areEqual(this.val, val) : false;
         },
         toString: function() {
             return this.isSome() ? 'Just(' + this.val + ')' : 'Nothing'
@@ -747,7 +762,7 @@
             )
         },
         contains: function (val) {
-            return this.isSuccessValue ? this.val === val : false
+            return this.isSuccessValue ? areEqual(this.val, val) : false
         },
         toMaybe: function () {
             return this.isSuccess() ? Some(this.val) : None()
@@ -930,7 +945,7 @@
             )
         },
         contains: function (val) {
-            return this.isRight() ? this.value === val : false;
+            return this.isRight() ? areEqual(this.value, val) : false;
         },
         bimap: function (leftFn, rightFn) {
             return this.isRightValue ? this.map(rightFn) : this.leftMap(leftFn)
@@ -1114,7 +1129,7 @@
             return (isFunction(other.get) && equals(this.get())(other.get()))
         },
         contains: function (val) {
-            return this.val === val
+            return areEqual(this.val, val)
         },
         toString: function () {
             return 'Identity(' + this.val + ')'
