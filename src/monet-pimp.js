@@ -9,10 +9,23 @@
  * https://cwmyers.github.com/monet.js
  */
 
-/* global Some, Validation, Either, List, Monet, IO */
+/* global Reader, Some, Validation, Either, List, Monet, IO */
+/* eslint-disable no-extend-native */
 
 (function () {
     'use strict'
+
+    function wrapReader(fn, args) {
+        var newArgs = args || []
+        return function () {
+            var args1 = newArgs.concat(Array.prototype.slice.call(arguments))
+            return args1.length + 1 >= fn.length ?
+                Reader(function (c) {
+                    return fn.apply(null, args1.concat(c))
+                }) :
+                wrapReader(fn, args1)
+        }
+    }
 
     Object.prototype.cons = function (list) {
         return list.cons(this)
@@ -71,9 +84,7 @@
     }
 
     Function.prototype.reader = function () { // TODO: TEST IT !!!!
-        return Monet.wrapReader(this)
+        return wrapReader(this)
     }
 
-    return this
-
-})()
+}())
