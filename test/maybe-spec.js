@@ -1,4 +1,5 @@
 describe('A Maybe', function () {
+    var sideEffectsReceiver;
     var someString;
     var none;
 
@@ -16,6 +17,8 @@ describe('A Maybe', function () {
         });
         someString = Maybe.Some("abcd");
         none = Maybe.None();
+        sideEffectsReceiver = { setVal: function(val) {} };
+        spyOn(sideEffectsReceiver, 'setVal');
     });
 
     afterEach(function () {
@@ -89,14 +92,13 @@ describe('A Maybe', function () {
             expect(someString.inspect()).toBe('Just(abcd)')
         })
         it('will execute side-effects on forEach', function() {
-            var t = []
-            someString.forEach(function (x) {t.push(x)})
-            expect(t).toEqual(['abcd'])
+            someString.forEach(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledWith('abcd')
         })
         it('will not invoke the orElseRun callback', function () {
-            var invoked = false
-            someString.orElseRun(function () { invoked = true })
-            expect(invoked).toBe(false)
+            someString.orElseRun(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
     })
 
@@ -156,14 +158,12 @@ describe('A Maybe', function () {
             expect(none.inspect()).toBe('Nothing')
         })
         it('will invoke side-effects on orElseRun', function() {
-            var invoked = false
-            none.orElseRun(function () { invoked = true })
-            expect(invoked).toBe(true)
+            none.orElseRun(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
         })
         it('will not invoke the forEach callback', function () {
-            var invoked = false
-            none.forEach(function (v) { invoked = true })
-            expect(invoked).toBe(false)
+            none.forEach(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
     })
 

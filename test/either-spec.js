@@ -3,6 +3,7 @@
  */
 
 describe('An Either', function () {
+    var sideEffectsReceiver = null;
 
     beforeEach(function () {
         jasmine.addMatchers({
@@ -19,6 +20,8 @@ describe('An Either', function () {
                 return actual.left() == expected;
             })
         });
+        sideEffectsReceiver = { setVal: function(val) {} };
+        spyOn(sideEffectsReceiver, 'setVal');
     });
 
     var rightString = Either.Right("abcd")
@@ -99,14 +102,13 @@ describe('An Either', function () {
           expect(rightString.toString()).toBe('Right(abcd)')
         })
         it('will execute side-effects on forEach', function() {
-          var t = []
-          rightString.forEach(function (x) {t.push(x)})
-          expect(t).toEqual(['abcd'])
+          rightString.forEach(sideEffectsReceiver.setVal)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledWith('abcd')
         })
         it('will not invoke the forEachLeft callback', function () {
-          var invoked = false
-          rightString.forEachLeft(function (x) { invoked = true })
-          expect(invoked).toBe(false)
+          rightString.forEachLeft(sideEffectsReceiver.setVal)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
     })
 
@@ -186,14 +188,13 @@ describe('An Either', function () {
           expect(leftString.toString()).toBe('Left(error dude)')
         })
         it('will invoke side-effects on forEachLeft', function() {
-          var t = []
-          leftString.forEachLeft(function (v) { t.push(v) })
-          expect(t).toEqual(['error dude'])
+          leftString.forEachLeft(sideEffectsReceiver.setVal)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledWith('error dude')
         })
         it('will not invoke the forEach callback', function () {
-          var invoked = false
-          leftString.forEach(function (v) { invoked = true })
-          expect(invoked).toBe(false)
+          leftString.forEach(sideEffectsReceiver.setVal)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
 
     })

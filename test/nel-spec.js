@@ -1,4 +1,12 @@
 describe("A Non-Empty immutable list", function () {
+    var sideEffectsReceiver = null;
+
+    function expectCalls(spiedCall, values) {
+        expect(spiedCall.calls.all().length).toEqual(values.length)
+        for (var i=0;i<values.length;i++) {
+            expect(spiedCall.calls.all()[i].args[0]).toEqual(values[i])
+        }
+    }
 
     beforeEach(function () {
         jasmine.addMatchers({
@@ -12,6 +20,8 @@ describe("A Non-Empty immutable list", function () {
                 return actual.isNone();
             })
         });
+        sideEffectsReceiver = { setVal: function(val) {} };
+        spyOn(sideEffectsReceiver, 'setVal');
     });
 
     var nonEmptyList = NEL(1, List(2, List(3, List(4, Nil))))
@@ -49,9 +59,8 @@ describe("A Non-Empty immutable list", function () {
     })
 
     it("allows side-effects with the forEach function", function() {
-        var test = []
-        nonEmptyList.forEach(function (v) {test.push(v+1)});
-        expect(test).toEqual([2,3,4,5])
+        nonEmptyList.forEach(sideEffectsReceiver.setVal);
+        expectCalls(sideEffectsReceiver.setVal, [1,2,3,4])
     })
 
     it("can be created from a list", function () {

@@ -1,4 +1,5 @@
 describe('A Validation', function () {
+    var sideEffectsReceiver = null;
 
     beforeEach(function () {
         jasmine.addMatchers({
@@ -15,6 +16,8 @@ describe('A Validation', function () {
                 return actual.fail() == expected
             })
         });
+        sideEffectsReceiver = { setVal: function(val) {} };
+        spyOn(sideEffectsReceiver, 'setVal');
     });
     var successString = Validation.success("abcd")
     var successMap = function (val) {
@@ -80,14 +83,13 @@ describe('A Validation', function () {
           expect(successString.inspect()).toBe('Success(abcd)')
         })
         it('will execute side-effects on forEach', function() {
-          var t = []
-          successString.forEach(function (x) {t.push(x)})
-          expect(t).toEqual(['abcd'])
+          successString.forEach(sideEffectsReceiver.setVal)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledWith('abcd')
         })
         it('will not invoke the forEachFail callback', function () {
-          var invoked = false
-          successString.forEachFail(function (x) { invoked = true })
-          expect(invoked).toBe(false)
+          successString.forEachFail(sideEffectsReceiver.setVal)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
     })
 
@@ -149,14 +151,13 @@ describe('A Validation', function () {
             expect(failString.inspect()).toBe('Fail(error dude)')
         })
         it('will invoke side-effects on forEachFail', function() {
-            var t = []
-            failString.forEachFail(function (v) { t.push(v) })
-            expect(t).toEqual(["error dude"])
+            failString.forEachFail(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledWith("error dude")
         })
         it('will not invoke the forEach callback', function () {
-            var invoked = false
-            failString.forEach(function (v) { invoked = true })
-            expect(invoked).toBe(false)
+            failString.forEach(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
 
     })
