@@ -130,6 +130,21 @@
         return this.bind(compose(this.of, fn))
     }
 
+    function areEqual(a, b) {
+        // a !== a && b !== b is about NaN
+        if (a === b || (a !== a && b !== b)) {
+            return true;
+        }
+        // optimisation to avoid function checks
+        if (!a || !b) {
+            return false;
+        }
+        if (isFunction(a.equals) && isFunction(b.equals)) {
+            return a.equals(b);
+        }
+        return false;
+    }
+
     // List and NEL monads commons
 
     function listEquals(list1, list2) {
@@ -175,6 +190,22 @@
 
     function listFind(l, fn) {
         return listFindC(l, fn).run()
+    }
+
+    function listContainsC(l, val) {
+        if (l.isNil) {
+            return Return(false)
+        }
+        var h = l.head()
+        return areEqual(h, val) ?
+            Return(true) :
+            Suspend(function () {
+                return listContainsC(l.tail(), val);
+            })
+    }
+
+    function listContains(l, val) {
+        return listContainsC(l, val).run()
     }
 
     function cons(head, tail) {
@@ -342,6 +373,9 @@
         each: function (effectFn) {
             listEach(effectFn, this)
         },
+        contains: function (val) {
+            return listContains(this, val)
+        },
         // transforms a list of Maybes to a Maybe list
         sequenceMaybe: function () {
             return sequence(this, Maybe)
@@ -495,8 +529,11 @@
         filter: function (fn) {
             return listFilter(this.toList(), fn)
         },
-        find: function(fn) {
+        find: function (fn) {
             return listFind(this.toList(), fn)
+        },
+        contains: function (val) {
+            return listContains(this.toList(), val)
         },
         append: function (list2) {
             return NEL.fromList(this.toList().append(list2.toList())).some()
@@ -627,6 +664,9 @@
                 return fn(a) ? self : None()
             })
         },
+        contains: function (val) {
+            return this.isSome() ? areEqual(this.val, val) : false;
+        },
         toString: function() {
             return this.isSome() ? 'Just(' + this.val + ')' : 'Nothing'
         },
@@ -720,6 +760,9 @@
                     return other.cata(falseFunction, equals(success))
                 }
             )
+        },
+        contains: function (val) {
+            return this.isSuccessValue ? areEqual(this.val, val) : false
         },
         toMaybe: function () {
             return this.isSuccess() ? Some(this.val) : None()
@@ -901,6 +944,9 @@
                 }
             )
         },
+        contains: function (val) {
+            return this.isRight() ? areEqual(this.value, val) : false;
+        },
         bimap: function (leftFn, rightFn) {
             return this.isRightValue ? this.map(rightFn) : this.leftMap(leftFn)
         },
@@ -1081,6 +1127,9 @@
         },
         equals: function (other) {
             return (isFunction(other.get) && equals(this.get())(other.get()))
+        },
+        contains: function (val) {
+            return areEqual(this.val, val)
         },
         toString: function () {
             return 'Identity(' + this.val + ')'

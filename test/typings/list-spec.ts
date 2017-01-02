@@ -19,6 +19,7 @@ const b: List<Maybe<number>> = x.foldRight(z)((l, acc) => acc.append(l))
     .map(t => t.size() > 0 ? Some(t.head()) : None<number>());
 const c: List<number> = b.flattenMaybe<number>().chain(n => y.bind(ls => ls).map(s => Number(s) + n));
 const d: Maybe<number> = c.find(x => x > 0);
+const e: boolean = c.contains(0);
 
 
 const maybeList: Maybe<List<string>> = List(Some('A')).sequenceMaybe<string>();
