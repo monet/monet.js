@@ -674,14 +674,10 @@
             return this.isSome() ? areEqual(this.val, val) : false;
         },
         forEach: function (fn) {
-            if (this.isSome()) {
-                fn(this.val);
-            }
+            this.cata(function() {}, fn)
         },
         orElseRun: function (fn) {
-            if (!this.isSome()) {
-                fn();
-            }
+            this.cata(fn, function() {})
         },
         toString: function() {
             return this.isSome() ? 'Just(' + this.val + ')' : 'Nothing'
@@ -768,14 +764,10 @@
             return this.isSuccessValue ? this.map(success) : this.failMap(fail)
         },
         forEach: function (fn) {
-            if (this.isSuccessValue) {
-                fn(this.val);
-            }
+            this.cata(function() {}, fn)
         },
         forEachFail: function (fn) {
-            if (!this.isSuccessValue) {
-                fn(this.val);
-            }
+            this.cata(fn, function() {})
         },
         equals: function (other) {
             return this.cata(
@@ -958,14 +950,10 @@
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
         },
         forEach: function (fn) {
-            if (this.isRightValue) {
-                fn(this.value)
-            }
+            this.cata(function() {}, fn)
         },
         forEachLeft: function (fn) {
-            if (!this.isRightValue) {
-                fn(this.value)
-            }
+            this.cata(fn, function() {})
         },
         equals: function (other) {
             if (!isFunction(other.isRight) || !isFunction(other.cata)) {
