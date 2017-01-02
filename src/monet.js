@@ -60,6 +60,7 @@
         wrapReader: wrapReader
     }
 
+    var noop = function() {}
 
     function getArgs(args) {
         return Array.prototype.slice.call(args)
@@ -674,10 +675,10 @@
             return this.isSome() ? areEqual(this.val, val) : false;
         },
         forEach: function (fn) {
-            this.cata(function() {}, fn)
+            this.cata(noop, fn)
         },
         orElseRun: function (fn) {
-            this.cata(fn, function() {})
+            this.cata(fn, noop)
         },
         toString: function() {
             return this.isSome() ? 'Just(' + this.val + ')' : 'Nothing'
@@ -764,10 +765,10 @@
             return this.isSuccessValue ? this.map(success) : this.failMap(fail)
         },
         forEach: function (fn) {
-            this.cata(function() {}, fn)
+            this.cata(noop, fn)
         },
         forEachFail: function (fn) {
-            this.cata(fn, function() {})
+            this.cata(fn, noop)
         },
         equals: function (other) {
             return this.cata(
@@ -950,10 +951,10 @@
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
         },
         forEach: function (fn) {
-            this.cata(function() {}, fn)
+            this.cata(noop, fn)
         },
         forEachLeft: function (fn) {
-            this.cata(fn, function() {})
+            this.cata(fn, noop)
         },
         equals: function (other) {
             if (!isFunction(other.isRight) || !isFunction(other.cata)) {
