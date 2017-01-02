@@ -1,4 +1,5 @@
 describe('A Maybe', function () {
+    var sideEffectsReceiver;
     var someString;
     var none;
 
@@ -16,6 +17,8 @@ describe('A Maybe', function () {
         });
         someString = Maybe.Some("abcd");
         none = Maybe.None();
+        sideEffectsReceiver = { setVal: function(val) {} };
+        spyOn(sideEffectsReceiver, 'setVal');
     });
 
     afterEach(function () {
@@ -88,6 +91,15 @@ describe('A Maybe', function () {
         it('will render as Just(x)', function() {
             expect(someString.inspect()).toBe('Just(abcd)')
         })
+        it('will execute side-effects on forEach', function() {
+            someString.forEach(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledWith('abcd')
+        })
+        it('will not invoke the orElseRun callback', function () {
+            someString.orElseRun(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
+        })
     })
 
     describe('without a value', function () {
@@ -144,6 +156,14 @@ describe('A Maybe', function () {
         })
         it('will render as Nothing', function() {
             expect(none.inspect()).toBe('Nothing')
+        })
+        it('will invoke side-effects on orElseRun', function() {
+            none.orElseRun(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
+        })
+        it('will not invoke the forEach callback', function () {
+            none.forEach(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
     })
 

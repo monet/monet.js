@@ -65,5 +65,7 @@ const messageCopy: string = Left<number, string>(404)
     .cata(e => e, v => v);
 
 const contains: boolean = wrappedGreeting.contains("test");
+Right<number, string>("hello").forEach((str:string) => console.log(str));
+Left<string, number>("none").forEachLeft((str:string) => console.log("oops"));
 
 console.log(nameError, messageCopy);

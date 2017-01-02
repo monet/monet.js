@@ -292,6 +292,18 @@ For further reading see [this excellent article](http://learnyouahaskell.com/fun
 
 Returns true if the `Maybe` is a Some containing the given value.
 
+#### forEach
+
+    Maybe[A].forEach(fn: A -> void): void
+
+Invoke a function applying a side-effect on the contents of the maybe if any.
+
+#### orElseRun
+
+    Maybe[A].orElseRun(fn: () -> void): void
+
+Invoke a parameterless side-effecting function if the maybe is None.
+
 #### toEither
 
 	Maybe[A].toEither(fail: E): Either[E,A]
@@ -401,6 +413,18 @@ Returns the value in the left side, otherwise throws an exception.
     Either[E,A].contains(val: A): Boolean
 
 Returns true if the `Either` is a right containing the given value.
+
+#### forEach
+
+    Either[E,A].forEach(fn: A -> void): void
+
+Invoke a function applying a side-effect on the right side of the Either if present.
+
+#### forEachLeft
+
+    Either[E,A].forEachLeft(fn: E -> void): void
+
+Invoke a function applying a side-effect on the left side of the Either if present.
 
 #### toValidation
 
@@ -526,6 +550,18 @@ For example:
     Validation[E,A].contains(val: A): Boolean
 
 Returns true if the `Validation` is a success containing the given value.
+
+#### forEach
+
+    Validation[E,A].forEach(fn: A -> void): void
+
+Invoke a function applying a side-effect on the contents of the Validation if it's a success.
+
+#### forEachLeft
+
+    Validation[E,A].forEachFail(fn: E -> void): void
+
+Invoke a function applying a side-effect on the contents of the Validation if it's a failure.
 
 #### toEither
 
@@ -761,6 +797,11 @@ Returns a new list reversed.
 	var list = [1,2,3].list().reverse()
 	// list.toArray() == [3,2,1]
 
+#### forEach
+
+    List[A].forEach(fn: A -> void): void
+
+Invoke a function applying a side-effect on each item in the list.
 
 ## Non Empty Lists
 
@@ -897,6 +938,12 @@ Appends two NonEmptyLists together.
 	NEL[A].reverse(): NEL[A]
 
 Reverses the `NonEmptyList`.
+
+#### forEach
+
+    NEL[A].forEach(fn: A -> void): void
+
+Invoke a function applying a side-effect on each item in the list.
 
 #### fromList
 

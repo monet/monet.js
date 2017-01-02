@@ -1,4 +1,5 @@
 describe('A Validation', function () {
+    var sideEffectsReceiver = null;
 
     beforeEach(function () {
         jasmine.addMatchers({
@@ -15,6 +16,8 @@ describe('A Validation', function () {
                 return actual.fail() == expected
             })
         });
+        sideEffectsReceiver = { setVal: function(val) {} };
+        spyOn(sideEffectsReceiver, 'setVal');
     });
     var successString = Validation.success("abcd")
     var successMap = function (val) {
@@ -79,6 +82,15 @@ describe('A Validation', function () {
         it('will render as Success(x)', function () {
           expect(successString.inspect()).toBe('Success(abcd)')
         })
+        it('will execute side-effects on forEach', function() {
+          successString.forEach(sideEffectsReceiver.setVal)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledWith('abcd')
+        })
+        it('will not invoke the forEachFail callback', function () {
+          successString.forEachFail(sideEffectsReceiver.setVal)
+          expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
+        })
     })
 
     var failString = Validation.fail("error dude")
@@ -137,6 +149,15 @@ describe('A Validation', function () {
         })
         it('renders as Fail(x)', function () {
             expect(failString.inspect()).toBe('Fail(error dude)')
+        })
+        it('will invoke side-effects on forEachFail', function() {
+            failString.forEachFail(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(1)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledWith("error dude")
+        })
+        it('will not invoke the forEach callback', function () {
+            failString.forEach(sideEffectsReceiver.setVal)
+            expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
 
     })

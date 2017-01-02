@@ -1,4 +1,12 @@
 describe("An immutable list", function () {
+    var sideEffectsReceiver = null;
+
+    function expectCalls(spiedCall, values) {
+        expect(spiedCall.calls.all().length).toEqual(values.length)
+        for (var i=0;i<values.length;i++) {
+            expect(spiedCall.calls.all()[i].args[0]).toEqual(values[i])
+        }
+    }
 
     beforeEach(function () {
         jasmine.addMatchers({
@@ -15,6 +23,8 @@ describe("An immutable list", function () {
                 return actual.isNone();
             })
         });
+        sideEffectsReceiver = { setVal: function(val) {} };
+        spyOn(sideEffectsReceiver, 'setVal');
     });
 
     var list = List(1, List(2, List(3, List(4, Nil))))
@@ -116,6 +126,19 @@ describe("An immutable list", function () {
             expect(List(undefined, List(null, List(undefined))).size()).toEqual(3)
         })
 
+    })
+
+    describe("allows side-effects on each item", function () {
+
+        it("with the legacy each function", function() {
+            List.fromArray([1,2,3]).each(sideEffectsReceiver.setVal);
+            expectCalls(sideEffectsReceiver.setVal, [1,2,3])
+        })
+
+        it("with the newer forEach function", function() {
+            List.fromArray([1,2,3]).forEach(sideEffectsReceiver.setVal);
+            expectCalls(sideEffectsReceiver.setVal, [1,2,3])
+        })
     })
 
     describe("allows mapping to any value, including", function () {
