@@ -51,7 +51,7 @@
     }
 
     function isNothing(value) {
-        return value == null // eslint-disable-line no-eq-null
+        return value == null // eslint-disable-line no-eq-null, eqeqeq
     }
 
     function noop() {} // eslint-disable-line no-empty-function
@@ -846,8 +846,9 @@
 
     IO.fn = IO.prototype = {
         init: function (effectFn) {
-            if (!isFunction(effectFn))
+            if (!isFunction(effectFn)) {
                 throw 'IO requires a function'
+            }
             this.effectFn = effectFn
         },
         map: function (fn) {
