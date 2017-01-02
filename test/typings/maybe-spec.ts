@@ -70,5 +70,7 @@ const name: string = None<string>().orSome('NAME');
 const surname: string = Nothing<string>().orJust('SURNAME');
 const message: string = Maybe.Just(0).filter(Boolean).map(String).orElse(unpacked).orJust('Hi!');
 const messageCopy: string = Nothing().ap(unpacked.map(m => () => m)).orSome('Hi!');
+Maybe.Just("hello").forEach((str:string) => console.log(str));
+None<string>().orElseRun(() => console.log("oops"));
 
 console.log(name, surname, message, messageCopy);

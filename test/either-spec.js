@@ -98,6 +98,16 @@ describe('An Either', function () {
         it('renders as Right(value)', function() {
           expect(rightString.toString()).toBe('Right(abcd)')
         })
+        it('will execute side-effects on forEach', function() {
+          var t = []
+          rightString.forEach(function (x) {t.push(x)})
+          expect(t).toEqual(['abcd'])
+        })
+        it('will not invoke the forEachLeft callback', function () {
+          var invoked = false
+          rightString.forEachLeft(function (x) { invoked = true })
+          expect(invoked).toBe(false)
+        })
     })
 
     var leftString = Either.Left("error dude")
@@ -174,6 +184,16 @@ describe('An Either', function () {
         })
         it('renders as Left(x)', function() {
           expect(leftString.toString()).toBe('Left(error dude)')
+        })
+        it('will invoke side-effects on forEachLeft', function() {
+          var t = []
+          leftString.forEachLeft(function (v) { t.push(v) })
+          expect(t).toEqual(['error dude'])
+        })
+        it('will not invoke the forEach callback', function () {
+          var invoked = false
+          leftString.forEach(function (v) { invoked = true })
+          expect(invoked).toBe(false)
         })
 
     })

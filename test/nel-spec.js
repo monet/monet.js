@@ -48,6 +48,12 @@ describe("A Non-Empty immutable list", function () {
         expect(NEL(1, Nil).reverse().toArray()).toEqual([1])
     })
 
+    it("allows side-effects with the forEach function", function() {
+        var test = []
+        nonEmptyList.forEach(function (v) {test.push(v+1)});
+        expect(test).toEqual([2,3,4,5])
+    })
+
     it("can be created from a list", function () {
         expect(NEL.fromList(List.fromArray([1, 2, 3, 4])).some().toArray()).toEqual([1, 2, 3, 4])
         expect(NEL.fromList(List())).toBeNoneMaybe()

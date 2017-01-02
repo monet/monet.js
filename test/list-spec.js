@@ -118,6 +118,21 @@ describe("An immutable list", function () {
 
     })
 
+    describe("allows side-effects on each item", function () {
+
+        it("with the legacy each function", function() {
+            var test = []
+            List.fromArray([1,2,3]).each(function (v) {test.push(v+1)});
+            expect(test).toEqual([2,3,4])
+        })
+
+        it("with the newer forEach function", function() {
+            var test = []
+            List.fromArray([1,2,3]).forEach(function (v) {test.push(v+1)});
+            expect(test).toEqual([2,3,4])
+        })
+    })
+
     describe("allows mapping to any value, including", function () {
 
         var constant = function (value) {

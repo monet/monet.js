@@ -223,10 +223,10 @@
 
     root.List = List
 
-    var listEach = function (effectFn, l) {
+    var listForEach = function (effectFn, l) {
         if (!l.isNil) {
             effectFn(l.head())
-            listEach(effectFn, l.tail())
+            listForEach(effectFn, l.tail())
         }
     }
 
@@ -370,8 +370,8 @@
         bind: function (fn) {
             return this.map(fn).flatten()
         },
-        each: function (effectFn) {
-            listEach(effectFn, this)
+        forEach: function (effectFn) {
+            listForEach(effectFn, this)
         },
         contains: function (val) {
             return listContains(this, val)
@@ -436,6 +436,9 @@
     List.of = function (a) {
         return new List(a, Nil)
     }
+
+    // backwards compatibility, deprecated
+    List.prototype.each = List.prototype.forEach
 
     Nil = root.Nil = new List.fn.init()
 
@@ -544,6 +547,9 @@
         },
         size: function () {
             return this.size_
+        },
+        forEach: function (fn) {
+            return this.toList().forEach(fn);
         },
         isNEL: trueFunction,
         toString: function () {
@@ -667,6 +673,16 @@
         contains: function (val) {
             return this.isSome() ? areEqual(this.val, val) : false;
         },
+        forEach: function (fn) {
+            if (this.isSome()) {
+                fn(this.val);
+            }
+        },
+        orElseRun: function (fn) {
+            if (!this.isSome()) {
+                fn();
+            }
+        },
         toString: function() {
             return this.isSome() ? 'Just(' + this.val + ')' : 'Nothing'
         },
@@ -750,6 +766,16 @@
         },
         bimap: function (fail, success) {
             return this.isSuccessValue ? this.map(success) : this.failMap(fail)
+        },
+        forEach: function (fn) {
+            if (this.isSuccessValue) {
+                fn(this.val);
+            }
+        },
+        forEachFail: function (fn) {
+            if (!this.isSuccessValue) {
+                fn(this.val);
+            }
         },
         equals: function (other) {
             return this.cata(
@@ -930,6 +956,16 @@
         },
         cata: function (leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
+        },
+        forEach: function (fn) {
+            if (this.isRightValue) {
+                fn(this.value)
+            }
+        },
+        forEachLeft: function (fn) {
+            if (!this.isRightValue) {
+                fn(this.value)
+            }
         },
         equals: function (other) {
             if (!isFunction(other.isRight) || !isFunction(other.cata)) {
@@ -1124,6 +1160,9 @@
         },
         get: function () {
             return this.val
+        },
+        forEach: function (fn) {
+            fn(this.val)
         },
         equals: function (other) {
             return (isFunction(other.get) && equals(this.get())(other.get()))

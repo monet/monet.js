@@ -88,6 +88,16 @@ describe('A Maybe', function () {
         it('will render as Just(x)', function() {
             expect(someString.inspect()).toBe('Just(abcd)')
         })
+        it('will execute side-effects on forEach', function() {
+            var t = []
+            someString.forEach(function (x) {t.push(x)})
+            expect(t).toEqual(['abcd'])
+        })
+        it('will not invoke the orElseRun callback', function () {
+            var invoked = false
+            someString.orElseRun(function () { invoked = true })
+            expect(invoked).toBe(false)
+        })
     })
 
     describe('without a value', function () {
@@ -144,6 +154,16 @@ describe('A Maybe', function () {
         })
         it('will render as Nothing', function() {
             expect(none.inspect()).toBe('Nothing')
+        })
+        it('will invoke side-effects on orElseRun', function() {
+            var invoked = false
+            none.orElseRun(function () { invoked = true })
+            expect(invoked).toBe(true)
+        })
+        it('will not invoke the forEach callback', function () {
+            var invoked = false
+            none.forEach(function (v) { invoked = true })
+            expect(invoked).toBe(false)
         })
     })
 

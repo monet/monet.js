@@ -21,6 +21,7 @@ const c: List<number> = b.flattenMaybe<number>().chain(n => y.bind(ls => ls).map
 const d: Maybe<number> = c.find(x => x > 0);
 const e: boolean = c.contains(0);
 
+c.forEach((i:number) => console.log(i));
 
 const maybeList: Maybe<List<string>> = List(Some('A')).sequenceMaybe<string>();
 const eitherList: Either<string, List<string>> = List(Right('A')).sequenceEither<string, string>();

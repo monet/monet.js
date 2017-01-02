@@ -79,6 +79,16 @@ describe('A Validation', function () {
         it('will render as Success(x)', function () {
           expect(successString.inspect()).toBe('Success(abcd)')
         })
+        it('will execute side-effects on forEach', function() {
+          var t = []
+          successString.forEach(function (x) {t.push(x)})
+          expect(t).toEqual(['abcd'])
+        })
+        it('will not invoke the forEachFail callback', function () {
+          var invoked = false
+          successString.forEachFail(function (x) { invoked = true })
+          expect(invoked).toBe(false)
+        })
     })
 
     var failString = Validation.fail("error dude")
@@ -137,6 +147,16 @@ describe('A Validation', function () {
         })
         it('renders as Fail(x)', function () {
             expect(failString.inspect()).toBe('Fail(error dude)')
+        })
+        it('will invoke side-effects on forEachFail', function() {
+            var t = []
+            failString.forEachFail(function (v) { t.push(v) })
+            expect(t).toEqual(["error dude"])
+        })
+        it('will not invoke the forEach callback', function () {
+            var invoked = false
+            failString.forEach(function (v) { invoked = true })
+            expect(invoked).toBe(false)
         })
 
     })

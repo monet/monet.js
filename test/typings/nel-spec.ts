@@ -16,5 +16,6 @@ const foldedL: Maybe<NEL<string>> = NonEmptyList.fromList(tail).map(t =>
     t.tails().foldLeft(yy)((acc, n) => acc.concat(n.ap(NEL(String)))));
 const foldedR: NonEmptyList<boolean> = foldedL.map(f => f.cojoin()).map(ff => ff.foldRight(nelBool)((v, acc) =>
     acc.append(v.map(Boolean)))).orJust(nelBool);
+nel.forEach((i:string) => console.log(i));
 
 console.log(true === foldedR.reduceLeft((acc, n) => acc && n));

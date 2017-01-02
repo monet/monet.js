@@ -16,4 +16,6 @@ const wrappedType = wrapped.flatMap(getType);
 
 const unpacked = wrappedGreeting.chain(g => wrappedType.map(t => `Type: ${t} - Body: ${g}`));
 
+wrappedGreeting.forEach((i:string) => console.log(i));
+
 log(unpacked.get());
