@@ -59,6 +59,7 @@ export interface Identity<T> extends IMonad<T> {
   join<V>(): Identity<V>; // if T is Identity<V>
   takeLeft(m: Identity<T>): Identity<T>;
   takeRight(m: Identity<T>): Identity<T>;
+  contains(val: T): boolean;
 
   /* Identity specific */
   get(): T;
@@ -109,6 +110,7 @@ export interface Maybe<T> extends IMonad<T>, IEquals<Maybe<T>>{
   orJust(val: T): T;
   orNull(): T|null;
   orElse(maybe: Maybe<T>): Maybe<T>;
+  contains(val: T): boolean;
 
   toList(): List<T>;
   toEither<E>(left?: E): Either<E, T>;
@@ -167,6 +169,7 @@ export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>{
   isLeft(): boolean;
   right(): T;
   left(): E;
+  contains(val: T): boolean;
 
   toValidation(): Validation<E, T>;
   toMaybe(): Maybe<T>;
@@ -223,6 +226,7 @@ export interface Validation<E, T> extends IMonad<T>, IEquals<Validation<E, T>>{
   isFail(): boolean;
   success(): T;
   fail(): E;
+  contains(val: T): boolean;
 
   acc(): Validation<E, IValidationAcc>;
 
@@ -289,6 +293,7 @@ export interface List<T> extends IMonad<T>, IEquals<List<T>> {
   tails(): List<List<T>>;
   flatten<V>(): List<V>;   // === join
   flattenMaybe<V>(): List<V>; // if T is Maybe<V>
+  contains(val: T): boolean;
 
   sequence<V>(m: IMaybeStatic): Maybe<List<V>>;
   sequence<E, V>(m: IEitherStatic): Either<E, List<V>>;
@@ -366,6 +371,7 @@ export interface NEL<T> extends IMonad<T>, IEquals<NEL<T>> {
   reverse(): NEL<T>;
   tail(): List<T>;
   tails(): NEL<NEL<T>>;
+  contains(val: T): boolean;
   // flatten<V>(): NEL<V>;
   // flattenMaybe<V>(): NEL<V>;
 
