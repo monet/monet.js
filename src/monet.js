@@ -662,6 +662,12 @@
                 return self.isSome() ? fn(self.val) : defaultValue
             }
         },
+        foldLeft: function (initialValue) {
+            return this.toList().foldLeft(initialValue)
+        },
+        foldRight: function (initialValue) {
+            return this.toList().foldRight(initialValue)
+        },
         cata: function (none, some) {
             return this.isSome() ? some(this.val) : none()
         },
@@ -753,6 +759,12 @@
             }
             return this.isSuccessValue ? Validation.success(x) : this
         },
+        foldLeft: function (initialValue) {
+            return this.toMaybe().toList().foldLeft(initialValue)
+        },
+        foldRight: function (initialValue) {
+            return this.toMaybe().toList().foldRight(initialValue)
+        },
         cata: function (fail, success) {
             return this.isSuccessValue ?
                 success(this.val)
@@ -796,6 +808,9 @@
           return this.toString()
         }
     }
+
+    // aliases
+    Validation.prototype.fold = Validation.prototype.cata
 
     Validation.fn.init.prototype = Validation.fn
 
@@ -947,6 +962,12 @@
                 return this.value
             }
         },
+        foldLeft: function (initialValue) {
+            return this.toMaybe().toList().foldLeft(initialValue)
+        },
+        foldRight: function (initialValue) {
+            return this.toMaybe().toList().foldRight(initialValue)
+        },
         cata: function (leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
         },
@@ -991,6 +1012,9 @@
             return this.toString()
         }
     }
+
+    // aliases
+    Either.prototype.fold = Either.prototype.cata
 
     Either.fn.init.prototype = Either.fn
 

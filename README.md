@@ -203,6 +203,52 @@ For example:
 	})
 
 
+#### fold
+
+	Maybe[A].fold(ifNone: B)(ifSomeFn: (value: A) -> B): B
+
+`fold` takes a default value and a function, and will 'reduce' the `Maybe` to a single value.  If the `Maybe` is a `None`, the supplied default value will be returned.  If the `Maybe` is a `Some`, the supplied function will be invoked with the contents of the `Maybe`, and its result will be returned.
+
+For example:
+
+	Maybe.None().fold(-1)(function (value) {
+		return value.length
+	})
+	//result: -1
+
+	Maybe.Some("hi").fold(-1)(function (value) {
+		return value.length
+	})
+	//result: 2
+
+
+#### foldLeft
+
+	Maybe[A].foldLeft(initialValue: B)(fn: (acc: B, element: A) -> B): B
+
+`foldLeft` takes an initial value and a function, and will 'reduce' the `Maybe` to a single value.  The supplied function takes an accumulator as its first argument and the contents of the `Maybe` as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass.
+
+
+For example:
+
+	Maybe.None().foldLeft(-1)(function (acc, value) {
+		return value.length
+	})
+	//result: -1
+
+	Maybe.Some("hi").foldLeft(-1)(function (acc, value) {
+		return value.length
+	})
+	//result: 2
+
+
+#### foldRight
+
+	Maybe[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
+
+Performs a fold right across the `Maybe`.  As `Maybe` can contain at most a single value, `foldRight` is functionally equivalent to `foldLeft`.
+
+
 #### isSome *alias: isJust*
 
 	Maybe[A].isSome(): Boolean
@@ -366,7 +412,7 @@ This will perform a monadic bind over the right side of the either, otherwise it
 This takes an either that has a function on the right side of the either and then applies it to the right side of itself. This implements
 the applicative functor pattern.
 
-#### cata
+#### cata *alias: fold*
 
 	Either[E,A].cata(leftFn: E -> X, rightFn: A ->X): X
 
@@ -379,6 +425,31 @@ The catamorphism for either.  If the either is `right` the right function will b
 		}, function(success) {
 			return "yay! " + success
 		})
+
+#### foldLeft
+
+	Either[E,A].foldLeft(initialValue: B)(fn: (acc: B, element: A) -> B): B
+
+`foldLeft` takes an initial value and a function, and will 'reduce' the `Either` to a single value.  The supplied function takes an accumulator as its first argument and the contents of the right side of the `Either` as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass.
+
+
+For example:
+
+	Either.Left("left").foldLeft(-1)(function (acc, value) {
+		return value.length
+	})
+	//result: -1
+
+	Either.Right("right").foldLeft(-1)(function (acc, value) {
+		return value.length
+	})
+	//result: 5
+
+#### foldRight
+
+	Either[E,A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
+
+Performs a fold right across the right side of the `Either`.  As a right `Either` can contain at most a single value, `foldRight` is functionally equivalent to `foldLeft`.
 
 #### bimap
 
@@ -531,7 +602,7 @@ Implements the applicative functor pattern.  `ap` will apply a function over the
     	.ap(validateForename.map(person)))
     // result: Validation(["no address", "no surname"])
 
-#### cata
+#### cata *alias: fold*
 
 	Validation[E,A].cata(failureFn: E->X, successFn: A->X): X
 
@@ -544,6 +615,31 @@ For example:
 	}, function(success) {
 		return "yay! " + success
 	})
+
+#### foldLeft
+
+	Validation[E,A].foldLeft(initialValue: B)(fn: (acc: B, element: A) -> B): B
+
+`foldLeft` takes an initial value and a function, and will 'reduce' the `Validation` to a single value.  The supplied function takes an accumulator as its first argument and the contents of the success side of the `Validation` as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass.
+
+
+For example:
+
+	Validation.fail("fail").foldLeft(-1)(function (acc, value) {
+		return value.length
+	})
+	//result: -1
+
+	Validation.success("success").foldLeft(-1)(function (acc, value) {
+		return value.length
+	})
+	//result: 7
+
+#### foldRight
+
+	Validation[E,A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
+
+Performs a fold right across the success side of the `Validation`.  As a success `Validation` can contain at most a single value, `foldRight` is functionally equivalent to `foldLeft`.
 
 #### contains
 
@@ -656,9 +752,9 @@ For example:
 
 #### foldLeft
 
-	List[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
+	List[A].foldLeft(initialValue: B)(fn: (acc: B, element: A) -> B): B
 
-`foldLeft` takes an initial value and a function and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first value and the current element in the list as its second argument.  The returned value from the function will be pass into the accumulator on the subsequent pass.
+`foldLeft` takes an initial value and a function, and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first argument and the current element in the list as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass.
 
 
 For example, say you wanted to add up a list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
@@ -669,7 +765,7 @@ For example, say you wanted to add up a list of integers, your initial value wou
 	})
 	// sum == 10
 
-#### foldRight(initialValue)(function(e, acc))
+#### foldRight
 
 	List[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
 
@@ -880,9 +976,9 @@ For example:
 
 #### foldLeft
 
-	NEL[A].foldLeft(initialValue: B)(fn: (acc:B, element:A) -> B): B
+	NEL[A].foldLeft(initialValue: B)(fn: (acc: B, element: A) -> B): B
 
-`foldLeft` takes an initial value and a function and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first value and the current element in the list as its second argument.  The returned value from the function will be pass into the accumulator on the subsequent pass.
+`foldLeft` takes an initial value and a function, and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first argument and the current element in the list as its second.  The returned value from the function will be pass into the accumulator on the subsequent pass.
 
 
 For example, say you wanted to add up a non empty list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
@@ -892,7 +988,7 @@ For example, say you wanted to add up a non empty list of integers, your initial
 	})
 	// sum == 10
 
-#### foldRight(initialValue)(function(e, acc))
+#### foldRight
 
 	NEL[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
 
@@ -916,7 +1012,7 @@ Returns a `Maybe` containing the first element for which the predicate returns t
 
 Returns true if the `NonEmptyList` contains the given value.
 
-#### reduceLeft(function(e,acc))
+#### reduceLeft
 
 	NEL[A].reduceLeft(fn: (element: A, acc: A) -> A): A
 
