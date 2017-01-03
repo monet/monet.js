@@ -124,7 +124,7 @@ describe('A Maybe', function () {
             }).isNone()).toBeTruthy()
         })
         it('will throw an exception when Some() is called', function () {
-            expect(function () { none.some() }).toThrow("Illegal state exception")
+            expect(function () { none.some() }).toThrow(new Error('Cannot call .some() on a None.'))
         })
         it('will be true for isNone()', function () {
             expect(none.isNone()).toBeTruthy()
@@ -201,10 +201,10 @@ describe('A Maybe', function () {
         it('will throw an exception', function () {
             expect(function () {
                 Maybe.Some()
-            }).toThrow('Illegal state exception')
+            }).toThrow(new Error('Can not create Some with illegal value: undefined.'))
             expect(function () {
-                Maybe.Just()
-            }).toThrow('Illegal state exception')
+                Maybe.Just(null)
+            }).toThrow(new Error('Can not create Some with illegal value: null.'))
         })
     })
 

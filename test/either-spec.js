@@ -43,7 +43,7 @@ describe('An Either', function () {
         it('will throw error when left() is called', function () {
             expect(function () {
                 rightString.left()
-            }).toThrow('Illegal state. Cannot call left() on a Either.right')
+            }).toThrow(new Error('Cannot call left() on a Right.'))
         })
         it('will be transformed by a bind', function () {
             expect(rightString.bind(function (val) {
@@ -160,7 +160,7 @@ describe('An Either', function () {
         it('will throw error when right() is called', function () {
             expect(function () {
                 leftString.right()
-            }).toThrow('Illegal state. Cannot call right() on a Either.left')
+            }).toThrow(new Error('Cannot call right() on a Left.'))
         })
         it('will return false on contains', function() {
             expect(leftString.contains('error dude')).toBe(false)

@@ -352,9 +352,12 @@
     };
     List.prototype.each = List.prototype.forEach;
     Nil = root.Nil = new List.fn.init();
+    function emptyNELError(head) {
+        return new Error("Cannot create an empty Non-Empty List. Passed head is " + head + ".");
+    }
     function NEL(head, tail) {
         if (isNothing(head)) {
-            throw "Cannot create an empty Non-Empty List.";
+            throw emptyNELError(head);
         }
         return new NEL.fn.init(head, tail);
     }
@@ -365,7 +368,7 @@
     NEL.fn = NEL.prototype = {
         init: function(head, tail) {
             if (isNothing(head)) {
-                throw "Cannot create an empty Non-Empty List.";
+                throw emptyNELError(head);
             } else {
                 this.isNil = false;
                 this.head_ = head;
@@ -385,7 +388,7 @@
         bind: function(fn) {
             var p = fn(this.head_);
             if (!p.isNEL()) {
-                throw "function must return a NonEmptyList.";
+                throw new Error("NEL.fn.bind: Passed function must return a NonEmptyList.");
             }
             var list = this.tail().foldLeft(Nil.snoc(p.head()).append(p.tail()))(function(acc, e) {
                 var list2 = fn(e).toList();
@@ -479,8 +482,8 @@
     Maybe.fn = Maybe.prototype = {
         init: function(isValue, val) {
             this.isValue = isValue;
-            if (isNothing(val) && isValue) {
-                throw "Illegal state exception";
+            if (isValue && isNothing(val)) {
+                throw new Error("Can not create Some with illegal value: " + val + ".");
             }
             this.val = val;
         },
@@ -497,7 +500,7 @@
             if (this.isValue) {
                 return this.val;
             }
-            throw "Illegal state exception";
+            throw new Error("Cannot call .some() on a None.");
         },
         orSome: function(otherValue) {
             return this.isValue ? this.val : otherValue;
@@ -591,7 +594,7 @@
             if (this.isSuccess()) {
                 return this.val;
             }
-            throw "Illegal state. Cannot call success() on a Validation.fail";
+            throw new Error("Cannot call success() on a Fail.");
         },
         isSuccess: function() {
             return this.isSuccessValue;
@@ -601,7 +604,7 @@
         },
         fail: function() {
             if (this.isSuccess()) {
-                throw "Illegal state. Cannot call fail() on a Validation.success";
+                throw new Error("Cannot call fail() on a Success.");
             }
             return this.val;
         },
@@ -671,7 +674,7 @@
             if (isFunction(a.concat)) {
                 return a.concat(b);
             }
-            throw "Couldn't find a semigroup appender in the environment, please specify your own append function";
+            throw new Error("Couldn't find a semigroup appender in the environment, " + "please specify your own append function");
         }
     };
     var MonadT = root.monadTransformer = root.MonadT = root.monadT = function(monad) {
@@ -717,7 +720,7 @@
     IO.fn = IO.prototype = {
         init: function(effectFn) {
             if (!isFunction(effectFn)) {
-                throw "IO requires a function";
+                throw new Error("IO requires a function.");
             }
             this.effectFn = effectFn;
         },
@@ -782,11 +785,11 @@
             if (this.isRightValue) {
                 return this.value;
             }
-            throw "Illegal state. Cannot call right() on a Either.left";
+            throw new Error("Cannot call right() on a Left.");
         },
         left: function() {
             if (this.isRightValue) {
-                throw "Illegal state. Cannot call left() on a Either.right";
+                throw new Error("Cannot call left() on a Right.");
             }
             return this.value;
         },

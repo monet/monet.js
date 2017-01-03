@@ -50,7 +50,7 @@
     "no-sequences": "error",
     "no-shadow": "error",
     "no-shadow-restricted-names": "error",
-    "no-throw-literal": 0,
+    "no-throw-literal": "error",
     "no-undef-init": "error",
     "no-undefined": "error",
     "no-unmodified-loop-condition": "error",

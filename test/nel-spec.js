@@ -34,7 +34,7 @@ describe("A Non-Empty immutable list", function () {
     it("cannot be create with zero elements", function () {
         expect(function () {
             new NEL()
-        }).toThrow("Cannot create an empty Non-Empty List.")
+        }).toThrow(new Error('Cannot create an empty Non-Empty List. Passed head is undefined.'))
     })
 
     it("must have a head", function () {

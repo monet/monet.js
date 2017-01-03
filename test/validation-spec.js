@@ -42,7 +42,7 @@ describe('A Validation', function () {
         it('will throw error when fail() is called', function () {
             expect(function () {
                 return successString.fail()
-            }).toThrow('Illegal state. Cannot call fail() on a Validation.success')
+            }).toThrow(new Error('Cannot call fail() on a Success.'))
         })
         it('will be transformed by a bind', function () {
             expect(successString.bind(function (val) {
@@ -142,7 +142,7 @@ describe('A Validation', function () {
         it('will throw error when success() is called', function () {
             expect(function () {
                 return failString.success()
-            }).toThrow('Illegal state. Cannot call success() on a Validation.fail')
+            }).toThrow(new Error('Cannot call success() on a Fail.'))
         })
         it('can be reduced using foldLeft', function () {
             expect(failString.foldLeft("efgh")(function (acc, val) {
