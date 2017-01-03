@@ -332,10 +332,12 @@ export interface Nil extends List<void> {
 }
 
 interface IListFactory extends IMonadFactory {
-  <T>(val?: T, tail?: List<T>): List<T>;
+  <T>(val: T): List<T>;
 }
 
-interface IListStatic extends IListFactory, IMonadStatic {
+interface IListStatic extends IMonadStatic {
+  <T>(): List<T>;
+  <T>(val: T, tail?: List<T>): List<T>;
   fromArray<T>(arr: T[]): List<T>;
   unit: IListFactory;
   of: IListFactory;    // alias for unit

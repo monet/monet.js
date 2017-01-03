@@ -1,7 +1,7 @@
 import {List, Nil, Maybe, Some, Either, Right, Validation, Success, IO, Reader, None} from 'src/monet';
 
 const x: List<List<string>> = List.fromArray(['1', '2', '3']).map(Number)
-    .takeLeft(List.of(true, Nil))
+    .takeLeft(List.of(true))
     .takeRight(List.unit(['a', 'b', 'c']))
     .map(List.fromArray);
 const y: List<List<string>> = x.join<string>()
