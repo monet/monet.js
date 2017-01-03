@@ -118,10 +118,10 @@ Nil.headMaybe()
 ### foldLeft
 
 ```scala
-List[A].foldLeft(z: B)(op: (B, A) => B): B
+List[A].foldLeft(initialValue: B)(fn: (acc: B, element: A) => B): B
 ```
 
-`foldLeft` takes an initial value and a function and will 'reduce' the list to a single value. The supplied function takes an accumulator as its first value and the current element in the list as its second argument. The returned value from the function will be pass into the accumulator on the subsequent pass.
+`foldLeft` takes an initial value and a function, and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first argument and the current element in the list as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass.
 
 For example, say you wanted to add up a list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
 
@@ -133,10 +133,10 @@ List.fromArray([1, 2, 3, 4]).foldLeft(0)((acc, e) => e + acc)
 ### foldRight
 
 ```scala
-List[A].foldRight(z: B)(op: (A, B) => B): B
+List[A].foldRight(initialValue: B)(fn: (element: A, acc: B) => B): B
 ```
 
-Performs a fold right across the list. Similar to `foldLeft` except the supplied function is first applied to the right most side of the list.
+Performs a fold right across the list. Similar to `foldLeft` except the supplied function is first applied to the right most side of the list (and its arguments are swapped).
 
 ### append
 

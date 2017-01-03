@@ -16,7 +16,7 @@ While functional programming may be alien to you, this library is a simple way t
 
 ## Documentation
 
-Full detailed documentation can be found [here](https://github.com/cwmyers/monet.js/blob/master/docs/README.md)
+Full detailed documentation can be found [here](docs/README.md)
 
 ## Download
 
@@ -53,8 +53,6 @@ npm install monet@0.9.0-alpha.2
 ```
 
 ---
----
----
 
 ## Maybe
 
@@ -62,225 +60,8 @@ The `Maybe` type is the most common way of representing *nothingness* (or the `n
 
 `Maybe` is effectively abstract and has two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
 
-#### Creating an Maybe
+[documentation](docs/MAYBE.md)
 
-	var maybe = Maybe.Some(val);
-	var maybe = Maybe.None();
-	var maybe = Maybe.fromNull(val);  // none if val is null or undefined, some otherwise
-	var maybe = Maybe.fromFalsy(val); // none if val is a falsy value, some otherwise
-
-or more simply with the pimped method on Object.
-
-	var maybe = "hello world".some()
-	var maybe = val.some()
-
-### Functions
-
-#### map
-
-	Maybe[A].map(fn: A => B) : Maybe[B]
-
-`map` takes a function (A => B) and applies that function to the value inside the `Maybe` and returns another `Maybe`.
-
-For example:
-
-	Maybe.Some(123).map(function(val) {
-		return val+1
-	})
-	=> 124
-
-
-#### bind *alias: flatMap, chain*
-
-	Maybe[A].bind(fn: A => Maybe[B]): Maybe[B]
-
-`bind` takes a function that takes a value and returns a `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on.
-
-
-For example:
-
-	maybe.bind(function(val) {
-		if (val == "hi") {
-			return Maybe.Some("world")
-		} else {
-			return Maybe.None()
-		}
-	})
-
-
-#### fold
-
-	Maybe[A].fold(ifNone: B)(ifSomeFn: (value: A) -> B): B
-
-`fold` takes a default value and a function, and will 'reduce' the `Maybe` to a single value.  If the `Maybe` is a `None`, the supplied default value will be returned.  If the `Maybe` is a `Some`, the supplied function will be invoked with the contents of the `Maybe`, and its result will be returned.
-
-For example:
-
-	Maybe.None().fold(-1)(function (value) {
-		return value.length
-	})
-	//result: -1
-
-	Maybe.Some("hi").fold(-1)(function (value) {
-		return value.length
-	})
-	//result: 2
-
-
-#### foldLeft
-
-	Maybe[A].foldLeft(initialValue: B)(fn: (acc: B, element: A) -> B): B
-
-`foldLeft` takes an initial value and a function, and will 'reduce' the `Maybe` to a single value.  The supplied function takes an accumulator as its first argument and the contents of the `Maybe` as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass.
-
-
-For example:
-
-	Maybe.None().foldLeft(-1)(function (acc, value) {
-		return value.length
-	})
-	//result: -1
-
-	Maybe.Some("hi").foldLeft(-1)(function (acc, value) {
-		return value.length
-	})
-	//result: 2
-
-
-#### foldRight
-
-	Maybe[A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
-
-Performs a fold right across the `Maybe`.  As `Maybe` can contain at most a single value, `foldRight` is functionally equivalent to `foldLeft`.
-
-
-#### isSome *alias: isJust*
-
-	Maybe[A].isSome(): Boolean
-
-`isSome` on a `Some` value will return `true` and will return `false` on a `None`.
-
-For example:
-
-	Maybe.some("hi").isSome()
-	//result: true
-
-
-#### isNone *alias: isNothing*
-
-	Maybe[A].isNone(): Boolean
-
-`isNone` on a `None` value will return `true` and will return `false` on a `Some`.
-
-For example:
-
-	Maybe.none().isNone()
-	//result: true
-
-#### some *alias: just*
-
-	Maybe[A].some(): A
-
-`some` will 'reduce' the `Maybe` to its value.  But warning! It will throw an error if you attempt to do this on a none.  Use `orSome` instead.
-
-For example:
-
-	Maybe.some("hi").some()
-	//result: "hi"
-
-#### orSome *alias: orJust*
-
-	Maybe[A].orSome(a:A) : A
-
-Will return the containing value inside the `Maybe` or return the supplied value.
-
-	maybe.some("hi").orSome("bye")
-	=> "hi"
-	Maybe.none().orSome("bye")
-	=> "bye"
-
-#### orNull
-
-	Maybe[A].orNull(): A | null
-
-Returns the value inside the `Maybe` if it is a Some otherwise returns null.
-
-#### orElse
-
-	Maybe[A].orElse(Maybe[A]): Maybe[A]
-
-Returns the Maybe if it is a Some otherwise returns the supplied Maybe.
-
-#### orNoneIf *alias: orNothingIf*
-
-    Maybe[A].orNoneIf(val: Boolean): Maybe[A]
-
-Returns `None` if the boolean is true, otherwise pass through the maybe value.
-
-#### ap
-
-	Maybe[A].ap(Maybe[A=>B]): Maybe[B]
-
-The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another `Maybe` type which contains a function, and then applies that function to the value contained in the calling `Maybe`.
-
-It may seem odd to want to apply a function to a monad that exists inside another monad, but this is particular useful for when you have a curried function being applied across many monads.
-
-Here is an example for creating a string out of the result of a couple of `Maybe`s.  We use `curry()` which is a pimped method on Function so we can partially apply.
-
-	var person = function (forename, surname, address) {
-        return forename + " " + surname + " lives in " + address
-    }.curry()
-
-    var maybeAddress = Maybe.just('Dulwich, London')
-    var maybeSurname = Maybe.just('Baker')
-    var maybeForename = Maybe.just('Tom')
-
-    var personString = maybeAddress
-                      .ap(maybeSurname
-	                     .ap(maybeForename.map(person))).just()
-
-    // result: "Tom Baker lives in Dulwich, London"
-
-For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
-
-#### contains
-
-    Maybe[A].contains(val: A): Boolean
-
-Returns true if the `Maybe` is a Some containing the given value.
-
-#### forEach
-
-    Maybe[A].forEach(fn: A => void): void
-
-Invoke a function applying a side-effect on the contents of the maybe if any.
-
-#### orElseRun
-
-    Maybe[A].orElseRun(fn: () => void): void
-
-Invoke a parameterless side-effecting function if the maybe is None.
-
-#### toEither
-
-	Maybe[A].toEither(fail: E): Either[E,A]
-
-Converts a Maybe to an Either
-
-#### toValidation
-
-	Maybe[A].toValidation(fail: E): Validation[E,A]
-
-Converts a Maybe to a Validation.
-
-#### toList
-
-	Maybe[A].toList: List[A]
-
-Converts to a list, returns an Empty list on None.
-
----
----
 ---
 
 ## Either
@@ -424,8 +205,6 @@ Converts the `Either` to a `Validation`.
 
 Converts to a `Maybe` dropping the left side.
 
----
----
 ---
 
 ## Validation
@@ -591,17 +370,13 @@ Converts a `Validation` to an `Either`
 Converts to a `Maybe` dropping the failure side.
 
 ---
----
----
 
 ## Immutable lists
 
 An immutable list is a list that has a head element and a tail. A tail is another list.  The empty list is represented by the `Nil` constructor.  An immutable list is also known as a "cons" list.  Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
 
-[documentation](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md)
+[documentation](docs/LIST.md)
 
----
----
 ---
 
 ## Non Empty Lists
@@ -754,8 +529,6 @@ Returns an optional `NonEmptyList`.  If the supplied `List` is empty the result 
 a `Some` (or `Just`).
 
 ---
----
----
 
 ## IO
 The `IO` monad is for isolating effects to maintain referential transparency in your software.  Essentially you create a description of your effects of which is performed as the last action in your programme.  The IO is lazy and will not be evaluated until the `perform` (*alias* `run`) method is called.
@@ -846,8 +619,6 @@ Now our DOM should be updated with the text converted to upper case.
 It becomes much clearer which functions deal with IO and which functions simply deal with data.  `read` and `write` return an `IO` effect but `toUpper` simply converts a supplied string to upper case.  This pattern is what you will often find in your software, having an effect when you start (i.e. reading from a data source, network etc), performing transformations on the results of that effect and finally having an effect at the end (such as writing result to a database, disk, or DOM).
 
 ---
----
----
 
 ## Reader
 
@@ -937,8 +708,6 @@ Applies the function inside the supplied `Reader` to the value `A` in the outer 
 Executes the function wrapped in the `Reader` with the supplied `config`.
 
 ---
----
----
 
 ## Free
 The `Free` monad is a monad that is able to separate instructions from their interpreter.  There are many applications for this monad, and one of them is for implementing Trampolines, (which is a way to make recursion constant stack for languages that don't support tail call elimination, like JavaScript!).
@@ -998,8 +767,6 @@ Runs the computation to the end, returning the final result, using the supplied 
 This function only makes sense for Tampolined computations where the supplied functor is a Function.  This will run the computation to the end returning the result `A`.
 
 ---
----
----
 
 ## Other useful functions
 
@@ -1043,8 +810,6 @@ a method to be applied in the following ways:
     // or nearly any other combination...
     // will return 6
 
----
----
 ---
 
 ## Author

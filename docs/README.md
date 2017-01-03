@@ -138,15 +138,39 @@ None().takeRight(Some(2))
 // => None
 ```
 
+## [Maybe](MAYBE.md)
 
-
----
----
----
-
-## Maybe
-
-TBD…
+- [map](MAYBE.md#map)
+- [flatMap](MAYBE.md#flatmap)
+- [bind](MAYBE.md#flatmap)
+- [chain](MAYBE.md#flatmap)
+- [fold](MAYBE.md#fold)
+- [foldLeft](MAYBE.md#foldleft)
+- [foldRight](MAYBE.md#foldright)
+- [isSome](MAYBE.md#issome)
+- [isJust](MAYBE.md#issome)
+- [isNone](MAYBE.md#isnone)
+- [isNothing](MAYBE.md#isnone)
+- [some](MAYBE.md#some)
+- [just](MAYBE.md#some)
+- [orSome](MAYBE.md#orsome)
+- [orJust](MAYBE.md#orsome)
+- [orNull](MAYBE.md#ornull)
+- [orElse](MAYBE.md#orelse)
+- [orNoneIf](MAYBE.md#ornoneif)
+- [orNothingIf](MAYBE.md#ornoneif)
+- [ap](MAYBE.md#ap)
+- [contains](MAYBE.md#contains)
+- [forEach](MAYBE.md#foreach)
+- [orElseRun](MAYBE.md#orelserun)
+- [toEither](MAYBE.md#toeither)
+- [toValidation](MAYBE.md#tovalidation)
+- [toList](MAYBE.md#tolist)
+- join
+- takeLeft
+- takeRight
+- cata
+- filter
 
 ## Either
 
@@ -156,30 +180,30 @@ TBD…
 
 TBD…
 
-## [List](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md)
+## [List](LIST.md)
 
-- [cons](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#cons)
-- [map](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#map)
-- [flatMap](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#flatmap)
-- [bind](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#flatmap)
-- [chain](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#flatmap)
-- [head](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#head)
-- [headMaybe](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#headmaybe)
-- [foldLeft](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#foldleft)
-- [foldRight](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#foldright)
-- [append](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#append)
-- [concat](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#append)
-- [filter](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#filter)
-- [contains](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#contains)
-- [find](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#find)
-- [sequence](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#sequence)
-- [sequenceMaybe](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#sequencemaybe)
-- [sequenceEither](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#sequenceeither)
-- [sequenceValidation](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#sequencevalidation)
-- [sequenceIO](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#sequenceio)
-- [sequenceReader](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#sequencereader)
-- [reverse](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#reverse)
-- [forEach](https://github.com/cwmyers/monet.js/blob/master/docs/LIST.md#foreach)
+- [cons](LIST.md#cons)
+- [map](LIST.md#map)
+- [flatMap](LIST.md#flatmap)
+- [bind](LIST.md#flatmap)
+- [chain](LIST.md#flatmap)
+- [head](LIST.md#head)
+- [headMaybe](LIST.md#headmaybe)
+- [foldLeft](LIST.md#foldleft)
+- [foldRight](LIST.md#foldright)
+- [append](LIST.md#append)
+- [concat](LIST.md#append)
+- [filter](LIST.md#filter)
+- [contains](LIST.md#contains)
+- [find](LIST.md#find)
+- [sequence](LIST.md#sequence)
+- [sequenceMaybe](LIST.md#sequencemaybe)
+- [sequenceEither](LIST.md#sequenceeither)
+- [sequenceValidation](LIST.md#sequencevalidation)
+- [sequenceIO](LIST.md#sequenceio)
+- [sequenceReader](LIST.md#sequencereader)
+- [reverse](LIST.md#reverse)
+- [forEach](LIST.md#foreach)
 - join
 - takeLeft
 - takeRight
