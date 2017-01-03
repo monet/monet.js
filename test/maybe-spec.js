@@ -271,6 +271,57 @@ describe('A Maybe', function () {
 
     })
 
+    describe('Maybe.fromFalsy', function () {
+        describe('will create a none for', function () {
+            it('undefined', function () {
+                expect(Maybe.fromFalsy(undefined)).toBeNoneMaybe()
+            })
+            it('null', function () {
+                expect(Maybe.fromFalsy(null)).toBeNoneMaybe()
+            })
+            it('""', function () {
+                expect(Maybe.fromFalsy('')).toBeNoneMaybe()
+            })
+            it('false', function () {
+                expect(Maybe.fromFalsy(false)).toBeNoneMaybe()
+            })
+            it('NaN', function () {
+                expect(Maybe.fromFalsy(NaN)).toBeNoneMaybe()
+            })
+            it('0', function () {
+                expect(Maybe.fromFalsy(0)).toBeNoneMaybe()
+            })
+        })
+        describe('will create a some for', function () {
+            it('non empty string', function () {
+                expect(Maybe.fromFalsy("asdf")).toBeSomeMaybeWith("asdf")
+            })
+            it('number > 0', function () {
+                expect(Maybe.fromFalsy(1)).toBeSomeMaybeWith(1)
+            })
+            it('number < 0', function () {
+                expect(Maybe.fromFalsy(-1)).toBeSomeMaybeWith(-1)
+            })
+            it('array', function () {
+                const arrayRef = []
+                expect(Maybe.fromFalsy(arrayRef)).toBeSomeMaybeWith(arrayRef)
+            })
+            it('object', function () {
+                const objectRef = {}
+                expect(Maybe.fromFalsy(objectRef)).toBeSomeMaybeWith(objectRef)
+            })
+            it('true', function () {
+                expect(Maybe.fromFalsy(true)).toBeSomeMaybeWith(true)
+            })
+            it('Infinity', function () {
+                expect(Maybe.fromFalsy(Infinity)).toBeSomeMaybeWith(Infinity)
+            })
+            it('-Infinity', function () {
+                expect(Maybe.fromFalsy(-Infinity)).toBeSomeMaybeWith(-Infinity)
+            })
+        })
+    })
+
     describe('Maybe.fromNull', function () {
         describe('will create a none for', function () {
             it('undefined', function () {
