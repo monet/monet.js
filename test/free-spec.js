@@ -1,5 +1,5 @@
-describe("A Free monad", function () {
-    it("do Ken's simple box example", function () {
+describe('A Free monad', function () {
+    it('do Ken\'s simple box example', function () {
         var s1 = Free.liftF(Identity(1));
         var s2 = Free.liftF(Identity(2));
         var s3 = Free.liftF(Identity(3));
@@ -17,7 +17,7 @@ describe("A Free monad", function () {
         })).toBe(6)
     })
 
-    it("can use a function as a functor", function () {
+    it('can use a function as a functor', function () {
         var f1 = Free.liftF(function () {
             return 2 + 3
         })
@@ -26,10 +26,10 @@ describe("A Free monad", function () {
             return Free.liftF(function () {
                 return a * 2
             }).flatMap(function (b) {
-                    return Free.liftF(function () {
-                        return a * b
-                    })
+                return Free.liftF(function () {
+                    return a * b
                 })
+            })
         })
 
         expect(computation.go(function (f) {
@@ -38,7 +38,7 @@ describe("A Free monad", function () {
 
     })
 
-    it("will not blow the stack", function () {
+    it('will not blow the stack', function () {
         var limit = 1000
 
         function g(a) {
