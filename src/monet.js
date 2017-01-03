@@ -1195,7 +1195,7 @@
     }
 
     function addFunctorOps(type) {
-        if (!type.prototype.map) {
+        if (!isFunction(type.prototype.map)) {
             type.prototype.map = function (fn) {
                 return this.bind(compose(this.of, fn))
             }

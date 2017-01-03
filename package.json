@@ -43,6 +43,6 @@
     "copy:monet-pimp": "./node_modules/.bin/uglifyjs src/monet-pimp.js -o dist/monet-pimp.js  --lint --comments -b bracketize=true",
     "copy": "npm run copy:monet && npm run copy:monet-pimp && npm run copy:types",
     "lint": "./node_modules/.bin/eslint --env browser,node './src/**/*.js'",
-    "publ": "npm test && npm run copy && npm run minify"
+    "publ": "npm run copy && npm run minify"
   }
 }
