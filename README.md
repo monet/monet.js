@@ -163,6 +163,7 @@ The `Maybe` type is the most common way of representing *nothingness* (or the `n
 	var maybe = Maybe.Some(val);
 	var maybe = Maybe.None();
 	var maybe = Maybe.fromNull(val);  // none if val is null or undefined, some otherwise
+	var maybe = Maybe.fromFalsy(val); // none if val is a falsy value, some otherwise
 
 or more simply with the pimped method on Object.
 

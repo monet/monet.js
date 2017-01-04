@@ -139,6 +139,7 @@ interface IMaybeStatic extends IMonadStatic {
   Just: ISomeStatic;
   None: INoneStatic;
   Nothing: INoneStatic;
+  fromFalsy<V>(val: V|null|undefined): Maybe<V>;
   fromNull<V>(val: V|null|undefined): Maybe<V>;
   unit: ISomeStatic;
   of: ISomeStatic;    // alias for unit

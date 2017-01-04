@@ -464,6 +464,9 @@
     NEL.prototype.coflatMap = NEL.prototype.mapTails = NEL.prototype.cobind;
     NEL.prototype.ap = List.prototype.ap;
     var Maybe = root.Maybe = {};
+    Maybe.fromFalsy = function(val) {
+        return !val ? Maybe.None() : Maybe.Some(val);
+    };
     Maybe.fromNull = function(val) {
         return isNothing(val) ? Maybe.None() : Maybe.Some(val);
     };
