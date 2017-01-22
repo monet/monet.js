@@ -661,6 +661,9 @@
                 return fn(a) ? self : None()
             })
         },
+        orNoneIf: function (bool) {
+            return bool ? None() : this
+        },
         contains: function (val) {
             return this.isSome() ? areEqual(this.val, val) : false
         },
@@ -683,6 +686,7 @@
     Maybe.prototype.just = Maybe.prototype.some
     Maybe.prototype.isJust = Maybe.prototype.isSome
     Maybe.prototype.isNothing = Maybe.prototype.isNone
+    Maybe.prototype.orNothingIf = Maybe.prototype.orNoneIf
 
     Maybe.fn.init.prototype = Maybe.fn
 

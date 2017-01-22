@@ -117,6 +117,8 @@ export interface Maybe<T> extends IMonad<T>, IEquals<Maybe<T>>, ITraversable<T> 
   orJust(val: T): T;
   orNull(): T|null;
   orElse(maybe: Maybe<T>): Maybe<T>;
+  orNoneIf(val: boolean): Maybe<T>;
+  orNothingIf(val: boolean): Maybe<T>;
   contains(val: T): boolean;
   forEach(fn: (val: T) => void): void;
   orElseRun(fn: () => void): void;

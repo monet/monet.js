@@ -125,6 +125,12 @@ describe('A Maybe', function () {
             someString.orElseRun(sideEffectsReceiver.setVal)
             expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
+        it('will be unchanged on orNoneIf with false', function () {
+            expect(someString.orNoneIf(false)).toBe(someString)
+        })
+        it('will become none on orNoneIf with true', function () {
+            expect(someString.orNoneIf(true)).toBeNoneMaybe()
+        })
     })
 
     describe('without a value', function () {
@@ -211,6 +217,12 @@ describe('A Maybe', function () {
         it('will not invoke the forEach callback', function () {
             none.forEach(sideEffectsReceiver.setVal)
             expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
+        })
+        it('will be none on orNoneIf with false', function () {
+            expect(none.orNoneIf(false)).toBeNoneMaybe()
+        })
+        it('will be none on orNoneIf with true', function () {
+            expect(none.orNoneIf(true)).toBeNoneMaybe()
         })
     })
 
