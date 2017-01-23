@@ -307,6 +307,12 @@ Returns the value inside the `Maybe` if it is a Some otherwise returns null.
 
 Returns the Maybe if it is a Some otherwise returns the supplied Maybe.
 
+#### orNoneIf *alias: orNothingIf*
+
+    Maybe[A].orNoneIf(val: Boolean): Maybe[A]
+
+Returns `None` if the boolean is true, otherwise pass through the maybe value.
+
 #### ap
 
 	Maybe[A].ap(Maybe[A->B]): Maybe[B]
