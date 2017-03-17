@@ -157,6 +157,7 @@ describe('An Either', function () {
         })
         it('equals to Left with the same value', function() {
           expect(leftString.equals(Either.Left('error dude'))).toBeTruthy()
+          expect(leftString.equals(Either.ofLeft("error dude"))).toBeTruthy()
           expect(Left(Just(2)).equals(Left(Just(2)))).toBeTruthy()
         })
         it('does not equal to Rights with different values or Lefts', function() {

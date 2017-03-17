@@ -700,6 +700,9 @@
     Either.of = function(a) {
         return Right(a);
     };
+    Either.ofLeft = function(a) {
+        return Left(a);
+    };
     var Right = Either.Right = root.Right = function(val) {
         return new Either.fn.init(val, true);
     };
