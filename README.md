@@ -75,6 +75,11 @@ and `flatMap` (`bind`) will operate on the right side of the either.
 	var success = Either.Right(val);
 	var failure = Either.Left(val);
 
+or with:
+  
+	var success = Either.right(val);
+	var failure = Either.left(val);
+
 or with the pimped methods on object:
 
 	var success = val.right()
