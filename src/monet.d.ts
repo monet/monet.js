@@ -138,8 +138,10 @@ interface INoneStatic extends IMonadFactory {
 
 interface IMaybeStatic extends IMonadStatic {
   Some: ISomeStatic;
+  some: ISomeStatic;
   Just: ISomeStatic;
   None: INoneStatic;
+  none: INoneStatic;
   Nothing: INoneStatic;
   fromFalsy<V>(val: V|null|undefined): Maybe<V>;
   fromNull<V>(val: V|null|undefined): Maybe<V>;
@@ -192,7 +194,9 @@ export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>, ITravers
 
 interface IEitherStatic extends IMonadStatic {
   Right: IRightStatic;
+  right: IRightStatic;
   Left: ILeftStatic;
+  left: ILeftStatic;
   unit: IRightStatic;
   of: IRightStatic;    // alias for unit
   pure: IRightStatic;  // alias for unit
