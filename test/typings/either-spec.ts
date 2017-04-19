@@ -1,6 +1,6 @@
 import { Either, Right, Left, IO } from '../../src/monet';
 
-function getType(action) {
+function getType(action: { type: string }) {
     return action.type === 'MESSAGE' ? Right<string, string>(action.type) : Left<string, string>('BadType');
 }
 
@@ -62,7 +62,7 @@ const nameError: string = Left('-- Adamovisch').leftMap((n:string) => n.split(' 
 
 const messageCopy: string = Left<number, string>(404)
     .leftMap(String)
-    .ap(unpacked.map(m => p => p + ' ' + m))
+    .ap(unpacked.map(m => (p: string) => p + ' ' + m))
     .cata(e => e, v => v);
 
 const contains: boolean = wrappedGreeting.contains("test");
