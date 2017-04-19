@@ -7,21 +7,26 @@ The `Maybe` type is the most common way of representing *nothingness* (or the `n
 ## Constructors
 
 ```javascript
-Some(5)
-Just(5)
+Some(5);
+Just(5);
 // => Some(5)
 
-Maybe.of('a')
-Maybe.unit('a')
-Maybe.pure('a')
+Maybe.of('a');
+Maybe.unit('a');
+Maybe.pure('a');
+Maybe.some('a');
+Maybe.Some('a');
 // => Some('a')
 
-Maybe.fromNull('b')
-Maybe.fromFalsy('b')
+Maybe.fromNull('b');
+Maybe.fromFalsy('b');
 // => Some('a')
 
 None();
 Nothing();
+Maybe.none();
+Maybe.None();
+Maybe.Nothing();
 // => None
 
 Maybe.fromNull();

@@ -1,4 +1,4 @@
-import {List, Nil, Maybe, Some, Either, Right, Validation, Success, IO, Reader, None} from 'src/monet';
+import {List, Nil, Maybe, Some, Either, Right, Validation, Success, IO, Reader, None} from '../../src/monet';
 
 const x: List<List<string>> = List.fromArray(['1', '2', '3']).map(Number)
     .takeLeft(List.of(true))

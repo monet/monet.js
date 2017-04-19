@@ -111,7 +111,10 @@ describe('A Maybe', function () {
         })
         it('will compare for equality', function () {
             expect(someString.equals(Some('abcd'))).toBeTruthy()
+            expect(someString.equals(Maybe.some('abcd'))).toBeTruthy()
             expect(someString.equals(None())).toBeFalsy()
+            expect(someString.equals(Nothing())).toBeFalsy()
+            expect(someString.equals(Maybe.none())).toBeFalsy()
         })
         it('will render as Just(x)', function () {
             expect(someString.inspect()).toBe('Just(abcd)')
@@ -205,10 +208,15 @@ describe('A Maybe', function () {
         })
         it('will compare for equality', function () {
             expect(none.equals(Maybe.None())).toBeTruthy()
+            expect(none.equals(Maybe.none())).toBeTruthy()
+            expect(none.equals(Nothing())).toBeTruthy()
             expect(none.equals(Maybe.Just(1))).toBeFalsy()
+            expect(none.equals(Maybe.some(1))).toBeFalsy()
         })
         it('will render as Nothing', function () {
             expect(none.inspect()).toBe('Nothing')
+            expect(Maybe.none().inspect()).toBe('Nothing')
+            expect(Nothing().inspect()).toBe('Nothing')
         })
         it('will invoke side-effects on orElseRun', function () {
             none.orElseRun(sideEffectsReceiver.setVal)
