@@ -237,6 +237,10 @@ describe('A Validation', function () {
 
         })
 
+        it('should be compatible with Fantasy Land', function () {
+            expect(validateAddress.ap).toBe(validateAddress['fantasy-land/ap'])
+        })
+
         it('will apply function for apply2 with two successes', function () {
             var createPersonString = function (f, l) {
                 return f + ' ' + l

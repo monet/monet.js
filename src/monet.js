@@ -87,27 +87,6 @@
         return true
     }
 
-    /* Curried equality check - useful for comparing monads */
-    function equals(a) {
-        return function (b) {
-            return isFunction(a.equals) ? a.equals(b) : a === b
-        }
-    }
-
-    function falseFunction() {
-        return false
-    }
-
-    function swap(f) {
-        return function (a, b) {
-            return f(b, a)
-        }
-    }
-
-    function apply2(a1, a2, f) {
-        return a2.ap(a1.map(curry(f, [])))
-    }
-
     /* eslint-disable complexity */
     function areEqual(a, b) {
         // a !== a && b !== b is about NaN
@@ -125,6 +104,27 @@
         return false
     }
     /* eslint-enable complexity */
+
+    /* Curried equality check - useful for comparing monads */
+    function equals(a) {
+        return function (b) {
+            return areEqual(a, b)
+        }
+    }
+
+    function falseFunction() {
+        return false
+    }
+
+    function swap(f) {
+        return function (a, b) {
+            return f(b, a)
+        }
+    }
+
+    function apply2(a1, a2, f) {
+        return a2.ap(a1.map(curry(f, [])))
+    }
 
     // List and NEL monads commons
 
@@ -1175,6 +1175,16 @@
 
     // Add aliases
 
+    function addFantasyLandAliases(type) {
+        ['ap', 'equals']
+            .filter(function (method) {
+                return isFunction(type.prototype[method])
+            })
+            .forEach(function (method) {
+                type.prototype['fantasy-land/' + method] = type.prototype[method]
+            })
+    }
+
     function addAliases(type) {
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
         type.pure = type.unit = type.of
@@ -1183,9 +1193,6 @@
             type.prototype.concat = type.prototype.append
         }
         type.prototype.point = type.prototype.pure = type.prototype.unit = type.prototype.of
-        if (typeof type.prototype.ap !== 'undefined') {
-            type.prototype['fantasy-land/ap'] = type.prototype.ap
-        }
     }
 
     // Wire up aliases
@@ -1233,6 +1240,7 @@
         addMonadOps(type)
         addFunctorOps(type)
         addApplicativeOps(type)
+        addFantasyLandAliases(type)
     }
 
     decorate(MonadT)

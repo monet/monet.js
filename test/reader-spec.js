@@ -49,6 +49,11 @@ describe('A Reader Monad', function () {
 
     })
 
+    it('should be compatible with Fantasy Land', function () {
+        var reader = connect('something')
+        expect(reader.ap).toBe(reader['fantasy-land/ap'])
+    })
+
     it('must support local', function () {
         var reader = connect('something').flatMap(function (connectionString) {
             return Reader(function (key) {

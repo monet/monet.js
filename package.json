@@ -31,7 +31,7 @@
   "scripts": {
     "test": "npm run test:karma && npm run test:typings && npm run lint",
     "test:karma": "./node_modules/.bin/karma start",
-    "test:typings": "./node_modules/.bin/tsc -m system --noEmit --listFiles",
+    "test:typings": "./node_modules/.bin/tsc -m system",
     "tdd": "./node_modules/.bin/karma start --auto-watch --no-single-run",
     "tdd-full": "./node_modules/.bin/karma start --auto-watch --no-single-run --browsers Chrome,Firefox,PhantomJS",
     "tdd-full-osx": "./node_modules/.bin/karma start --auto-watch --no-single-run --browsers Chrome,Firefox,PhantomJS,Safari",

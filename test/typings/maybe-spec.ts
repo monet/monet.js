@@ -1,6 +1,6 @@
 import { Maybe, Some, None, Just, Nothing, IO } from '../../src/monet';
 
-function getType(action) {
+function getType(action: { type: string }) {
     return Maybe.fromNull(action.type).filter(t => t !== 'MESSAGE');
 }
 
@@ -73,8 +73,11 @@ const messageCopy: string = Maybe.Nothing().ap(unpacked.map(m => () => m)).orSom
 Maybe.Just("hello").orNoneIf(false).forEach((str:string) => console.log(str));
 None<string>().orNothingIf(true).orElseRun(() => console.log("oops"));
 
-const plus18 = (val) => val + 18;
+const plus18 = (val: number) => val + 18;
 
-console.assert( Maybe.some(12).map(plus18).some() == 30);
-console.assert( Maybe.none().map(plus18).isNone());
+console.assert(Maybe.some(12).map(plus18).some() == 30);
+console.assert(Maybe.none().map(plus18).isNone());
+console.assert(Some(11).map(plus18).isNone());
+console.assert(Maybe.of('a').flatMap(a => Some(a + 'b')).orNull() === null);
+console.assert(Maybe.of('a').filter(Boolean).orJust('b') === null);
 console.log(name, surname, message, messageCopy);
