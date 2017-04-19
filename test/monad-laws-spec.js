@@ -16,7 +16,7 @@ describe('The Monad', function () {
 
             var f = monad.of(123).bind(fa)
             var fapply = fa(123)
-            expect(equals(f, fapply)).toBeTruthy()
+            expect(equals(f, fapply)).toBe(true)
         })
 
         it('must obey right identity', function () {
@@ -25,7 +25,7 @@ describe('The Monad', function () {
                 return monad.of(x)
             })
 
-            expect(equals(m, m1)).toBeTruthy()
+            expect(equals(m, m1)).toBe(true)
 
         })
 
@@ -37,7 +37,7 @@ describe('The Monad', function () {
             var b = (m.bind(function (x) {
                 return monad.of(x * 2).bind(fa)
             }))
-            expect(equals(a, b)).toBeTruthy()
+            expect(equals(a, b)).toBe(true)
 
         })
 
@@ -51,7 +51,7 @@ describe('The Monad', function () {
             var b = m.bind(function (t) {
                 return m.unit(f(t))
             })
-            expect(equals(a, b)).toBeTruthy()
+            expect(equals(a, b)).toBe(true)
         })
     }
 

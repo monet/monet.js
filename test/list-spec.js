@@ -43,7 +43,7 @@ describe('An immutable list', function () {
             [3, 4],
             [4],
             []
-        ]).map(List.fromArray))).toBeTruthy()
+        ]).map(List.fromArray))).toBe(true)
     })
 
     it('will return proper size on size()', function () {
@@ -58,7 +58,7 @@ describe('An immutable list', function () {
     })
 
     it('can be created from an Array', function () {
-        expect(List.fromArray([1, 2, 3, 4]).equals(list)).toBeTruthy()
+        expect(List.fromArray([1, 2, 3, 4]).equals(list)).toBe(true)
     })
 
     it('can be mapped', function () {

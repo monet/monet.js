@@ -70,9 +70,21 @@
     function trueFunction() {
         return true;
     }
+    function areEqual(a, b) {
+        if (a === b || a !== a && b !== b) {
+            return true;
+        }
+        if (!a || !b) {
+            return false;
+        }
+        if (isFunction(a.equals) && isFunction(b.equals)) {
+            return a.equals(b);
+        }
+        return false;
+    }
     function equals(a) {
         return function(b) {
-            return isFunction(a.equals) ? a.equals(b) : a === b;
+            return areEqual(a, b);
         };
     }
     function falseFunction() {
@@ -85,18 +97,6 @@
     }
     function apply2(a1, a2, f) {
         return a2.ap(a1.map(curry(f, [])));
-    }
-    function areEqual(a, b) {
-        if (a === b || a !== a && b !== b) {
-            return true;
-        }
-        if (!a || !b) {
-            return false;
-        }
-        if (isFunction(a.equals) && isFunction(b.equals)) {
-            return a.equals(b);
-        }
-        return false;
     }
     function listEquals(list1, list2) {
         var a = list1;

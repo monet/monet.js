@@ -87,27 +87,6 @@
         return true
     }
 
-    /* Curried equality check - useful for comparing monads */
-    function equals(a) {
-        return function (b) {
-            return isFunction(a.equals) ? a.equals(b) : a === b
-        }
-    }
-
-    function falseFunction() {
-        return false
-    }
-
-    function swap(f) {
-        return function (a, b) {
-            return f(b, a)
-        }
-    }
-
-    function apply2(a1, a2, f) {
-        return a2.ap(a1.map(curry(f, [])))
-    }
-
     /* eslint-disable complexity */
     function areEqual(a, b) {
         // a !== a && b !== b is about NaN
@@ -125,6 +104,27 @@
         return false
     }
     /* eslint-enable complexity */
+
+    /* Curried equality check - useful for comparing monads */
+    function equals(a) {
+        return function (b) {
+            return areEqual(a, b)
+        }
+    }
+
+    function falseFunction() {
+        return false
+    }
+
+    function swap(f) {
+        return function (a, b) {
+            return f(b, a)
+        }
+    }
+
+    function apply2(a1, a2, f) {
+        return a2.ap(a1.map(curry(f, [])))
+    }
 
     // List and NEL monads commons
 
