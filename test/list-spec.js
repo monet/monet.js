@@ -422,4 +422,9 @@ describe('An immutable list', function () {
         })
     })
 
+    it('should be compatible with Fantasy Land', function () {
+        var list = List.of('some val')
+        expect(list.equals).toBe(list['fantasy-land/equals'])
+    })
+
 })

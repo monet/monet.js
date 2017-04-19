@@ -992,6 +992,13 @@
         }
     };
     Identity.fn.init.prototype = Identity.fn;
+    function addFantasyLandAliases(type) {
+        [ "ap", "equals" ].filter(function(method) {
+            return isFunction(type.prototype[method]);
+        }).forEach(function(method) {
+            type.prototype["fantasy-land/" + method] = type.prototype[method];
+        });
+    }
     function addAliases(type) {
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind;
         type.pure = type.unit = type.of;
@@ -1039,6 +1046,7 @@
         addMonadOps(type);
         addFunctorOps(type);
         addApplicativeOps(type);
+        addFantasyLandAliases(type);
     }
     decorate(MonadT);
     decorate(Either);

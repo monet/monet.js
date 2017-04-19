@@ -119,6 +119,11 @@ describe('An Either', function () {
             expect(rightString.equals(Either.Right('x'))).toBe(false)
             expect(rightString.equals(Either.right('x'))).toBe(false)
         })
+
+        it('should be compatible with Fantasy Land', function () {
+            expect(rightString.equals).toBe(rightString['fantasy-land/equals'])
+        })
+
         it('renders as Right(value)', function () {
             expect(rightString.toString()).toBe('Right(abcd)')
         })
@@ -222,6 +227,11 @@ describe('An Either', function () {
             expect(leftString.equals(Either.Right('error dude'))).toBe(false)
             expect(leftString.equals(Either.right('error dude'))).toBe(false)
         })
+
+        it('should be compatible with Fantasy Land', function () {
+            expect(leftString.equals).toBe(leftString['fantasy-land/equals'])
+        })
+
         it('renders as Left(x)', function () {
             expect(leftString.toString()).toBe('Left(error dude)')
         })
@@ -263,7 +273,9 @@ describe('An Either', function () {
             var result = Either.Left('no address').ap(Either.Left('no surname').ap(validateForename.map(person)))
             expect(result.left()).toBe('no address')
         })
-
+        it('should be compatible with Fantasy Land', function () {
+            expect(validateAddress.ap).toBe(validateAddress['fantasy-land/ap'])
+        })
     })
 
     // TODO: Provide additional test suite for `monet-pimp`

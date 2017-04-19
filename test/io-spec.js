@@ -47,5 +47,8 @@ describe('An IO monad', function () {
             })
             expect(effect.ap(ioWithFn).run()).toBe('cool effect')
         })
+      it('and is compatible with Fantasy Land', function () {
+        expect(effect.ap).toBe(effect['fantasy-land/ap'])
+      })
     })
 })

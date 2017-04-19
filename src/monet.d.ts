@@ -1,6 +1,9 @@
-interface IEquals<A> {
-  equals(a: A): boolean
+// https://github.com/fantasyland/fantasy-land#setoid
+export interface ISetoid<A> {
+  equals(other: A): boolean;
+  'fantasy-land/equals'(other: A): boolean;
 }
+
 /* The (covariant) functor typeclass */
 interface Functor<T> {
   map<V>(fn: (val: T) => V): Functor<V>;
@@ -15,8 +18,10 @@ interface Bind<T> {
 }
 
 /* Applicative allows applying wrapped functions to wrapped elements */
+// https://github.com/fantasyland/fantasy-land#applicative
 interface Applicative<T> {
   ap<V>(afn: Applicative<(val: T) => V>): Applicative<T>
+  'fantasy-land/ap'<V>(afn: Applicative<(val: T) => V>): Applicative<T>
 }
 
 /* Typeclass for traversables */
@@ -88,7 +93,7 @@ export var Identity: IIdentityStatic;
  * Maybe
  */
 
-export interface Maybe<T> extends IMonad<T>, IEquals<Maybe<T>>, ITraversable<T> {
+export interface Maybe<T> extends IMonad<T>, ISetoid<Maybe<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
   flatMap<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
@@ -160,7 +165,7 @@ export var Maybe: IMaybeStatic;
  * Either
  */
 
-export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>, ITraversable<T> {
+export interface Either<E, T> extends IMonad<T>, ISetoid<Either<E, T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
   flatMap<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
@@ -222,7 +227,7 @@ interface IValidationAcc extends Function {
   (): IValidationAcc;
 }
 
-export interface Validation<E, T> extends IMonad<T>, IEquals<Validation<E, T>>, ITraversable<T> {
+export interface Validation<E, T> extends IMonad<T>, ISetoid<Validation<E, T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
   flatMap<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
@@ -283,7 +288,7 @@ export var Fail: IFailStatic;
  * List
  */
 
-export interface List<T> extends IMonad<T>, IEquals<List<T>>, ITraversable<T> {
+export interface List<T> extends IMonad<T>, ISetoid<List<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => List<V>): List<V>;
   flatMap<V>(fn: (val: T) => List<V>): List<V>;
@@ -355,7 +360,7 @@ export var Nil: Nil;
  * NEL
  */
 
-export interface NEL<T> extends IMonad<T>, IEquals<NEL<T>>, ITraversable<T> {
+export interface NEL<T> extends IMonad<T>, ISetoid<NEL<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => NEL<V>): NEL<V>;
   flatMap<V>(fn: (val: T) => NEL<V>): NEL<V>;
