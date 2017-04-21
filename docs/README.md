@@ -167,12 +167,13 @@ None().takeRight(Some(2))
 - [toValidation](MAYBE.md#tovalidation)
 - [toList](MAYBE.md#tolist)
 - [filter](MAYBE.md#filter)
+- cata
+- equals
 - join
 - takeLeft
 - takeRight
-- cata
 
-## Either
+## [Either](EITHER.md)
 
 - [map](EITHER.md#map)
 - [leftMap](EITHER.md#leftmap)
@@ -194,13 +195,38 @@ None().takeRight(Some(2))
 - [forEachLeft](EITHER.md#foreachleft)
 - [toValidation](EITHER.md#tovalidation)
 - [toMaybe](EITHER.md#tomaybe)
+- equals
 - join
 - takeLeft
 - takeRight
 
-## Validation
+## [Validation](VALIDATION.md)
 
-TBD…
+- [map](VALIDATION.md#map)
+- [failMap](VALIDATION.md#failmap)
+- [flatMap](VALIDATION.md#flatmap)
+- [bind](VALIDATION.md#flatmap)
+- [chain](VALIDATION.md#flatmap)
+- [isSuccess](VALIDATION.md#issuccess)
+- [isFail](VALIDATION.md#isfail)
+- [success](VALIDATION.md#success)
+- [fail](VALIDATION.md#fail)
+- [ap](VALIDATION.md#ap)
+- [cata](VALIDATION.md#cata)
+- [fold](VALIDATION.md#cata)
+- [foldLeft](VALIDATION.md#foldleft)
+- [foldRight](VALIDATION.md#foldright)
+- [contains](VALIDATION.md#contains)
+- [forEach](VALIDATION.md#foreach)
+- [forEachFail](VALIDATION.md#foreachfail)
+- [toEither](VALIDATION.md#toeither)
+- [toMaybe](VALIDATION.md#tomaybe)
+- equals
+- join
+- takeLeft
+- takeRight
+- bimap
+- acc
 
 ## [List](LIST.md)
 
@@ -226,6 +252,7 @@ TBD…
 - [sequenceReader](LIST.md#sequencereader)
 - [reverse](LIST.md#reverse)
 - [forEach](LIST.md#foreach)
+- equals
 - join
 - takeLeft
 - takeRight
