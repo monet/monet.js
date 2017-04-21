@@ -52,8 +52,6 @@ npm install monet --save
 npm install monet@0.9.0-alpha.2
 ```
 
----
-
 ## Maybe
 
 The `Maybe` type is the most common way of representing *nothingness* (or the `null` type) with making the possibilities of `NullPointer` issues disappear.
@@ -62,178 +60,15 @@ The `Maybe` type is the most common way of representing *nothingness* (or the `n
 
 [documentation](docs/MAYBE.md)
 
----
-
 ## Either
 Either (or the disjunct union) is a type that can either hold a value of type `A` or a value of type `B` but never at the same time. Typically it is used to represent computations that can fail with an error.  Think of it as a better way to handle exceptions.  We think of an `Either` as having two sides, the success is held on the right and the failure on the left.  This is a right biased either which means that `map` and `flatMap` (`bind`) will operate on the right side of the either.
 
 [documentation](docs/EITHER.md)
 
----
-
 ## Validation
-Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods.  It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors.  We will represent a Validation like this: `Validation[E,A]` where `E` represents the error type and `A` represents the success type.
+Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods. It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors.  We will represent a Validation like this: `Validation[E,A]` where `E` represents the error type and `A` represents the success type.
 
-#### Creating a Validation
-
-	var success = Validation.success(val);
-	var failure = Validation.fail("some error");
-
-or with pimped methods on an object
-
-	var success = val.success();
-	var failure = "some error".fail();
-
-### Functions
-
-#### map
-
-	Validation[E,A].map(fn:A => B): Validation[E,A]
-
-`map` takes a function (A => B) and applies that function to the value inside the `success` side of the `Validation` and returns another `Validation`.
-
-For example:
-
-	Validation.success(123).map(function(val) { return val + 1})
-	//result: Success(124)
-
-#### bind *alias: flatMap, chain*
-
-	Validation[E,A].bind(fn:A => Validation[E,B]) : Validation[E,B]
-
-`bind` takes a function that takes a value and returns a `Validation`.  The value to the function will be supplied from the `Validation` you are binding on.
-
-For example:
-
-	validation.bind(function(val) {
-		if (val == "hi") {
-			return Validation.success("world")
-		} else {
-			return Validation.fail("wow, you really failed.")
-		}
-	})
-
-
-#### isSuccess
-
-	Validation[E,A].isSuccess() : Boolean
-
-Will return `true` if this is a successful validation, `false` otherwise.
-
-#### isFail
-
-	Validation[E,A].isFail() : Boolean
-
-Will return `false` if this is a failed validation, `true` otherwise.
-
-#### success
-
-	Validation[E,A].success() : A
-
-Will return the successful value.
-
-
-#### fail
-
-	Validation[E,A].fail() : E
-
-Will return the failed value, usually an error message.
-
-#### ap
-
-	Validation[E,A].ap(v: Validation[E, A=>B]) : Validation[E,B]
-
-Implements the applicative functor pattern.  `ap` will apply a function over the validation from within the supplied validation.  If any of the validations are `fail`s then the function will collect the errors.
-
-	var person = function (forename, surname, address) {
-        return forename + " " + surname + " lives at " + address
-    }.curry();
-
-
-    var validateAddress = Validation.success('Dulwich, London')
-    var validateSurname = Validation.success('Baker')
-    var validateForename = Validation.success('Tom')
-
-    var personString = validateAddress.ap(validateSurname
-    	.ap(validateForename.map(person))).success()
-
-    // result: "Tom Baker lives at Dulwich, London"
-
-    var result = Validation.fail(["no address"])
-    	.ap(Validation.fail(["no surname"])
-    	.ap(validateForename.map(person)))
-    // result: Validation(["no address", "no surname"])
-
-#### cata *alias: fold*
-
-	Validation[E,A].cata(failureFn: E=>X, successFn: A=>X): X
-
-The catamorphism for validation.  If the validation is `success` the success function will be executed with the success value and the value of the function returned. Otherwise the `failure` function will be called with the failure value.
-
-For example:
-
-	var result = v.cata(function(failure) {
-		return "oh dear it failed because " + failure
-	}, function(success) {
-		return "yay! " + success
-	})
-
-#### foldLeft
-
-	Validation[E,A].foldLeft(initialValue: B)(fn: (acc: B, element: A) -> B): B
-
-`foldLeft` takes an initial value and a function, and will 'reduce' the `Validation` to a single value.  The supplied function takes an accumulator as its first argument and the contents of the success side of the `Validation` as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass.
-
-
-For example:
-
-	Validation.fail("fail").foldLeft(-1)(function (acc, value) {
-		return value.length
-	})
-	//result: -1
-
-	Validation.success("success").foldLeft(-1)(function (acc, value) {
-		return value.length
-	})
-	//result: 7
-
-#### foldRight
-
-	Validation[E,A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
-
-Performs a fold right across the success side of the `Validation`.  As a success `Validation` can contain at most a single value, `foldRight` is functionally equivalent to `foldLeft`.
-
-#### contains
-
-    Validation[E,A].contains(val: A): Boolean
-
-Returns true if the `Validation` is a success containing the given value.
-
-#### forEach
-
-    Validation[E,A].forEach(fn: A => void): void
-
-Invoke a function applying a side-effect on the contents of the Validation if it's a success.
-
-#### forEachLeft
-
-    Validation[E,A].forEachFail(fn: E => void): void
-
-Invoke a function applying a side-effect on the contents of the Validation if it's a failure.
-
-#### toEither
-
-	Validation[E,A].toEither(): Either[E,A]
-
-Converts a `Validation` to an `Either`
-
-#### toMaybe
-
-	Validation[E,A].toMaybe(): Maybe[A]
-
-Converts to a `Maybe` dropping the failure side.
-
----
+[documentation](docs/VALIDATION.md)
 
 ## Immutable lists
 
