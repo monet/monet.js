@@ -297,3 +297,20 @@ Maybe[A].toList: List[A]
 ```
 
 Converts to a list, returns an Empty list on None.
+
+### filter
+
+```scala
+Maybe[A].filter(fn: A => Boolean): Maybe[A]
+```
+
+Convert to a `None` if predicate function return [falsy](https://developer.mozilla.org/pl/docs/Glossary/Falsy) value, otherwise return the same `Maybe`.
+For example:
+
+```javascript
+Some('James').filter(val => val === 'James')
+// => Some('James')
+
+Some('John').filter(val => val === 'James')
+// => None()
+```
