@@ -166,11 +166,11 @@ None().takeRight(Some(2))
 - [toEither](MAYBE.md#toeither)
 - [toValidation](MAYBE.md#tovalidation)
 - [toList](MAYBE.md#tolist)
+- [filter](MAYBE.md#filter)
 - join
 - takeLeft
 - takeRight
 - cata
-- filter
 
 ## Either
 
