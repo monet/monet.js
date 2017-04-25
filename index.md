@@ -914,14 +914,19 @@ On their own both functions would have a side effect because they violate refere
 
 We can modify this functions so that instead of performing these side-effects they will just return an `IO` with the yet-to-be-executed function inside it.
 
-	var read = IO(function (id) { return $(id).text() })
+	var read = function(id) {
+		return IO(function() {
+		  return $(id).text();
+		});
+	};
 
-	var write = function(id) {
-		return IO(function(value) {
-			$(id).text(value)
-		})
-	}
 
+	var write = curry(function(id, value) {
+		return IO(function() {
+			return $(id).text(value);
+		});
+	});
+    
 You can call `write(id)` until you are blue in the face but all it will do is return an `IO` with a function inside.
 
 We can now call `map` and `flatMap` to chain this two effects together.  Say we wanted to read from a `div` covert all the text to uppercase and then write back to that `div`.
