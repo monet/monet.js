@@ -109,13 +109,21 @@ describe('An Either', function () {
             expect(rightString.toValidation().success()).not.toBeUndefined()
         })
         it('equals to Right with the same value', function () {
-            expect(rightString.equals(Either.Right('abcd'))).toBeTruthy()
-            expect(Right(Just(2)).equals(Right(Just(2)))).toBeTruthy()
+            expect(rightString.equals(Either.Right('abcd'))).toBe(true)
+            expect(rightString.equals(Either.right('abcd'))).toBe(true)
+            expect(Right(Just(2)).equals(Right(Just(2)))).toBe(true)
         })
         it('does not equal to Rights with different values or Lefts', function () {
-            expect(rightString.equals(Either.Left('abcd'))).toBeFalsy()
-            expect(rightString.equals(Either.Right('x'))).toBeFalsy()
+            expect(rightString.equals(Either.Left('abcd'))).toBe(false)
+            expect(rightString.equals(Either.left('abcd'))).toBe(false)
+            expect(rightString.equals(Either.Right('x'))).toBe(false)
+            expect(rightString.equals(Either.right('x'))).toBe(false)
         })
+
+        it('should be compatible with Fantasy Land', function () {
+            expect(rightString.equals).toBe(rightString['fantasy-land/equals'])
+        })
+
         it('renders as Right(value)', function () {
             expect(rightString.toString()).toBe('Right(abcd)')
         })
@@ -210,13 +218,20 @@ describe('An Either', function () {
             expect(leftString.toValidation().fail()).not.toBeUndefined()
         })
         it('equals to Left with the same value', function () {
-            expect(leftString.equals(Either.Left('error dude'))).toBeTruthy()
-            expect(Left(Just(2)).equals(Left(Just(2)))).toBeTruthy()
+            expect(leftString.equals(Either.Left('error dude'))).toBe(true)
+            expect(leftString.equals(Either.left('error dude'))).toBe(true)
+            expect(Left(Just(2)).equals(Left(Just(2)))).toBe(true)
         })
         it('does not equal to Rights with different values or Lefts', function () {
             expect(leftString.equals(Either.Left('x'))).toBeFalsy()
-            expect(leftString.equals(Either.Right('error dude'))).toBeFalsy()
+            expect(leftString.equals(Either.Right('error dude'))).toBe(false)
+            expect(leftString.equals(Either.right('error dude'))).toBe(false)
         })
+
+        it('should be compatible with Fantasy Land', function () {
+            expect(leftString.equals).toBe(leftString['fantasy-land/equals'])
+        })
+
         it('renders as Left(x)', function () {
             expect(leftString.toString()).toBe('Left(error dude)')
         })
@@ -258,7 +273,9 @@ describe('An Either', function () {
             var result = Either.Left('no address').ap(Either.Left('no surname').ap(validateForename.map(person)))
             expect(result.left()).toBe('no address')
         })
-
+        it('should be compatible with Fantasy Land', function () {
+            expect(validateAddress.ap).toBe(validateAddress['fantasy-land/ap'])
+        })
     })
 
     // TODO: Provide additional test suite for `monet-pimp`

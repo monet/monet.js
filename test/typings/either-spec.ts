@@ -1,6 +1,6 @@
-import { Either, Right, Left, IO } from 'src/monet';
+import { Either, Right, Left, IO } from '../../src/monet';
 
-function getType(action) {
+function getType(action: { type: string }) {
     return action.type === 'MESSAGE' ? Right<string, string>(action.type) : Left<string, string>('BadType');
 }
 
@@ -40,10 +40,11 @@ function getMessage(msg: IMessage|null) {
     return Left<string, IMessage>('BadMessageFormat.');
 }
 
-const wrapped = getMessage({type: 'MESSAGE', payload: 'Hello World'});
+const message: IMessage = {type: 'MESSAGE', payload: 'Hello World'};
+const wrapped = getMessage(message);
 
 console.assert(!(wrapped.isRight() === wrapped.isLeft()));
-console.assert(wrapped.equals(Right<string, IMessage>({type: 'MESSAGE', payload: 'Hello World'})))
+console.assert(wrapped.equals(Right<string, IMessage>(message)));
 
 const wrappedGreeting: Either<string, string> = wrapped.bind(v => v.payload ?
     Right<string, string>(v.payload) :
@@ -61,11 +62,17 @@ const nameError: string = Left('-- Adamovisch').leftMap((n:string) => n.split(' 
 
 const messageCopy: string = Left<number, string>(404)
     .leftMap(String)
-    .ap(unpacked.map(m => p => p + ' ' + m))
+    .ap(unpacked.map(m => (p: string) => p + ' ' + m))
     .cata(e => e, v => v);
 
 const contains: boolean = wrappedGreeting.contains("test");
 Right<number, string>("hello").forEach((str:string) => console.log(str));
 Left<string, number>("none").forEachLeft((str:string) => console.log("oops"));
+
+const twelve: Either<string, number> = Either.right<string,number>(12);
+const oops: Either<string, number> = Either.left<string,number>("oops");
+
+console.assert(twelve.right() === 12);
+console.assert(oops.left() === "oops");
 
 console.log(nameError, messageCopy);

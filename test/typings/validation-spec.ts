@@ -1,6 +1,6 @@
-import { Validation, Success, Fail, IO } from 'src/monet';
+import { Validation, Success, Fail, IO } from '../../src/monet';
 
-function getType(action) {
+function getType(action: { type: string }) {
     return action.type === 'MESSAGE' ? Success<string, string>(action.type) : Fail<string, string>('BadType');
 }
 
@@ -63,8 +63,8 @@ function getHttpError(code: number) {
 }
 
 const messageErrors: string = getHttpError(404).failMap<string>(String).failMap(Array)
-    .ap(getHttpError(400).failMap(String).failMap(Array).map(v => t => v + t))
-    .ap(getHttpError(500).failMap(String).failMap(Array).map(v => t => v + t))
+    .ap(getHttpError(400).failMap(String).failMap(Array).map(v => (t: string) => v + t))
+    .ap(getHttpError(500).failMap(String).failMap(Array).map(v => (t: string) => v + t))
     .cata(e => e.join(), v => v);
 
 const messageCopy: string = Success<number[], string>('message: Yo man!')

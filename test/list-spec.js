@@ -43,7 +43,7 @@ describe('An immutable list', function () {
             [3, 4],
             [4],
             []
-        ]).map(List.fromArray))).toBeTruthy()
+        ]).map(List.fromArray))).toBe(true)
     })
 
     it('will return proper size on size()', function () {
@@ -58,7 +58,7 @@ describe('An immutable list', function () {
     })
 
     it('can be created from an Array', function () {
-        expect(List.fromArray([1, 2, 3, 4]).equals(list)).toBeTruthy()
+        expect(List.fromArray([1, 2, 3, 4]).equals(list)).toBe(true)
     })
 
     it('can be mapped', function () {
@@ -420,6 +420,11 @@ describe('An immutable list', function () {
         xdescribe('chain()', function () {
             it('being associative', function () { })
         })
+    })
+
+    it('should be compatible with Fantasy Land', function () {
+        var list = List.of('some val')
+        expect(list.equals).toBe(list['fantasy-land/equals'])
     })
 
 })

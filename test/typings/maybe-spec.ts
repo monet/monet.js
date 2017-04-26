@@ -1,6 +1,6 @@
-import { Maybe, Some, None, Just, Nothing, IO } from 'src/monet';
+import { Maybe, Some, None, Just, Nothing, IO } from '../../src/monet';
 
-function getType(action) {
+function getType(action: { type: string }) {
     return Maybe.fromNull(action.type).filter(t => t !== 'MESSAGE');
 }
 
@@ -47,13 +47,13 @@ function getMessage(msg: IMessage|null): Maybe<IMessage> {
     }
     return None<IMessage>();
 }
-
-const wrapped = getMessage({type: 'MESSAGE', payload: 'Hello World'});
+const msg: IMessage = {type: 'MESSAGE', payload: 'Hello World'};
+const wrapped = getMessage(msg);
 
 console.assert(wrapped.isSome() === wrapped.isJust());
 console.assert(wrapped.isNone() === wrapped.isNothing());
 console.assert(!(wrapped.isNone() === wrapped.isJust()));
-console.assert(wrapped.equals(Some({type: 'MESSAGE', payload: 'Hello World'})))
+console.assert(wrapped.equals(Some(msg)));
 
 const wrappedGreeting: Maybe<string> = wrapped.bind(v => Maybe.fromNull(v.payload));
 
@@ -69,8 +69,15 @@ log3b(getMessage({type: 'x', payload: null}).chain(getType));
 const name: string = None<string>().orSome('NAME');
 const surname: string = Nothing<string>().orJust('SURNAME');
 const message: string = Maybe.Just(0).filter(Boolean).map(String).orElse(unpacked).orJust('Hi!');
-const messageCopy: string = Nothing().ap(unpacked.map(m => () => m)).orSome('Hi!');
+const messageCopy: string = Maybe.Nothing().ap(unpacked.map(m => () => m)).orSome('Hi!');
 Maybe.Just("hello").orNoneIf(false).forEach((str:string) => console.log(str));
 None<string>().orNothingIf(true).orElseRun(() => console.log("oops"));
 
+const plus18 = (val: number) => val + 18;
+
+console.assert(Maybe.some(12).map(plus18).some() == 30);
+console.assert(Maybe.none().map(plus18).isNone());
+console.assert(Some(11).map(plus18).isNone());
+console.assert(Maybe.of('a').flatMap(a => Some(a + 'b')).orNull() === null);
+console.assert(Maybe.of('a').filter(Boolean).orJust('b') === null);
 console.log(name, surname, message, messageCopy);

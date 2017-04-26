@@ -87,27 +87,6 @@
         return true
     }
 
-    /* Curried equality check - useful for comparing monads */
-    function equals(a) {
-        return function (b) {
-            return isFunction(a.equals) ? a.equals(b) : a === b
-        }
-    }
-
-    function falseFunction() {
-        return false
-    }
-
-    function swap(f) {
-        return function (a, b) {
-            return f(b, a)
-        }
-    }
-
-    function apply2(a1, a2, f) {
-        return a2.ap(a1.map(curry(f, [])))
-    }
-
     /* eslint-disable complexity */
     function areEqual(a, b) {
         // a !== a && b !== b is about NaN
@@ -125,6 +104,27 @@
         return false
     }
     /* eslint-enable complexity */
+
+    /* Curried equality check - useful for comparing monads */
+    function equals(a) {
+        return function (b) {
+            return areEqual(a, b)
+        }
+    }
+
+    function falseFunction() {
+        return false
+    }
+
+    function swap(f) {
+        return function (a, b) {
+            return f(b, a)
+        }
+    }
+
+    function apply2(a1, a2, f) {
+        return a2.ap(a1.map(curry(f, [])))
+    }
 
     // List and NEL monads commons
 
@@ -572,11 +572,11 @@
         return Some(a)
     }
 
-    var Some = Maybe.Just = Maybe.Some = root.Some = root.Just = function (val) {
+    var Some = Maybe.Just = Maybe.Some = Maybe.some = root.Some = root.Just = function (val) {
         return new Maybe.fn.init(true, val)
     }
 
-    var None = Maybe.Nothing = Maybe.None = root.None = function () {
+    var None = Maybe.Nothing = Maybe.None = Maybe.none = root.None = root.Nothing = function () {
         return new Maybe.fn.init(false, null)
     }
 
@@ -900,10 +900,10 @@
         return Right(a)
     }
 
-    var Right = Either.Right = root.Right = function (val) {
+    var Right = Either.Right = Either.right = root.Right = function (val) {
         return new Either.fn.init(val, true)
     }
-    var Left = Either.Left = root.Left = function (val) {
+    var Left = Either.Left = Either.left = root.Left = function (val) {
         return new Either.fn.init(val, false)
     }
 
@@ -1175,6 +1175,16 @@
 
     // Add aliases
 
+    function addFantasyLandAliases(type) {
+        ['ap', 'equals']
+            .filter(function (method) {
+                return isFunction(type.prototype[method])
+            })
+            .forEach(function (method) {
+                type.prototype['fantasy-land/' + method] = type.prototype[method]
+            })
+    }
+
     function addAliases(type) {
         type.prototype.flatMap = type.prototype.chain = type.prototype.bind
         type.pure = type.unit = type.of
@@ -1233,6 +1243,7 @@
         addMonadOps(type)
         addFunctorOps(type)
         addApplicativeOps(type)
+        addFantasyLandAliases(type)
     }
 
     decorate(MonadT)

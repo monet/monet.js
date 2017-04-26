@@ -1,4 +1,4 @@
-import {List, Nil, Maybe, Some, Either, Right, Validation, Success, IO, Reader, None} from 'src/monet';
+import {List, Nil, Maybe, Some, Either, Right, Validation, Success, IO, Reader, None} from '../../src/monet';
 
 const x: List<List<string>> = List.fromArray(['1', '2', '3']).map(Number)
     .takeLeft(List.of(true))
@@ -13,7 +13,7 @@ const z: List<string> = y.flatten<string>()
     .append(List('WOW!'));
 const a: number = z.tails().foldLeft(0)((acc, t) => acc + t.size());
 const b: List<Maybe<number>> = x.foldRight(z)((l, acc) => acc.append(l))
-    .ap(List(Number, List(e => parseInt(e, 10))))
+    .ap(List(Number, List((e: string) => parseInt(e, 10))))
     .headMaybe().map(h => List(h)).orJust(List(0))
     .tails().map(t => t.filter(n => !isNaN(n)))
     .map(t => t.size() > 0 ? Some(t.head()) : None<number>());

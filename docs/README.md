@@ -166,15 +166,37 @@ None().takeRight(Some(2))
 - [toEither](MAYBE.md#toeither)
 - [toValidation](MAYBE.md#tovalidation)
 - [toList](MAYBE.md#tolist)
+- [filter](MAYBE.md#filter)
 - join
 - takeLeft
 - takeRight
 - cata
-- filter
 
 ## Either
 
-TBD…
+- [map](EITHER.md#map)
+- [leftMap](EITHER.md#leftmap)
+- [flatMap](EITHER.md#flatmap)
+- [bind](EITHER.md#flatmap)
+- [chain](EITHER.md#flatmap)
+- [ap](EITHER.md#ap)
+- [cata](EITHER.md#cata)
+- [fold](EITHER.md#cata)
+- [foldLeft](EITHER.md#foldleft)
+- [foldRight](EITHER.md#foldright)
+- [bimap](EITHER.md#bimap)
+- [isRight](EITHER.md#isright)
+- [isLeft](EITHER.md#isleft)
+- [right](EITHER.md#right)
+- [left](EITHER.md#left)
+- [contains](EITHER.md#contains)
+- [forEach](EITHER.md#foreach)
+- [forEachLeft](EITHER.md#foreachleft)
+- [toValidation](EITHER.md#tovalidation)
+- [toMaybe](EITHER.md#tomaybe)
+- join
+- takeLeft
+- takeRight
 
 ## Validation
 

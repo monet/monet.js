@@ -14,32 +14,37 @@ Just(5)
 Maybe.of('a')
 Maybe.unit('a')
 Maybe.pure('a')
-// => Some('a')
+Maybe.some('a')
+Maybe.Some('a')
+// => Some("a")
 
 Maybe.fromNull('b')
 Maybe.fromFalsy('b')
-// => Some('a')
+// => Some("a")
 
-None();
-Nothing();
+None()
+Nothing()
+Maybe.none()
+Maybe.None()
+Maybe.Nothing()
 // => None
 
-Maybe.fromNull();
-Maybe.fromNull(null);
-Maybe.fromNull(undefined);
+Maybe.fromNull()
+Maybe.fromNull(null)
+Maybe.fromNull(undefined)
 // => None
 
-Maybe.fromFalsy();
-Maybe.fromFalsy(null);
-Maybe.fromFalsy(0);
-Maybe.fromFalsy('');
-Maybe.fromFalsy(false);
+Maybe.fromFalsy()
+Maybe.fromFalsy(null)
+Maybe.fromFalsy(0)
+Maybe.fromFalsy('')
+Maybe.fromFalsy(false)
 // => None
 ```
 
 **It's important to note that monet `Maybe` implementation threats `null` and `undefined` values in special way. Any attempt to provide `null` or `undefined` to constructor (other than `fromNull` or `fromFalsy`) will cause exception. Same will happen if it's mapped to `null` or `undefined`.**
 
-### Creating a maybe from pimped object
+### Creating a Maybe from pimped object
 
 ```javascript
 const maybe = 'hello world'.some()
@@ -234,7 +239,7 @@ It may seem odd to want to apply a function to a monad that exists inside anothe
 Here is an example for creating a string out of the result of a couple of `Maybe`s.  We use `curry()` which is a pimped method on Function so we can partially apply.
 
 ```ecmascript 6
-const person = forename => surname => address => `${forename} ${surname} lives in ${address}`;
+const person = forename => surname => address => `${forename} ${surname} lives in ${address}`
 
 const personString = Some('Dulwich, London')
   .ap(Some('Baker').ap(Some('Tom').map(person)))
@@ -292,3 +297,20 @@ Maybe[A].toList: List[A]
 ```
 
 Converts to a list, returns an Empty list on None.
+
+### filter
+
+```scala
+Maybe[A].filter(fn: A => Boolean): Maybe[A]
+```
+
+Convert to a `None` if predicate function return [falsy](https://developer.mozilla.org/pl/docs/Glossary/Falsy) value, otherwise return the same `Maybe`.
+For example:
+
+```javascript
+Some('James').filter(val => val === 'James')
+// => Some('James')
+
+Some('John').filter(val => val === 'James')
+// => None()
+```

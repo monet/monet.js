@@ -110,9 +110,18 @@ describe('A Maybe', function () {
             })).toBe('hij')
         })
         it('will compare for equality', function () {
-            expect(someString.equals(Some('abcd'))).toBeTruthy()
-            expect(someString.equals(None())).toBeFalsy()
+            expect(someString.equals(Some('abcd'))).toBe(true)
+            expect(someString.equals(Maybe.some('abcd'))).toBe(true)
+            expect(someString.equals(None())).toBe(false)
+            expect(someString.equals(Nothing())).toBe(false)
+            expect(someString.equals(Maybe.none())).toBe(false)
+            expect(Some(someString).equals(Some(Some('abcd')))).toBe(true)
         })
+
+        it('should be compatible with Fantasy Land', function () {
+            expect(someString.equals).toBe(someString['fantasy-land/equals'])
+        })
+
         it('will render as Just(x)', function () {
             expect(someString.inspect()).toBe('Just(abcd)')
         })
@@ -204,11 +213,22 @@ describe('A Maybe', function () {
             })).toBe('efg')
         })
         it('will compare for equality', function () {
-            expect(none.equals(Maybe.None())).toBeTruthy()
-            expect(none.equals(Maybe.Just(1))).toBeFalsy()
+            expect(none.equals(Maybe.None())).toBe(true)
+            expect(none.equals(Maybe.none())).toBe(true)
+            expect(none.equals(Nothing())).toBe(true)
+            expect(none.equals(Maybe.Just(1))).toBe(false)
+            expect(none.equals(Maybe.some(1))).toBe(false)
+            expect(Some(none).equals(Maybe.some(Maybe.none()))).toBe(true)
         })
+
+        it('should be compatible with Fantasy Land', function () {
+            expect(none.equals).toBe(none['fantasy-land/equals'])
+        })
+
         it('will render as Nothing', function () {
             expect(none.inspect()).toBe('Nothing')
+            expect(Maybe.none().inspect()).toBe('Nothing')
+            expect(Nothing().inspect()).toBe('Nothing')
         })
         it('will invoke side-effects on orElseRun', function () {
             none.orElseRun(sideEffectsReceiver.setVal)
@@ -253,6 +273,10 @@ describe('A Maybe', function () {
         it('will not produce a person object if any maybes do not contain values', function () {
             var result = maybeAddress.ap(Maybe.Nothing().ap(maybeForename.map(person)))
             expect(result).toBeNoneMaybe()
+        })
+
+        it('should be compatible with Fantasy Land', function () {
+            expect(maybeAddress.ap).toBe(maybeAddress['fantasy-land/ap'])
         })
 
         it('will work with apply2 with two Somes', function () {
