@@ -1168,6 +1168,12 @@
         },
         inspect: function () {
             return this.toString()
+        },
+        ap: function (applyWithFunction) {
+            var value = this.val
+            return applyWithFunction.map(function (fn) {
+                return fn(value)
+            })
         }
     }
 
