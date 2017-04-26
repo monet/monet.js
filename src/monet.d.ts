@@ -71,6 +71,7 @@ export interface Identity<T> extends IMonad<T> {
   takeLeft(m: Identity<T>): Identity<T>;
   takeRight(m: Identity<T>): Identity<T>;
   contains(val: T): boolean;
+  ap<V>(applyFn: IMonad<(val: T) => V>): IMonad<V>;
 
   /* Identity specific */
   forEach(fn: (val: T) => void): void;

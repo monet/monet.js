@@ -1168,6 +1168,12 @@
         },
         inspect: function () {
             return this.toString()
+        },
+        ap: function (applyWithFunction) {
+            var value = this.val
+            return applyWithFunction.map(function (fn) {
+              return fn(value)
+            })
         }
     }
 
@@ -1193,9 +1199,6 @@
             type.prototype.concat = type.prototype.append
         }
         type.prototype.point = type.prototype.pure = type.prototype.unit = type.prototype.of
-        if (typeof type.prototype.ap !== 'undefined') {
-            type.prototype['fantasy-land/ap'] = type.prototype.ap
-        }
     }
 
     // Wire up aliases
