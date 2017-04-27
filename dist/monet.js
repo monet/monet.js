@@ -989,11 +989,17 @@
         },
         inspect: function() {
             return this.toString();
+        },
+        ap: function(applyWithFunction) {
+            var value = this.val;
+            return applyWithFunction.map(function(fn) {
+                return fn(value);
+            });
         }
     };
     Identity.fn.init.prototype = Identity.fn;
     function addFantasyLandAliases(type) {
-        [ "ap", "equals" ].filter(function(method) {
+        [ "equals", "map", "ap", "chain" ].filter(function(method) {
             return isFunction(type.prototype[method]);
         }).forEach(function(method) {
             type.prototype["fantasy-land/" + method] = type.prototype[method];

@@ -1182,7 +1182,7 @@
     // Add aliases
 
     function addFantasyLandAliases(type) {
-        ['ap', 'equals']
+        ['equals', 'map', 'ap', 'chain']
             .filter(function (method) {
                 return isFunction(type.prototype[method])
             })
