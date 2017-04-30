@@ -11,7 +11,7 @@ List();
 List('a');
 // => List('a')
 
-List('a' List('b', List('c')));
+List('a', List('b', List('c')));
 // => List('a', 'b', 'c')
 
 List.of('a')
@@ -202,10 +202,10 @@ List.fromArray([Right(1), Left(2)]).sequence(Either)
 List.fromArray([Right(1), Right(2)]).sequence(Either)
 // => Right(List(1, 2))
 
-List.fromArray([Some(1), Some(2)].list().sequence(Maybe)
+List.fromArray([Some(1), Some(2)]).sequence(Maybe)
 // => Some(List(1, 2))
 
-List.fromArray([Some(1), None()].list().sequence(Maybe)
+List.fromArray([Some(1), None()]).sequence(Maybe)
 // => None
 ```
 
@@ -240,7 +240,7 @@ List.fromArray([Some(1), Some(2), None, Some(3), None]).sequenceMaybe()
 This is the same as calling:
 
 ```javascript
-List.fromArray([Some(1), Some(2)).sequence(Maybe)
+List.fromArray([Some(1), Some(2)]).sequence(Maybe)
 ```
 
 ### sequenceEither
@@ -313,7 +313,7 @@ Returns a new list reversed.
 ```javascript
 List.fromArray([1,2,3]).reverse()
 // => List(3, 2, 1)
-
+````
 
 ### forEach
 
@@ -324,16 +324,16 @@ List[A].forEach(fn: A => ()): ()
 Invoke a function applying a side-effect on each item in the list.
 
 ### ...and undocumented
-
-  - join
-  - takeLeft
-  - takeRight
-  - ap
-  - snoc
-  - isNEL
-  - size
-  - tail
-  - tails
-  - flatten
-  - flattenMaybe
-  - toArray
+- equals
+- join
+- takeLeft
+- takeRight
+- ap
+- snoc
+- isNEL
+- size
+- tail
+- tails
+- flatten
+- flattenMaybe
+- toArray

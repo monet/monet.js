@@ -314,3 +314,10 @@ Some('James').filter(val => val === 'James')
 Some('John').filter(val => val === 'James')
 // => None()
 ```
+
+### ...and undocumented
+- cata
+- equals
+- join
+- takeLeft
+- takeRight

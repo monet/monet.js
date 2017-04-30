@@ -198,3 +198,9 @@ Either[E,A].toMaybe(): Maybe[A]
 ```
 
 Converts to a `Maybe` dropping the left side.
+
+### ...and undocumented
+- equals
+- join
+- takeLeft
+- takeRight
