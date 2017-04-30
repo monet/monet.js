@@ -4,24 +4,24 @@
 
 ### Well it's JavaScript - there ain't any
 
-As you know JavaScript isn't a strongly typed language.  This kinda sucks.  Types are a great help when it comes to functional programming as it makes the code more comprehensible and prevents a range of errors from being introduced.
+As you know JavaScript isn't a strongly typed language. This kinda sucks. Types are a great help when it comes to functional programming as it makes the code more comprehensible and prevents a range of errors from being introduced.
 
-Knowing the types of your functions and data is also important when writing documentation (such as this one), so we will invent some type annotations to make things more clear.  We will only do this in the function definition and *not* in the **concrete examples**.
+Knowing the types of your functions and data is also important when writing documentation (such as this one), so we will invent some type annotations to make things more clear. We will only do this in the function definition and *not* in the **concrete examples**.
 
 ### Generic Types
 
-JavaScript doesn't have generic types but it's useful to know about them when dealing with Monads.  For instance the `List` monad is a type that requires another type, such as a string or integer or some other type before it can be constructed.  So you would have a List of Strings or a List of Integers or generically a List of `A`s where `A` is a type you will supply.  Now of course this is JavaScript and you can do as you please even though it doesn't make sense.  But to make things clearer (hopefully) we will attempt to do show generics or *type parameters* thusly:
+JavaScript doesn't have generic types but it's useful to know about them when dealing with Monads. For instance the `List` monad is a type that requires another type, such as a string or integer or some other type before it can be constructed. So you would have a List of Strings or a List of Integers or generically a List of `A`s where `A` is a type you will supply. Now of course this is JavaScript and you can do as you please even though it doesn't make sense. But to make things clearer (hopefully) we will attempt to do show generics or *type parameters* thusly:
 
 ```scala
 List[A]
 ```
 
-Which means a `List` of `A`s.  Though of course you will have to keep track of the types yourself.
+Which means a `List` of `A`s. Though of course you will have to keep track of the types yourself.
 
 ### Functions
 
-```typescript
-function x(a: A, b: B): C
+```scala
+(a: A, b: B) => C
 ```
 
 And functions on a Monadic type that has been constructed with `A`
@@ -48,7 +48,7 @@ means that function `x` takes two parameters that are both functions themselves.
 
 #### The Unit type
 
-Some functions (or lambdas) do not take a parameter, and some do not return anything.  Will express this as:
+Some functions (or lambdas) do not take a parameter, and some do not return anythingWill express this as:
 
 ```scala
 () => A
@@ -266,23 +266,100 @@ None().takeRight(Some(2))
 - flattenMaybe
 - toArray
 
-## Non Empty List
+## [Non Empty List](NEL.md)
 
-TBD…
+- bind
+- flatMap
+- chain
+- map
+- takeLeft
+- takeRight
+- mapTails
+- cobind
+- coflatMap
+- ap
+- reduceLeft
+- [foldLeft](NEL.md#foldleft)
+- [foldRight](NEL.md#foldright)
+- filter
+- find
+- isNEL
+- size
+- head
+- extract
+- append
+- concat
+- reverse
+- tail
+- tails
+- cojoin
+- contains
+- forEach
+- toArray
+- toList
 
-## IO
+- // join
+- // cons
+- // snoc
+- // flatten
+- // flattenMaybe
 
-TBD…
+## [IO](IO.md)
 
+- bind
+- flatMap
+- chain
+- map
+- join
+- takeLeft
+- takeRight
+- ap
+- run
+- perform
+- performUnsafeIO
 
-## Reader
+## [Reader](READER.md)
 
-TBD…
+- bind
+- flatMap
+- chain
+- map
+- join
+- takeLeft
+- takeRight
+- ap
+- run
+- local
 
-## Free
+## [Free](FREE.md)
 
-TBD…
+- bind
+- flatMap
+- chain
+- join
+- map
+- takeLeft
+- takeRight
+- resume
+- go
 
-## Other useful functions ( _Monet-Pimp_ )
+## [Other useful functions (monet-pimp)](PIMP.md)
 
-TBD…
+### Object
+- cons
+- some
+- success
+- fail
+- right
+- left
+
+### Array
+- list
+
+### Function
+- curry
+- compose
+- andThen
+- io
+- io1
+- reader
