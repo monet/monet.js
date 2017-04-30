@@ -387,10 +387,11 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T> {
 
   /* from CoMonad: */
   mapTails<V>(fn: (val: NEL<T>) => V): NEL<V>;
-  cobind<V>(fn: (val: NEL<T>) => V): NEL<V>;
-  coflatMap<V>(fn: (val: NEL<T>) => V): NEL<V>;
-  cojoin(): NEL<NEL<T>>;      // === tails
-  extract(): T;               // === head
+  cobind<V>(fn: (val: NEL<T>) => V): NEL<V>; // alias for mapTails
+  coflatMap<V>(fn: (val: NEL<T>) => V): NEL<V>; // alias for mapTails
+  cojoin(): NEL<NEL<T>>; // alias for tails
+  copure(): T; // alias for head
+  extract(): T; // alias for head
 
   /* Inherited from Applicative */
   ap<V>(listFn: NEL<(val: T) => V>): NEL<V>;

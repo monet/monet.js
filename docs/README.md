@@ -287,6 +287,7 @@ None().takeRight(Some(2))
 - size
 - head
 - extract
+- copure
 - append
 - concat
 - reverse
