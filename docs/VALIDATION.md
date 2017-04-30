@@ -223,3 +223,11 @@ Validation[E,A].toMaybe(): Maybe[A]
 ```
 
 Converts to a `Maybe` dropping the failure side.
+
+### ...and undocumented
+- equals
+- join
+- takeLeft
+- takeRight
+- bimap
+- acc

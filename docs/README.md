@@ -345,6 +345,14 @@ None().takeRight(Some(2))
 
 ## [Other useful functions (monet-pimp)](PIMP.md)
 
+### [Function](PIMP.md#function)
+- [compose](PIMP.md#fncomposef1)
+- [andThen](PIMP.md#fnandthenfn1)
+- [curry](PIMP.md#fncurry)
+- io
+- io1
+- reader
+
 ### Object
 - cons
 - some
@@ -355,11 +363,3 @@ None().takeRight(Some(2))
 
 ### Array
 - list
-
-### Function
-- curry
-- compose
-- andThen
-- io
-- io1
-- reader
