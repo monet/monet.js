@@ -268,42 +268,39 @@ None().takeRight(Some(2))
 
 ## [Non Empty List](NEL.md)
 
-- bind
-- flatMap
-- chain
-- map
-- takeLeft
-- takeRight
-- mapTails
-- cobind
-- coflatMap
-- ap
-- reduceLeft
+- [map](NEL.md#foldleft)
+- [flatMap](NEL.md#flatmap)
+- [bind](NEL.md#flatmap)
+- [chain](NEL.md#flatmap)
+- [head](NEL.md#head)
+- [extract](NEL.md#head)
+- [copure](NEL.md#head)
+- [tail](NEL.md#tail)
+- [tails](NEL.md#tails)
+- [cojoin](NEL.md#tails)
+- [mapTails](NEL.md#maptails)
+- [cobind](NEL.md#maptails)
+- [coflatMap](NEL.md#maptails)
 - [foldLeft](NEL.md#foldleft)
 - [foldRight](NEL.md#foldright)
-- filter
-- find
+- [filter](NEL.md#filter)
+- [find](NEL.md#find)
+- [contains](NEL.md#contains)
+- [reduceLeft](NEL.md#reduceleft)
+- [append](NEL.md#append)
+- [concat](NEL.md#append)
+- [reverse](NEL.md#reverse)
+- [forEach](NEL.md#foreach)
+- takeLeft
+- takeRight
+- ap
 - isNEL
 - size
-- head
-- extract
-- copure
-- append
-- concat
-- reverse
-- tail
-- tails
-- cojoin
-- contains
-- forEach
 - toArray
 - toList
-
-- // join
-- // cons
-- // snoc
-- // flatten
-- // flattenMaybe
+- **BROKEN** join
+- **UNIMPLEMENTED** cons
+- **UNIMPLEMENTED** snoc
 
 ## [IO](IO.md)
 
