@@ -15,12 +15,23 @@ NEL.pure(1, List.fromArray([2, 3, 4]))
 
 NEL(1, Nil)
 // => NonEmptyList(1)
+```
 
+### fromList
+
+```scala
+NEL.fromList(List[A]): Maybe[NEL[A]]
+```
+
+Returns an optional `NonEmptyList`. If the supplied `List` is empty the result will be a `None`, otherwise a `NonEmptyList` wrapped in a `Some`.
+
+```javascript
 NEL.fromList(List.fromArray([1,2,3,4]))
 // => Some(NonEmptyList(1,2,3,4))
 
 NEL.fromList(Nil)
 // => None()
+```
 ```
 
 Trying to create an empty `NonEmptyList` will throw an exception.
@@ -182,11 +193,14 @@ NEL[A].forEach(fn: A => void): void
 
 Invoke a function applying a side-effect on each item in the list.
 
-### fromList
-
-```scala
-NEL.fromList(List[A]): Maybe[NEL[A]]
-```
-
-Returns an optional `NonEmptyList`. If the supplied `List` is empty the result will be a `None`, otherwise a `NonEmptyList` wrapped in
-a `Some` (or `Just`).
+### ...and undocumented
+- takeLeft
+- takeRight
+- ap
+- isNEL
+- size
+- toArray
+- toList
+- **BROKEN** join
+- **UNIMPLEMENTED** cons
+- **UNIMPLEMENTED** snoc
