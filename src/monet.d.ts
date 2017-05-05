@@ -16,7 +16,7 @@ interface Bind<T> {
 
 /* Applicative allows applying wrapped functions to wrapped elements */
 interface Applicative<T> {
-  ap<V>(afn: Applicative<(val: T) => V>): Applicative<T>
+  ap<V>(afn: Applicative<(val: T) => V>): Applicative<V>
 }
 
 /****************************************************************
