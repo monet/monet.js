@@ -14,8 +14,8 @@ interface Functor<T> {
 /* Applicative allows applying wrapped functions to wrapped elements */
 // https://github.com/fantasyland/fantasy-land#applicative
 interface Applicative<T> {
-  ap<V>(afn: Applicative<(val: T) => V>): Applicative<T>
-  'fantasy-land/ap'?<V>(afn: Applicative<(val: T) => V>): Applicative<T>
+  ap<V>(afn: Applicative<(val: T) => V>): Applicative<V>
+  'fantasy-land/ap'?<V>(afn: Applicative<(val: T) => V>): Applicative<V>
 }
 
 // https://github.com/fantasyland/fantasy-land#chain
