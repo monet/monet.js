@@ -1,7 +1,7 @@
-import {List, Nil, Maybe, Some, Either, Right, Validation, Success, IO, Reader, None} from 'src/monet';
+import {List, Nil, Maybe, Some, Either, Right, Validation, Success, IO, Reader, None} from '../../src/monet';
 
 const x: List<List<string>> = List.fromArray(['1', '2', '3']).map(Number)
-    .takeLeft(List.of(true, Nil))
+    .takeLeft(List.of(true))
     .takeRight(List.unit(['a', 'b', 'c']))
     .map(List.fromArray);
 const y: List<List<string>> = x.join<string>()
@@ -13,12 +13,15 @@ const z: List<string> = y.flatten<string>()
     .append(List('WOW!'));
 const a: number = z.tails().foldLeft(0)((acc, t) => acc + t.size());
 const b: List<Maybe<number>> = x.foldRight(z)((l, acc) => acc.append(l))
-    .ap(List(Number, List(e => parseInt(e, 10))))
+    .ap(List(Number, List((e: string) => parseInt(e, 10))))
     .headMaybe().map(h => List(h)).orJust(List(0))
     .tails().map(t => t.filter(n => !isNaN(n)))
     .map(t => t.size() > 0 ? Some(t.head()) : None<number>());
 const c: List<number> = b.flattenMaybe<number>().chain(n => y.bind(ls => ls).map(s => Number(s) + n));
+const d: Maybe<number> = c.find(x => x > 0);
+const e: boolean = c.contains(0);
 
+c.forEach((i:number) => console.log(i));
 
 const maybeList: Maybe<List<string>> = List(Some('A')).sequenceMaybe<string>();
 const eitherList: Either<string, List<string>> = List(Right('A')).sequenceEither<string, string>();

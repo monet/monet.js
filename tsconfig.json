@@ -1,4 +1,10 @@
 {
+  "compilerOptions": {
+    "listFiles": true,
+    "noEmit": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true
+  },
   "files": [
     "test/typings/identity-spec.ts",
     "test/typings/maybe-spec.ts",

@@ -1,22 +1,41 @@
-interface IEquals<A> {
-  equals(a: A): boolean
-}
-/* The (covariant) functor typeclass */
-interface Functor<T> {
-  map<V>(fn: (val: T) => V): Functor<V>;
+// https://github.com/fantasyland/fantasy-land#setoid
+interface Setoid<A> {
+  equals(other: A): boolean;
+  'fantasy-land/equals'?(other: A): boolean;
 }
 
-/* Typeclass for binding, the core monadic transformation */
-interface Bind<T> {
-  bind<V>(fn: (val: T) => Bind<V>): Bind<V>
-  chain<V>(fn: (val: T) => Bind<V>): Bind<V>    // alias of bind
-  flatMap<V>(fn: (val: T) => Bind<V>): Bind<V>  // alias of bind
-  join<V>(): Bind<V>  // works only if T = Bind<V>
+/* The (covariant) functor typeclass */
+// https://github.com/fantasyland/fantasy-land#functor
+interface Functor<T> {
+  map<V>(fn: (val: T) => V): Functor<V>;
+  'fantasy-land/map'?<V>(fn: (val: T) => V): Functor<V>;
 }
 
 /* Applicative allows applying wrapped functions to wrapped elements */
+// https://github.com/fantasyland/fantasy-land#applicative
 interface Applicative<T> {
   ap<V>(afn: Applicative<(val: T) => V>): Applicative<V>
+  'fantasy-land/ap'?<V>(afn: Applicative<(val: T) => V>): Applicative<V>
+}
+
+// https://github.com/fantasyland/fantasy-land#chain
+interface Chain<T> {
+  chain<V>(fn: (val: T) => Chain<V>): Chain<V>;
+  'fantasy-land/chain'?<V>(fn: (val: T) => Chain<V>): Chain<V>;
+}
+
+/* Typeclass for binding, the core monadic transformation */
+interface Bind<T> extends Chain<T> {
+  bind<V>(fn: (val: T) => Bind<V>): Bind<V>     // alias of chain
+  chain<V>(fn: (val: T) => Bind<V>): Bind<V>;
+  flatMap<V>(fn: (val: T) => Bind<V>): Bind<V>  // alias of chain
+  join<V>(): Bind<V>  // works only if T = Bind<V>
+}
+
+/* Typeclass for traversables */
+export interface ITraversable<T> {
+  foldLeft<V>(initial: V): (fn: (acc: V, val: T) => V) => V;
+  foldRight<V>(initial: V): (fn: (val: T, acc: V) => V) => V;
 }
 
 /****************************************************************
@@ -50,7 +69,7 @@ interface IMonadStatic {
  * Identity
  */
 
-export interface Identity<T> extends IMonad<T> {
+export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Identity<V>): Identity<V>;
   flatMap<V>(fn: (val: T) => Identity<V>): Identity<V>;
@@ -60,7 +79,15 @@ export interface Identity<T> extends IMonad<T> {
   takeLeft(m: Identity<T>): Identity<T>;
   takeRight(m: Identity<T>): Identity<T>;
 
+  /* Inherited from Applicative */
+  // TODO: Think what is best here `IMonad<V>` vs `Identity<T>` as fantasy-land
+  // spec doesn't require `ap` to accept same Applicative
+  // https://github.com/fantasyland/fantasy-land/issues/246
+  ap<V>(applyFn: IMonad<(val: T) => V>): IMonad<V>;
+
   /* Identity specific */
+  contains(val: T): boolean;
+  forEach(fn: (val: T) => void): void;
   get(): T;
 }
 
@@ -74,13 +101,13 @@ interface IIdentityStatic extends IIdentityFactory, IMonadStatic {
   pure: IIdentityFactory;  // alias for unit
 }
 
-export var Identity: IIdentityStatic;
+export const Identity: IIdentityStatic;
 
 /****************************************************************
  * Maybe
  */
 
-export interface Maybe<T> extends IMonad<T>, IEquals<Maybe<T>>{
+export interface Maybe<T> extends IMonad<T>, Setoid<Maybe<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
   flatMap<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
@@ -107,7 +134,13 @@ export interface Maybe<T> extends IMonad<T>, IEquals<Maybe<T>>{
   just(): T;
   orSome(val: T): T;
   orJust(val: T): T;
+  orNull(): T|null;
   orElse(maybe: Maybe<T>): Maybe<T>;
+  orNoneIf(val: boolean): Maybe<T>;
+  orNothingIf(val: boolean): Maybe<T>;
+  contains(val: T): boolean;
+  forEach(fn: (val: T) => void): void;
+  orElseRun(fn: () => void): void;
 
   toList(): List<T>;
   toEither<E>(left?: E): Either<E, T>;
@@ -124,26 +157,29 @@ interface INoneStatic extends IMonadFactory {
 
 interface IMaybeStatic extends IMonadStatic {
   Some: ISomeStatic;
+  some: ISomeStatic;
   Just: ISomeStatic;
   None: INoneStatic;
+  none: INoneStatic;
   Nothing: INoneStatic;
-  fromNull<V>(val: V): Maybe<V>;
+  fromFalsy<V>(val: V|null|undefined): Maybe<V>;
+  fromNull<V>(val: V|null|undefined): Maybe<V>;
   unit: ISomeStatic;
   of: ISomeStatic;    // alias for unit
   pure: ISomeStatic;  // alias for unit
 }
 
-export var Some: ISomeStatic;
-export var Just: ISomeStatic;
-export var None: INoneStatic;
-export var Nothing: INoneStatic;
-export var Maybe: IMaybeStatic;
+export const Some: ISomeStatic;
+export const Just: ISomeStatic;
+export const None: INoneStatic;
+export const Nothing: INoneStatic;
+export const Maybe: IMaybeStatic;
 
 /****************************************************************
  * Either
  */
 
-export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>{
+export interface Either<E, T> extends IMonad<T>, Setoid<Either<E, T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
   flatMap<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
@@ -158,6 +194,7 @@ export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>{
 
   /* Either specific */
   cata<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
+  fold<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
 
   bimap<Z, V>(leftFn: (err: E) => Z, rightFn: (val: T) => V): Either<Z, V>;
   leftMap<F>(fn: (leftVal: E) => F): Either<F, T>;
@@ -166,6 +203,9 @@ export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>{
   isLeft(): boolean;
   right(): T;
   left(): E;
+  contains(val: T): boolean;
+  forEach(fn: (val: T) => void): void;
+  forEachLeft(fn: (val: E) => void): void;
 
   toValidation(): Validation<E, T>;
   toMaybe(): Maybe<T>;
@@ -173,7 +213,9 @@ export interface Either<E, T> extends IMonad<T>, IEquals<Either<E, T>>{
 
 interface IEitherStatic extends IMonadStatic {
   Right: IRightStatic;
+  right: IRightStatic;
   Left: ILeftStatic;
+  left: ILeftStatic;
   unit: IRightStatic;
   of: IRightStatic;    // alias for unit
   pure: IRightStatic;  // alias for unit
@@ -187,9 +229,9 @@ interface ILeftStatic extends IMonadFactory {
   <F, V>(val: F): Either<F, V>;
 }
 
-export var Either: IEitherStatic;
-export var Right: IRightStatic;
-export var Left: ILeftStatic;
+export const Either: IEitherStatic;
+export const Right: IRightStatic;
+export const Left: ILeftStatic;
 
 /****************************************************************
  * Validation
@@ -199,7 +241,7 @@ interface IValidationAcc extends Function {
   (): IValidationAcc;
 }
 
-export interface Validation<E, T> extends IMonad<T>, IEquals<Validation<E, T>>{
+export interface Validation<E, T> extends IMonad<T>, Setoid<Validation<E, T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
   flatMap<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
@@ -214,6 +256,7 @@ export interface Validation<E, T> extends IMonad<T>, IEquals<Validation<E, T>>{
 
   /* Validation specific */
   cata<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
+  fold<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
 
   bimap<F, V>(fnF: (fail: E) => F, fnS: (val: T) => V): Validation<F, V>;
   failMap<F>(fn: (fail: E) => F): Validation<F, T>;
@@ -222,6 +265,9 @@ export interface Validation<E, T> extends IMonad<T>, IEquals<Validation<E, T>>{
   isFail(): boolean;
   success(): T;
   fail(): E;
+  contains(val: T): boolean;
+  forEach(fn: (val: T) => void): void;
+  forEachFail(fn: (val: E) => void): void;
 
   acc(): Validation<E, IValidationAcc>;
 
@@ -248,15 +294,15 @@ interface IFailStatic extends IMonadFactory {
   <E, T>(err: E): Validation<E, T>;
 }
 
-export var Validation: IValidationStatic;
-export var Success: ISuccessStatic;
-export var Fail: IFailStatic;
+export const Validation: IValidationStatic;
+export const Success: ISuccessStatic;
+export const Fail: IFailStatic;
 
 /****************************************************************
  * List
  */
 
-export interface List<T> extends IMonad<T>, IEquals<List<T>> {
+export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => List<V>): List<V>;
   flatMap<V>(fn: (val: T) => List<V>): List<V>;
@@ -269,11 +315,9 @@ export interface List<T> extends IMonad<T>, IEquals<List<T>> {
   /* Inherited from Applicative */
   ap<V>(listFn: List<(val: T) => V>): List<V>;
 
-  /* Validation specific */
-  foldLeft<V>(initial: V): (fn: (acc: V, element: T) => V) => V;
-  foldRight<V>(initial: V): (fn: (element: T, acc: V) => V) => V;
-
+  /* List specific */
   filter(fn: (val: T) => boolean): List<T>;
+  find(fn: (val: T) => boolean): Maybe<T>;
   cons(a: T): List<T>;
   snoc(a: T): List<T>;
   isNEL(): boolean;
@@ -287,6 +331,8 @@ export interface List<T> extends IMonad<T>, IEquals<List<T>> {
   tails(): List<List<T>>;
   flatten<V>(): List<V>;   // === join
   flattenMaybe<V>(): List<V>; // if T is Maybe<V>
+  contains(val: T): boolean;
+  forEach(fn: (val: T) => void): void;
 
   sequence<V>(m: IMaybeStatic): Maybe<List<V>>;
   sequence<E, V>(m: IEitherStatic): Either<E, List<V>>;
@@ -309,24 +355,26 @@ export interface Nil extends List<void> {
 }
 
 interface IListFactory extends IMonadFactory {
-  <T>(val?: T, tail?: List<T>): List<T>;
+  <T>(val: T): List<T>;
 }
 
-interface IListStatic extends IListFactory, IMonadStatic {
+interface IListStatic extends IMonadStatic {
+  <T>(): List<T>;
+  <T>(val: T, tail?: List<T>): List<T>;
   fromArray<T>(arr: T[]): List<T>;
   unit: IListFactory;
   of: IListFactory;    // alias for unit
   pure: IListFactory;  // alias for unit
 }
 
-export var List: IListStatic;
-export var Nil: Nil;
+export const List: IListStatic;
+export const Nil: Nil;
 
 /****************************************************************
  * NEL
  */
 
-export interface NEL<T> extends IMonad<T>, IEquals<NEL<T>> {
+export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => NEL<V>): NEL<V>;
   flatMap<V>(fn: (val: T) => NEL<V>): NEL<V>;
@@ -339,20 +387,20 @@ export interface NEL<T> extends IMonad<T>, IEquals<NEL<T>> {
 
   /* from CoMonad: */
   mapTails<V>(fn: (val: NEL<T>) => V): NEL<V>;
-  cobind<V>(fn: (val: NEL<T>) => V): NEL<V>;
-  coflatMap<V>(fn: (val: NEL<T>) => V): NEL<V>;
-  cojoin(): NEL<NEL<T>>;      // === tails
-  extract(): T;               // === head
+  cobind<V>(fn: (val: NEL<T>) => V): NEL<V>; // alias for mapTails
+  coflatMap<V>(fn: (val: NEL<T>) => V): NEL<V>; // alias for mapTails
+  cojoin(): NEL<NEL<T>>; // alias for tails
+  copure(): T; // alias for head
+  extract(): T; // alias for head
 
   /* Inherited from Applicative */
   ap<V>(listFn: NEL<(val: T) => V>): NEL<V>;
 
-  /* Validation specific */
-  foldLeft<V>(initial: V): (fn: (acc: V, element: T) => V) => V;
-  foldRight<V>(initial: V): (fn: (element: T, acc: V) => V) => V;
+  /* NEL specific */
   reduceLeft(fn: (acc: T, element: T) => T): T;
 
   filter(fn: (val: T) => boolean): List<T>;
+  find(fn: (val: T) => boolean): Maybe<T>;
   // cons(a: T): NEL<T>;
   // snoc(a: T): NEL<T>;
   isNEL(): boolean;
@@ -363,6 +411,8 @@ export interface NEL<T> extends IMonad<T>, IEquals<NEL<T>> {
   reverse(): NEL<T>;
   tail(): List<T>;
   tails(): NEL<NEL<T>>;
+  contains(val: T): boolean;
+  forEach(fn: (val: T) => void): void;
   // flatten<V>(): NEL<V>;
   // flattenMaybe<V>(): NEL<V>;
 
@@ -383,8 +433,8 @@ interface INELStatic extends INELFactory, IMonadStatic {
   pure: INELFactory;  // alias for unit
 }
 
-export var NonEmptyList: INELStatic;
-export var NEL: INELStatic;
+export const NonEmptyList: INELStatic;
+export const NEL: INELStatic;
 
 /****************************************************************
  * IO
@@ -420,7 +470,7 @@ interface IIOStatic extends IIOFactory, IMonadStatic {
   io: IIOFactory;    // alias for unit
 }
 
-export var IO: IIOStatic;
+export const IO: IIOStatic;
 
 /****************************************************************
  * Reader
@@ -454,7 +504,7 @@ interface IReaderStatic extends IReaderFactory, IMonadStatic {
   ask<E>(): Reader<E, E>;
 }
 
-export var Reader: IReaderStatic;
+export const Reader: IReaderStatic;
 
 /****************************************************************
  * Free
@@ -508,6 +558,6 @@ interface ISuspendStatic extends IMonadFactory {
   <A, FFA>(ffa: FFA): Free<A>;
 }
 
-export var Free: IFreeStatic;
-export var Return: IReturnStatic;
-export var Suspend: ISuspendStatic;
+export const Free: IFreeStatic;
+export const Return: IReturnStatic;
+export const Suspend: ISuspendStatic;
