@@ -6,10 +6,10 @@
   "name": "monet",
   "description": "Monadic types library for JavaScript",
   "version": "0.9.0-alpha.2",
-  "homepage": "https://github.com/cwmyers/monet.js",
+  "homepage": "https://monet.github.io/monet.js/",
   "repository": {
     "type": "git",
-    "url": "git@github.com:cwmyers/monet.js.git"
+    "url": "git@github.com:monet/monet.js.git"
   },
   "main": "dist/monet.js",
   "typings": "dist/monet.d.ts",

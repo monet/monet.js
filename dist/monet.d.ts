@@ -14,8 +14,8 @@ interface Functor<T> {
 /* Applicative allows applying wrapped functions to wrapped elements */
 // https://github.com/fantasyland/fantasy-land#applicative
 interface Applicative<T> {
-  ap<V>(afn: Applicative<(val: T) => V>): Applicative<T>
-  'fantasy-land/ap'?<V>(afn: Applicative<(val: T) => V>): Applicative<T>
+  ap<V>(afn: Applicative<(val: T) => V>): Applicative<V>
+  'fantasy-land/ap'?<V>(afn: Applicative<(val: T) => V>): Applicative<V>
 }
 
 // https://github.com/fantasyland/fantasy-land#chain
@@ -83,7 +83,7 @@ export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>> {
   // TODO: Think what is best here `IMonad<V>` vs `Identity<T>` as fantasy-land
   // spec doesn't require `ap` to accept same Applicative
   // https://github.com/fantasyland/fantasy-land/issues/246
-  ap<V>(applyFn: IMonad<(val: T) => V>): IMonad<V>;
+  ap<V>(applyFn: Identity<(val: T) => V>): Identity<V>;
 
   /* Identity specific */
   contains(val: T): boolean;
@@ -387,10 +387,11 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T> {
 
   /* from CoMonad: */
   mapTails<V>(fn: (val: NEL<T>) => V): NEL<V>;
-  cobind<V>(fn: (val: NEL<T>) => V): NEL<V>;
-  coflatMap<V>(fn: (val: NEL<T>) => V): NEL<V>;
-  cojoin(): NEL<NEL<T>>;      // === tails
-  extract(): T;               // === head
+  cobind<V>(fn: (val: NEL<T>) => V): NEL<V>; // alias for mapTails
+  coflatMap<V>(fn: (val: NEL<T>) => V): NEL<V>; // alias for mapTails
+  cojoin(): NEL<NEL<T>>; // alias for tails
+  copure(): T; // alias for head
+  extract(): T; // alias for head
 
   /* Inherited from Applicative */
   ap<V>(listFn: NEL<(val: T) => V>): NEL<V>;
