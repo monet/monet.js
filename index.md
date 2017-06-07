@@ -18,7 +18,7 @@ Download the [zip][gitZip] or [tar][gitTar] ball.
 
 ## Source code
 
-The source is available at: [http://github.com/cwmyers/monet.js](http://github.com/cwmyers/monet.js).
+The source and full docs are available at: [http://github.com/monet/monet.js](https://github.com/monet/monet.js).
 
 ## Installation
 
@@ -1136,8 +1136,8 @@ Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers) an
 
 
 [functionalJava]: http://functionaljava.org/
-[gitZip]: https://github.com/cwmyers/monet.js/archive/{{ page.version }}.zip
-[gitTar]: https://github.com/cwmyers/monet.js/archive/{{ page.version }}.tar.gz
+[gitZip]: https://github.com/monet/monet.js/archive/{{ page.version }}.zip
+[gitTar]: https://github.com/monet/monet.js/archive/{{ page.version }}.tar.gz
 [bower]: http://bower.io
 [npm]: https://www.npmjs.com/
 [scalaz]: https://github.com/scalaz/scalaz
