@@ -1229,7 +1229,7 @@
     function addApplicativeOps(type) {
         type.prototype.takeLeft = function (m) {
             // eslint-disable-next-line no-unused-vars
-            return apply2(this, m, function (a, b  /* do not remove `b` - it's for currying purposes */) {
+            return apply2(this, m, function (a, b /* do not remove `b` - it's for currying purposes */) {
                 return a
             })
         }

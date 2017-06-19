@@ -16,17 +16,16 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "eslint": "3.19.0",
-    "jasmine-core": "2.6.2",
+    "eslint": "4.0.0",
+    "jasmine-core": "2.6.4",
     "karma": "1.7.0",
     "karma-chrome-launcher": "2.1.1",
     "karma-firefox-launcher": "1.0.1",
     "karma-jasmine": "1.1.0",
     "karma-phantomjs-launcher": "1.0.4",
     "karma-safari-launcher": "1.0.0",
-    "phantomjs-prebuilt": "2.1.14",
     "typescript": "2.3.4",
-    "uglify-js": "3.0.15"
+    "uglify-js": "3.0.18"
   },
   "scripts": {
     "test": "npm run test:karma && npm run test:typings && npm run lint",
