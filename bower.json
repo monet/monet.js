@@ -1,6 +1,6 @@
 {
   "name": "monet",
-  "version": "0.9.0-alpha.2",
+  "version": "0.9.0-alpha.3",
   "main": "src/main/javascript/monet.js",
   "ignore": [
     "**/.*",

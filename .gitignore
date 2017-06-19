@@ -1,10 +1,10 @@
 logs
 project/project
 project/target
-target
-tmp
+target/
+tmp/
+dist/
 .history
-## dist
 .idea
 *.iml
 out
@@ -15,3 +15,4 @@ RUNNING_PID
 .settings
 *.swp
 node_modules/
+npm-debug.log

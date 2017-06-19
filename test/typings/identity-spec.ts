@@ -1,6 +1,6 @@
-import { Identity } from 'src/monet';
+import { Identity } from '../../src/monet';
 
-function getType(action) {
+function getType(action: { type: string }) {
     return Identity(action.type);
 }
 
@@ -15,5 +15,7 @@ const wrappedGreeting: Identity<string> = wrapped.bind(v => Identity.of(v.payloa
 const wrappedType = wrapped.flatMap(getType);
 
 const unpacked = wrappedGreeting.chain(g => wrappedType.map(t => `Type: ${t} - Body: ${g}`));
+
+wrappedGreeting.forEach((i:string) => console.log(i));
 
 log(unpacked.get());

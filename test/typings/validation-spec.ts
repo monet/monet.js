@@ -1,6 +1,6 @@
-import { Validation, Success, Fail, IO } from 'src/monet';
+import { Validation, Success, Fail, IO } from '../../src/monet';
 
-function getType(action) {
+function getType(action: { type: string }) {
     return action.type === 'MESSAGE' ? Success<string, string>(action.type) : Fail<string, string>('BadType');
 }
 
@@ -30,10 +30,10 @@ function log3(message: Validation<string, string>): void {
 
 interface IMessage {
     type: string;
-    payload: string;
+    payload: string|null;
 }
 
-function getMessage(msg: IMessage) {
+function getMessage(msg: IMessage|null) {
     if (msg && msg.hasOwnProperty('type')) {
         return Success<string, IMessage>(msg);
     }
@@ -56,20 +56,24 @@ log(unpacked).run();
 log2(getMessage(null).flatMap(getType)).performUnsafeIO();
 log3(getMessage({type: 'x', payload: null}).chain(getType));
 
-const nameError: string = Fail('-- Adamovisch').failMap(n => n.split(' ').shift()).fail();
+const nameError: string = Fail('-- Adamovisch').failMap(n => n.split(' ').shift() || "").fail();
 
 function getHttpError(code: number) {
     return Fail<number, string>(code);
 }
 
 const messageErrors: string = getHttpError(404).failMap<string>(String).failMap(Array)
-    .ap(getHttpError(400).failMap(String).failMap(Array).map(v => t => v + t))
-    .ap(getHttpError(500).failMap(String).failMap(Array).map(v => t => v + t))
+    .ap(getHttpError(400).failMap(String).failMap(Array).map(v => (t: string) => v + t))
+    .ap(getHttpError(500).failMap(String).failMap(Array).map(v => (t: string) => v + t))
     .cata(e => e.join(), v => v);
 
 const messageCopy: string = Success<number[], string>('message: Yo man!')
     .ap(Success<number[], (v: string) => string[]>(m => m.split(': ')))
-    .ap(Success<number[], (v: string[]) => string>(m => m.pop()))
+    .ap(Success<number[], (v: string[]) => string>(m => m.pop() || ""))
     .cata(e => e.join(), v => v);
+
+const contains: boolean = wrappedGreeting.contains("test");
+Validation.success<number, string>("hello").forEach((str:string) => console.log(str));
+Validation.fail<string, string>("none").forEachFail((str:string) => console.log(str));
 
 console.log(nameError, messageCopy, messageErrors);
