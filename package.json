@@ -5,7 +5,7 @@
   ],
   "name": "monet",
   "description": "Monadic types library for JavaScript",
-  "version": "0.9.0-alpha.3",
+  "version": "0.9.0-alpha.4",
   "homepage": "https://monet.github.io/monet.js/",
   "repository": {
     "type": "git",
@@ -44,6 +44,6 @@
     "copy:monet-pimp": "./node_modules/.bin/uglifyjs src/monet-pimp.js -o dist/monet-pimp.js --lint --comments -b bracketize=true",
     "copy": "npm run copy:monet && npm run copy:monet-pimp && npm run copy:types",
     "build": "rm -Rf ./dist && mkdir dist/ && npm run copy && npm run minify",
-    "publish": "npm run build"
+    "prepublish": "npm run build"
   }
 }

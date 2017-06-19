@@ -1,7 +1,11 @@
 
 ## 0.9.0
 
-### alpha.3 [WIP]
+### alpha.4 (19 Jun 2017)
+
+- [fix] pre publish build
+
+### alpha.3 (19 Jun 2017)
 
 - [enhancement] make `.chain()` compatible with Fantasy Land
 - [enhancement] make `.map()` compatible with Fantasy Land
