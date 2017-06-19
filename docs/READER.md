@@ -93,3 +93,9 @@ Reader[E, A].run(env: E): A;
 ```
 
 Executes the function wrapped in the `Reader` with the supplied `config`.
+
+### ...and undocumented
+- join
+- takeLeft
+- takeRight
+- local

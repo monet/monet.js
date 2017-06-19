@@ -65,3 +65,8 @@ Free[F[_], A].go(f: F[Free[F[_], A]] => Free[F[_], A]) : A
 ```
 
 Runs the computation to the end, returning the final result, using the supplied functor `f` to extract the next `Free` from the suspension.
+
+### ...and undocumented
+- join
+- takeLeft
+- takeRight
