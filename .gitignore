@@ -1,10 +1,10 @@
 logs
 project/project
 project/target
-target
-tmp
+target/
+tmp/
+dist/
 .history
-## dist
 .idea
 *.iml
 out

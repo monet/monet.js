@@ -28,9 +28,11 @@
     "uglify-js": "3.0.18"
   },
   "scripts": {
-    "test": "npm run test:karma && npm run test:typings && npm run lint",
+    "lint": "./node_modules/.bin/eslint --env browser,node './src/**/*.js'",
+    "test": "npm run test:karma && npm run test:typings && npm run lint && npm run test:build",
     "test:karma": "./node_modules/.bin/karma start",
     "test:typings": "./node_modules/.bin/tsc -m system",
+    "test:build": "npm run build && rm -Rf ./dist",
     "tdd": "./node_modules/.bin/karma start --auto-watch --no-single-run",
     "tdd-full": "./node_modules/.bin/karma start --auto-watch --no-single-run --browsers Chrome,Firefox,PhantomJS",
     "tdd-full-osx": "./node_modules/.bin/karma start --auto-watch --no-single-run --browsers Chrome,Firefox,PhantomJS,Safari",
@@ -39,9 +41,9 @@
     "minify": "npm run minify:monet && npm run minify:monet-pimp",
     "copy:types": "cp src/monet.d.ts dist/",
     "copy:monet": "./node_modules/.bin/uglifyjs src/monet.js -o dist/monet.js  --lint --comments -b bracketize=true",
-    "copy:monet-pimp": "./node_modules/.bin/uglifyjs src/monet-pimp.js -o dist/monet-pimp.js  --lint --comments -b bracketize=true",
+    "copy:monet-pimp": "./node_modules/.bin/uglifyjs src/monet-pimp.js -o dist/monet-pimp.js --lint --comments -b bracketize=true",
     "copy": "npm run copy:monet && npm run copy:monet-pimp && npm run copy:types",
-    "lint": "./node_modules/.bin/eslint --env browser,node './src/**/*.js'",
-    "publ": "npm run copy && npm run minify"
+    "build": "rm -Rf ./dist && mkdir dist/ && npm run copy && npm run minify",
+    "publish": "npm run build"
   }
 }
