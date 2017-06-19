@@ -318,15 +318,15 @@ None().takeRight(Some(2))
 
 ## [Reader](READER.md)
 
-- bind
-- flatMap
-- chain
-- map
+- [map](READER.md#map)
+- [flatMap](READER.md#flatmap)
+- [bind](READER.md#flatmap)
+- [chain](READER.md#flatmap)
+- [ap](READER.md#ap)
+- [run](READER.md#run)
 - join
 - takeLeft
 - takeRight
-- ap
-- run
 - local
 
 ## [Free](FREE.md)
