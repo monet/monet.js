@@ -268,7 +268,7 @@ None().takeRight(Some(2))
 
 ## [Non Empty List](NEL.md)
 
-- [map](NEL.md#foldleft)
+- [map](NEL.md#map)
 - [flatMap](NEL.md#flatmap)
 - [bind](NEL.md#flatmap)
 - [chain](NEL.md#flatmap)
@@ -304,17 +304,17 @@ None().takeRight(Some(2))
 
 ## [IO](IO.md)
 
-- bind
-- flatMap
-- chain
-- map
+- [flatMap](IO.md#flatmap)
+- [bind](IO.md#flatmap)
+- [chain](IO.md#flatmap)
+- [map](IO.md#map)
+- [run](IO.md#run)
+- [perform](IO.md#run)
+- [performUnsafeIO](IO.md#run)
 - join
 - takeLeft
 - takeRight
 - ap
-- run
-- perform
-- performUnsafeIO
 
 ## [Reader](READER.md)
 

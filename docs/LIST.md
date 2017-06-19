@@ -23,7 +23,7 @@ List.fromArray(['a', 'b', 'c']);
 // => List('a', 'b', 'c')
 ```
 
-### Creating a list from pimped array
+### Creating a list from a pimped array
 
 A list can be created also with the pimped method on Array, available in `monet-pimp.js`.
 
