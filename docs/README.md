@@ -331,15 +331,15 @@ None().takeRight(Some(2))
 
 ## [Free](FREE.md)
 
-- bind
-- flatMap
-- chain
+- [map](FREE.md#map)
+- [flatMap](FREE.md#flatmap)
+- [bind](FREE.md#flatmap)
+- [chain](FREE.md#flatmap)
+- [resume](FREE.md#resume)
+- [go](FREE.md#go)
 - join
-- map
 - takeLeft
 - takeRight
-- resume
-- go
 
 ## [Other useful functions (monet-pimp)](PIMP.md)
 
