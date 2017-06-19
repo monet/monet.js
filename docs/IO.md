@@ -70,6 +70,12 @@ Performs a map over the result of the effect. This will happen lazily and will n
 
 Evaluates the effect inside the `IO` monad. This can only be run once in your programme and at the very end.
 
+### ...and undocumented
+- join
+- takeLeft
+- takeRight
+- ap
+
 ## Examples
 Say we have a function to read from the DOM and a function to write to the DOM. *This example uses jQuery.*
 
