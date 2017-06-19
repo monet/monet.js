@@ -1,6 +1,10 @@
 
 ## 0.9.0
 
+### alpha.4 (19 Jun 2017)
+
+- [fix] pre publish build
+
 ### alpha.3 (19 Jun 2017)
 
 - [enhancement] make `.chain()` compatible with Fantasy Land

@@ -36,7 +36,7 @@ Simply download and add to your html pages or we also support [bower]. You can a
 bower install monet --save
 
 # or to install a specific version
-bower install monet#0.9.0-alpha.3
+bower install monet#0.9.0-alpha.4
 ```
 
 ### NPM installation
@@ -45,7 +45,7 @@ bower install monet#0.9.0-alpha.3
 npm install monet --save
 
 # or to install a specific version
-npm install monet@0.9.0-alpha.3
+npm install monet@0.9.0-alpha.4
 ```
 
 ## Contents
