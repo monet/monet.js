@@ -1,10 +1,10 @@
 /**
  * Monet.js 0.9.0-alpha.2
  *
- * (c) 2012-2016 Chris Myers
+ * (c) 2012-2017 Chris Myers
  * @license Monet.js may be freely distributed under the MIT license.
  * For all details and documentation:
- * https://cwmyers.github.com/monet.js
+ * https://monet.github.io/monet.js/
  */
 (function(root, factory) {
     if (typeof define === "function" && define.amd) {
