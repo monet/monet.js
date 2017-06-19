@@ -80,9 +80,6 @@ export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>> {
   takeRight(m: Identity<T>): Identity<T>;
 
   /* Inherited from Applicative */
-  // TODO: Think what is best here `IMonad<V>` vs `Identity<T>` as fantasy-land
-  // spec doesn't require `ap` to accept same Applicative
-  // https://github.com/fantasyland/fantasy-land/issues/246
   ap<V>(applyFn: Identity<(val: T) => V>): Identity<V>;
 
   /* Identity specific */
