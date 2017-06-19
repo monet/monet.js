@@ -1,6 +1,6 @@
 # monet.js
 
-[![Build Status](https://travis-ci.org/cwmyers/monet.js.png)](https://travis-ci.org/cwmyers/monet.js)
+[![Build Status](https://travis-ci.org/monet/monet.js.png)](https://travis-ci.org/monet/monet.js)
 
 
 For people who wish they didn't have to programme in JavaScript. [documentation](docs/README.md)
@@ -92,8 +92,8 @@ Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers) an
 
 
 [functionalJava]: http://functionaljava.org/
-[gitZip]: https://github.com/cwmyers/monet.js/archive/v0.8.10.zip
-[gitTar]: https://github.com/cwmyers/monet.js/archive/v0.8.10.tar.gz
+[gitZip]: https://github.com/monet/monet.js/archive/v0.8.10.zip
+[gitTar]: https://github.com/monet/monet.js/archive/v0.8.10.tar.gz
 [bower]: http://bower.io
 [npm]: https://www.npmjs.com/
 [scalaz]: https://github.com/scalaz/scalaz

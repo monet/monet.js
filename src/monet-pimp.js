@@ -3,10 +3,10 @@
  *
  * This file needs to be included after monet.js
  *
- * (c) 2012-2016 Chris Myers
+ * (c) 2012-2017 Chris Myers
  * @license Monet-pimp.js may be freely distributed under the MIT license.
  * For all details and documentation:
- * https://cwmyers.github.com/monet.js
+ * https://monet.github.io/monet.js/
  */
 
 /* global Reader, Some, Validation, Either, List, Monet, IO */
