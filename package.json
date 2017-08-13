@@ -24,7 +24,7 @@
     "karma-jasmine": "1.1.0",
     "karma-phantomjs-launcher": "1.0.4",
     "karma-safari-launcher": "1.0.0",
-    "typescript": "2.3.4",
+    "typescript": "2.4.2",
     "uglify-js": "3.0.18"
   },
   "scripts": {

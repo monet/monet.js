@@ -1,8 +1,8 @@
-import { Free, Functor } from '../../src/monet';
+import { Free } from '../../src/monet';
 
 // I hope you don't write real app this way, but this
 // is not a good place to pull in Coyonedas and IO
-class LoggingFunctor<A> implements Functor<A> {
+class LoggingFunctor<A> {
   constructor(public run: () => A, public msg: string) {}
   map<B>(fn: (a: A) => B): LoggingFunctor<B> {
     return new LoggingFunctor<B>(() => fn(this.run()), this.msg);

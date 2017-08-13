@@ -4,34 +4,6 @@ interface Setoid<A> {
   'fantasy-land/equals'?(other: A): boolean;
 }
 
-/* The (covariant) functor typeclass */
-// https://github.com/fantasyland/fantasy-land#functor
-interface Functor<T> {
-  map<V>(fn: (val: T) => V): Functor<V>;
-  'fantasy-land/map'?<V>(fn: (val: T) => V): Functor<V>;
-}
-
-/* Applicative allows applying wrapped functions to wrapped elements */
-// https://github.com/fantasyland/fantasy-land#applicative
-interface Applicative<T> {
-  ap<V>(afn: Applicative<(val: T) => V>): Applicative<V>
-  'fantasy-land/ap'?<V>(afn: Applicative<(val: T) => V>): Applicative<V>
-}
-
-// https://github.com/fantasyland/fantasy-land#chain
-interface Chain<T> {
-  chain<V>(fn: (val: T) => Chain<V>): Chain<V>;
-  'fantasy-land/chain'?<V>(fn: (val: T) => Chain<V>): Chain<V>;
-}
-
-/* Typeclass for binding, the core monadic transformation */
-interface Bind<T> extends Chain<T> {
-  bind<V>(fn: (val: T) => Bind<V>): Bind<V>     // alias of chain
-  chain<V>(fn: (val: T) => Bind<V>): Bind<V>;
-  flatMap<V>(fn: (val: T) => Bind<V>): Bind<V>  // alias of chain
-  join<V>(): Bind<V>  // works only if T = Bind<V>
-}
-
 /* Typeclass for traversables */
 export interface ITraversable<T> {
   foldLeft<V>(initial: V): (fn: (acc: V, val: T) => V) => V;
@@ -39,37 +11,10 @@ export interface ITraversable<T> {
 }
 
 /****************************************************************
- * Basic Monad Interface
- */
-
-interface IMonad<T> extends Functor<T>, Bind<T>, Applicative<T> {
-  /* These all are defined in Functor, Bind and Applicative: */
-  bind<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
-  flatMap<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
-  chain<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
-  map<V>(fn: (val: T) => V): IMonad<V>;
-  join<V>(): IMonad<V>; // only if T = IMonad<V>
-
-  /* These are monet-Monad-specific: */
-  takeLeft(m: IMonad<T>): IMonad<T>;
-  takeRight(m: IMonad<T>): IMonad<T>;
-}
-
-interface IMonadFactory extends Function {
-  <T>(val: T): IMonad<T>;
-}
-
-interface IMonadStatic {
-  unit: IMonadFactory;
-  of: IMonadFactory;    // alias for unit
-  pure: IMonadFactory;  // alias for unit
-}
-
-/****************************************************************
  * Identity
  */
 
-export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>> {
+export interface Identity<T> extends Setoid<Identity<T>> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Identity<V>): Identity<V>;
   flatMap<V>(fn: (val: T) => Identity<V>): Identity<V>;
@@ -88,11 +33,11 @@ export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>> {
   get(): T;
 }
 
-interface IIdentityFactory extends IMonadFactory {
+interface IIdentityFactory {
   <V>(value: V): Identity<V>;
 }
 
-interface IIdentityStatic extends IIdentityFactory, IMonadStatic {
+interface IIdentityStatic extends IIdentityFactory {
   unit: IIdentityFactory;
   of: IIdentityFactory;    // alias for unit
   pure: IIdentityFactory;  // alias for unit
@@ -104,7 +49,7 @@ export const Identity: IIdentityStatic;
  * Maybe
  */
 
-export interface Maybe<T> extends IMonad<T>, Setoid<Maybe<T>>, ITraversable<T> {
+export interface Maybe<T> extends Setoid<Maybe<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
   flatMap<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
@@ -144,15 +89,15 @@ export interface Maybe<T> extends IMonad<T>, Setoid<Maybe<T>>, ITraversable<T> {
   toValidation<E>(fail?: E): Validation<E, T>;
 }
 
-interface ISomeStatic extends IMonadFactory {
+interface ISomeStatic {
   <V>(value: V): Maybe<V>;
 }
 
-interface INoneStatic extends IMonadFactory {
+interface INoneStatic {
   <V>(): Maybe<V>;
 }
 
-interface IMaybeStatic extends IMonadStatic {
+interface IMaybeStatic {
   Some: ISomeStatic;
   some: ISomeStatic;
   Just: ISomeStatic;
@@ -176,7 +121,7 @@ export const Maybe: IMaybeStatic;
  * Either
  */
 
-export interface Either<E, T> extends IMonad<T>, Setoid<Either<E, T>>, ITraversable<T> {
+export interface Either<E, T> extends Setoid<Either<E, T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
   flatMap<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
@@ -208,7 +153,7 @@ export interface Either<E, T> extends IMonad<T>, Setoid<Either<E, T>>, ITraversa
   toMaybe(): Maybe<T>;
 }
 
-interface IEitherStatic extends IMonadStatic {
+interface IEitherStatic {
   Right: IRightStatic;
   right: IRightStatic;
   Left: ILeftStatic;
@@ -218,11 +163,11 @@ interface IEitherStatic extends IMonadStatic {
   pure: IRightStatic;  // alias for unit
 }
 
-interface IRightStatic extends IMonadFactory {
+interface IRightStatic {
   <F, V>(val: V): Either<F, V>;
 }
 
-interface ILeftStatic extends IMonadFactory {
+interface ILeftStatic {
   <F, V>(val: F): Either<F, V>;
 }
 
@@ -238,7 +183,7 @@ interface IValidationAcc extends Function {
   (): IValidationAcc;
 }
 
-export interface Validation<E, T> extends IMonad<T>, Setoid<Validation<E, T>>, ITraversable<T> {
+export interface Validation<E, T> extends Setoid<Validation<E, T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
   flatMap<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
@@ -272,7 +217,7 @@ export interface Validation<E, T> extends IMonad<T>, Setoid<Validation<E, T>>, I
   toMaybe(): Maybe<T>;
 }
 
-interface IValidationStatic extends IMonadStatic {
+interface IValidationStatic {
   Success: ISuccessStatic;
   Fail: IFailStatic;
   success: ISuccessStatic;
@@ -283,11 +228,11 @@ interface IValidationStatic extends IMonadStatic {
   point: ISuccessStatic;  // alias for unit
 }
 
-interface ISuccessStatic extends IMonadFactory {
+interface ISuccessStatic {
   <E, T>(val: T): Validation<E, T>;
 }
 
-interface IFailStatic extends IMonadFactory {
+interface IFailStatic {
   <E, T>(err: E): Validation<E, T>;
 }
 
@@ -299,7 +244,7 @@ export const Fail: IFailStatic;
  * List
  */
 
-export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T> {
+export interface List<T> extends Setoid<List<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => List<V>): List<V>;
   flatMap<V>(fn: (val: T) => List<V>): List<V>;
@@ -351,11 +296,11 @@ export interface Nil extends List<void> {
   concat<T>(list: List<T>): List<T>;
 }
 
-interface IListFactory extends IMonadFactory {
+interface IListFactory {
   <T>(val: T): List<T>;
 }
 
-interface IListStatic extends IMonadStatic {
+interface IListStatic {
   <T>(): List<T>;
   <T>(val: T, tail?: List<T>): List<T>;
   fromArray<T>(arr: T[]): List<T>;
@@ -371,7 +316,7 @@ export const Nil: Nil;
  * NEL
  */
 
-export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T> {
+export interface NEL<T> extends Setoid<NEL<T>>, ITraversable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => NEL<V>): NEL<V>;
   flatMap<V>(fn: (val: T) => NEL<V>): NEL<V>;
@@ -419,11 +364,11 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T> {
 
 export type NonEmptyList<T> = NEL<T>;
 
-interface INELFactory extends IMonadFactory {
+interface INELFactory {
   <T>(val: T, tail?: List<T>): NEL<T>;
 }
 
-interface INELStatic extends INELFactory, IMonadStatic {
+interface INELStatic extends INELFactory {
   fromList<T>(arr: List<T>): Maybe<NEL<T>>;
   unit: INELFactory;
   of: INELFactory;    // alias for unit
@@ -437,7 +382,7 @@ export const NEL: INELStatic;
  * IO
  */
 
-export interface IO<T> extends IMonad<T> {
+export interface IO<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => IO<V>): IO<V>;
   flatMap<V>(fn: (val: T) => IO<V>): IO<V>;
@@ -456,11 +401,11 @@ export interface IO<T> extends IMonad<T> {
   performUnsafeIO(): T; // Alias for run()
 }
 
-interface IIOFactory extends IMonadFactory {
+interface IIOFactory {
   <T>(fn: () => T): IO<T>;
 }
 
-interface IIOStatic extends IIOFactory, IMonadStatic {
+interface IIOStatic extends IIOFactory {
   unit: IIOFactory;
   of: IIOFactory;    // alias for unit
   pure: IIOFactory;  // alias for unit
@@ -473,7 +418,7 @@ export const IO: IIOStatic;
  * Reader
  */
 
-export interface Reader<E, A> extends IMonad<A> {
+export interface Reader<E, A> {
   /* Inherited from Monad: */
   bind<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
   flatMap<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
@@ -489,11 +434,11 @@ export interface Reader<E, A> extends IMonad<A> {
   local<X>(fn: (val: X) => E): Reader<X, A>;
 }
 
-interface IReaderFactory extends IMonadFactory {
+interface IReaderFactory {
   <E, A>(fn: (env: E) => A): Reader<E, A>;
 }
 
-interface IReaderStatic extends IReaderFactory, IMonadStatic {
+interface IReaderStatic extends IReaderFactory {
   unit: IReaderFactory;
   of: IReaderFactory;    // alias for unit
   pure: IReaderFactory;  // alias for unit
@@ -506,7 +451,7 @@ export const Reader: IReaderStatic;
 /****************************************************************
  * Free
  */
-export interface Free<A> extends IMonad<A> {
+export interface Free<A> {
   /* A free monad over functor F.
    * It holds values of type F<A> for some functor F.
    *
@@ -538,7 +483,7 @@ export interface Free<A> extends IMonad<A> {
   go<FFA>(extract: (sus: FFA) => Free<A>): A;
 }
 
-interface IFreeStatic extends IMonadStatic {
+interface IFreeStatic {
   Return: IReturnStatic;
   Suspend: ISuspendStatic;
   unit: IReturnStatic;
@@ -547,11 +492,11 @@ interface IFreeStatic extends IMonadStatic {
   liftF<A, FA>(fa: FA): Free<A>; // FA = F<A>
 }
 
-interface IReturnStatic extends IMonadFactory {
+interface IReturnStatic {
   <A>(a: A): Free<A>;
 }
 
-interface ISuspendStatic extends IMonadFactory {
+interface ISuspendStatic {
   <A, FFA>(ffa: FFA): Free<A>;
 }
 
