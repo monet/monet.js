@@ -144,6 +144,7 @@ None().takeRight(Some(2))
 - [flatMap](MAYBE.md#flatmap)
 - [bind](MAYBE.md#flatmap)
 - [chain](MAYBE.md#flatmap)
+- [cata](MAYBE.md#cata)
 - [fold](MAYBE.md#fold)
 - [foldLeft](MAYBE.md#foldleft)
 - [foldRight](MAYBE.md#foldright)
@@ -167,7 +168,6 @@ None().takeRight(Some(2))
 - [toValidation](MAYBE.md#tovalidation)
 - [toList](MAYBE.md#tolist)
 - [filter](MAYBE.md#filter)
-- cata
 - equals
 - join
 - takeLeft
