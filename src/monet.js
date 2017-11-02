@@ -50,6 +50,42 @@
         swap: swap
     }
 
+    var TYPE_KEY = '@@type'
+
+    var TYPES_NAMES = {
+        Identity: 'Identity',
+        Maybe: 'Maybe',
+        Either: 'Either',
+        Validation: 'Validation',
+        List: 'List',
+        NEL: 'NEL',
+        IO: 'IO',
+        MonadT: 'MonadT',
+        Reader: 'Reader',
+        Free: 'Free'
+    }
+
+    function setType(target, typeName) {
+        target[TYPE_KEY] = 'Monet/' + typeName
+    }
+
+    function isInstance(typeName) {
+        return function (target) {
+            return target[TYPE_KEY] || target.costructor[TYPE_KEY] === 'Monet/' + typeName
+        }
+    }
+
+    function isOfType(typeName) {
+        return function (target) {
+            var targetType = target[TYPE_KEY] ||
+                target.costructor &&
+                target.costructor[TYPE_KEY] ||
+                null
+            return targetType.length >= typeName.length &&
+                targetType.indexOf(typeName) === targetType.length - typeName.length
+        }
+    }
+
     function isNothing(value) {
         return value == null // eslint-disable-line no-eq-null, eqeqeq
     }
@@ -295,6 +331,7 @@
                 this.tail_ = tail || Nil
                 this.size_ = this.tail_.size() + 1
             }
+            setType(this, TYPES_NAMES.List)
         },
         of: function (value) {
             return new List(value)
@@ -303,7 +340,7 @@
             return this.size_
         },
         equals: function (other) {
-            return isFunction(other.head) && listEquals(this, other)
+            return List.isOfType(other) || NEL.isOfType(other) && listEquals(this, other)
         },
         cons: function (head) {
             return List(head, this)
@@ -404,6 +441,11 @@
 
     List.fn.init.prototype = List.fn
 
+    setType(List, TYPES_NAMES.List)
+    setType(List.fn.init, TYPES_NAMES.List)
+    List.isInstance = isInstance(TYPES_NAMES.List)
+    List.isOfType = isOfType(TYPES_NAMES.List)
+
     // Aliases
 
     List.prototype.empty = function () {
@@ -459,12 +501,10 @@
                 this.tail_ = isNothing(tail) ? Nil : tail
                 this.size_ = this.tail_.size() + 1
             }
+            setType(this, TYPES_NAMES.NEL)
         },
         equals: function (other) {
-            if (!isFunction(other.head)) {
-                return false
-            }
-            return listEquals(this, other)
+            return List.isOfType(other) || NEL.isOfType(other) && listEquals(this, other)
         },
         map: function (fn) {
             return NEL(fn(this.head_), listMap(fn, this.tail_))
@@ -550,6 +590,10 @@
     }
 
     NEL.fn.init.prototype = NEL.fn
+    setType(NEL, TYPES_NAMES.NEL)
+    setType(NEL.fn.init, TYPES_NAMES.NEL)
+    NEL.isInstance = isInstance(TYPES_NAMES.NEL)
+    NEL.isOfType = isOfType(TYPES_NAMES.NEL)
     NEL.prototype.toArray = List.prototype.toArray
     NEL.prototype.extract = NEL.prototype.copure = NEL.prototype.head
     NEL.prototype.cojoin = NEL.prototype.tails
@@ -566,6 +610,11 @@
 
     Maybe.fromNull = function (val) {
         return isNothing(val) ? Maybe.None() : Maybe.Some(val)
+    }
+
+    Maybe.fromUndefined = function (val) {
+        // eslint-disable-next-line no-undefined
+        return val === undefined ? Maybe.None() : Maybe.Some(val)
     }
 
     Maybe.of = function (a) {
@@ -591,6 +640,7 @@
                 throw new Error('Can not create Some with illegal value: ' + val + '.')
             }
             this.val = val
+            setType(this, TYPES_NAMES.Maybe)
         },
         isSome: function () {
             return this.isValue
@@ -623,8 +673,7 @@
             }) : this
         },
         equals: function (other) {
-            return isFunction(other.isNone) &&
-                isFunction(other.map) &&
+            return Maybe.isOfType(other) &&
                 this.cata(function () {
                     return other.isNone()
                 }, function (val) {
@@ -689,6 +738,10 @@
     Maybe.prototype.orNothingIf = Maybe.prototype.orNoneIf
 
     Maybe.fn.init.prototype = Maybe.fn
+    setType(Maybe, TYPES_NAMES.Maybe)
+    setType(Maybe.fn.init, TYPES_NAMES.Maybe)
+    Maybe.isInstance = isInstance(TYPES_NAMES.Maybe)
+    Maybe.isOfType = isOfType(TYPES_NAMES.Maybe)
 
     var Validation = root.Validation = {}
 
@@ -708,6 +761,7 @@
         init: function (val, success) {
             this.val = val
             this.isSuccessValue = success
+            setType(this, TYPES_NAMES.Validation)
         },
         success: function () {
             if (this.isSuccess()) {
@@ -770,7 +824,7 @@
             this.cata(fn, noop)
         },
         equals: function (other) {
-            return this.cata(
+            return Validation.isOfType(other) && this.cata(
                 function (fail) {
                     return other.cata(equals(fail), falseFunction)
                 },
@@ -801,6 +855,11 @@
 
     Validation.fn.init.prototype = Validation.fn
 
+    setType(Validation, TYPES_NAMES.Validation)
+    setType(Validation.fn.init, TYPES_NAMES.Validation)
+    Validation.isInstance = isInstance(TYPES_NAMES.Validation)
+    Validation.isOfType = isOfType(TYPES_NAMES.Validation)
+
     var Semigroup = root.Semigroup = {
         append: function (a, b) {
             if (isFunction(a.concat)) {
@@ -823,6 +882,7 @@
     MonadT.fn = MonadT.prototype = {
         init: function (monad) {
             this.monad = monad
+            setType(Validation, TYPES_NAMES.MonadT)
         },
         map: function (fn) {
             return MonadT(this.monad.map(function (v) {
@@ -864,6 +924,7 @@
                 throw new Error('IO requires a function.')
             }
             this.effectFn = effectFn
+            setType(Validation, TYPES_NAMES.IO)
         },
         map: function (fn) {
             var self = this
@@ -890,6 +951,11 @@
 
     IO.fn.init.prototype = IO.fn
 
+    setType(IO, TYPES_NAMES.IO)
+    setType(IO.fn.init, TYPES_NAMES.IO)
+    IO.isInstance = isInstance(TYPES_NAMES.IO)
+    IO.isOfType = isOfType(TYPES_NAMES.IO)
+
     IO.prototype.perform = IO.prototype.performUnsafeIO = IO.prototype.run
 
     /* Either Monad */
@@ -911,6 +977,7 @@
         init: function (val, isRightValue) {
             this.isRightValue = isRightValue
             this.value = val
+            setType(this, TYPES_NAMES.Either)
         },
         bind: function (fn) {
             return this.isRightValue ? fn(this.value) : this
@@ -958,10 +1025,7 @@
             this.cata(fn, noop)
         },
         equals: function (other) {
-            if (!isFunction(other.isRight) || !isFunction(other.cata)) {
-                return false
-            }
-            return this.cata(
+            return Either.isOfType(other) && this.cata(
                 function (left) {
                     return other.cata(equals(left), falseFunction)
                 },
@@ -998,6 +1062,11 @@
 
     Either.fn.init.prototype = Either.fn
 
+    setType(Either, TYPES_NAMES.Either)
+    setType(Either.fn.init, TYPES_NAMES.Either)
+    Either.isInstance = isInstance(TYPES_NAMES.Either)
+    Either.isOfType = isOfType(TYPES_NAMES.Either)
+
     var Reader = root.Reader = function (fn) {
         return new Reader.fn.init(fn)
     }
@@ -1016,6 +1085,7 @@
     Reader.fn = Reader.prototype = {
         init: function (fn) {
             this.f = fn
+            setType(this, TYPES_NAMES.Reader)
         },
         run: function (config) {
             return this.f(config)
@@ -1050,6 +1120,11 @@
 
     Reader.fn.init.prototype = Reader.fn
 
+    setType(Reader, TYPES_NAMES.Reader)
+    setType(Reader.fn.init, TYPES_NAMES.Reader)
+    Reader.isInstance = isInstance(TYPES_NAMES.Reader)
+    Reader.isOfType = isOfType(TYPES_NAMES.Reader)
+
     var Free = root.Free = {}
 
     var Suspend = Free.Suspend = root.Suspend = function (functor) {
@@ -1077,6 +1152,7 @@
             } else {
                 this.val = val
             }
+            setType(this, TYPES_NAMES.Free)
         },
         run: function () {
             return this.go(function (f) {
@@ -1134,6 +1210,11 @@
 
     Free.fn.init.prototype = Free.fn
 
+    setType(Free, TYPES_NAMES.Free)
+    setType(Free.fn.init, TYPES_NAMES.Free)
+    Free.isInstance = isInstance(TYPES_NAMES.Free)
+    Free.isOfType = isOfType(TYPES_NAMES.Free)
+
     function Identity(a) {
         return new Identity.fn.init(a)
     }
@@ -1147,6 +1228,7 @@
     Identity.fn = Identity.prototype = {
         init: function (val) {
             this.val = val
+            setType(this, TYPES_NAMES.Identity)
         },
         bind: function (fn) {
             return fn(this.val)
@@ -1158,7 +1240,7 @@
             fn(this.val)
         },
         equals: function (other) {
-            return isFunction(other.get) && equals(this.get())(other.get())
+            return Identity.isOfType(other) && equals(this.get())(other.get())
         },
         contains: function (val) {
             return areEqual(this.val, val)
@@ -1178,6 +1260,11 @@
     }
 
     Identity.fn.init.prototype = Identity.fn
+
+    setType(Identity, TYPES_NAMES.Identity)
+    setType(Identity.fn.init, TYPES_NAMES.Identity)
+    Identity.isInstance = isInstance(TYPES_NAMES.Identity)
+    Identity.isOfType = isOfType(TYPES_NAMES.Identity)
 
     // Add aliases
 

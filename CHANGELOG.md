@@ -3,7 +3,9 @@
 
 ### alpha.5 (?? 2017)
 
-- ?
+- [enhancement] make `.equals()` compatible with other libraries
+- [new] add static `.isOfType()` and `.isInstance()` to all types
+- [new] add `.fromUndefined()` to Maybe static
 
 ### alpha.4 (19 Jun 2017)
 
