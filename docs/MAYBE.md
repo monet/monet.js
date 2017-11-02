@@ -90,6 +90,21 @@ None().flatMap(getWorld)
 // => None
 ```
 
+### cata
+
+```scala
+Maybe[A].cata(leftFn: () => X, rightFn: A => X): X
+```
+
+The catamorphism for maybe.  If the maybe is `some` the right function will be executed with the value and the value of the function returned. Otherwise the `left` function will be called.
+
+```javascript
+maybe.cata(
+  () => `oh dear it failed because`,
+  value => `yay! ${value}`
+)
+```
+
 ### fold
 
 ```scala

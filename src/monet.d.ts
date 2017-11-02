@@ -32,6 +32,11 @@ interface Bind<T> extends Chain<T> {
   join<V>(): Bind<V>  // works only if T = Bind<V>
 }
 
+/* Typeclass for catamorphism */
+interface Catamorphism<F, T> {
+  cata<C>(l: (e?: F) => C, r: (v: T) => C): C;
+}
+
 /* Typeclass for traversables */
 export interface ITraversable<T> {
   foldLeft<V>(initial: V): (fn: (acc: V, val: T) => V) => V;
@@ -104,7 +109,8 @@ export const Identity: IIdentityStatic;
  * Maybe
  */
 
-export interface Maybe<T> extends IMonad<T>, Setoid<Maybe<T>>, ITraversable<T> {
+export interface Maybe<T>
+  extends IMonad<T>, Setoid<Maybe<T>>, ITraversable<T>, Catamorphism<undefined, T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
   flatMap<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
@@ -176,7 +182,8 @@ export const Maybe: IMaybeStatic;
  * Either
  */
 
-export interface Either<E, T> extends IMonad<T>, Setoid<Either<E, T>>, ITraversable<T> {
+export interface Either<E, T>
+  extends IMonad<T>, Setoid<Either<E, T>>, ITraversable<T>, Catamorphism<E, T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
   flatMap<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
@@ -238,7 +245,8 @@ interface IValidationAcc extends Function {
   (): IValidationAcc;
 }
 
-export interface Validation<E, T> extends IMonad<T>, Setoid<Validation<E, T>>, ITraversable<T> {
+export interface Validation<E, T>
+  extends IMonad<T>, Setoid<Validation<E, T>>, ITraversable<T>, Catamorphism<E, T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
   flatMap<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
