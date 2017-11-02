@@ -58,6 +58,7 @@ interface IMonad<T> extends Functor<T>, Bind<T>, Applicative<T> {
   /* These are monet-Monad-specific: */
   takeLeft(m: IMonad<T>): IMonad<T>;
   takeRight(m: IMonad<T>): IMonad<T>;
+  ['@@type']: string;
 }
 
 interface IMonadFactory extends Function {
@@ -101,6 +102,8 @@ interface IIdentityStatic extends IIdentityFactory, IMonadStatic {
   unit: IIdentityFactory;
   of: IIdentityFactory;    // alias for unit
   pure: IIdentityFactory;  // alias for unit
+  isOfType(target: any): boolean;
+  isInstance(target: any): target is Identity<any>;
 }
 
 export const Identity: IIdentityStatic;
@@ -171,6 +174,8 @@ interface IMaybeStatic extends IMonadStatic {
   unit: ISomeStatic;
   of: ISomeStatic;    // alias for unit
   pure: ISomeStatic;  // alias for unit
+  isOfType(target: any): boolean;
+  isInstance(target: any): target is Maybe<any>;
 }
 
 export const Some: ISomeStatic;
@@ -224,6 +229,8 @@ interface IEitherStatic extends IMonadStatic {
   unit: IRightStatic;
   of: IRightStatic;    // alias for unit
   pure: IRightStatic;  // alias for unit
+  isOfType(target: any): boolean;
+  isInstance(target: any): target is Either<any, any>;
 }
 
 interface IRightStatic extends IMonadFactory {
@@ -290,6 +297,8 @@ interface IValidationStatic extends IMonadStatic {
   of: ISuccessStatic;     // alias for unit
   pure: ISuccessStatic;   // alias for unit
   point: ISuccessStatic;  // alias for unit
+  isOfType(target: any): boolean;
+  isInstance(target: any): target is Validation<any, any>;
 }
 
 interface ISuccessStatic extends IMonadFactory {
@@ -371,6 +380,8 @@ interface IListStatic extends IMonadStatic {
   unit: IListFactory;
   of: IListFactory;    // alias for unit
   pure: IListFactory;  // alias for unit
+  isOfType(target: any): boolean;
+  isInstance(target: any): target is List<any>;
 }
 
 export const List: IListStatic;
@@ -437,6 +448,8 @@ interface INELStatic extends INELFactory, IMonadStatic {
   unit: INELFactory;
   of: INELFactory;    // alias for unit
   pure: INELFactory;  // alias for unit
+  isOfType(target: any): boolean;
+  isInstance(target: any): target is NEL<any>;
 }
 
 export const NonEmptyList: INELStatic;
@@ -474,6 +487,8 @@ interface IIOStatic extends IIOFactory, IMonadStatic {
   of: IIOFactory;    // alias for unit
   pure: IIOFactory;  // alias for unit
   io: IIOFactory;    // alias for unit
+  isOfType(target: any): boolean;
+  isInstance(target: any): target is IO<any>;
 }
 
 export const IO: IIOStatic;
@@ -508,6 +523,8 @@ interface IReaderStatic extends IReaderFactory, IMonadStatic {
   pure: IReaderFactory;  // alias for unit
   point: IReaderFactory; // alias for unit
   ask<E>(): Reader<E, E>;
+  isOfType(target: any): boolean;
+  isInstance(target: any): target is Reader<any, any>;
 }
 
 export const Reader: IReaderStatic;
@@ -554,6 +571,8 @@ interface IFreeStatic extends IMonadStatic {
   of: IReturnStatic;    // alias for unit
   pure: IReturnStatic;  // alias for unit
   liftF<A, FA>(fa: FA): Free<A>; // FA = F<A>
+  isOfType(target: any): boolean;
+  isInstance(target: any): target is Free<any>;
 }
 
 interface IReturnStatic extends IMonadFactory {
