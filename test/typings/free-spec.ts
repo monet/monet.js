@@ -38,4 +38,4 @@ function extractLog<A>(ffa: LoggingFunctor<Free<A>>): LoggingMonad<A> {
   return ffa.run();
 }
 
-const extracted: string = content.go(extractLog);
+const extracted: string = content.go<LoggingFunctor<Free<any>>>(extractLog);

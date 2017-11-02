@@ -76,7 +76,7 @@ None<string>().orNothingIf(true).orElseRun(() => console.log("oops"));
 const plus18 = (val: number) => val + 18;
 
 console.assert(Maybe.some(12).map(plus18).some() == 30);
-console.assert(Maybe.none().map(plus18).isNone());
+console.assert(Maybe.none<number>().map(plus18).isNone());
 console.assert(Some(11).map(plus18).isNone());
 console.assert(Maybe.of('a').flatMap(a => Some(a + 'b')).orNull() === null);
 console.assert(Maybe.of('a').filter(Boolean).orJust('b') === null);

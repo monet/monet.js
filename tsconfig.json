@@ -3,7 +3,7 @@
     "listFiles": true,
     "noEmit": true,
     "noImplicitAny": true,
-    "strictNullChecks": true
+    "strict": true
   },
   "files": [
     "test/typings/identity-spec.ts",
