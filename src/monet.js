@@ -568,6 +568,11 @@
         return isNothing(val) ? Maybe.None() : Maybe.Some(val)
     }
 
+    Maybe.fromUndefined = function (val) {
+        // eslint-disable-next-line no-undefined
+        return val === undefined ? Maybe.None() : Maybe.Some(val)
+    }
+
     Maybe.of = function (a) {
         return Some(a)
     }

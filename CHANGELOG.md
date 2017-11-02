@@ -3,7 +3,7 @@
 
 ### alpha.5 (?? 2017)
 
-- ?
+- [new] add `.fromUndefined()` to Maybe static
 
 ### alpha.4 (19 Jun 2017)
 

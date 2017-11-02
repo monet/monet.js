@@ -361,6 +361,7 @@ describe('A Maybe', function () {
     describe('Maybe.fromNull', function () {
         describe('will create a none for', function () {
             it('undefined', function () {
+                expect(Maybe.fromUndefined()).toBeNoneMaybe()
                 expect(Maybe.fromNull(undefined)).toBeNoneMaybe()
             })
             it('null', function () {
@@ -370,6 +371,20 @@ describe('A Maybe', function () {
         describe('will create a some for', function () {
             it('string', function () {
                 expect(Maybe.fromNull('asdf')).toBeSomeMaybe('asdf')
+            })
+        })
+    })
+
+    describe('Maybe.fromUndefined', function () {
+        describe('will create a none for', function () {
+            it('undefined', function () {
+                expect(Maybe.fromUndefined()).toBeNoneMaybe()
+                expect(Maybe.fromUndefined(undefined)).toBeNoneMaybe()
+            })
+        })
+        describe('will create a some for', function () {
+            it('string', function () {
+                expect(Maybe.fromUndefined('asdf')).toBeSomeMaybe('asdf')
             })
         })
     })
