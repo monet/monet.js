@@ -20,7 +20,8 @@ Maybe.Some('a')
 
 Maybe.fromNull('b')
 Maybe.fromFalsy('b')
-// => Some("a")
+Maybe.fromUndefined('b')
+// => Some("b")
 
 None()
 Nothing()
@@ -40,9 +41,13 @@ Maybe.fromFalsy(0)
 Maybe.fromFalsy('')
 Maybe.fromFalsy(false)
 // => None
+
+Maybe.fromUndefined()
+Maybe.fromUndefined(undefined)
+// => None
 ```
 
-**It's important to note that monet `Maybe` implementation threats `null` and `undefined` values in special way. Any attempt to provide `null` or `undefined` to constructor (other than `fromNull` or `fromFalsy`) will cause exception. Same will happen if it's mapped to `null` or `undefined`.**
+**It's important to note that monet `Maybe` implementation threats `null` and `undefined` values in special way. Any attempt to provide `null` or `undefined` to constructor (other than `fromNull` or `fromFalsy`) will cause exception (also `fromUndefined(null)` will throw). Same will happen if it's mapped to `null` or `undefined`.**
 
 ### Creating a Maybe from pimped object
 
