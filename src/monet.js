@@ -1288,6 +1288,16 @@
         type.prototype.point = type.prototype.pure = type.prototype.unit = type.prototype.of
     }
 
+    function addFilterNot(type) {
+        if (isFunction(type.prototype.filter)) {
+            type.prototype.filterNot = function (fn) {
+                return this.filter(function (a) {
+                    return !fn(a)
+                })
+            }
+        }
+    }
+
     // Wire up aliases
     function addMonadOps(type) {
         type.prototype.join = function () {
@@ -1330,6 +1340,7 @@
 
     function decorate(type) {
         addAliases(type)
+        addFilterNot(type)
         addMonadOps(type)
         addFunctorOps(type)
         addApplicativeOps(type)

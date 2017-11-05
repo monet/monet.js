@@ -81,6 +81,16 @@ describe('A Maybe', function () {
                 return a === 'abcd'
             })).toBe(someString)
         })
+        it('will return a none on a failed filterNot', function () {
+            expect(someString.filterNot(function (a) {
+                return a === 'abcd'
+            })).toBeNoneMaybe()
+        })
+        it('will return a some on a successful filterNot', function () {
+            expect(someString.filterNot(function (a) {
+                return a === '123'
+            })).toBe(someString)
+        })
         it('will return false on a contains with the wrong value', function () {
             expect(someString.contains('test')).toBe(false)
         })
@@ -185,6 +195,11 @@ describe('A Maybe', function () {
         it('will always return a None on filter', function () {
             expect(none.filter(function (a) {
                 return true
+            })).toBeNoneMaybe()
+        })
+        it('will always return a None on filterNot', function () {
+            expect(none.filterNot(function (a) {
+                return false
             })).toBeNoneMaybe()
         })
         it('will return false on a contains', function () {
