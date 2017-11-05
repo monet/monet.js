@@ -1,6 +1,6 @@
 # Immutable lists
 
-An immutable list is a list that has a head element and a tail. A tail is another list. The empty list is represented by the `Nil` constructor. An immutable list is also known as a "cons" list.  Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
+An immutable list is a list that has a head element and a tail. A tail is another list. The empty list is represented by the `Nil` constructor. An immutable list is also known as a "cons" list. Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
 
 ## Constructors
 
@@ -55,7 +55,7 @@ List.from(unique);
 List[A].cons(element: A): List[A]
 ```
 
-`cons` will prepend the element to the front of the list and return a new list.  The existing list remains unchanged. For example:
+`cons` will prepend the element to the front of the list and return a new list. The existing list remains unchanged. For example:
 
 ```javascript
 const newList = myList.cons(4)
@@ -121,7 +121,7 @@ Nil.headMaybe()
 List[A].foldLeft(initialValue: B)(fn: (acc: B, element: A) => B): B
 ```
 
-`foldLeft` takes an initial value and a function, and will 'reduce' the list to a single value.  The supplied function takes an accumulator as its first argument and the current element in the list as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass.
+`foldLeft` takes an initial value and a function, and will 'reduce' the list to a single value. The supplied function takes an accumulator as its first argument and the current element in the list as its second. The returned value from the function will be passed into the accumulator on the subsequent pass.
 
 For example, say you wanted to add up a list of integers, your initial value would be `0` and your function would return the sum of the accumulator and the passed in element.
 
@@ -197,7 +197,7 @@ Returns a `Maybe` containing the first element for which the predicate returns t
 List[Monad[A]].sequence(Monad): Monad[List[A]]
 ```
 
-Will `sequence` a list of monads.  The signature above is slightly hard to represent, but this function will sequence a list of any type of monad, but you will need to supply the name of the monad you are sequencing.
+Will `sequence` a list of monads. The signature above is slightly hard to represent, but this function will sequence a list of any type of monad, but you will need to supply the name of the monad you are sequencing.
 
 **Note: This version of sequence will only work with Monads that can cope with eager evaluations. For lazy monads such as `IO` and `Reader` please use `lazySequence` or the explicit versions, such as `sequenceIO`.**
 
@@ -233,7 +233,7 @@ This is the same as `sequence` except it caters for Monads that require laziness
 List[Maybe[A]].sequenceMaybe(): Maybe[List[A]]
 ```
 
-Takes a list of `Maybe`s and turns it into a `Maybe` `List`.  If the list contains at least one `None` value then a `None` will be returned, otherwise a `Some` will be returned with a list of all the values.
+Takes a list of `Maybe`s and turns it into a `Maybe` `List`. If the list contains at least one `None` value then a `None` will be returned, otherwise a `Some` will be returned with a list of all the values.
 
 For example:
 
@@ -257,7 +257,7 @@ List.fromArray([Some(1), Some(2)]).sequence(Maybe)
 List[Either[E,A]].sequenceEither(): Either[E, List[A]]
 ```
 
-This will sequence a `List` of `Either`s stopping on the first `Left` that it finds.  It will return either a `List` of the `Right` values or the first `Left` value it encounters. For example:
+This will sequence a `List` of `Either`s stopping on the first `Left` that it finds. It will return either a `List` of the `Right` values or the first `Left` value it encounters. For example:
 
 ```javascript
 List.fromArray([Right(1), Right(2), Right(3)]).sequenceEither()
@@ -275,7 +275,7 @@ Note: Unlike `sequenceValidation` it does not accumulate the `Left` (or "failing
 List[Validation[E,A]].sequenceValidation(): Validation[List[E], List[A]]
 ```
 
-Takes a list of `Validation`s and turns it into a `Validation` `List`.  It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure` side, if there are **any** failures.
+Takes a list of `Validation`s and turns it into a `Validation` `List`. It will collect all the `success` values into a list on the `Success` side of the validation or it accumulates the errors on the `Failure` side, if there are **any** failures.
 
 ```javascript
 List.fromArray([
