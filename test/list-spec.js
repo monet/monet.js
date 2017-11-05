@@ -357,7 +357,7 @@ describe('An immutable list', function () {
                 return false
             })).toEqual(Nil)
         })
-        it('will return an none on find', function () {
+        it('will return a None on find', function () {
             expect(Nil.find(function () {
                 return true
             })).toBeNoneMaybe()
@@ -392,7 +392,7 @@ describe('An immutable list', function () {
                 return a % 2 == 0
             })).toBeSomeMaybeWith(2)
         })
-        it('will return none if no element pass the predicate', function () {
+        it('will return None if no element pass the predicate', function () {
             expect(list.find(function (a) {
                 return a < 0
             })).toBeNoneMaybe()

@@ -21,7 +21,7 @@
   - `Maybe.some(val)` and `Maybe.none()`
   - `Either.right(val)` and `Either.left(err)`
 - [enhancement] make `.ap()` compatible with Fantasy Land and Ramda -- thanks to @char0n ( #112 )
-- [new] add `.ap()` to Identity (so it's copmpatible with FantasyLand) -- thanks to @char0n ( #121 )
+- [new] add `.ap()` to Identity (so it's compatible with FantasyLand) -- thanks to @char0n ( #121 )
 - [new] add `.orNoneIf()` (alias `.orNothingIf()`) to Maybe -- thanks to @emmanueltouzery ( #100 )
 - [new] add `.fromFalsy()` to Maybe static -- thanks to @kpudlik ( #98 )
 - [new] add `.forEach()` to Identity, Maybe, Either, Validation, List and NEL -- thanks to @emmanueltouzery ( #95 ). And:

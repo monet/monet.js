@@ -24,7 +24,7 @@ IO.pure(() => $("#id").val())
 
 #### .io()
 
-Wraps a supplied function in an `IO`.  Assumes no arguments will be supplied to the function.
+Wraps a supplied function in an `IO`. Assumes no arguments will be supplied to the function.
 
 ```javascript
 (() => $("#id")).io()

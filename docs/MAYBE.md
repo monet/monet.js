@@ -47,7 +47,7 @@ Maybe.fromUndefined(undefined)
 // => None
 ```
 
-**It's important to note that monet `Maybe` implementation threats `null` and `undefined` values in special way. Any attempt to provide `null` or `undefined` to constructor (other than `fromNull` or `fromFalsy`) will cause exception (also `fromUndefined(null)` will throw). Same will happen if it's mapped to `null` or `undefined`.**
+**It's important to note that monet `Maybe` implementation treats `null` and `undefined` values in special way. Any attempt to provide `null` or `undefined` to constructor (other than `fromNull` or `fromFalsy`) will cause exception (also `fromUndefined(null)` will throw). Same will happen if it's mapped to `null` or `undefined`.**
 
 ### Creating a Maybe from pimped object
 
@@ -80,7 +80,7 @@ Some(123).map(val => val + 1)
 Maybe[A].flatMap(fn: A => Maybe[B]): Maybe[B]
 ```
 
-`bind` takes a function that takes a value and returns a `Maybe`.  The value to the function will be supplied from the `Maybe` you are binding on. For example:
+`bind` takes a function that takes a value and returns a `Maybe`. The value to the function will be supplied from the `Maybe` you are binding on. For example:
 
 ```javascript
 const getWorld = (val) => val === 'hi' ? Some('world') : None()
@@ -101,7 +101,7 @@ None().flatMap(getWorld)
 Maybe[A].cata(leftFn: () => X, rightFn: A => X): X
 ```
 
-The catamorphism for maybe.  If the maybe is `some` the right function will be executed with the value and the value of the function returned. Otherwise the `left` function will be called.
+The catamorphism for maybe. If the `Maybe` is `some` the right function will be executed with the value and the value of the function returned. Otherwise the `left` function will be called.
 
 ```javascript
 maybe.cata(
@@ -116,7 +116,7 @@ maybe.cata(
 Maybe[A].fold(ifNone: B)(ifSomeFn: A => B): B
 ```
 
-`fold` takes a default value and a function, and will 'reduce' the `Maybe` to a single value.  If the `Maybe` is a `None`, the supplied default value will be returned.  If the `Maybe` is a `Some`, the supplied function will be invoked with the contents of the `Maybe`, and its result will be returned. For example:
+`fold` takes a default value and a function, and will 'reduce' the `Maybe` to a single value. If the `Maybe` is a `None`, the supplied default value will be returned. If the `Maybe` is a `Some`, the supplied function will be invoked with the contents of the `Maybe`, and its result will be returned. For example:
 
 ```javascript
 None().fold(-1)(value => value.length)
@@ -194,7 +194,7 @@ Some('hi').isNone()
 Maybe[A].some(): A
 ```
 
-`some` will 'reduce' the `Maybe` to its value.  But warning! It will throw an error if you attempt to do this on a none.  Use `orSome` instead.
+`some` will 'reduce' the `Maybe` to its value. But warning! It will throw an error if you attempt to do this on a none. Use `orSome` instead.
 
 For example:
 
@@ -252,11 +252,11 @@ Returns `None` if the boolean is true, otherwise pass through the maybe value.
 Maybe[A].ap(Maybe[A=>B]): Maybe[B]
 ```
 
-The `ap` function implements the Applicative Functor pattern.  It takes as a parameter another `Maybe` type which contains a function, and then applies that function to the value contained in the calling `Maybe`.
+The `ap` function implements the Applicative Functor pattern. It takes as a parameter another `Maybe` type which contains a function, and then applies that function to the value contained in the calling `Maybe`.
 
 It may seem odd to want to apply a function to a monad that exists inside another monad, but this is particular useful for when you have a curried function being applied across many monads.
 
-Here is an example for creating a string out of the result of a couple of `Maybe`s.  We use `curry()` which is a pimped method on Function so we can partially apply.
+Here is an example for creating a string out of the result of a couple of `Maybe`s. We use `curry()` which is a pimped method on Function so we can partially apply.
 
 ```ecmascript 6
 const person = forename => surname => address => `${forename} ${surname} lives in ${address}`
@@ -344,7 +344,6 @@ Maybe[A].filterNot(fn: A => Boolean): Maybe[A]
 Similar to `filter` but the condition is negated.
 
 ### ...and undocumented
-- cata
 - equals
 - join
 - takeLeft

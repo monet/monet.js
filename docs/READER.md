@@ -1,6 +1,6 @@
 # Reader
 
-The `Reader` monad is a wonderful solution to inject dependencies into your functions.  There are plenty of great resources to get your teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
+The `Reader` monad is a wonderful solution to inject dependencies into your functions. There are plenty of great resources to get your teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
 
 The `Reader` monad provides a way to "weave" your configuration throughout your programme.
 
@@ -9,7 +9,7 @@ The `Reader` monad provides a way to "weave" your configuration throughout your 
 Say you had this function which requires configuration:
 
 ```javascript
-const  createPrettyName = (name, printer) => printer.write("hello " + name)
+const createPrettyName = (name, printer) => printer.write("hello " + name)
 ```
 
 Calling this function from other functions that don't need the dependency `printer` is kind of awkward.
@@ -22,7 +22,7 @@ One quick win would be to `curry` the `createPrettyName` function, and make `ren
 `render` supply the printer.
 
 ```javascript
-const  createPrettyName = name => printer => printer.write("hello " + name)
+const createPrettyName = name => printer => printer.write("hello " + name)
 
 const render = () => createPrettyName("Tom")
 ```
@@ -84,7 +84,7 @@ Performs a monadic bind over the `Reader`.
 Reader[E, A].ap(a: Reader[E, A=>B]): Reader[E, B]
 ```
 
-Applies the function inside the supplied `Reader` to the value `A` in the outer `Reader`.  Applicative Functor pattern.
+Applies the function inside the supplied `Reader` to the value `A` in the outer `Reader`. Applicative Functor pattern.
 
 ### run
 

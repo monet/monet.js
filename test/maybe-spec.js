@@ -55,7 +55,7 @@ describe('A Maybe', function () {
                 return Maybe.Some('Hello')
             })).toBeSomeMaybeWith('Hello')
         })
-        it('will be transformed to a none on bind that returns none', function () {
+        it('will be transformed to a None on bind that returns None', function () {
             expect(someString.bind(function (val) {
                 return Maybe.None()
             })).toBeNoneMaybe()
@@ -71,7 +71,7 @@ describe('A Maybe', function () {
         it('will return the first monad on orElse', function () {
             expect(someString.orElse(none)).toBeSomeMaybeWith('abcd')
         })
-        it('will return a none on a failed filter', function () {
+        it('will return a None on a failed filter', function () {
             expect(someString.filter(function (a) {
                 return a === '123'
             })).toBeNoneMaybe()
@@ -147,7 +147,7 @@ describe('A Maybe', function () {
         it('will be unchanged on orNoneIf with false', function () {
             expect(someString.orNoneIf(false)).toBe(someString)
         })
-        it('will become none on orNoneIf with true', function () {
+        it('will become None on orNoneIf with true', function () {
             expect(someString.orNoneIf(true)).toBeNoneMaybe()
         })
     })
@@ -170,7 +170,7 @@ describe('A Maybe', function () {
         it('will be false for isSome()', function () {
             expect(none.isSome()).toBeFalsy()
         })
-        it('will always return a none on bind', function () {
+        it('will always return a None on bind', function () {
             expect(none.bind(function () {
                 return Maybe.Some('a')
             })).toBeNoneMaybe()
@@ -220,7 +220,7 @@ describe('A Maybe', function () {
                 throw 'none should have nothing to accumulate'
             })).toBe('efg')
         })
-        it('will run the none side of cata', function () {
+        it('will run the None side of cata', function () {
             expect(none.cata(function () {
                 return 'efg'
             }, function (val) {
@@ -253,10 +253,10 @@ describe('A Maybe', function () {
             none.forEach(sideEffectsReceiver.setVal)
             expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
-        it('will be none on orNoneIf with false', function () {
+        it('will be None on orNoneIf with false', function () {
             expect(none.orNoneIf(false)).toBeNoneMaybe()
         })
-        it('will be none on orNoneIf with true', function () {
+        it('will be None on orNoneIf with true', function () {
             expect(none.orNoneIf(true)).toBeNoneMaybe()
         })
     })
@@ -301,7 +301,7 @@ describe('A Maybe', function () {
             expect(result).toBeSomeMaybeWith('Tom Baker')
         })
 
-        it('will work with apply2 with one Some and a none', function () {
+        it('will work with apply2 with one Some and a None', function () {
             var result = Monet.apply2(Maybe.None(), maybeSurname, function (f, l) {
                 return f + ' ' + l
             })
@@ -312,7 +312,7 @@ describe('A Maybe', function () {
             expect(result2).toBeNoneMaybe()
         })
 
-        it('will work with apply2 with two nones', function () {
+        it('will work with apply2 with two Nones', function () {
             var result = Monet.apply2(Maybe.None(), maybeSurname, function (f, l) {
                 return f + ' ' + l
             })
@@ -439,7 +439,7 @@ describe('A Maybe', function () {
         it('will take left', function () {
             expect(Some('hi').takeLeft(Some('world'))).toBeSomeMaybeWith('hi')
         })
-        it('will not take left on none', function () {
+        it('will not take left on None', function () {
             expect(None().takeLeft(Some('world'))).toBeNoneMaybe()
             expect(Some('world').takeLeft(None())).toBeNoneMaybe()
             expect(None().takeLeft(None())).toBeNoneMaybe()
