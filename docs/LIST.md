@@ -167,6 +167,14 @@ List[A].filter(op: A => Boolean): List[A]
 
 Returns a new list, keeping only elements for which the predicate returns true.
 
+### filterNot
+
+```scala
+List[A].filterNot(op: A => Boolean): List[A]
+```
+
+Returns a new list, keeping only elements for which the predicate returns false.
+
 #### contains
 
 ```scala

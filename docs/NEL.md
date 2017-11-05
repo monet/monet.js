@@ -139,6 +139,14 @@ NEL[A].filter(fn: (element: A) => Boolean): List[A]
 
 Returns a new list, keeping only elements for which the predicate returns true.
 
+### filterNot
+
+```scala
+NEL[A].filterNot(fn: (element: A) => Boolean): List[A]
+```
+
+Returns a new list, keeping only elements for which the predicate returns false.
+
 ### find
 
 ```scala

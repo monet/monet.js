@@ -185,6 +185,7 @@ Checks if passed object os an instance of some similar type. This check is based
 - [toValidation](MAYBE.md#tovalidation)
 - [toList](MAYBE.md#tolist)
 - [filter](MAYBE.md#filter)
+- [filterNot](MAYBE.md#filterNot)
 - equals
 - join
 - takeLeft
@@ -259,6 +260,7 @@ Checks if passed object os an instance of some similar type. This check is based
 - [append](LIST.md#append)
 - [concat](LIST.md#append)
 - [filter](LIST.md#filter)
+- [filterNot](LIST.md#filterNot)
 - [contains](LIST.md#contains)
 - [find](LIST.md#find)
 - [sequence](LIST.md#sequence)
@@ -301,6 +303,7 @@ Checks if passed object os an instance of some similar type. This check is based
 - [foldLeft](NEL.md#foldleft)
 - [foldRight](NEL.md#foldright)
 - [filter](NEL.md#filter)
+- [filterNot](NEL.md#filterNot)
 - [find](NEL.md#find)
 - [contains](NEL.md#contains)
 - [reduceLeft](NEL.md#reduceleft)

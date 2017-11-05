@@ -6,6 +6,7 @@
 - [enhancement] make `.equals()` compatible with other libraries
 - [new] add static `.isOfType()` and `.isInstance()` to all types
 - [new] add `.fromUndefined()` to Maybe static
+- [new] add `.filterNot()` to Maybe, List and NEL
 
 ### alpha.4 (19 Jun 2017)
 

@@ -107,6 +107,13 @@ describe('A Non-Empty immutable list', function () {
 
     })
 
+    it('will be filtered with filterNot', function () {
+        var n1 = NEL.fromList(List.fromArray([1, 2, 3, 4, 5, 6, 7, 8])).some()
+        expect(n1.filterNot(function (a) {
+            return a % 2 == 0
+        }).toArray()).toEqual([1, 3, 5, 7])
+    })
+
     it('can be searched', function () {
         var n1 = NEL.fromList(List.fromArray([1, 2, 3, 4, 5, 6, 7, 8])).some()
         expect(n1.find(function (a) {
