@@ -352,6 +352,11 @@ describe('An immutable list', function () {
                 return true
             })).toEqual(Nil)
         })
+        it('will return an empty list on filterNot', function () {
+            expect(Nil.filterNot(function () {
+                return false
+            })).toEqual(Nil)
+        })
         it('will return an none on find', function () {
             expect(Nil.find(function () {
                 return true
@@ -374,6 +379,12 @@ describe('An immutable list', function () {
             expect(list.filter(function (a) {
                 return a % 2 == 0
             }).toArray()).toEqual([2, 4])
+
+        })
+        it('will return the elements that does not pass the filterNot', function () {
+            expect(list.filterNot(function (a) {
+                return a % 2 == 0
+            }).toArray()).toEqual([1, 3])
 
         })
         it('will return the first elements that pass the predicate', function () {

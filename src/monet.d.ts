@@ -131,6 +131,7 @@ export interface Maybe<T>
   fold<V>(val: V): (fn: (val: T) => V) => V;
 
   filter(fn: (val: T) => boolean): Maybe<T>;
+  filterNot(fn: (val: T) => boolean): Maybe<T>;
 
   isSome(): boolean;
   isJust(): boolean;
@@ -332,6 +333,7 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T> {
 
   /* List specific */
   filter(fn: (val: T) => boolean): List<T>;
+  filterNot(fn: (val: T) => boolean): List<T>;
   find(fn: (val: T) => boolean): Maybe<T>;
   cons(a: T): List<T>;
   snoc(a: T): List<T>;
@@ -417,6 +419,7 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T> {
   reduceLeft(fn: (acc: T, element: T) => T): T;
 
   filter(fn: (val: T) => boolean): List<T>;
+  filterNot(fn: (val: T) => boolean): List<T>;
   find(fn: (val: T) => boolean): Maybe<T>;
   // cons(a: T): NEL<T>;
   // snoc(a: T): NEL<T>;

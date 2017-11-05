@@ -335,6 +335,14 @@ Some('John').filter(val => val === 'James')
 // => None()
 ```
 
+### filterNot
+
+```scala
+Maybe[A].filterNot(fn: A => Boolean): Maybe[A]
+```
+
+Similar to `filter` but the condition is negated.
+
 ### ...and undocumented
 - cata
 - equals
