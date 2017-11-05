@@ -48,7 +48,7 @@ means that function `x` takes two parameters that are both functions themselves.
 
 #### The Unit type
 
-Some functions (or lambdas) do not take a parameter, and some do not return anythingWill express this as:
+Some functions (or lambdas) do not take a parameter, and some do not return anything. This will be expressed as:
 
 ```scala
 () => A
