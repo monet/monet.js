@@ -144,7 +144,7 @@ None().takeRight(Some(2))
 MonadStatic.isInstance(m: Any): Boolean;
 ```
 
-Checks if passed object os an instance of concrete Monet type.
+Checks if passed object is an instance of concrete Monet type.
 
 
 ### static isOfType
@@ -153,7 +153,7 @@ Checks if passed object os an instance of concrete Monet type.
 MonadStatic.isInstance(m: Any): Boolean;
 ```
 
-Checks if passed object os an instance of some similar type. This check is based on `@@type` property attached to constructor and/or every instance of every type holding a string of shape `Monet/${name}`. It's purpose is to enable checks with other JS libraries that also use same approach (e.g. https://github.com/ramda/ramda-fantasy, https://github.com/char0n/ramda-adjunct ). This method is internally used in all types that extend `Setoid` in `equals` method.
+Checks if passed object is an instance of some similar type. This check is based on `@@type` property attached to constructor and/or every instance of every type holding a string of shape `Monet/${name}`. Its purpose is to enable checks with other JS libraries that also use same approach (e.g. https://github.com/ramda/ramda-fantasy, https://github.com/char0n/ramda-adjunct). This method is internally used in all types that extend `Setoid` in `equals` method.
 
 ## [Maybe](MAYBE.md)
 

@@ -1,6 +1,6 @@
 # Either
 
-Either (or the disjunct union) is a type that can either hold a value of type `A` or a value of type `B` but never at the same time.  Typically it is used to represent computations that can fail with an error.  Think of it as a better way to handle exceptions.  We think of an `Either` as having two sides, the success is held on the right and the failure on the left.  This is a right biased either which means that `map` and `flatMap` (`bind`) will operate on the right side of the either.
+Either (or the disjunct union) is a type that can either hold a value of type `A` or a value of type `B` but never at the same time. Typically it is used to represent computations that can fail with an error. Think of it as a better way to handle exceptions. We think of an `Either` as having two sides, the success is held on the right and the failure on the left. This is a right biased either which means that `map` and `flatMap` (`bind`) will operate on the right side of the either.
 
 ## Constructors
 
@@ -88,7 +88,7 @@ This takes an either that has a function on the right side of the either and the
 Either[E,A].cata(leftFn: E => X, rightFn: A => X): X
 ```
 
-The catamorphism for either.  If the either is `right` the right function will be executed with the right value and the value of the function returned. Otherwise the `left` function will be called with the left value.
+The catamorphism for either. If the either is `right` the right function will be executed with the right value and the value of the function returned. Otherwise the `left` function will be called with the left value.
 
 ```javascript
 either.cata(
@@ -103,7 +103,7 @@ either.cata(
 Either[E,A].foldLeft(initialValue: B)(fn: (acc: B, element: A) => B): B
 ```
 
-`foldLeft` takes an initial value and a function, and will 'reduce' the `Either` to a single value. The supplied function takes an accumulator as its first argument and the contents of the right side of the `Either` as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass. For example:
+`foldLeft` takes an initial value and a function, and will 'reduce' the `Either` to a single value. The supplied function takes an accumulator as its first argument and the contents of the right side of the `Either` as its second. The returned value from the function will be passed into the accumulator on the subsequent pass. For example:
 
 ```javascript
 Left('left').foldLeft(-1)((acc, value) => value.length)

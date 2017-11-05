@@ -1,6 +1,6 @@
 # Validation
 
-Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods.  It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors.  We will represent a Validation like this: `Validation[E,A]` where `E` represents the error type and `A` represents the success type.
+Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods. It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors. We will represent a Validation like this: `Validation[E,A]` where `E` represents the error type and `A` represents the success type.
 
 ## Constructors
 
@@ -118,7 +118,7 @@ Will return the failed value, usually an error message.
 Validation[E,A].ap(v: Validation[E, A=>B]) : Validation[E,B]
 ```
 
-Implements the applicative functor pattern.  `ap` will apply a function over the validation from within the supplied validation.  If any of the validations are `fail`s then the function will collect the errors.
+Implements the applicative functor pattern. `ap` will apply a function over the validation from within the supplied validation. If any of the validations are `fail`s then the function will collect the errors.
 
 ```javascript
 
@@ -147,7 +147,7 @@ Fail(['no address'])
 Validation[E,A].cata(failureFn: E=>X, successFn: A=>X): X
 ```
 
-The catamorphism for validation.  If the validation is `success` the success function will be executed with the success value and the value of the function returned. Otherwise the `failure` function will be called with the failure value. For example:
+The catamorphism for validation. If the validation is `success` the success function will be executed with the success value and the value of the function returned. Otherwise the `failure` function will be called with the failure value. For example:
 
 ```javascript
 const getFailMsg = failure => `oh dear it failed because ${failure}`;
@@ -166,7 +166,7 @@ Fail('there is nothing to celebrate').cata(getFailMsg, getSuccessMsg)
 Validation[E,A].foldLeft(initialValue: B)(fn: (acc: B, element: A) -> B): B
 ```
 
-`foldLeft` takes an initial value and a function, and will 'reduce' the `Validation` to a single value.  The supplied function takes an accumulator as its first argument and the contents of the success side of the `Validation` as its second.  The returned value from the function will be passed into the accumulator on the subsequent pass. For example:
+`foldLeft` takes an initial value and a function, and will 'reduce' the `Validation` to a single value. The supplied function takes an accumulator as its first argument and the contents of the success side of the `Validation` as its second. The returned value from the function will be passed into the accumulator on the subsequent pass. For example:
 
 ```javascript
 Fail('fail').foldLeft([])((acc, value) => acc.concat(value))
@@ -182,7 +182,7 @@ Success('success').foldLeft([])((acc, value) => acc.concat(value))
 Validation[E,A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
 ```
 
-Performs a fold right across the success side of the `Validation`.  As a success `Validation` can contain at most a single value, `foldRight` is functionally equivalent to `foldLeft`.
+Performs a fold right across the success side of the `Validation`. As a success `Validation` can contain at most a single value, `foldRight` is functionally equivalent to `foldLeft`.
 
 ### contains
 

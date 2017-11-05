@@ -24,7 +24,7 @@ Download the [zip][gitZip] or [tar][gitTar] ball.
 
 ## Installation
 
-Simply download and add to your html pages or we also support [bower]. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
+Simply download and add to your html pages or we also support [bower] and [npm]. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
 ```html
 <script type="text/javascript" src="monet.js"></script>
 <!-- Optionally -=>
@@ -57,32 +57,32 @@ The `Maybe` type is the most common way of representing *nothingness* (or the `n
 `Maybe` is effectively abstract and has two concrete subtypes: `Some` (also `Just`) and `None` (also `Nothing`).
 
 ### [Either](docs/EITHER.md)
-Either (or the disjunct union) is a type that can either hold a value of type `A` or a value of type `B` but never at the same time. Typically it is used to represent computations that can fail with an error.  Think of it as a better way to handle exceptions.  We think of an `Either` as having two sides, the success is held on the right and the failure on the left.  This is a right biased either which means that `map` and `flatMap` (`bind`) will operate on the right side of the either.
+Either (or the disjunct union) is a type that can either hold a value of type `A` or a value of type `B` but never at the same time. Typically it is used to represent computations that can fail with an error. Think of it as a better way to handle exceptions. We think of an `Either` as having two sides, the success is held on the right and the failure on the left. This is a right biased either which means that `map` and `flatMap` (`bind`) will operate on the right side of the either.
 
 ### [Validation](docs/VALIDATION.md)
-Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods. It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors.  We will represent a Validation like this: `Validation[E,A]` where `E` represents the error type and `A` represents the success type.
+Validation is not quite a monad as it [doesn't quite follow the monad rules](http://stackoverflow.com/questions/12211776/why-isnt-validation-a-monad-scalaz7), even though it has the monad methods. It that can hold either a success value or a failure value (i.e. an error message or some other failure object) and has methods for accumulating errors. We will represent a Validation like this: `Validation[E,A]` where `E` represents the error type and `A` represents the success type.
 
 ### [Immutable lists](docs/LIST.md)
 
-An immutable list is a list that has a head element and a tail. A tail is another list.  The empty list is represented by the `Nil` constructor.  An immutable list is also known as a "cons" list.  Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
+An immutable list is a list that has a head element and a tail. A tail is another list. The empty list is represented by the `Nil` constructor. An immutable list is also known as a "cons" list. Whenever an element is added to the list a new list is created which is essentially a new head with a pointer to the existing list.
 
 ### [Non Empty Lists](docs/NEL.md)
 
-Much like the immutable list, a Non Empty List can never be empty.  It implements the `comonad` pattern.  It has a guaranteed head (total)
+Much like the immutable list, a Non Empty List can never be empty. It implements the `comonad` pattern. It has a guaranteed head (total)
 and a guaranteed (total) tail.
 
 ### [IO](docs/IO.md)
-The `IO` monad is for isolating effects to maintain referential transparency in your software.  Essentially you create a description of your effects of which is performed as the last action in your programme.  The IO is lazy and will not be evaluated until the `perform` (*alias* `run`) method is called.
+The `IO` monad is for isolating effects to maintain referential transparency in your software. Essentially you create a description of your effects of which is performed as the last action in your programme. The IO is lazy and will not be evaluated until the `perform` (*alias* `run`) method is called.
 
 ### [Reader](docs/READER.md)
 
-The `Reader` monad is a wonderful solution to inject dependencies into your functions.  There are plenty of great resources to get your
+The `Reader` monad is a wonderful solution to inject dependencies into your functions. There are plenty of great resources to get your
 teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
 
 The `Reader` monad provides a way to "weave" your configuration throughout your programme.
 
 ### [Free](docs/FREE.md)
-The `Free` monad is a monad that is able to separate instructions from their interpreter.  There are many applications for this monad, and one of them is for implementing Trampolines, (which is a way to make recursion constant stack for languages that don't support tail call elimination, like JavaScript!).
+The `Free` monad is a monad that is able to separate instructions from their interpreter. There are many applications for this monad, and one of them is for implementing Trampolines, (which is a way to make recursion constant stack for languages that don't support tail call elimination, like JavaScript!).
 
 Please see [Ken Scambler](http://twitter.com/KenScambler)'s [excellent talk](http://www.slideshare.net/kenbot/running-free-with-the-monads) and [example project](https://github.com/kenbot/free) to get an in-depth understanding of this very useful monad.
 

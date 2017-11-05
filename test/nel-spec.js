@@ -104,7 +104,6 @@ describe('A Non-Empty immutable list', function () {
         expect(n1.filter(function (a) {
             return a % 2 == 0
         }).toArray()).toEqual([2, 4, 6, 8])
-
     })
 
     it('will be filtered with filterNot', function () {
@@ -119,7 +118,6 @@ describe('A Non-Empty immutable list', function () {
         expect(n1.find(function (a) {
             return a % 2 == 0
         })).toBeSomeMaybeWith(2)
-
     })
 
     it('can be checked for not containing a value', function () {
