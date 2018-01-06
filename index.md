@@ -260,9 +260,9 @@ Here is an example for creating a string out of the result of a couple of `Maybe
         return forename + " " + surname + " lives in " + address
     }.curry()
 
-    var maybeAddress = Maybe.just('Dulwich, London')
-    var maybeSurname = Maybe.just('Baker')
-    var maybeForename = Maybe.just('Tom')
+    var maybeAddress = Maybe.Just('Dulwich, London')
+    var maybeSurname = Maybe.Just('Baker')
+    var maybeForename = Maybe.Just('Tom')
 
     var personString = maybeAddress
                       .ap(maybeSurname
