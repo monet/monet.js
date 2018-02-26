@@ -65,6 +65,16 @@
         Free: 'Free'
     }
 
+    function doNotation(monad, co) {
+        function iterate (el) {
+            return el.done ? monad.unit(el.value) : el.value.bind(function (val) {
+                return iterate(it.next(val))
+            })
+        }
+        var it = co()
+        return iterate(it.next())
+    }
+
     function setType(target, typeName) {
         target[TYPE_KEY] = 'Monet/' + typeName
     }
@@ -632,6 +642,8 @@
     Maybe.toList = function (maybe) {
         return maybe.toList()
     }
+
+    Maybe.do = doNotation.bind(null, Maybe)
 
     Maybe.fn = Maybe.prototype = {
         init: function (isValue, val) {

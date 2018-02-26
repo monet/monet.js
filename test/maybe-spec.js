@@ -454,6 +454,7 @@ describe('A Maybe', function () {
             Maybe.do(function*() {
                 var a = yield Maybe.Just(5)
                 expect(a).toBe(5)
+                return a
             })
         })
 
@@ -464,8 +465,7 @@ describe('A Maybe', function () {
                 return a + b
             })
 
-            expect(result.isJust()).toBe(true)
-            expect(result.toBeSomeMaybeWith(6))
+            expect(result).toBeSomeMaybeWith(6)
         })
 
         it('will return Nothing when Nothing is yielded inside the generator', function() {
@@ -475,7 +475,7 @@ describe('A Maybe', function () {
                 return a + b
             })
 
-            expect(result.toBeNoneMaybe)
+            expect(result).toBeNoneMaybe()
         })
 
         it('will short-circuit the generator when Nothing is yielded', function() {
