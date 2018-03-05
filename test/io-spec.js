@@ -51,4 +51,28 @@ describe('An IO monad', function () {
         expect(effect.ap).toBe(effect['fantasy-land/ap'])
       })
     })
+
+    describe('do notation', function() {
+        it('will yield the Success value inside a generator', function () {
+            var effect = IO.do(function* () {
+                var a = yield IO.of(5)
+                expect(a).toBe(5)
+                return a
+            })
+
+            effect.run()
+        })
+
+        it('will return the value wrapped IO', function() {
+            var effect = IO.do(function* () {
+                var a = yield IO.of(5)
+                var b = yield IO.of(1)
+                return a + b
+            })
+
+            effect.map(function (val) {
+                expect(val).toBe(6)
+            }).run()
+        })
+    })
 })

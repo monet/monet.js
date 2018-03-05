@@ -930,6 +930,8 @@
         })
     }
 
+    IO.do = doNotation.bind(null, IO)
+
     IO.fn = IO.prototype = {
         init: function (effectFn) {
             if (!isFunction(effectFn)) {
