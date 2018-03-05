@@ -769,6 +769,8 @@
         return Success(v)
     }
 
+    Validation.do = doNotation.bind(null, Validation)
+
     Validation.fn = Validation.prototype = {
         init: function (val, success) {
             this.val = val

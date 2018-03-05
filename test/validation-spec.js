@@ -281,4 +281,51 @@ describe('A Validation', function () {
 
     })
 
+    describe('do notation', function() {
+        it('will yield the Success value inside a generator', function () {
+            Validation.do(function*() {
+                var a = yield Validation.Success(5)
+                expect(a).toBe(5)
+                return a
+            })
+        })
+
+        it('will return the value wrapped in Success', function() {
+            var result = Validation.do(function* () {
+                var a = yield Validation.Success(5)
+                var b = yield Validation.Success(1)
+                return a + b
+            })
+
+            expect(result).toBeSuccessWith(6)
+        })
+
+        it('will return Fail when Left is yielded inside the generator', function() {
+            var result = Validation.do(function* () {
+                var a = yield Validation.Success(5)
+                var b = yield Validation.Fail(10)
+                return a + b
+            })
+
+            expect(result).toBeFailureWith(10)
+        })
+
+        it('will short-circuit the generator when Fail is yielded', function() {
+            var spyBeforeFail = jasmine.createSpy()
+            var spyAfterFail = jasmine.createSpy()
+
+            var result = Validation.do(function* () {
+                spyBeforeFail()
+                var a = yield Validation.Fail(5)
+                spyAfterFail()
+                var b = yield Validation.Success(3)
+                return a + b
+            })
+
+            expect(spyBeforeFail).toHaveBeenCalled()
+            expect(spyAfterFail).not.toHaveBeenCalled()
+            expect(result).toBeFailureWith(5)
+        })
+    })
+
 })
