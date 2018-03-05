@@ -985,6 +985,8 @@
         return new Either.fn.init(val, false)
     }
 
+    Either.do = doNotation.bind(null, Either)
+
     Either.fn = Either.prototype = {
         init: function (val, isRightValue) {
             this.isRightValue = isRightValue
