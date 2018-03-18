@@ -1,6 +1,6 @@
 # Reader
 
-The `Reader` monad is a wonderful solution to inject dependencies into your functions. There are plenty of great resources to get your teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
+The `Reader` monad is a wonderful solution to inject dependencies into your functions.
 
 The `Reader` monad provides a way to "weave" your configuration throughout your programme.
 
