@@ -10,5 +10,9 @@ branches:
 before_install:
   - printf "//registry.npmjs.org/:_authToken=${NPM_TOKEN}\n" >> .npmrc
 
+script:
+  - npm install
+  - npm run test
+
 after_success:
   - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && ./scripts/publish.sh
