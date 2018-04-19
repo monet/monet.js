@@ -9,10 +9,18 @@
  * https://monet.github.io/monet.js/
  */
 
-/* global Reader, Some, Validation, Either, List, Monet, IO */
+/* global define */
 /* eslint-disable no-extend-native */
 
-(function () {
+(function (root, factory) {  
+    if (typeof define === 'function' && define.amd) { 
+        define(['monet'], factory)
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = factory(require('monet'))
+    } else {
+        factory(root.Monet, root)
+    }
+}(this, function (Monet, rootGlobalObject) {
     'use strict'
 
     function wrapReader(fn, args) {
@@ -20,39 +28,43 @@
         return function () {
             var args1 = newArgs.concat(Array.prototype.slice.call(arguments))
             return args1.length + 1 >= fn.length ?
-                Reader(function (c) {
+                getStatic('Reader')(function (c) {
                     return fn.apply(null, args1.concat(c))
-                }) :
-                wrapReader(fn, args1)
+                }) : wrapReader(fn, args1)
         }
+    }
+
+    function getStatic(name) {
+        return rootGlobalObject && rootGlobalObject[name] || Monet[name]
     }
 
     Object.prototype.cons = function (list) {
         return list.cons(this)
     }
 
+    // TODO: Remove some as it's overridden by Array.prototype.some
     Object.prototype.some = Object.prototype.just = function () {
-        return new Some(this)
+        return getStatic('Some')(this)
     }
 
     Object.prototype.success = function () {
-        return Validation.success(this)
+        return getStatic('Validation').success(this)
     }
 
     Object.prototype.fail = function () {
-        return Validation.fail(this)
+        return getStatic('Validation').fail(this)
     }
 
     Object.prototype.right = function() {
-        return Either.Right(this)
+        return getStatic('Either').Right(this)
     }
 
     Object.prototype.left = function() {
-        return Either.Left(this)
+        return getStatic('Either').Left(this)
     }
 
     Array.prototype.list = function () {
-        return List.fromArray(this)
+        return getStatic('List').fromArray(this)
     }
 
     Function.prototype.curry = function() { // TODO: TEST IT !!!!
@@ -71,13 +83,13 @@
     }
 
     Function.prototype.io = function () { // TODO: TEST IT !!!!
-        return IO(this)
+        return getStatic('IO')(this)
     }
 
     Function.prototype.io1 = function () { // TODO: TEST IT !!!!
         var f = this
         return function (x) {
-            return IO(function () {
+            return getStatic('IO')(function () {
                 return f(x)
             })
         }
@@ -87,4 +99,4 @@
         return wrapReader(this)
     }
 
-}())
+}))
