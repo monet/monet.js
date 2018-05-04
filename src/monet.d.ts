@@ -118,7 +118,7 @@ export interface Maybe<T>
   bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
   flatMap<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
   chain<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
-  map<V>(fn: (val: T) => V): Maybe<V>;
+  map<V extends NonNullable<{}>>(fn: (val: T) => V): Maybe<V>;
   join<V>(): Maybe<V>; // if T is Identity<V>
   takeLeft(m: Maybe<T>): Maybe<T>;
   takeRight(m: Maybe<T>): Maybe<T>;
