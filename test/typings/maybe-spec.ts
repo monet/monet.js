@@ -68,16 +68,34 @@ log3b(getMessage({type: 'x', payload: null}).chain(getType));
 
 const name: string = None<string>().orSome('NAME');
 const surname: string = Nothing<string>().orJust('SURNAME');
-const message: string = Maybe.Just(0).filter(Boolean).map(String).orElse(unpacked).orJust('Hi!');
+const message: string = Maybe.Just(0).filter(Boolean).map<string>(String).orElse(unpacked).orJust('Hi!');
 const messageCopy: string = Maybe.Nothing().ap(unpacked.map(m => () => m)).orSome('Hi!');
 Maybe.Just("hello").orNoneIf(false).forEach((str:string) => console.log(str));
 None<string>().orNothingIf(true).orElseRun(() => console.log("oops"));
 
 const plus18 = (val: number) => val + 18;
 
+interface Foo {
+    bar: string
+}
+
 console.assert(Maybe.some(12).map(plus18).some() == 30);
+console.assert(Maybe.some(12).map<number>(plus18).some() == 30);
+console.assert(Maybe.some("hi").map<string>(String).some() == "hi");
+console.assert(Maybe.some([1,2]).map<number[]>(l => l).some() == [1,2]);
+console.assert(Maybe.some({bar: "foobar"}).map<{[k: string]: string}>(l => l).some() == {bar: "foobar"});
+console.assert(Maybe.some({bar: "foobar"}).map<Foo>(l => l).some() == {bar: "foobar"});
 console.assert(Maybe.none<number>().map(plus18).isNone());
+console.assert(Maybe.none<number>().map<number>(plus18).isNone());
 console.assert(Some(11).map(plus18).isNone());
 console.assert(Maybe.of('a').flatMap(a => Some(a + 'b')).orNull() === null);
 console.assert(Maybe.of('a').filter(Boolean).orJust('b') === null);
 console.log(name, surname, message, messageCopy);
+
+// Remove comment to test NonNullable return type by forcing the type check to fail
+/*
+console.assert(Maybe.some(12).map(n => {}).isSome());
+console.assert(Maybe.some(12).map(n => null).isSome());
+console.assert(Maybe.some(12).map(n => undefined).isSome());
+console.assert(Maybe.some(12).map(n => { n++; }).isSome());
+*/
