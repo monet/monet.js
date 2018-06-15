@@ -1,10 +1,10 @@
-
 ## 0.9.0
 
 ### alpha.5 (?? 2018)
 
-- [new] add `.toArray()`, `toSet()` to Maybe
-- [new] add `.orUndefined()`, `getOrElse()`, `orLazy()` to Maybe
+- [new] add `.toSet()` to List and NEL
+- [new] add `.toArray()`, `.toSet()` to Maybe
+- [new] add `.orUndefined()`, `.getOrElse()`, `.orLazy()` to Maybe
 - [new] add `.swap()` to Validation and Either
 - [new] add `.catchMap()` to Maybe, Validation and Either
 - [enhancement] make `Maybe` types stricter (compile type check for use of nullables) -- thanks to @jleider ( #167 )

@@ -32,7 +32,6 @@ NEL.fromList(List.fromArray([1,2,3,4]))
 NEL.fromList(Nil)
 // => None()
 ```
-```
 
 Trying to create an empty `NonEmptyList` will throw an exception.
 
@@ -177,6 +176,7 @@ NEL(1, List.fromArray([2,3,4])).reduceLeft((a, b) => a + b)
 ```
 
 ### append
+
 **Alias:** `concat`
 
 ```scala
@@ -201,14 +201,31 @@ NEL[A].forEach(fn: A => void): void
 
 Invoke a function applying a side-effect on each item in the list.
 
+### toArray
+
+```scala
+NEL[A].toArray(): Array[A]
+```
+
+### toList
+
+```scala
+NEL[A].toList(): List[A]
+```
+
+### toSet
+
+```scala
+NEL[A].toSet(): Set[A]
+```
+
 ### ...and undocumented
+
 - takeLeft
 - takeRight
 - ap
 - isNEL
 - size
-- toArray
-- toList
 - **BROKEN** join
 - **UNIMPLEMENTED** cons
 - **UNIMPLEMENTED** snoc

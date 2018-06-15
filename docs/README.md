@@ -279,6 +279,8 @@ Checks if passed object is an instance of some similar type. This check is based
 - [sequenceReader](LIST.md#sequencereader)
 - [reverse](LIST.md#reverse)
 - [forEach](LIST.md#foreach)
+- [toArray](LIST.md#toarray)
+- [toSet](LIST.md#toset)
 - equals
 - join
 - takeLeft
@@ -291,7 +293,6 @@ Checks if passed object is an instance of some similar type. This check is based
 - tails
 - flatten
 - flattenMaybe
-- toArray
 
 ## [Non Empty List](NEL.md)
 
@@ -319,13 +320,14 @@ Checks if passed object is an instance of some similar type. This check is based
 - [concat](NEL.md#append)
 - [reverse](NEL.md#reverse)
 - [forEach](NEL.md#foreach)
+- [toArray](NEL.md#toarray)
+- [toList](NEL.md#tolist)
+- [toSet](NEL.md#toset)
 - takeLeft
 - takeRight
 - ap
 - isNEL
 - size
-- toArray
-- toList
 - **BROKEN** join
 - **UNIMPLEMENTED** cons
 - **UNIMPLEMENTED** snoc

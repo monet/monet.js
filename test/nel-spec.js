@@ -71,6 +71,18 @@ describe('A Non-Empty immutable list', function () {
         expect(NEL.fromList(List())).toBeNoneMaybe()
     })
 
+    it('can be converted to a List', function () {
+        expect(nonEmptyList.toList()).toEqual(List.fromArray([1, 2, 3, 4]))
+    })
+
+    it('can be converted to an Array', function () {
+        expect(nonEmptyList.toArray()).toEqual([1, 2, 3, 4])
+    })
+
+    it('can be converted to a Set', function () {
+        expect(nonEmptyList.toSet()).toEqual(Set.from([1, 2, 3, 4]))
+    })
+
     it('will return a NEL of NELs for tails()', function () {
         expect(nonEmptyList.tails().map(function (m) {
             return m.toArray()

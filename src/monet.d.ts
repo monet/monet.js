@@ -373,6 +373,7 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T> {
   sequenceReader<E, A>(): Reader<E, List<A>>;
 
   toArray(): T[];
+  toSet(): Set<T>;
 }
 
 export interface Nil extends List<void> {
@@ -448,6 +449,7 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T> {
 
   toArray(): T[];
   toList(): List<T>;
+  toSet(): Set<T>;
 }
 
 export type NonEmptyList<T> = NEL<T>;
