@@ -1,33 +1,33 @@
 describe('A Maybe', function () {
-    var sideEffectsReceiver;
-    var someString;
-    var none;
+    var sideEffectsReceiver
+    var someString
+    var none
 
     beforeEach(function () {
         jasmine.addMatchers({
             toBeSomeMaybe: getCustomMatcher(function (actual) {
-                return actual.isSome();
+                return actual.isSome()
             }),
             toBeSomeMaybeWith: getCustomMatcher(function (actual, expected) {
-                return actual.some() == expected;
+                return actual.some() == expected
             }),
             toBeNoneMaybe: getCustomMatcher(function (actual) {
-                return actual.isNone();
+                return actual.isNone()
             })
-        });
-        someString = Maybe.Some('abcd');
-        none = Maybe.None();
+        })
+        someString = Maybe.Some('abcd')
+        none = Maybe.None()
         sideEffectsReceiver = {
             setVal: function (val) {
             }
-        };
-        spyOn(sideEffectsReceiver, 'setVal');
-    });
+        }
+        spyOn(sideEffectsReceiver, 'setVal')
+    })
 
     afterEach(function () {
-        someString = undefined;
-        none = undefined;
-    });
+        someString = undefined
+        none = undefined
+    })
 
     describe('with a value', function () {
         it('will be transformed by a map', function () {
@@ -54,6 +54,11 @@ describe('A Maybe', function () {
             expect(someString.flatMap(function (val) {
                 return Maybe.Some('Hello')
             })).toBeSomeMaybeWith('Hello')
+        })
+        it('will not be transformed by a catchMap', function () {
+            expect(someString.catchMap(function (val) {
+                return Maybe.Some('Hello')
+            })).toBeSomeMaybeWith(someString.some())
         })
         it('will be transformed to a None on bind that returns None', function () {
             expect(someString.bind(function (val) {
@@ -183,6 +188,12 @@ describe('A Maybe', function () {
             expect(none.flatMap(function () {
                 return Maybe.None()
             })).toBeNoneMaybe()
+        })
+
+        it('will be transformed by a catchMap', function () {
+            expect(none.catchMap(function (val) {
+                return Maybe.Some('Hello')
+            })).toBeSomeMaybeWith('Hello')
         })
         it('will return the other value when orSome() is called', function () {
             expect(none.orSome('yep')).toBe('yep')

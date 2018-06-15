@@ -704,6 +704,9 @@
         cata: function (none, some) {
             return this.isSome() ? some(this.val) : none()
         },
+        catchMap: function (fn) {
+            return this.isSome() ? this : fn()
+        },
         filter: function (fn) {
             var self = this
             return self.flatMap(function (a) {
@@ -810,6 +813,9 @@
             return this.isSuccessValue ?
                 success(this.val)
                 : fail(this.val)
+        },
+        catchMap: function (fn) {
+            return this.isSuccess() ? this : fn(this.val)
         },
         failMap: function (fn) {
             return this.isFail() ? Fail(fn(this.val)) : this
@@ -1017,6 +1023,9 @@
         },
         cata: function (leftFn, rightFn) {
             return this.isRightValue ? rightFn(this.value) : leftFn(this.value)
+        },
+        catchMap: function (fn) {
+            return this.isRight() ? this : fn(this.value)
         },
         forEach: function (fn) {
             this.cata(noop, fn)

@@ -95,6 +95,24 @@ None().flatMap(getWorld)
 // => None
 ```
 
+### catchMap
+
+```scala
+Maybe[A].catchMap(fn: () => Maybe[A]): Maybe[A]
+```
+
+`catchMap` takes a function that returns a `Maybe`. It returns output of function if source `Maybe` is `None`. For example:
+
+```javascript
+const getWorld = () => Some('world')
+
+Some('hi').catchMap(getWorld)
+// => Some('hi')
+
+None().catchMap(getWorld)
+// => Some('world')
+```
+
 ### cata
 
 ```scala
@@ -186,7 +204,7 @@ Some('hi').isNone()
 // => false
 ```
 
-### some 
+### some
 
 **Alias:** `just`
 
@@ -266,7 +284,7 @@ const personString = Some('Dulwich, London')
   .some()
 
 // => 'Tom Baker lives in Dulwich, London'
-````
+```
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
 
