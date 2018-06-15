@@ -16,7 +16,7 @@ const b: List<Maybe<number>> = x.foldRight(z)((l, acc) => acc.append(l))
     .ap(List(Number, List((e: string) => parseInt(e, 10))))
     .headMaybe().map(h => List(h)).orJust(List(0))
     .tails().map(t => t.filter(n => !isNaN(n)))
-    .map(t => t.size() > 0 ? Some(t.head()) : None<number>());
+    .map(t => t.size() > 0 ? Maybe.fromNull(t.head()) : None<number>());
 const c: List<number> = b.flattenMaybe<number>().chain(n => y.bind(ls => ls).map(s => Number(s) + n));
 const d: Maybe<number> = c.find(x => x > 0);
 const e: boolean = c.contains(0);

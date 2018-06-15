@@ -7,7 +7,7 @@
  * https://monet.github.io/monet.js/
  */
 
-/* global define */
+/* global define, Set */
 
 // eslint-disable-next-line complexity
 (function (root, factory) {
@@ -688,8 +688,27 @@
                     return other.fold(false)(equals(val))
                 })
         },
+        toArray: function () {
+            return this.map(function (val) { 
+                return [val]
+            }).orLazy(function () {
+                return []
+            })
+        },
+        toSet: function () {
+            if (!rootGlobalObject.Set) {
+                throw new Error('Provide polyfill or use up to date browser/node version to use "toSet" operator.')
+            }
+            return this.map(function (val) { 
+                return Set.from([val])
+            }).orLazy(function () {
+                return Set.from([])
+            })
+        },
         toList: function () {
-            return this.map(List).orSome(Nil)
+            return this.map(List).orLazy(function () {
+                return Nil
+            })
         },
         toEither: function (failVal) {
             return this.isSome() ? Right(this.val) : Left(failVal)

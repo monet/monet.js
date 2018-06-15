@@ -344,10 +344,24 @@ Maybe[A].toValidation(fail: E): Validation[E,A]
 
 Converts a Maybe to a Validation.
 
+### toArray
+
+```scala
+Maybe[A].toArray: Array[A]
+```
+
 ### toList
 
 ```scala
 Maybe[A].toList: List[A]
+```
+
+### toSet
+
+Conversion to native Set.
+
+```scala
+Maybe[A].toSet: Set[A]
 ```
 
 Converts to a list, returns an Empty list on None.

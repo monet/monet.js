@@ -1,12 +1,17 @@
 
 ## 0.9.0
 
-### alpha.5 (?? 2017)
+### alpha.5 (?? 2018)
 
+- [new] add `.toArray()`, `toSet()` to Maybe
+- [new] add `.orUndefined()`, `getOrElse()`, `orLazy()` to Maybe
+- [new] add `.swap()` to Validation and Either
+- [new] add `.catchMap()` to Maybe, Validation and Either
+- [enhancement] make `Maybe` types stricter (compile type check for use of nullables) -- thanks to @jleider ( #167 )
 - [enhancement] make `.equals()` compatible with other libraries
 - [new] add static `.isOfType()` and `.isInstance()` to all types
 - [new] add `.fromUndefined()` to Maybe static
-- [new] add `.filterNot()` to Maybe, List and NEL
+- [new] add `.filterNot()` to Maybe, List and NEL -- thanks to @tomecko ( #152 )
 
 ### alpha.4 (19 Jun 2017)
 

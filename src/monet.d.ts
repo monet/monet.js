@@ -153,6 +153,8 @@ export interface Maybe<T extends NonNullable<{}>>
   forEach(fn: (val: T) => void): void;
   orElseRun(fn: () => void): void;
 
+  toArray(): List<T>;
+  toSet(): Set<T>;
   toList(): List<T>;
   toEither<E>(left?: E): Either<E, T>;
   toValidation<E>(fail?: E): Validation<E, T>;
@@ -342,13 +344,13 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T> {
   /* List specific */
   filter(fn: (val: T) => boolean): List<T>;
   filterNot(fn: (val: T) => boolean): List<T>;
-  find(fn: (val: T) => boolean): Maybe<T>;
+  find(fn: (val: T) => boolean): Maybe<NonNullable<T>>;
   cons(a: T): List<T>;
   snoc(a: T): List<T>;
   isNEL(): boolean;
   size(): number;
-  head(): T;
-  headMaybe(): Maybe<T>;
+  head(): T | undefined;
+  headMaybe(): Maybe<NonNullable<T>>;
   append(list: List<T>): List<T>;
   concat(list: List<T>): List<T>;
   reverse(): List<T>;
