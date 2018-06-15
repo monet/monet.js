@@ -67,6 +67,9 @@ describe('An Either', function () {
                 return Either.Left('bye')
             })).toBeRightWith(rightString.right())
         })
+        it('will be transformed by a swap', function () {
+            expect(rightString.swap()).toBeLeftWith(rightString.right())
+        })
         it('can be reduced using foldLeft', function () {
             expect(rightString.foldLeft('efgh')(function (acc, val) {
                 return acc + val
@@ -170,6 +173,9 @@ describe('An Either', function () {
                 return Either.Right('Hello ' + val)
             })).toBeRightWith('Hello ' + leftString.left())
         })
+        it('will be transformed by a swap', function () {
+            expect(leftString.swap()).toBeRightWith(leftString.left())
+        })
         it('will return false when isRight is called', function () {
             expect(leftString.isRight()).toBeFalsy()
         })
@@ -256,6 +262,13 @@ describe('An Either', function () {
             expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
 
+    })
+
+    describe('swap', function () {
+        it('should be symmetric', function () {
+            expect(rightString.swap().swap().equals(rightString)).toBe(true)
+            expect(leftString.swap().swap().equals(leftString)).toBe(true)
+        })
     })
 
     var person = Monet.curry(function (forename, surname, address) {
