@@ -191,6 +191,12 @@ Validation[E,A].foldRight(initialValue: B)(fn: (element: A, acc: B) -> B): B
 
 Performs a fold right across the success side of the `Validation`. As a success `Validation` can contain at most a single value, `foldRight` is functionally equivalent to `foldLeft`.
 
+### swap
+
+```scala
+Validation[A,B].swap(): Validation[B,A]
+```
+
 ### contains
 
 ```scala

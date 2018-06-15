@@ -1,13 +1,13 @@
 describe('A Validation', function () {
-    var sideEffectsReceiver = null;
+    var sideEffectsReceiver = null
 
     beforeEach(function () {
         jasmine.addMatchers({
             toBeSuccess: getCustomMatcher(function (actual) {
-                return actual.isSuccess();
+                return actual.isSuccess()
             }),
             toBeSuccessWith: getCustomMatcher(function (actual, expected) {
-                return actual.success() == expected;
+                return actual.success() == expected
             }),
             toBeFailure: getCustomMatcher(function (actual) {
                 return actual.isFail()
@@ -15,17 +15,17 @@ describe('A Validation', function () {
             toBeFailureWith: getCustomMatcher(function (actual, expected) {
                 return actual.fail() == expected
             })
-        });
+        })
         sideEffectsReceiver = {
             setVal: function (val) {
             }
-        };
-        spyOn(sideEffectsReceiver, 'setVal');
-    });
+        }
+        spyOn(sideEffectsReceiver, 'setVal')
+    })
     var successString = Validation.success('abcd')
     var successMap = function (val) {
         return 'success ' + val
-    };
+    }
 
     describe('that is successful', function () {
         it('will be transformed by a map', function () {
@@ -65,6 +65,9 @@ describe('A Validation', function () {
             expect(successString.catchMap(function (val) {
                 return Validation.fail('sorry: ' + val)
             })).toBeSuccessWith(successString.success())
+        })
+        it('will be transformed by a swap', function () {
+            expect(successString.swap()).toBeFailureWith(successString.success())
         })
         it('can be reduced using foldLeft', function () {
             expect(successString.foldLeft('efgh')(function (acc, val) {
@@ -117,7 +120,7 @@ describe('A Validation', function () {
     var failString = Validation.fail('error dude')
     var failMap = function (val) {
         return 'fail: ' + val
-    };
+    }
     describe('that is a failure', function () {
         it('will not be transformed by a map', function () {
             expect(failString.map(function (val) {
@@ -142,6 +145,9 @@ describe('A Validation', function () {
             expect(failString.catchMap(function (val) {
                 return Validation.success('Hello ' + val)
             })).toBeSuccessWith('Hello ' + failString.fail())
+        })
+        it('will be transformed by a swap', function () {
+            expect(failString.swap()).toBeSuccessWith(failString.fail())
         })
         it('will return false when isSuccess is called', function () {
             expect(failString.isSuccess()).toBeFalsy()
@@ -201,6 +207,13 @@ describe('A Validation', function () {
 
     })
 
+    describe('swap', function () {
+        it('should be symmetric', function () {
+            expect(successString.swap().swap().equals(successString)).toBe(true)
+            expect(failString.swap().swap().equals(failString)).toBe(true)
+        })
+    })
+
     var person = Monet.curry(function (forename, surname, address) {
         return forename + ' ' + surname + ' lives at ' + address
     })
@@ -255,7 +268,7 @@ describe('A Validation', function () {
             var createPersonString = function (f, l) {
                 return f + ' ' + l
             }
-            var result = Monet.apply2(validateForename, validateSurname, createPersonString);
+            var result = Monet.apply2(validateForename, validateSurname, createPersonString)
             expect(result).toBeSuccessWith('Tom Baker')
         })
 
@@ -263,14 +276,14 @@ describe('A Validation', function () {
             var createPersonString = function (f, l) {
                 return f + ' ' + l
             }
-            var result = Monet.apply2(validateForename, Validation.fail(['no surname']), createPersonString);
+            var result = Monet.apply2(validateForename, Validation.fail(['no surname']), createPersonString)
             expect(result.fail()[0]).toBe('no surname')
         })
         it('will accumulate errors for apply2 with two failures', function () {
             var createPersonString = function (f, l) {
                 return f + ' ' + l
             }
-            var result = Monet.apply2(Validation.fail(['no first name']), Validation.fail(['no surname']), createPersonString);
+            var result = Monet.apply2(Validation.fail(['no first name']), Validation.fail(['no surname']), createPersonString)
             expect(result.fail()[0]).toBe('no surname')
             expect(result.fail()[1]).toBe('no first name')
         })
