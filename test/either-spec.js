@@ -169,7 +169,6 @@ describe('An Either', function () {
         })
         it('will be transformed by a catchMap', function () {
             expect(leftString.catchMap(function (val) {
-                console.log(leftString)
                 return Either.Right('Hello ' + val)
             })).toBeRightWith('Hello ' + leftString.left())
         })

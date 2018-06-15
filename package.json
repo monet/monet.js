@@ -16,16 +16,16 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "eslint": "4.10.0",
-    "jasmine-core": "2.8.0",
-    "karma": "1.7.1",
+    "eslint": "4.19.1",
+    "jasmine-core": "3.1.0",
+    "karma": "2.0.2",
     "karma-chrome-launcher": "2.2.0",
-    "karma-firefox-launcher": "1.0.1",
-    "karma-jasmine": "1.1.0",
+    "karma-firefox-launcher": "1.1.0",
+    "karma-jasmine": "1.1.2",
     "karma-phantomjs-launcher": "1.0.4",
     "karma-safari-launcher": "1.0.0",
-    "typescript": "2.8.1",
-    "uglify-js": "3.1.6"
+    "typescript": "2.9.2",
+    "uglify-js": "3.4.0"
   },
   "scripts": {
     "lint": "./node_modules/.bin/eslint --env browser,node './src/**/*.js'",
@@ -40,10 +40,10 @@
     "minify:monet-pimp": "./node_modules/.bin/uglifyjs dist/monet-pimp.js -o dist/monet-pimp.min.js --source-map filename=dist/monet-pimp.min.js.map -m -c unsafe -v --comments --keep-fnames",
     "minify": "npm run minify:monet && npm run minify:monet-pimp",
     "copy:types": "cp src/monet.d.ts dist/",
-    "copy:monet": "./node_modules/.bin/uglifyjs src/monet.js -o dist/monet.js --lint --comments -b bracketize=true",
-    "copy:monet-pimp": "./node_modules/.bin/uglifyjs src/monet-pimp.js -o dist/monet-pimp.js --lint --comments -b bracketize=true",
+    "copy:monet": "./node_modules/.bin/uglifyjs src/monet.js -o dist/monet.js --lint --comments -b braces=true",
+    "copy:monet-pimp": "./node_modules/.bin/uglifyjs src/monet-pimp.js -o dist/monet-pimp.js --lint --comments -b braces=true",
     "copy": "npm run copy:monet && npm run copy:monet-pimp && npm run copy:types",
     "build": "rm -Rf ./dist && mkdir dist/ && npm run copy && npm run minify",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   }
 }
