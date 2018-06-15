@@ -175,6 +175,7 @@ Checks if passed object is an instance of some similar type. This check is based
 - [orSome](MAYBE.md#orsome)
 - [orJust](MAYBE.md#orsome)
 - [getOrElse](MAYBE.md#orsome)
+- [orLazy](MAYBE.md#orlazy)
 - [orNull](MAYBE.md#ornull)
 - [orUndefined](MAYBE.md#orundefined)
 - [orElse](MAYBE.md#orelse)

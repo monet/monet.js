@@ -9,6 +9,7 @@
 
 /* global define */
 
+// eslint-disable-next-line complexity
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         define(factory)
@@ -23,21 +24,18 @@
 
     var root = {}
 
-    var assign = (function (nativeAssign) {
-        if (isFunction(nativeAssign)) {
-            return nativeAssign
-        }
-        // yes exactly as native one - mutating target :(
-        return function (target, source) { // we need only one level of composition
-            for (var key in source) {
-                // eslint-disable-next-line no-undefined
-                if (source.hasOwnProperty(key) && source[key] !== undefined) {
-                    target[key] = source[key]
-                }
+    function assignImp(target, source) {
+        for (var key in source) { // we need only one level of composition
+            // eslint-disable-next-line no-undefined
+            if (source.hasOwnProperty(key) && source[key] !== undefined) {
+                // yes exactly as native one - mutating target :(
+                target[key] = source[key]
             }
-            return target
         }
-    }(Object.assign))
+        return target
+    }
+
+    var assign = isFunction(Object.assign) ? Object.assign : assignImp
 
     var Monet = {
         apply2: apply2,
@@ -51,6 +49,7 @@
     }
 
     var TYPE_KEY = '@@type'
+    var LIB_NAME = 'monet.js'
 
     var TYPES_NAMES = {
         Identity: 'Identity',
@@ -66,22 +65,23 @@
     }
 
     function setType(target, typeName) {
-        target[TYPE_KEY] = 'Monet/' + typeName
+        target[TYPE_KEY] = LIB_NAME + '/' + typeName
     }
 
     function isInstance(typeName) {
         return function (target) {
-            return target[TYPE_KEY] || target.costructor[TYPE_KEY] === 'Monet/' + typeName
+            return target[TYPE_KEY] || target.constructor[TYPE_KEY] === LIB_NAME + '/' + typeName
         }
     }
 
     function isOfType(typeName) {
+        // eslint-disable-next-line complexity
         return function (target) {
             var targetType = target[TYPE_KEY] ||
-                target.costructor &&
-                target.costructor[TYPE_KEY] ||
-                null
-            return targetType.length >= typeName.length &&
+                target.constructor && target.constructor[TYPE_KEY]
+
+            return Boolean(targetType) && 
+                targetType.length >= typeName.length &&
                 targetType.indexOf(typeName) === targetType.length - typeName.length
         }
     }
@@ -164,6 +164,7 @@
 
     // List and NEL monads commons
 
+    // eslint-disable-next-line complexity
     function listEquals(list1, list2) {
         var a = list1
         var b = list2
@@ -660,15 +661,18 @@
         orSome: function (otherValue) {
             return this.isValue ? this.val : otherValue
         },
+        orLazy: function (getOtherValue) {
+            return this.cata(getOtherValue, idFunction)
+        },
         orNull: function () {
-            return this.isValue ? this.val : null
+            return this.orSome(null)
         },
         orUndefined: function () {
             // eslint-disable-next-line no-undefined
-            return this.isValue ? this.val : undefined
+            return this.orSome(undefined)
         },
         orElse: function (maybe) {
-            return this.isValue ? this : maybe
+            return this.catchMap(function () { return maybe })
         },
         ap: function (maybeWithFunction) {
             var value = this.val

@@ -238,6 +238,14 @@ None().orSome('bye')
 // => 'bye'
 ```
 
+### orLazy
+
+Lazy _evaluated_ version of `orSome`.
+
+```scala
+Maybe[A].orLazy(() => A | null | undefined): A | null | undefined
+```
+
 ### orNull
 
 ```scala

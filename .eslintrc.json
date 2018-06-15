@@ -4,7 +4,7 @@
   "rules": {
     "array-callback-return": "error",
     "block-scoped-var": "error",
-    "complexity": ["error", 3],
+    "complexity": ["error", 4],
     "consistent-return": "error",
     "curly": "error",
     "default-case": "error",
