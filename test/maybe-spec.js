@@ -286,24 +286,18 @@ describe('A Maybe', function () {
         })
         describe('toSet', function () {
             it('should return a singleton Set for Some', function () {
-                const theSet = Some(1).toSet()
-
-                expect(theSet.size).toBe(1)
-                expect(theSet.has(1)).toBe(true)
+                expect(Some(1).toSet()).toEqual(Set.from([1]))
             })
             it('should return an empty Set for None', function () {
-                const theSet = None().toSet()
-
-                expect(theSet.size).toBe(0)
+                expect(None().toSet()).toEqual(Set.from([]))
             })
         })
         describe('toArray', function () {
             it('should return a singleton Array for Some', function () {
-                expect(Some(1).toArray().length).toBe(1)
-                expect(Some(1).toArray()[0]).toBe(1)
+                expect(Some(1).toArray()).toEqual([1])
             })
             it('should return an empty Array for None', function () {
-                expect(None().toArray().length).toBe(0)
+                expect(None().toArray()).toEqual([])
             })
         })
     })
