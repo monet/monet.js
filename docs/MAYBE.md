@@ -312,6 +312,20 @@ Maybe[A].contains(val: A): Boolean
 
 Returns true if the `Maybe` is a Some containing the given value.
 
+### every
+
+**Alias:** `forall`
+
+```scala
+Maybe[A].every(val: A => Boolean): Boolean
+```
+
+### exists
+
+```scala
+Maybe[A].exists(val: A => Boolean): Boolean
+```
+
 ### forEach
 
 ```scala

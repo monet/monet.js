@@ -193,6 +193,20 @@ NEL[A].reverse(): NEL[A]
 
 Reverses the `NonEmptyList`.
 
+### every
+
+**Alias:** `forall`
+
+```scala
+NEL[A].every(val: A => Boolean): Boolean
+```
+
+### exists
+
+```scala
+NEL[A].exists(val: A => Boolean): Boolean
+```
+
 ### forEach
 
 ```scala

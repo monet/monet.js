@@ -180,6 +180,50 @@ describe('An immutable list', function () {
         })
     })
 
+    describe('can be described with collection predicates', function () {
+        var predicateAll = function (e) {
+            return e < 5
+        }
+        var predicateSome = function (e) {
+            return e < 3
+        }
+        var predicateNone = function (e) {
+            return e === -12
+        }
+        describe('every / forall', function () {
+            it('should test if all elements match predicate', function () {
+                expect(list.every(predicateAll)).toBe(true)
+                expect(list.every(predicateSome)).toBe(false)
+                expect(list.every(predicateNone)).toBe(false)
+    
+                expect(list.every(predicateAll)).toBe(list.forall(predicateAll))
+                expect(list.every(predicateSome)).toBe(list.forall(predicateSome))
+                expect(list.every(predicateNone)).toBe(list.forall(predicateNone))
+            })
+            it('should return true on empty List', function () {
+                expect(Nil.every(predicateAll)).toBe(true)
+                expect(Nil.every(predicateSome)).toBe(true)
+                expect(Nil.every(predicateNone)).toBe(true)
+    
+                expect(Nil.every(predicateAll)).toBe(Nil.forall(predicateAll))
+                expect(Nil.every(predicateSome)).toBe(Nil.forall(predicateSome))
+                expect(Nil.every(predicateNone)).toBe(Nil.forall(predicateNone))
+            })
+        })
+        describe('exists', function () {
+            it('should test if any element matches predicate', function () {
+                expect(list.exists(predicateAll)).toBe(true)
+                expect(list.exists(predicateSome)).toBe(true)
+                expect(list.exists(predicateNone)).toBe(false)
+            })
+            it('should false for empty List', function () {
+                expect(Nil.exists(predicateAll)).toBe(false)
+                expect(Nil.exists(predicateSome)).toBe(false)
+                expect(Nil.exists(predicateNone)).toBe(false)
+            })
+        })
+    })
+
     describe('will sequence a list', function () {
 
         describe('of Maybes', function () {
