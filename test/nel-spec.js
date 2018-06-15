@@ -80,7 +80,7 @@ describe('A Non-Empty immutable list', function () {
     })
 
     it('can be converted to a Set', function () {
-        expect(nonEmptyList.toSet()).toEqual(Set.from([1, 2, 3, 4]))
+        expect(nonEmptyList.toSet()).toEqual(new Set([1, 2, 3, 4]))
     })
 
     it('will return a NEL of NELs for tails()', function () {
@@ -92,6 +92,14 @@ describe('A Non-Empty immutable list', function () {
             [3, 4],
             [4]
         ])
+    })
+
+    it('should be an Iterable', function () {
+        var onIter = jasmine.createSpy('onIteration')
+        for (var a of nonEmptyList) {
+            onIter(a)
+        }
+        expect(onIter.calls.allArgs()).toEqual([[1], [2], [3], [4]])
     })
 
     it('will map a function over the tails with cobind', function () {

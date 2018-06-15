@@ -286,10 +286,10 @@ describe('A Maybe', function () {
         })
         describe('toSet', function () {
             it('should return a singleton Set for Some', function () {
-                expect(Some(1).toSet()).toEqual(Set.from([1]))
+                expect(Some(1).toSet()).toEqual(new Set([1]))
             })
             it('should return an empty Set for None', function () {
-                expect(None().toSet()).toEqual(Set.from([]))
+                expect(None().toSet()).toEqual(new Set([]))
             })
         })
         describe('toArray', function () {
@@ -346,6 +346,20 @@ describe('A Maybe', function () {
                 expect(aNothing.exists(predicateNone)).toBe(false)
             })
         })
+    })
+
+    it('should be an Iterable', function () {
+        var someOne = Some(1)
+        var aNothing = None()
+        var onIter = jasmine.createSpy('onIteration')
+        for (var a of someOne) {
+            onIter(a)
+        }
+        expect(onIter.calls.allArgs()).toEqual([[1]])
+        for (var a of aNothing) {
+            onIter(a)
+        }
+        expect(onIter.calls.allArgs()).toEqual([[1]])
     })
 
     describe('Some constructed without a value', function () {

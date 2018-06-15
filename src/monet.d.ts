@@ -75,7 +75,7 @@ interface IMonadStatic {
  * Identity
  */
 
-export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>> {
+export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>>, Iterable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => Identity<V>): Identity<V>;
   flatMap<V>(fn: (val: T) => Identity<V>): Identity<V>;
@@ -120,7 +120,7 @@ export const Identity: IIdentityStatic;
  */
 
 export interface Maybe<T extends NonNullable<{}>>
-  extends Setoid<Maybe<T>>, ITraversable<T>, Catamorphism<undefined, T> {
+  extends Setoid<Maybe<T>>, ITraversable<T>, Catamorphism<undefined, T>, Iterable<T> {
   /* Inherited from Monad: */
   bind<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
   flatMap<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
@@ -338,7 +338,7 @@ export const Fail: IFailStatic;
  * List
  */
 
-export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T> {
+export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T>, Iterable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => List<V>): List<V>;
   flatMap<V>(fn: (val: T) => List<V>): List<V>;
@@ -417,7 +417,7 @@ export const Nil: Nil;
  * NEL
  */
 
-export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T> {
+export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iterable<T> {
   /* Inherited from Monad: */
   bind<V>(fn: (val: T) => NEL<V>): NEL<V>;
   flatMap<V>(fn: (val: T) => NEL<V>): NEL<V>;
