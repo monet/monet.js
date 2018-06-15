@@ -4,18 +4,22 @@ module.exports = function (config) {
     basePath: '',
     frameworks: ['jasmine'],
     files: [
-      'node_modules/core-js/client/core.min.js',
+      // 'node_modules/core-js/client/core.min.js',
       'src/monet.js',
       'test/*-helper.js',
       'test/*-spec.js'
     ],
     exclude: [],
-    reporters: ['progress'],
+    reporters: ['mocha'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: false,
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadlessCustom', 'FirefoxHeadlessCustom'],
+    customLaunchers: {
+      ChromeHeadlessCustom: { base: 'ChromeHeadless', flags: ['--no-sandbox'] },
+      FirefoxHeadlessCustom: { base: 'Firefox', flags: [ '-headless' ] },
+    },
     singleRun: true,
     concurrency: 6e6
   });

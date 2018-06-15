@@ -7,7 +7,7 @@
  * https://monet.github.io/monet.js/
  */
 
-/* global define, Set */
+/* global define, Set, Symbol */
 
 // eslint-disable-next-line complexity
 (function (root, factory) {
@@ -362,7 +362,7 @@
             if (!rootGlobalObject.Set) {
                 throw new Error('Provide polyfill or use up to date browser/node version to use "toSet" operator.')
             }
-            return Set.from(this.toArray())
+            return new Set(this)
         },
         foldLeft: function (initialValue) {
             var self = this
@@ -706,11 +706,7 @@
             if (!rootGlobalObject.Set) {
                 throw new Error('Provide polyfill or use up to date browser/node version to use "toSet" operator.')
             }
-            return this.map(function (val) { 
-                return Set.from([val])
-            }).orLazy(function () {
-                return Set.from([])
-            })
+            return new Set(this)
         },
         toList: function () {
             return this.map(List).orLazy(function () {
@@ -1316,7 +1312,7 @@
             if (!rootGlobalObject.Set) {
                 throw new Error('Provide polyfill or use up to date browser/node version to use "toSet" operator.')
             }
-            return Set.from([this.get()])
+            return new Set(this)
         }
     }
 
@@ -1410,6 +1406,18 @@
         }
     }
 
+    function makeIterable(type) {
+        if (isFunction(type.prototype.toArray)) {
+            if (!rootGlobalObject.Symbol) {
+                // eslint-disable-next-line no-console
+                console.error(new Error('Provide polyfill or use up to date browser/node version to use "Iterable" protocol.'))
+            }
+            type.prototype[Symbol.iterator] = function () {
+                return this.toArray()[Symbol.iterator]()
+            }
+        }
+    }
+
     function decorate(type) {
         addAliases(type)
         addFilterNot(type)
@@ -1418,6 +1426,7 @@
         addApplicativeOps(type)
         addCollectionPredicates(type)
         addFantasyLandAliases(type)
+        makeIterable(type)
     }
 
     decorate(MonadT)
