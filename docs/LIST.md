@@ -321,7 +321,9 @@ Returns a new list reversed.
 ```javascript
 List.fromArray([1,2,3]).reverse()
 // => List(3, 2, 1)
-````
+```
+
+Invoke a function applying a side-effect on each item in the list.
 
 ### forEach
 
@@ -329,9 +331,20 @@ List.fromArray([1,2,3]).reverse()
 List[A].forEach(fn: A => ()): ()
 ```
 
-Invoke a function applying a side-effect on each item in the list.
+### toArray
+
+```scala
+List[A].toArray(): Array[A]
+```
+
+### toSet
+
+```scala
+List[A].toSet(): Set[A]
+```
 
 ### ...and undocumented
+
 - equals
 - join
 - takeLeft
@@ -344,4 +357,3 @@ Invoke a function applying a side-effect on each item in the list.
 - tails
 - flatten
 - flattenMaybe
-- toArray

@@ -358,6 +358,12 @@
                 return acc
             }, [], this)
         },
+        toSet: function () {
+            if (!rootGlobalObject.Set) {
+                throw new Error('Provide polyfill or use up to date browser/node version to use "toSet" operator.')
+            }
+            return Set.from(this.toArray())
+        },
         foldLeft: function (initialValue) {
             var self = this
             return function (fn) {
@@ -596,6 +602,7 @@
     NEL.isInstance = isInstance(TYPES_NAMES.NEL)
     NEL.isOfType = isOfType(TYPES_NAMES.NEL)
     NEL.prototype.toArray = List.prototype.toArray
+    NEL.prototype.toSet = List.prototype.toSet
     NEL.prototype.extract = NEL.prototype.copure = NEL.prototype.head
     NEL.prototype.cojoin = NEL.prototype.tails
     NEL.prototype.coflatMap = NEL.prototype.mapTails = NEL.prototype.cobind

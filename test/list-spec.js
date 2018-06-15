@@ -53,12 +53,16 @@ describe('An immutable list', function () {
         expect(List('a', List('b', List('c'))).size()).toEqual(3)
     })
 
-    it('can be converted to Array', function () {
+    it('can be converted to an Array', function () {
         expect(list.toArray()).toEqual([1, 2, 3, 4])
     })
 
     it('can be created from an Array', function () {
         expect(List.fromArray([1, 2, 3, 4]).equals(list)).toBe(true)
+    })
+
+    it('can be converted to a Set', function () {
+        expect(list.toSet()).toEqual(Set.from([1, 2, 3, 4]))
     })
 
     it('can be mapped', function () {
