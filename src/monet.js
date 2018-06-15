@@ -663,6 +663,10 @@
         orNull: function () {
             return this.isValue ? this.val : null
         },
+        orUndefined: function () {
+            // eslint-disable-next-line no-undefined
+            return this.isValue ? this.val : undefined
+        },
         orElse: function (maybe) {
             return this.isValue ? this : maybe
         },
@@ -734,7 +738,7 @@
     }
 
     // aliases
-    Maybe.prototype.orJust = Maybe.prototype.orSome
+    Maybe.prototype.orJust = Maybe.prototype.getOrElse = Maybe.prototype.orSome
     Maybe.prototype.just = Maybe.prototype.some
     Maybe.prototype.isJust = Maybe.prototype.isSome
     Maybe.prototype.isNothing = Maybe.prototype.isNone

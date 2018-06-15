@@ -223,7 +223,7 @@ Some('hi').some()
 
 #### orSome
 
-**Alias:** `orJust`
+**Alias:** `orJust`, `getOrElse`
 
 ```scala
 Maybe[A].orSome(a: A) : A
@@ -244,7 +244,15 @@ None().orSome('bye')
 Maybe[A].orNull(): A | null
 ```
 
-Returns the value inside the `Maybe` if it is a Some otherwise returns null.
+Returns the value inside the `Maybe` if it is a `Some` otherwise returns `null`.
+
+### orUndefined
+
+```scala
+Maybe[A].orNull(): A | undefined
+```
+
+Returns the value inside the `Maybe` if it is a `Some` otherwise returns `undefined`.
 
 ### orElse
 
