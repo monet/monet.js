@@ -65,6 +65,16 @@
         Free: 'Free'
     }
 
+    function doNotation(monad, co) {
+        function iterate (el) {
+            return el.done ? monad.unit(el.value) : el.value.bind(function (val) {
+                return iterate(it.next(val))
+            })
+        }
+        var it = co()
+        return iterate(it.next())
+    }
+
     function setType(target, typeName) {
         target[TYPE_KEY] = 'Monet/' + typeName
     }
@@ -633,6 +643,8 @@
         return maybe.toList()
     }
 
+    Maybe.do = doNotation.bind(null, Maybe)
+
     Maybe.fn = Maybe.prototype = {
         init: function (isValue, val) {
             this.isValue = isValue
@@ -756,6 +768,8 @@
     Validation.of = function (v) {
         return Success(v)
     }
+
+    Validation.do = doNotation.bind(null, Validation)
 
     Validation.fn = Validation.prototype = {
         init: function (val, success) {
@@ -918,6 +932,8 @@
         })
     }
 
+    IO.do = doNotation.bind(null, IO)
+
     IO.fn = IO.prototype = {
         init: function (effectFn) {
             if (!isFunction(effectFn)) {
@@ -972,6 +988,8 @@
     var Left = Either.Left = Either.left = root.Left = function (val) {
         return new Either.fn.init(val, false)
     }
+
+    Either.do = doNotation.bind(null, Either)
 
     Either.fn = Either.prototype = {
         init: function (val, isRightValue) {

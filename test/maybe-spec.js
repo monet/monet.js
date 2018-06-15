@@ -449,5 +449,50 @@ describe('A Maybe', function () {
         })
     })
 
+    describe('do notation', function() {
+        it('will yield the Just value inside a generator', function () {
+            Maybe.do(function*() {
+                var a = yield Maybe.Just(5)
+                expect(a).toBe(5)
+                return a
+            })
+        })
 
+        it('will return the value wrapped in Just', function() {
+            var result = Maybe.do(function* () {
+                var a = yield Maybe.Just(5)
+                var b = yield Maybe.Just(1)
+                return a + b
+            })
+
+            expect(result).toBeSomeMaybeWith(6)
+        })
+
+        it('will return Nothing when Nothing is yielded inside the generator', function() {
+            var result = Maybe.do(function* () {
+                var a = yield Maybe.Just(5)
+                var b = yield Maybe.Nothing()
+                return a + b
+            })
+
+            expect(result).toBeNoneMaybe()
+        })
+
+        it('will short-circuit the generator when Nothing is yielded', function() {
+            var spyBeforeNothing = jasmine.createSpy()
+            var spyAfterNothing = jasmine.createSpy()
+
+            var result = Maybe.do(function* () {
+                spyBeforeNothing()
+                var a = yield Maybe.Nothing()
+                spyAfterNothing()
+                var b = yield Maybe.Just(3)
+                return a + b
+            })
+
+            expect(spyBeforeNothing).toHaveBeenCalled()
+            expect(spyAfterNothing).not.toHaveBeenCalled()
+            expect(result).toBeNoneMaybe()
+        })
+    })
 })
