@@ -316,6 +316,7 @@ Will sequence a list of `Reader`s.
 ```scala
 List[A].reverse(): List[A]
 ```
+
 Returns a new list reversed.
 
 ```javascript
@@ -324,6 +325,20 @@ List.fromArray([1,2,3]).reverse()
 ```
 
 Invoke a function applying a side-effect on each item in the list.
+
+### every
+
+**Alias:** `forall`
+
+```scala
+List[A].every(val: A => Boolean): Boolean
+```
+
+### exists
+
+```scala
+List[A].exists(val: A => Boolean): Boolean
+```
 
 ### forEach
 

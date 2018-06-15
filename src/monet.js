@@ -1305,6 +1305,18 @@
             return applyWithFunction.map(function (fn) {
                 return fn(value)
             })
+        },
+        toArray: function () {
+            return [this.get()]
+        },
+        toList: function () {
+            return List(this.get(), Nil)
+        },
+        toSet: function () {
+            if (!rootGlobalObject.Set) {
+                throw new Error('Provide polyfill or use up to date browser/node version to use "toSet" operator.')
+            }
+            return Set.from([this.get()])
         }
     }
 
@@ -1387,12 +1399,24 @@
         }
     }
 
+    function addCollectionPredicates(type) {
+        if (isFunction(type.prototype.toArray)) {
+            type.prototype.every = type.prototype.forall = function (fn) {
+                return this.toArray().every(fn)
+            }
+            type.prototype.exists = function (fn) {
+                return this.toArray().some(fn)
+            }
+        }
+    }
+
     function decorate(type) {
         addAliases(type)
         addFilterNot(type)
         addMonadOps(type)
         addFunctorOps(type)
         addApplicativeOps(type)
+        addCollectionPredicates(type)
         addFantasyLandAliases(type)
     }
 

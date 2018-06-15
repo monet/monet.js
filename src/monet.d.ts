@@ -90,8 +90,15 @@ export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>> {
 
   /* Identity specific */
   contains(val: T): boolean;
+  every(fn: (e: T) => boolean): boolean;
+  forall(fn: (e: T) => boolean): boolean;
+  exists(fn: (e: T) => boolean): boolean;
   forEach(fn: (val: T) => void): void;
   get(): T;
+
+  toArray(): Array<T>;
+  toSet(): Set<T>;
+  toList(): List<T>;
 }
 
 interface IIdentityFactory extends IMonadFactory {
@@ -150,10 +157,13 @@ export interface Maybe<T extends NonNullable<{}>>
   orNoneIf(val: boolean): Maybe<T>;
   orNothingIf(val: boolean): Maybe<T>;
   contains(val: T): boolean;
+  every(fn: (e: T) => boolean): boolean;
+  forall(fn: (e: T) => boolean): boolean;
+  exists(fn: (e: T) => boolean): boolean;
   forEach(fn: (val: T) => void): void;
   orElseRun(fn: () => void): void;
 
-  toArray(): List<T>;
+  toArray(): Array<T>;
   toSet(): Set<T>;
   toList(): List<T>;
   toEither<E>(left?: E): Either<E, T>;
@@ -359,6 +369,9 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T> {
   flatten<V>(): List<V>;   // === join
   flattenMaybe<V>(): List<V>; // if T is Maybe<V>
   contains(val: T): boolean;
+  every(fn: (e: T) => boolean): boolean;
+  forall(fn: (e: T) => boolean): boolean;
+  exists(fn: (e: T) => boolean): boolean;
   forEach(fn: (val: T) => void): void;
 
   sequence<V>(m: IMaybeStatic): Maybe<List<V>>;
@@ -443,6 +456,9 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T> {
   tail(): List<T>;
   tails(): NEL<NEL<T>>;
   contains(val: T): boolean;
+  every(fn: (e: T) => boolean): boolean;
+  forall(fn: (e: T) => boolean): boolean;
+  exists(fn: (e: T) => boolean): boolean;
   forEach(fn: (val: T) => void): void;
   // flatten<V>(): NEL<V>;
   // flattenMaybe<V>(): NEL<V>;
