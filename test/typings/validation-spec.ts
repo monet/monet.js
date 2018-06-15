@@ -72,7 +72,6 @@ const messageCopy: string = Success<number[], string>('message: Yo man!')
     .ap(Success<number[], (v: string[]) => string>(m => m.pop() || ""))
     .cata(e => e.join(), v => v);
 
-const contains: boolean = wrappedGreeting.contains("test");
 Validation.success<number, string>("hello").forEach((str:string) => console.log(str));
 Validation.fail<string, string>("none").forEachFail((str:string) => console.log(str));
 

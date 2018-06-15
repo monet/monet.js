@@ -232,7 +232,6 @@ export interface Either<E, T>
   isLeft(): boolean;
   right(): T;
   left(): E;
-  contains(val: T): boolean;
   forEach(fn: (val: T) => void): void;
   forEachLeft(fn: (val: E) => void): void;
 
@@ -299,7 +298,6 @@ export interface Validation<E, T>
   isFail(): boolean;
   success(): T;
   fail(): E;
-  contains(val: T): boolean;
   forEach(fn: (val: T) => void): void;
   forEachFail(fn: (val: E) => void): void;
 
