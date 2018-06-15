@@ -165,4 +165,34 @@ describe('A Non-Empty immutable list', function () {
     it('will render as NEL(x1, x2, x3)', function () {
         expect(NEL(1, NEL(false, Nil)).inspect()).toBe('NEL(1, false)')
     })
+
+    describe('can be described with collection predicates', function () {
+        var predicateAll = function (e) {
+            return e < 5
+        }
+        var predicateSome = function (e) {
+            return e < 3
+        }
+        var predicateNone = function (e) {
+            return e === -12
+        }
+        describe('every / forall', function () {
+            it('should test if all elements match predicate', function () {
+                expect(nonEmptyList.every(predicateAll)).toBe(true)
+                expect(nonEmptyList.every(predicateSome)).toBe(false)
+                expect(nonEmptyList.every(predicateNone)).toBe(false)
+    
+                expect(nonEmptyList.every(predicateAll)).toBe(nonEmptyList.forall(predicateAll))
+                expect(nonEmptyList.every(predicateSome)).toBe(nonEmptyList.forall(predicateSome))
+                expect(nonEmptyList.every(predicateNone)).toBe(nonEmptyList.forall(predicateNone))
+            })
+        })
+        describe('exists', function () {
+            it('should test if any element matches predicate', function () {
+                expect(nonEmptyList.exists(predicateAll)).toBe(true)
+                expect(nonEmptyList.exists(predicateSome)).toBe(true)
+                expect(nonEmptyList.exists(predicateNone)).toBe(false)
+            })
+        })
+    })
 })

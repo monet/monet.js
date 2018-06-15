@@ -302,6 +302,52 @@ describe('A Maybe', function () {
         })
     })
 
+    describe('can be described with collection predicates', function () {
+        var predicateAll = function (e) {
+            return e < 5
+        }
+        var predicateSome = function (e) {
+            return e < 3
+        }
+        var predicateNone = function (e) {
+            return e === -12
+        }
+        var someThree = Some(3)
+        var aNothing = None()
+        describe('every / forall', function () {
+            it('should test if value wrapped in Some matches predicate', function () {
+                expect(someThree.every(predicateAll)).toBe(true)
+                expect(someThree.every(predicateSome)).toBe(false)
+                expect(someThree.every(predicateNone)).toBe(false)
+    
+                expect(someThree.every(predicateAll)).toBe(someThree.forall(predicateAll))
+                expect(someThree.every(predicateSome)).toBe(someThree.forall(predicateSome))
+                expect(someThree.every(predicateNone)).toBe(someThree.forall(predicateNone))
+            })
+            it('should return true for None', function () {
+                expect(aNothing.every(predicateAll)).toBe(true)
+                expect(aNothing.every(predicateSome)).toBe(true)
+                expect(aNothing.every(predicateNone)).toBe(true)
+    
+                expect(aNothing.every(predicateAll)).toBe(aNothing.forall(predicateAll))
+                expect(aNothing.every(predicateSome)).toBe(aNothing.forall(predicateSome))
+                expect(aNothing.every(predicateNone)).toBe(aNothing.forall(predicateNone))
+            })
+        })
+        describe('exists', function () {
+            it('should test if element in Some matches predicate', function () {
+                expect(someThree.exists(predicateAll)).toBe(true)
+                expect(someThree.exists(predicateSome)).toBe(false)
+                expect(someThree.exists(predicateNone)).toBe(false)
+            })
+            it('should false for None', function () {
+                expect(aNothing.exists(predicateAll)).toBe(false)
+                expect(aNothing.exists(predicateSome)).toBe(false)
+                expect(aNothing.exists(predicateNone)).toBe(false)
+            })
+        })
+    })
+
     describe('Some constructed without a value', function () {
         it('will throw an exception', function () {
             expect(function () {
