@@ -104,12 +104,6 @@ describe('An Either', function () {
                 return 'right ' + s
             })).toBeRightWith('right abcd')
         })
-        it('does not contain another value', function () {
-            expect(rightString.contains('x')).toBe(false)
-        })
-        it('does contain its value', function () {
-            expect(rightString.contains('abcd')).toBe(true)
-        })
         it('can be converted to Maybe.Some', function () {
             expect(rightString.toMaybe().isSome()).toBe(true)
         })
@@ -188,9 +182,6 @@ describe('An Either', function () {
             expect(function () {
                 leftString.right()
             }).toThrow(new Error('Cannot call right() on a Left.'))
-        })
-        it('will return false on contains', function () {
-            expect(leftString.contains('error dude')).toBe(false)
         })
         it('can be reduced using foldLeft', function () {
             expect(leftString.foldLeft('efgh')(function (acc, val) {
