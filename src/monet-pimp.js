@@ -12,7 +12,8 @@
 /* global define */
 /* eslint-disable no-extend-native */
 
-(function (root, factory) {  
+/* eslint-disable-next-line complexity */
+(function (root, factory) {
     if (typeof define === 'function' && define.amd) { 
         define(['monet'], factory)
     } else if (typeof module === 'object' && module.exports) {

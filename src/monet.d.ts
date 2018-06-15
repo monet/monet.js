@@ -112,19 +112,19 @@ export const Identity: IIdentityStatic;
  * Maybe
  */
 
-export interface Maybe<T>
-  extends IMonad<T>, Setoid<Maybe<T>>, ITraversable<T>, Catamorphism<undefined, T> {
+export interface Maybe<T extends NonNullable<{}>>
+  extends Setoid<Maybe<T>>, ITraversable<T>, Catamorphism<undefined, T> {
   /* Inherited from Monad: */
-  bind<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
-  flatMap<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
-  chain<V>(fn: (val: T) => Maybe<V>): Maybe<V>;
+  bind<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
+  flatMap<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
+  chain<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
   map<V extends NonNullable<{}>>(fn: (val: T) => V): Maybe<V>;
-  join<V>(): Maybe<V>; // if T is Identity<V>
+  join<V>(): T extends Maybe<V> ? V : never;
   takeLeft(m: Maybe<T>): Maybe<T>;
   takeRight(m: Maybe<T>): Maybe<T>;
 
   /* Inherited from Applicative */
-  ap<V>(maybeFn: Maybe<(val: T) => V>): Maybe<V>;
+  ap<V extends NonNullable<{}>>(maybeFn: Maybe<(val: T) => V>): Maybe<V>;
 
   /* Maybe specific */
   cata<Z>(none: () => Z, some: (val: T) => Z): Z;
@@ -143,6 +143,7 @@ export interface Maybe<T>
   orSome(val: T): T;
   orJust(val: T): T;
   getOrElse(val: T): T;
+  orLazy(fn: () => T|null|undefined): T
   orNull(): T|null;
   orUndefined(): T|undefined;
   orElse(maybe: Maybe<T>): Maybe<T>;
