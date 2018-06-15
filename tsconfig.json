@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "listFiles": true,
+    "lib": ["dom", "es6"],
     "noEmit": true,
     "noImplicitAny": true,
     "strict": true
