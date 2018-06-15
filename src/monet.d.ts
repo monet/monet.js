@@ -142,7 +142,9 @@ export interface Maybe<T>
   just(): T;
   orSome(val: T): T;
   orJust(val: T): T;
+  getOrElse(val: T): T;
   orNull(): T|null;
+  orUndefined(): T|undefined;
   orElse(maybe: Maybe<T>): Maybe<T>;
   orNoneIf(val: boolean): Maybe<T>;
   orNothingIf(val: boolean): Maybe<T>;
