@@ -208,6 +208,7 @@ export interface Either<E, T>
   cata<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
   fold<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
   catchMap<F>(fn: () => Either<F, T>): Either<F, T>;
+  swap(): Either<T, E>;
 
   bimap<Z, V>(leftFn: (err: E) => Z, rightFn: (val: T) => V): Either<Z, V>;
   leftMap<F>(fn: (leftVal: E) => F): Either<F, T>;
@@ -274,6 +275,7 @@ export interface Validation<E, T>
   cata<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
   fold<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
   catchMap<F>(fn: () => Validation<F, T>): Validation<F, T>;
+  swap(): Validation<T, E>;
 
   bimap<F, V>(fnF: (fail: E) => F, fnS: (val: T) => V): Validation<F, V>;
   failMap<F>(fn: (fail: E) => F): Validation<F, T>;

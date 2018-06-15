@@ -135,6 +135,12 @@ Performs a fold right across the right side of the `Either`. As a right `Either`
 Either[A,B].bimap(leftFn: A=>C, rightFn: B=>D): Either[C,D]
 ```
 
+### swap
+
+```scala
+Either[A,B].swap(): Either[B,A]
+```
+
 ### isRight
 
 ```scala

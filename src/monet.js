@@ -817,6 +817,9 @@
         catchMap: function (fn) {
             return this.isSuccess() ? this : fn(this.val)
         },
+        swap: function () {
+            return this.isSuccess() ? Fail(this.val) : Success(this.val)
+        },
         failMap: function (fn) {
             return this.isFail() ? Fail(fn(this.val)) : this
         },
@@ -1026,6 +1029,9 @@
         },
         catchMap: function (fn) {
             return this.isRight() ? this : fn(this.value)
+        },
+        swap: function () {
+            return this.isRight() ? Left(this.value) : Right(this.value)
         },
         forEach: function (fn) {
             this.cata(noop, fn)
