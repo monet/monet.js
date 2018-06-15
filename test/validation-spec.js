@@ -61,6 +61,11 @@ describe('A Validation', function () {
                 return Validation.fail('big fail')
             })).toBeFailureWith('big fail')
         })
+        it('will not be transformed by a catchMap', function () {
+            expect(successString.catchMap(function (val) {
+                return Validation.fail('sorry: ' + val)
+            })).toBeSuccessWith(successString.success())
+        })
         it('can be reduced using foldLeft', function () {
             expect(successString.foldLeft('efgh')(function (acc, val) {
                 return acc + val
@@ -132,6 +137,11 @@ describe('A Validation', function () {
             expect(failString.flatMap(function (val) {
                 return Validation.fail('big fail')
             })).toBeFailureWith('error dude')
+        })
+        it('will be transformed by a catchMap', function () {
+            expect(failString.catchMap(function (val) {
+                return Validation.success('Hello ' + val)
+            })).toBeSuccessWith('Hello ' + failString.fail())
         })
         it('will return false when isSuccess is called', function () {
             expect(failString.isSuccess()).toBeFalsy()

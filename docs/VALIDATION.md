@@ -65,7 +65,6 @@ Fail([409, 409, 400, 400, 409]).failMap(err => new Set(err))
 // => Fail(Set(2) {409, 400})
 ```
 
-
 ### flatMap
 **Aliases:** `bind`, `chain`
 
@@ -78,6 +77,14 @@ Validation[E,A].bind(fn:A => Validation[E,B]) : Validation[E,B]
 ```javascript
 validation.bind(val => val === 'hi' ? Success('world') : Fail('wow, you really failed.'))
 ```
+
+### catchMap
+
+```scala
+Validation[E,A].catchMap(fn: A => ValidationValidation[F,A]): Either[F,A]
+```
+
+This will catch and the fail side of the validation, otherwise it will do nothing.
 
 ### isSuccess
 

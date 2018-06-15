@@ -3,29 +3,29 @@
  */
 
 describe('An Either', function () {
-    var sideEffectsReceiver = null;
+    var sideEffectsReceiver = null
 
     beforeEach(function () {
         jasmine.addMatchers({
             toBeRight: getCustomMatcher(function (actual) {
-                return actual.isRight();
+                return actual.isRight()
             }),
             toBeRightWith: getCustomMatcher(function (actual, expected) {
-                return actual.right() == expected;
+                return actual.right() == expected
             }),
             toBeLeft: getCustomMatcher(function (actual) {
-                return actual.isLeft();
+                return actual.isLeft()
             }),
             toBeLeftWith: getCustomMatcher(function (actual, expected) {
-                return actual.left() == expected;
+                return actual.left() == expected
             })
-        });
+        })
         sideEffectsReceiver = {
             setVal: function (val) {
             }
-        };
-        spyOn(sideEffectsReceiver, 'setVal');
-    });
+        }
+        spyOn(sideEffectsReceiver, 'setVal')
+    })
 
     var rightString = Either.Right('abcd')
     describe('that is right', function () {
@@ -61,6 +61,11 @@ describe('An Either', function () {
             expect(rightString.flatMap(function (val) {
                 return Either.Left('big left')
             })).toBeLeftWith('big left')
+        })
+        it('will not be transformed by a catchMap', function () {
+            expect(rightString.catchMap(function (val) {
+                return Either.Left('bye')
+            })).toBeRightWith(rightString.right())
         })
         it('can be reduced using foldLeft', function () {
             expect(rightString.foldLeft('efgh')(function (acc, val) {
@@ -158,6 +163,12 @@ describe('An Either', function () {
             expect(leftString.flatMap(function (val) {
                 return Either.Left('big left')
             })).toBeLeftWith('error dude')
+        })
+        it('will be transformed by a catchMap', function () {
+            expect(leftString.catchMap(function (val) {
+                console.log(leftString)
+                return Either.Right('Hello ' + val)
+            })).toBeRightWith('Hello ' + leftString.left())
         })
         it('will return false when isRight is called', function () {
             expect(leftString.isRight()).toBeFalsy()

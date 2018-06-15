@@ -129,6 +129,7 @@ export interface Maybe<T>
   /* Maybe specific */
   cata<Z>(none: () => Z, some: (val: T) => Z): Z;
   fold<V>(val: V): (fn: (val: T) => V) => V;
+  catchMap(fn: () => Maybe<T>): Maybe<T>;
 
   filter(fn: (val: T) => boolean): Maybe<T>;
   filterNot(fn: (val: T) => boolean): Maybe<T>;
@@ -206,6 +207,7 @@ export interface Either<E, T>
   /* Either specific */
   cata<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
   fold<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
+  catchMap<F>(fn: () => Either<F, T>): Either<F, T>;
 
   bimap<Z, V>(leftFn: (err: E) => Z, rightFn: (val: T) => V): Either<Z, V>;
   leftMap<F>(fn: (leftVal: E) => F): Either<F, T>;
@@ -271,6 +273,7 @@ export interface Validation<E, T>
   /* Validation specific */
   cata<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
   fold<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
+  catchMap<F>(fn: () => Validation<F, T>): Validation<F, T>;
 
   bimap<F, V>(fnF: (fail: E) => F, fnS: (val: T) => V): Validation<F, V>;
   failMap<F>(fn: (fail: E) => F): Validation<F, T>;

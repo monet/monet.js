@@ -73,6 +73,14 @@ Either[E,A].flatMap(fn: A => Either[E,B]): Either[E,B]
 
 This will perform a monadic bind over the right side of the either, otherwise it will do nothing.
 
+### catchMap
+
+```scala
+Either[E,A].catchMap(fn: A => Either[F,A]): Either[F,A]
+```
+
+This will catch and map the left side of the either, otherwise it will do nothing.
+
 ### ap
 
 ```scala
