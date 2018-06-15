@@ -272,6 +272,42 @@ describe('A Maybe', function () {
         })
     })
 
+    describe('"to…" operators', function () {
+        describe('toList', function () {
+            it('should return a singleton List for Some', function () {
+                const list = Some(1).toList();
+
+                expect(list.head()).toBe(1)
+                expect(list.tail()).toBe(Nil)
+            })
+            it('should return an empty List for None', function () {
+                expect(None().toList()).toBe(Nil)
+            })
+        })
+        describe('toSet', function () {
+            it('should return a singleton Set for Some', function () {
+                const theSet = Some(1).toSet()
+
+                expect(theSet.size).toBe(1)
+                expect(theSet.has(1)).toBe(true)
+            })
+            it('should return an empty Set for None', function () {
+                const theSet = None().toSet()
+
+                expect(theSet.size).toBe(0)
+            })
+        })
+        describe('toArray', function () {
+            it('should return a singleton Array for Some', function () {
+                expect(Some(1).toArray().length).toBe(1)
+                expect(Some(1).toArray()[0]).toBe(1)
+            })
+            it('should return an empty Array for None', function () {
+                expect(None().toArray().length).toBe(0)
+            })
+        })
+    })
+
     describe('Some constructed without a value', function () {
         it('will throw an exception', function () {
             expect(function () {
