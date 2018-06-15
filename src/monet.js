@@ -872,9 +872,6 @@
                 }
             )
         },
-        contains: function (val) {
-            return this.isSuccessValue ? areEqual(this.val, val) : false
-        },
         toMaybe: function () {
             return this.isSuccess() ? Some(this.val) : None()
         },
@@ -1078,9 +1075,6 @@
                     return other.cata(falseFunction, equals(right))
                 }
             )
-        },
-        contains: function (val) {
-            return this.isRight() ? areEqual(this.value, val) : false
         },
         bimap: function (leftFn, rightFn) {
             return this.isRightValue ? this.map(rightFn) : this.leftMap(leftFn)

@@ -197,14 +197,6 @@ Performs a fold right across the success side of the `Validation`. As a success 
 Validation[A,B].swap(): Validation[B,A]
 ```
 
-### contains
-
-```scala
-Validation[E,A].contains(val: A): Boolean
-```
-
-Returns true if the `Validation` is a success containing the given value.
-
 ### forEach
 
 ```scala

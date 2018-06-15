@@ -304,14 +304,6 @@ const personString = Some('Dulwich, London')
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
 
-### contains
-
-```scala
-Maybe[A].contains(val: A): Boolean
-```
-
-Returns true if the `Maybe` is a Some containing the given value.
-
 ### every
 
 **Alias:** `forall`
