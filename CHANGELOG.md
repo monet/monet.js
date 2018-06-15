@@ -2,6 +2,7 @@
 
 ### alpha.5 (?? 2018)
 
+- [new] implement Iterable for List, NEL, Maybe and Identity
 - [new] add `.every()`, `.forall()` and `.exists()` to List, NEL, Maybe and Identity
 - [new] add `.toSet()` to List and NEL
 - [new] add `.toArray()`, `.toSet()` to Maybe

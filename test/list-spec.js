@@ -62,7 +62,7 @@ describe('An immutable list', function () {
     })
 
     it('can be converted to a Set', function () {
-        expect(list.toSet()).toEqual(Set.from([1, 2, 3, 4]))
+        expect(list.toSet()).toEqual(new Set([1, 2, 3, 4]))
     })
 
     it('can be mapped', function () {
@@ -222,6 +222,14 @@ describe('An immutable list', function () {
                 expect(Nil.exists(predicateNone)).toBe(false)
             })
         })
+    })
+
+    it('should be an Iterable', function () {
+        var onIter = jasmine.createSpy('onIteration')
+        for (var a of list) {
+            onIter(a)
+        }
+        expect(onIter.calls.allArgs()).toEqual([[1], [2], [3], [4]])
     })
 
     describe('will sequence a list', function () {

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "listFiles": true,
-    "lib": ["dom", "es5", "es2015.collection"],
+    "lib": ["dom", "es5", "es2015.collection", "es2015.iterable"],
     "noEmit": true,
     "noImplicitAny": true,
     "strict": true
