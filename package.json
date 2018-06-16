@@ -1,11 +1,14 @@
 {
   "author": "Chris Myers",
   "contributors": [
-    "Jakub Strojewski <jakub.strojewski@gmail.com>"
+    "Jakub Strojewski <jakub.strojewski@gmail.com>",
+    "emmanueltouzery",
+    "tomecko",
+    "WojciechP"
   ],
   "name": "monet",
   "description": "Monadic types library for JavaScript",
-  "version": "0.9.0-alpha.4",
+  "version": "0.9.0-alpha.5",
   "homepage": "https://monet.github.io/monet.js/",
   "repository": {
     "type": "git",
@@ -14,6 +17,10 @@
   "main": "dist/monet.js",
   "typings": "dist/monet.d.ts",
   "license": "MIT",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
   "dependencies": {},
   "devDependencies": {
     "core-js": "2.5.7",
