@@ -28,10 +28,26 @@ describe('A Non-Empty immutable list', function () {
     });
 
     var nonEmptyList = NEL(1, List(2, List(3, List(4, Nil))))
+    var listBase = [1, 2, 3, 4]
 
     var plus = function (a, b) {
         return a + b
     }
+
+    it('should check equality', function () {
+        expect(NEL(1).equals(NEL(1))).toBe(true)
+        expect(NEL(1, Nil).equals(NEL(1))).toBe(true)
+        expect(NEL(1).equals(NEL(1, Nil))).toBe(true)
+        expect(
+            NEL(1, List(2)).equals(NEL(1, List(2, Nil)))
+        ).toBe(true)
+
+        expect(NEL(1).equals(NEL([1, 1]))).toBe(false)
+        expect(NEL(1, Nil).equals(NEL(2))).toBe(false)
+        expect(NEL(1, List(1)).equals(NEL(1, Nil))).toBe(false)
+        expect(NEL(1, List(2)).equals(NEL(1), List(1, Nil))).toBe(false)
+        expect(NEL(1, List(2)).equals(NEL(1), List(2, List(3)))).toBe(false)
+    })
 
 
     it('cannot be create with zero elements', function () {
@@ -42,6 +58,22 @@ describe('A Non-Empty immutable list', function () {
 
     it('must have a head', function () {
         expect(new NEL(1, Nil).head()).toEqual(1)
+    })
+
+    it('should be created from list', function () {
+        expect(NEL.fromList(List.fromArray(listBase)).equals(Some(nonEmptyList))).toBe(true)
+    })
+
+    it('should be created from array', function () {
+        expect(NEL.fromArray(listBase).equals(Some(nonEmptyList))).toBe(true)
+    })
+
+    it('should be created from any iterable (array)', function () {
+        expect(NEL.from(listBase).equals(Some(nonEmptyList))).toBe(true)
+    })
+
+    it('should be created from any iterable (set)', function () {
+        expect(NEL.from(new Set(listBase)).equals(Some(nonEmptyList))).toBe(true)
     })
 
     it('Must be mappable', function () {

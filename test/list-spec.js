@@ -31,10 +31,38 @@ describe('An immutable list', function () {
     })
 
     var list = List(1, List(2, List(3, List(4, Nil))))
+    var listBase = [1, 2, 3, 4]
 
     var plusOne = function (a) {
         return a + 1
     }
+
+    it('should check equality', function () {
+        expect(List(1).equals(List(1))).toBe(true)
+        expect(List(1, Nil).equals(List(1))).toBe(true)
+        expect(List(1).equals(List(1, Nil))).toBe(true)
+        expect(
+            List(1, List(2)).equals(List(1, List(2, Nil)))
+        ).toBe(true)
+
+        expect(List(1).equals(List([1, 1]))).toBe(false)
+        expect(List(1, Nil).equals(List(2))).toBe(false)
+        expect(List(1, List(1)).equals(List(1, Nil))).toBe(false)
+        expect(List(1, List(2)).equals(List(1), List(1, Nil))).toBe(false)
+        expect(List(1, List(2)).equals(List(1), List(2, List(3)))).toBe(false)
+    })
+
+    it('should be created from array', function () {
+        expect(List.fromArray(listBase).equals(list)).toBe(true)
+    })
+    
+    it('should be created from any iterable (array)', function () {
+        expect(List.from(listBase).equals(list)).toBe(true)
+    })
+    
+    it('should be created from any iterable (set)', function () {
+        expect(List.from(new Set(listBase)).equals(list)).toBe(true)
+    })
 
     it('will return all the possible tails on tails()', function () {
         expect(list.tails().equals(List.fromArray([
