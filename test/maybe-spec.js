@@ -340,7 +340,7 @@ describe('A Maybe', function () {
                 expect(someThree.exists(predicateSome)).toBe(false)
                 expect(someThree.exists(predicateNone)).toBe(false)
             })
-            it('should false for None', function () {
+            it('should return false for None', function () {
                 expect(aNothing.exists(predicateAll)).toBe(false)
                 expect(aNothing.exists(predicateSome)).toBe(false)
                 expect(aNothing.exists(predicateNone)).toBe(false)

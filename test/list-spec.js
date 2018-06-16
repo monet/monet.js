@@ -216,7 +216,7 @@ describe('An immutable list', function () {
                 expect(list.exists(predicateSome)).toBe(true)
                 expect(list.exists(predicateNone)).toBe(false)
             })
-            it('should false for empty List', function () {
+            it('should return false for an empty List', function () {
                 expect(Nil.exists(predicateAll)).toBe(false)
                 expect(Nil.exists(predicateSome)).toBe(false)
                 expect(Nil.exists(predicateNone)).toBe(false)

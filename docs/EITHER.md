@@ -76,7 +76,7 @@ This will perform a monadic bind over the right side of the either, otherwise it
 ### catchMap
 
 ```scala
-Either[E,A].catchMap(fn: A => Either[F,A]): Either[F,A]
+Either[E, A].catchMap(fn: E => Either[F,A]): Either[F,A]
 ```
 
 This will catch and map the left side of the either, otherwise it will do nothing.

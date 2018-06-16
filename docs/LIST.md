@@ -324,8 +324,6 @@ List.fromArray([1,2,3]).reverse()
 // => List(3, 2, 1)
 ```
 
-Invoke a function applying a side-effect on each item in the list.
-
 ### every
 
 **Alias:** `forall`
@@ -345,6 +343,8 @@ List[A].exists(val: A => Boolean): Boolean
 ```scala
 List[A].forEach(fn: A => ()): ()
 ```
+
+Invoke a function applying a side-effect on each item in the list.
 
 ### toArray
 
