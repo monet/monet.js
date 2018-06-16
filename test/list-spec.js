@@ -96,6 +96,22 @@ describe('An immutable list', function () {
         expect('fun'.cons(list).toArray()).toEqual(['fun', 1, 2, 3, 4])
     })
 
+    describe('cons', function () {
+        const cba = List('b', List('a')).cons('c')
+
+        it('should add elements', function () {
+            expect(cba.toArray().join('')).toBe('cba')
+        })
+    })
+
+    describe('snoc', function () {
+        const abc = List('a', List('b')).snoc('c')
+
+        it('should add elements', function () {
+            expect(abc.toArray().join('')).toBe('abc')
+        })
+    })
+
     it('will be transformed by a flatMap', function () {
         expect(list.flatMap(function (e) {
             return List.fromArray([e * e, e + e])
@@ -109,11 +125,18 @@ describe('An immutable list', function () {
     describe('will flatten inner lists', function () {
         it('with two elements', function () {
             expect(List.fromArray([List.fromArray([1, 2]), List.fromArray([3, 4])]).flatten().toArray()).toEqual([1, 2, 3, 4])
+            expect(List.fromArray([List.fromArray([1, 2]), List.fromArray([3, 4])]).join().toArray()).toEqual([1, 2, 3, 4])
         })
         it('with one element', function () {
             expect(List.fromArray([List.fromArray([1, 2])]).flatten().toArray()).toEqual([1, 2])
+            expect(List.fromArray([List.fromArray([1, 2])]).join().toArray()).toEqual([1, 2])
         })
+    })
 
+    describe('flattenMaybe', function () {
+        it(`should drop Nones and return List of Some values`, function () {
+            expect(List.fromArray([Some(1), None(), Some(10)]).flattenMaybe().toArray()).toEqual([1, 10])
+        })
     })
 
     describe('can be created with any values, including null and undefined', function () {
