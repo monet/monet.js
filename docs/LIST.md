@@ -23,6 +23,14 @@ List.fromArray(['a', 'b', 'c']);
 // => List('a', 'b', 'c')
 ```
 
+There is also `List.from` that accepts anything implementing iterable pattern:
+
+```javascript
+const unique = new Set(['a', 'b', 'a', 'b', 'c', 'c', 'a']);
+List.from(unique);
+// => List('a', 'b', 'c')
+```
+
 ### Creating a list from a pimped array
 
 A list can be created also with the pimped method on Array, available in `monet-pimp.js`.
@@ -35,16 +43,6 @@ which is equivalent to:
 
 ```javascript
 const myList = List(1, List(2, List(3, Nil)))
-```
-
-### TODO's
-
-There will be added also `List.from` that will accept anything implementing iterable pattern:
-
-```javascript
-const unique = new Set(['a', 'b', 'a', 'b', 'c', 'c', 'a']);
-List.from(unique);
-// => List('a', 'b', 'c')
 ```
 
 ## Methods

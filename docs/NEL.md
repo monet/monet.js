@@ -33,6 +33,32 @@ NEL.fromList(Nil)
 // => None()
 ```
 
+### fromArray
+
+```scala
+NEL.fromArray(Array[A]): Maybe[NEL[A]]
+```
+
+Returns an optional `NonEmptyList`. If the supplied `Array` is empty the result will be a `None`, otherwise a `NonEmptyList` wrapped in a `Some`.
+
+```javascript
+NEL.fromArray([1,2,3,4])
+// => Some(NonEmptyList(1,2,3,4))
+
+NEL.fromArray([])
+// => None()
+```
+
+### from
+
+It accepts anything implementing iterable pattern:
+
+```javascript
+const unique = new Set(['a', 'b', 'a', 'b', 'c', 'c', 'a']);
+NEL.from(unique);
+// => Some(NonEmptyList('a', 'b', 'c'))
+```
+
 Trying to create an empty `NonEmptyList` will throw an exception.
 
 ## Methods
@@ -46,6 +72,7 @@ NEL[A].map(fn: A => B): NEL[B]
 Maps a function over a NonEmptyList.
 
 ### flatMap
+
 **Aliases:** `bind`, `chain`
 
 ```scala
@@ -55,6 +82,7 @@ NEL[A].bind(fn: A => NEL[B]): NEL[B]
 Performs a monadic bind over the NonEmptyList.
 
 ### head
+
 **Aliases:** `copure`, `extract`
 
 ```scala
@@ -72,6 +100,7 @@ NEL[A].tail(): List[A]
 Returns the tail of the `NonEmptyList`.
 
 ### tails
+
 **Aliases:** `cojoin`
 
 ```scala
@@ -92,6 +121,7 @@ NEL(1, List.fromArray([2,3,4])).tails()
 ```
 
 ### mapTails
+
 **Aliases:** `cobind`, `coflatMap`
 
 ```scala
@@ -240,6 +270,8 @@ NEL[A].toSet(): Set[A]
 - ap
 - isNEL
 - size
-- **BROKEN** join
-- **UNIMPLEMENTED** cons
-- **UNIMPLEMENTED** snoc
+- join
+- cons
+- snoc
+- flatten
+- flattenMaybe
