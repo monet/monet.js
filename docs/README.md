@@ -335,9 +335,11 @@ Checks if passed object is an instance of some similar type. This check is based
 - ap
 - isNEL
 - size
-- **BROKEN** join
-- **UNIMPLEMENTED** cons
-- **UNIMPLEMENTED** snoc
+- join
+- cons
+- snoc
+- flatten
+- flattenMaybe
 
 ## [IO](IO.md)
 
