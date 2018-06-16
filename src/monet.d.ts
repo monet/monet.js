@@ -401,6 +401,7 @@ interface IListStatic extends IMonadStatic {
   <T>(): List<T>;
   <T>(val: T, tail?: List<T>): List<T>;
   fromArray<T>(arr: T[]): List<T>;
+  from<T>(iter: Iterable<T>): List<T>;
   unit: IListFactory;
   of: IListFactory;    // alias for unit
   pure: IListFactory;  // alias for unit
@@ -473,6 +474,8 @@ interface INELFactory extends IMonadFactory {
 
 interface INELStatic extends INELFactory, IMonadStatic {
   fromList<T>(arr: List<T>): Maybe<NEL<T>>;
+  fromArray<T>(arr: T[]): Maybe<NEL<T>>;
+  from<T>(iter: Iterable<T>): Maybe<NEL<T>>;
   unit: INELFactory;
   of: INELFactory;    // alias for unit
   pure: INELFactory;  // alias for unit

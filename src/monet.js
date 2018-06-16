@@ -130,7 +130,7 @@
         if (a === b || a !== a && b !== b) {
             return true
         }
-        // optimisation to avoid function checks
+        // optimization to avoid function checks
         if (!a || !b) {
             return false
         }
@@ -341,7 +341,7 @@
             return this.size_
         },
         equals: function (other) {
-            return List.isOfType(other) || NEL.isOfType(other) && listEquals(this, other)
+            return (List.isOfType(other) || NEL.isOfType(other)) && listEquals(this, other)
         },
         cons: function (head) {
             return List(head, this)
@@ -463,6 +463,10 @@
         return array.reduceRight(function (acc, next) {
             return acc.cons(next)
         }, Nil)
+    }
+
+    List.from = function (iterable) {
+        return List.fromArray(Array.from(iterable))
     }
 
     List.of = function (a) {
@@ -606,6 +610,14 @@
 
     NEL.fromList = function (list) {
         return list.isNil ? None() : Some(NEL(list.head(), list.tail()))
+    }
+
+    NEL.fromArray = function (array) {
+        return NEL.fromList(List.fromArray(array))
+    }
+
+    NEL.from = function (iterable) {
+        return NEL.fromList(List.from(iterable))
     }
 
     NEL.fn.init.prototype = NEL.fn
