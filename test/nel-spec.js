@@ -119,6 +119,44 @@ describe('A Non-Empty immutable list', function () {
         expect(nAppend.toArray()).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
     })
 
+    describe('will flatten inner lists', function () {
+        it('with two elements', function () {
+            expect(
+                NEL.fromList(List.fromArray([
+                    List.fromArray([1, 2]), 
+                    List.fromArray([3, 4]),
+                ])).some().flatten().toArray()
+            ).toEqual([1, 2, 3, 4])
+            expect(
+                NEL.fromList(List.fromArray([
+                    NEL.fromList(List.fromArray([1, 2])).some(), 
+                    NEL.fromList(List.fromArray([3, 4])).some(),
+                ])).some().join().toArray()
+            ).toEqual([1, 2, 3, 4])
+        })
+        it('with one element', function () {
+            expect(
+                NEL.fromList(List.fromArray([List.fromArray([1, 2])])).some().flatten().toArray()
+            ).toEqual([1, 2])
+            expect(
+                NEL.fromList(List.fromArray([
+                    NEL.fromList(List.fromArray([1, 2])).some()
+                ])).some().join().toArray()
+            ).toEqual([1, 2])
+        })
+    })
+
+    describe('flattenMaybe', function () {
+        it(`should drop Nones and return List of Some values`, function () {
+            expect(
+                NEL.fromList(List.fromArray([Some(1), None(), Some(10)]))
+                    .some()
+                    .flattenMaybe()
+                    .toArray()
+            ).toEqual([1, 10])
+        })
+    })
+
     it('will be filtered', function () {
         var n1 = NEL.fromList(List.fromArray([1, 2, 3, 4, 5, 6, 7, 8])).some()
         expect(n1.filter(function (a) {
@@ -160,6 +198,24 @@ describe('A Non-Empty immutable list', function () {
         expect(nonEmptyList.foldRight(Nil)(function (e, acc) {
             return acc.cons(e)
         }).toArray()).toEqual([1, 2, 3, 4])
+    })
+
+    describe('cons', function () {
+        const cba = NEL('b', List('a')).cons('c')
+
+        it('should add elements', function () {
+            expect(cba.isNEL()).toBe(true)
+            expect(cba.toArray().join('')).toBe('cba')
+        })
+    })
+
+    describe('snoc', function () {
+        const abc = NEL('a', List('b')).snoc('c')
+
+        it('should add elements', function () {
+            expect(abc.isNEL()).toBe(true)
+            expect(abc.toArray().join('')).toBe('abc')
+        })
     })
 
     it('can be reduced using reduceLeft', function () {

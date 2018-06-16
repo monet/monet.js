@@ -513,6 +513,12 @@
         equals: function (other) {
             return List.isOfType(other) || NEL.isOfType(other) && listEquals(this, other)
         },
+        cons: function (head) {
+            return NEL(head, this.toList())
+        },
+        snoc: function (element) {
+            return this.concat(NEL(element))
+        },
         map: function (fn) {
             return NEL(fn(this.head_), listMap(fn, this.tail_))
         },
@@ -566,6 +572,12 @@
         },
         find: function (fn) {
             return listFind(this.toList(), fn)
+        },
+        flatten: function () {
+            return foldRight(append, this.toList().map(function (l) { return l.isNEL() ? l.toList() : l }), Nil)
+        },
+        flattenMaybe: function () {
+            return this.toList().flatMap(Maybe.toList)
         },
         contains: function (val) {
             return listContains(this.toList(), val)

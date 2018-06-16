@@ -364,8 +364,8 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T>, It
   reverse(): List<T>;
   tail(): List<T>;
   tails(): List<List<T>>;
-  flatten<V>(): List<V>;   // === join
-  flattenMaybe<V>(): List<V>; // if T is Maybe<V>
+  flatten<V>(): List<V>;
+  flattenMaybe<V>(): T extends Maybe<V> ? List<V> : never;
   contains(val: T): boolean;
   every(fn: (e: T) => boolean): boolean;
   forall(fn: (e: T) => boolean): boolean;
@@ -421,8 +421,7 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   flatMap<V>(fn: (val: T) => NEL<V>): NEL<V>;
   chain<V>(fn: (val: T) => NEL<V>): NEL<V>;
   map<V>(fn: (val: T) => V): NEL<V>;
-  // FIXME: `.join()` is broken due to lack of `.cons()`
-  // join<V>(): NEL<V>; // if T is NEL<V>
+  join<V>(): NEL<V>; // if T is NEL<V> | List<V>
   takeLeft<V>(m: NEL<V>): NEL<T>;
   takeRight<V>(m: NEL<V>): NEL<V>;
 
@@ -443,8 +442,8 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   filter(fn: (val: T) => boolean): List<T>;
   filterNot(fn: (val: T) => boolean): List<T>;
   find(fn: (val: T) => boolean): Maybe<T>;
-  // cons(a: T): NEL<T>;
-  // snoc(a: T): NEL<T>;
+  cons(a: T): NEL<T>;
+  snoc(a: T): NEL<T>;
   isNEL(): boolean;
   size(): number;
   head(): T;
@@ -458,8 +457,8 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   forall(fn: (e: T) => boolean): boolean;
   exists(fn: (e: T) => boolean): boolean;
   forEach(fn: (val: T) => void): void;
-  // flatten<V>(): NEL<V>;
-  // flattenMaybe<V>(): NEL<V>;
+  flatten<V>(): T extends List<V> | NEL<V> ? List<V> : never;
+  flattenMaybe<V>(): T extends Maybe<V> ? List<V> : never;
 
   toArray(): T[];
   toList(): List<T>;
