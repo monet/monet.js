@@ -353,24 +353,24 @@ Converts a Maybe to a Validation.
 ### toArray
 
 ```scala
-Maybe[A].toArray: Array[A]
+Maybe[A].toArray(): Array[A]
 ```
 
 ### toList
 
 ```scala
-Maybe[A].toList: List[A]
+Maybe[A].toList(): List[A]
 ```
+
+Converts to a list, returns an Empty list on None.
 
 ### toSet
 
 Conversion to native Set.
 
 ```scala
-Maybe[A].toSet: Set[A]
+Maybe[A].toSet(): Set[A]
 ```
-
-Converts to a list, returns an Empty list on None.
 
 ### filter
 

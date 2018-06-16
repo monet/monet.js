@@ -81,10 +81,10 @@ validation.bind(val => val === 'hi' ? Success('world') : Fail('wow, you really f
 ### catchMap
 
 ```scala
-Validation[E,A].catchMap(fn: A => ValidationValidation[F,A]): Either[F,A]
+Validation[E,A].catchMap(fn: E => Validation[F,A]): Validation[F,A]
 ```
 
-This will catch and the fail side of the validation, otherwise it will do nothing.
+This will catch the fail side of the validation, otherwise it will do nothing.
 
 ### isSuccess
 
