@@ -64,6 +64,13 @@ describe('An immutable list', function () {
         expect(List.from(new Set(listBase)).equals(list)).toBe(true)
     })
 
+    it('should have a ".to()" operator', function () {
+        expect(Nil.to(Array.from)).toEqual([])
+        expect(list.to(Array.from)).toEqual(listBase)
+        expect(List.from(list.to(Array.from))).toEqual(list)
+        expect(List.from(listBase).to(Array.from)).toEqual(listBase)
+    })
+
     it('will return all the possible tails on tails()', function () {
         expect(list.tails().equals(List.fromArray([
             [1, 2, 3, 4],

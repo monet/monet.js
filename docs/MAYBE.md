@@ -372,6 +372,12 @@ Conversion to native Set.
 Maybe[A].toSet(): Set[A]
 ```
 
+### to
+
+```scala
+Maybe[A].to(Iterable[A] => B): B
+```
+
 ### filter
 
 ```scala

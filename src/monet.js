@@ -1436,6 +1436,14 @@
         }
     }
 
+    function addToOperator(type) {
+        if (isFunction(type.prototype.toArray)) {
+            type.prototype.to = function (ctor) {
+                return ctor(this)
+            }
+        }
+    }
+
     function decorate(type) {
         addAliases(type)
         addFilterNot(type)
@@ -1445,6 +1453,7 @@
         addCollectionPredicates(type)
         addFantasyLandAliases(type)
         makeIterable(type)
+        addToOperator(type)
     }
 
     decorate(MonadT)
