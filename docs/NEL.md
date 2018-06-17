@@ -263,6 +263,12 @@ NEL[A].toList(): List[A]
 NEL[A].toSet(): Set[A]
 ```
 
+### to
+
+```scala
+List[A].to(Iterable[A] => B): B
+```
+
 ### ...and undocumented
 
 - takeLeft

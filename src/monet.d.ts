@@ -99,6 +99,7 @@ export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>>, Iterable<T>
   toArray(): Array<T>;
   toSet(): Set<T>;
   toList(): List<T>;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => I): I;
 }
 
 interface IIdentityFactory extends IMonadFactory {
@@ -168,6 +169,7 @@ export interface Maybe<T extends NonNullable<{}>>
   toList(): List<T>;
   toEither<E>(left?: E): Either<E, T>;
   toValidation<E>(fail?: E): Validation<E, T>;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => I): I;
 }
 
 interface ISomeStatic extends IMonadFactory {
@@ -383,8 +385,9 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T>, It
   sequenceIO<V>(): IO<List<V>>;
   sequenceReader<E, A>(): Reader<E, List<A>>;
 
-  toArray(): T[];
+  toArray(): Array<T>;
   toSet(): Set<T>;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => I): I;
 }
 
 export interface Nil extends List<void> {
@@ -461,9 +464,10 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   flatten<V>(): T extends List<V> | NEL<V> ? List<V> : never;
   flattenMaybe<V>(): T extends Maybe<V> ? List<V> : never;
 
-  toArray(): T[];
+  toArray(): Array<T>;
   toList(): List<T>;
   toSet(): Set<T>;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => I): I;
 }
 
 export type NonEmptyList<T> = NEL<T>;

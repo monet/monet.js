@@ -362,6 +362,11 @@ describe('A Maybe', function () {
         expect(onIter.calls.allArgs()).toEqual([[1]])
     })
 
+    it('should have a ".to()" operator', function () {
+        expect(Some(1).to(Array.from)).toEqual([1])
+        expect(None().to(Array.from)).toEqual([])
+    })
+
     describe('Some constructed without a value', function () {
         it('will throw an exception', function () {
             expect(function () {

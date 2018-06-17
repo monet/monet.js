@@ -190,7 +190,10 @@ Checks if passed object is an instance of some similar type. This check is based
 - [orElseRun](MAYBE.md#orelserun)
 - [toEither](MAYBE.md#toeither)
 - [toValidation](MAYBE.md#tovalidation)
+- [toArray](MAYBE.md#toarray)
 - [toList](MAYBE.md#tolist)
+- [toSet](MAYBE.md#toset)
+- [to](MAYBE.md#to)
 - [filter](MAYBE.md#filter)
 - [filterNot](MAYBE.md#filterNot)
 - equals
@@ -285,6 +288,7 @@ Checks if passed object is an instance of some similar type. This check is based
 - [forEach](LIST.md#foreach)
 - [toArray](LIST.md#toarray)
 - [toSet](LIST.md#toset)
+- [to](LIST.md#to)
 - equals
 - join
 - takeLeft
@@ -330,6 +334,7 @@ Checks if passed object is an instance of some similar type. This check is based
 - [toArray](NEL.md#toarray)
 - [toList](NEL.md#tolist)
 - [toSet](NEL.md#toset)
+- [to](NEL.md#to)
 - takeLeft
 - takeRight
 - ap
