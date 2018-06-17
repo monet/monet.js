@@ -2,6 +2,9 @@
 
 ### alpha.5 (?? 2018)
 
+- [new] add `from` static constructor method to NEL and List
+- [fix] fix broken List.equals
+- [fix] re-add `cons` and `snoc` to NEL (fix join, also add/fix `flatten` and `flattenMaybe` to collections)
 - [fix] drop `.contains()` from Either and Validation
 - [new] implement Iterable for List, NEL, Maybe and Identity
 - [new] add `.every()`, `.forall()` and `.exists()` to List, NEL, Maybe and Identity
