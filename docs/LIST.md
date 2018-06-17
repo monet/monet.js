@@ -339,7 +339,7 @@ List[A].exists(val: A => Boolean): Boolean
 ### forEach
 
 ```scala
-List[A].forEach(fn: A => ()): ()
+List[A].forEach(A => ()): ()
 ```
 
 Invoke a function applying a side-effect on each item in the list.
@@ -354,6 +354,12 @@ List[A].toArray(): Array[A]
 
 ```scala
 List[A].toSet(): Set[A]
+```
+
+### to
+
+```scala
+List[A].to(Iterable[A] => B): B
 ```
 
 ### ...and undocumented

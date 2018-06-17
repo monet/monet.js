@@ -76,6 +76,12 @@ describe('A Non-Empty immutable list', function () {
         expect(NEL.from(new Set(listBase)).equals(Some(nonEmptyList))).toBe(true)
     })
 
+    it('should have a ".to()" operator', function () {
+        expect(nonEmptyList.to(Array.from)).toEqual(listBase)
+        expect(NEL.from(nonEmptyList.to(Array.from))).toEqual(Some(nonEmptyList))
+        expect(NEL.from(listBase).some().to(Array.from)).toEqual(listBase)
+    })
+
     it('Must be mappable', function () {
         expect(new NEL(1, Nil).map(function (a) {
             return a + 1
