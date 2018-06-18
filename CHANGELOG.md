@@ -1,6 +1,8 @@
+# Changelog
+
 ## 0.9.0
 
-### alpha.5 (?? 2018)
+### rc.0 (18 Jun 2018)
 
 - [new] add `from` static constructor method to NEL and List
 - [fix] fix broken List.equals
@@ -73,7 +75,6 @@
 - [new] add TypeScript typings
 - [new] add `.ap()` to List, Free and NonEmptyList -- thanks to @WojciechP ( #44 )
 - [new] add `"use strict";` -- thanks to @krjackso ( #41 )
-
 
 ### Typings
 
