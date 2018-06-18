@@ -13,6 +13,9 @@ then
 elif [[ $VERSION == *"beta"* ]]
 then
   TAG=next
+elif [[ $VERSION == *"rc"* ]]
+then
+  TAG=next
 else
   TAG=latest
 fi
