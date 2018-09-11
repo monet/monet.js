@@ -14,7 +14,7 @@
     if (typeof define === 'function' && define.amd) {
         define(factory)
     } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(window)
+        module.exports = factory(!!window ? window : root)
     } else {
         root.notUseMonetGlobalObject = !root.useMonetGlobalObject
         root.Monet = factory(root)
