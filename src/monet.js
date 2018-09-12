@@ -23,7 +23,6 @@
         catch(e) {
             module.exports = factory(root)
         }
-        //module.exports = factory(!!window ? window || root)
     } else {
         root.notUseMonetGlobalObject = !root.useMonetGlobalObject
         root.Monet = factory(root)
