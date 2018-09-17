@@ -21,7 +21,7 @@
     } else {
         factory(root.Monet, root)
     }
-}(this, function (Monet, rootGlobalObject) {
+}(typeof self !== 'undefined' ? self : this, function (Monet, rootGlobalObject) {
     'use strict'
 
     function wrapReader(fn, args) {
