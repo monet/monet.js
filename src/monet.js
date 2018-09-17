@@ -14,20 +14,12 @@
     if (typeof define === 'function' && define.amd) {
         define(factory)
     } else if (typeof module === 'object' && module.exports) {
-        try{
-            if (!window) { 
-                throw new Error('window missing use root instead')
-            }
-            module.exports = factory(window)
-        }
-        catch(e) {
-            module.exports = factory(root)
-        }
+        module.exports = factory(root)
     } else {
         root.notUseMonetGlobalObject = !root.useMonetGlobalObject
         root.Monet = factory(root)
     }
-}(this, function (rootGlobalObject) {
+}(typeof self !== 'undefined' ? self : this, function (rootGlobalObject) {
     'use strict'
 
     var root = {}
