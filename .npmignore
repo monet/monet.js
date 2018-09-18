@@ -3,13 +3,11 @@
 .eslintrc.json
 .npmignore
 
-bower.json
 CONTRIBUTING.md
 karma.conf.js
 tsconfig.json
 
 docs/
-example/
 scripts/
 src/
 test/
