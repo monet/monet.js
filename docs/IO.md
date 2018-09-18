@@ -97,7 +97,7 @@ const write = id => value => IO(() => $(id).text(value))
 
 You can call `write(id)` until you are blue in the face but all it will do is return an `IO` with a function inside.
 
-We can now call `map` and `flatMap` to chain this two effects together. Say we wanted to read from a `div` covert all the text to uppercase and then write back to that `div`.
+We can now call `map` and `flatMap` to chain this two effects together. Say we wanted to read from a `div`, convert all the text to uppercase and then write back to that `div`.
 
 ```javascript
 const toUpper = text => text.toUpperCase()
