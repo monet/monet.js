@@ -1426,7 +1426,7 @@
 
     function makeIterable(type) {
         if (isFunction(type.prototype.toArray)) {
-            if (!rootGlobalObject.Symbol) {
+            if (!rootGlobalObject.Symbol && !Symbol) {
                 // eslint-disable-next-line no-console
                 console.error(new Error('Provide polyfill or use up to date browser/node version to use "Iterable" protocol.'))
             }
