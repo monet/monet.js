@@ -2,6 +2,10 @@
 
 ## 0.9.0
 
+### rc.1 (18 Sep 2018)
+
+- [fix] broken UMD for node imports -- thanks to @jfspencer ( #180 )
+
 ### rc.0 (18 Jun 2018)
 
 - [new] add `from` static constructor method to NEL and List
