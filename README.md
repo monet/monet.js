@@ -22,21 +22,12 @@ Download the [zip][gitZip] or [tar][gitTar] ball.
 
 ## Installation
 
-Simply download and add to your html pages or we also support [bower] and [npm]. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
+Simply download and add to your html pages or we also support [npm]. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
 
 ```html
 <script type="text/javascript" src="monet.js"></script>
 <!-- Optionally -=>
 <script type="text/javascript" src="monet-pimp.js"></script>
-```
-
-### Bower installation
-
-```bash
-bower install monet --save
-
-# or to install a specific version
-bower install monet#0.9.0-rc.0
 ```
 
 ### NPM installation
@@ -97,6 +88,5 @@ Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers) an
 [functionalJava]: http://functionaljava.org/
 [gitZip]: https://github.com/monet/monet.js/archive/v0.8.10.zip
 [gitTar]: https://github.com/monet/monet.js/archive/v0.8.10.tar.gz
-[bower]: http://bower.io
 [npm]: https://www.npmjs.com/
 [scalaz]: https://github.com/scalaz/scalaz
