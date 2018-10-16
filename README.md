@@ -71,7 +71,7 @@ The `IO` monad is for isolating effects to maintain referential transparency in 
 ### [Reader](docs/READER.md)
 
 The `Reader` monad is a wonderful solution to inject dependencies into your functions. There are plenty of great resources to get your
-teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tag/reader-monad/).
+teeth into the `Reader` monad such as [these great talks](http://functionaltalks.org/tags/#reader%20monad).
 
 The `Reader` monad provides a way to "weave" your configuration throughout your programme.
 
