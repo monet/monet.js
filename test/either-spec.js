@@ -307,4 +307,24 @@ describe('An Either', function () {
 
     })
 
+    var e = new Error("some error");
+    var eObj = {foo: "error"};
+    var noThrow = Either.attempt(function() { return "yay"; });
+    var throwError = Either.attempt(function() { throw e; });
+    var throwErrorObj = Either.attempt(function() { throw eObj; });
+    describe('attempt will produce', function() {
+        it('a right for successful function call', function() {
+            expect(noThrow).toBeRightWith("yay")
+            expect(noThrow.isLeft()).toBe(false)
+        })
+        it('a left for a function that throws an Error', function() {
+            expect(throwError).toBeLeftWith(e)
+            expect(throwError.isRight()).toBe(false)
+        })
+        it('a left for a function that throws an object', function() {
+            expect(throwErrorObj).toBeLeftWith(eObj)
+            expect(throwErrorObj.isRight()).toBe(false)
+        })
+    })
+
 })

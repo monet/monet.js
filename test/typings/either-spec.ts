@@ -75,3 +75,24 @@ console.assert(twelve.right() === 12);
 console.assert(oops.left() === "oops");
 
 console.log(nameError, messageCopy);
+
+function noThrow<E>(): Either<Error | E, string> {
+    return Either.attempt(() => "yay");
+}
+
+const e = new Error("Some error");
+const eObj = {err: "Some error"};
+function catchError<E>(): Either<Error | E, string> {
+    return Either.attempt(() => {throw e; });
+}
+
+function catchErrorObj<E>(): Either<Error | E, string> {
+  return Either.attempt(() => {throw eObj; });
+}
+
+console.assert(noThrow().right() === "yay");
+console.assert(noThrow().left() === "yay");
+console.assert(catchError().left() === e);
+console.assert(catchError().cata((e: Error | any) => e instanceof Error, () => false));
+console.assert(catchErrorObj().left() === eObj);
+console.assert(catchErrorObj().cata((e: Error | any) => !(e instanceof Error), () => false));

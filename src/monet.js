@@ -1033,6 +1033,14 @@
         return new Either.fn.init(val, false)
     }
 
+    Either.attempt = function(fn) {
+        try {
+            return Right(fn())
+        } catch (e) {
+            return Left(e)
+        }
+    }
+
     Either.fn = Either.prototype = {
         init: function (val, isRightValue) {
             this.isRightValue = isRightValue
