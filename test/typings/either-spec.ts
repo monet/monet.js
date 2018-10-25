@@ -74,4 +74,9 @@ const oops: Either<string, number> = Either.left<string,number>("oops");
 console.assert(twelve.right() === 12);
 console.assert(oops.left() === "oops");
 
+// uncomment to fail typecheck for non return value
+// twelve.map(() => { "no return"; });
+// twelve.leftMap(() => { "no return"; });
+// twelve.cata(() => { "no return" }, () => { "no return"; });
+
 console.log(nameError, messageCopy);

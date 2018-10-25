@@ -1,3 +1,5 @@
+type Returns<T> = Exclude<T, void>;
+
 // https://github.com/fantasyland/fantasy-land#setoid
 interface Setoid<A> {
   equals(other: A): boolean;
@@ -7,15 +9,15 @@ interface Setoid<A> {
 /* The (covariant) functor typeclass */
 // https://github.com/fantasyland/fantasy-land#functor
 interface Functor<T> {
-  map<V>(fn: (val: T) => V): Functor<V>;
-  'fantasy-land/map'?<V>(fn: (val: T) => V): Functor<V>;
+  map<V>(fn: (val: T) => Returns<V>): Functor<V>;
+  'fantasy-land/map'?<V>(fn: (val: T) => Returns<V>): Functor<V>;
 }
 
 /* Applicative allows applying wrapped functions to wrapped elements */
 // https://github.com/fantasyland/fantasy-land#applicative
 interface Applicative<T> {
-  ap<V>(afn: Applicative<(val: T) => V>): Applicative<V>
-  'fantasy-land/ap'?<V>(afn: Applicative<(val: T) => V>): Applicative<V>
+  ap<V>(afn: Applicative<(val: T) => Returns<V>>): Applicative<V>
+  'fantasy-land/ap'?<V>(afn: Applicative<(val: T) => Returns<V>>): Applicative<V>
 }
 
 // https://github.com/fantasyland/fantasy-land#chain
@@ -34,13 +36,13 @@ interface Bind<T> extends Chain<T> {
 
 /* Typeclass for catamorphism */
 interface Catamorphism<F, T> {
-  cata<C>(l: (e?: F) => C, r: (v: T) => C): C;
+  cata<C>(l: (e?: F) => Returns<C>, r: (v: T) => Returns<C>): C;
 }
 
 /* Typeclass for traversables */
 export interface ITraversable<T> {
-  foldLeft<V>(initial: V): (fn: (acc: V, val: T) => V) => V;
-  foldRight<V>(initial: V): (fn: (val: T, acc: V) => V) => V;
+  foldLeft<V>(initial: V): (fn: (acc: V, val: T) => Returns<V>) => V;
+  foldRight<V>(initial: V): (fn: (val: T, acc: V) => Returns<V>) => V;
 }
 
 /****************************************************************
@@ -52,7 +54,7 @@ interface IMonad<T> extends Functor<T>, Bind<T>, Applicative<T> {
   bind<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
   flatMap<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
   chain<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
-  map<V>(fn: (val: T) => V): IMonad<V>;
+  map<V>(fn: (val: T) => Returns<V>): IMonad<V>;
   join<V>(): IMonad<V>; // only if T = IMonad<V>
 
   /* These are monet-Monad-specific: */
@@ -80,7 +82,7 @@ export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>>, Iterable<T>
   bind<V>(fn: (val: T) => Identity<V>): Identity<V>;
   flatMap<V>(fn: (val: T) => Identity<V>): Identity<V>;
   chain<V>(fn: (val: T) => Identity<V>): Identity<V>;
-  map<V>(fn: (val: T) => V): Identity<V>;
+  map<V>(fn: (val: T) => Returns<V>): Identity<V>;
   join<V>(): Identity<V>; // if T is Identity<V>
   takeLeft(m: Identity<T>): Identity<T>;
   takeRight(m: Identity<T>): Identity<T>;
@@ -99,7 +101,7 @@ export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>>, Iterable<T>
   toArray(): Array<T>;
   toSet(): Set<T>;
   toList(): List<T>;
-  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => I): I;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): I;
 }
 
 interface IIdentityFactory extends IMonadFactory {
@@ -126,17 +128,17 @@ export interface Maybe<T extends NonNullable<{}>>
   bind<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
   flatMap<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
   chain<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
-  map<V extends NonNullable<{}>>(fn: (val: T) => V): Maybe<V>;
+  map<V extends NonNullable<{}>>(fn: (val: T) => Returns<V>): Maybe<V>;
   join<V>(): T extends Maybe<V> ? V : never;
   takeLeft(m: Maybe<T>): Maybe<T>;
   takeRight(m: Maybe<T>): Maybe<T>;
 
   /* Inherited from Applicative */
-  ap<V extends NonNullable<{}>>(maybeFn: Maybe<(val: T) => V>): Maybe<V>;
+  ap<V extends NonNullable<{}>>(maybeFn: Maybe<(val: T) => Returns<V>>): Maybe<V>;
 
   /* Maybe specific */
-  cata<Z>(none: () => Z, some: (val: T) => Z): Z;
-  fold<V>(val: V): (fn: (val: T) => V) => V;
+  cata<Z>(none: () => Returns<Z>, some: (val: T) => Returns<Z>): Z;
+  fold<V>(val: V): (fn: (val: T) => Returns<V>) => V;
   catchMap(fn: () => Maybe<T>): Maybe<T>;
 
   filter(fn: (val: T) => boolean): Maybe<T>;
@@ -169,7 +171,7 @@ export interface Maybe<T extends NonNullable<{}>>
   toList(): List<T>;
   toEither<E>(left?: E): Either<E, T>;
   toValidation<E>(fail?: E): Validation<E, T>;
-  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => I): I;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): I;
 }
 
 interface ISomeStatic extends IMonadFactory {
@@ -213,22 +215,22 @@ export interface Either<E, T>
   bind<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
   flatMap<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
   chain<V>(fn: (val: T) => Either<E, V>): Either<E, V>;
-  map<V>(fn: (val: T) => V): Either<E, V>;
+  map<V>(fn: (val: T) => Returns<V>): Either<E, V>;
   join<V>(): Either<E, V>; // if T is Either<V>
   takeLeft(m: Either<E, T>): Either<E, T>;
   takeRight(m: Either<E, T>): Either<E, T>;
 
   /* Inherited from Applicative */
-  ap<V>(eitherFn: Either<E, (val: T) => V>): Either<E, V>;
+  ap<V>(eitherFn: Either<E, (val: T) => Returns<V>>): Either<E, V>;
 
   /* Either specific */
-  cata<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
-  fold<Z>(leftFn: (err: E) => Z, rightFn: (val: T) => Z): Z;
+  cata<Z>(leftFn: (err: E) => Returns<Z>, rightFn: (val: T) => Returns<Z>): Z;
+  fold<Z>(leftFn: (err: E) => Returns<Z>, rightFn: (val: T) => Returns<Z>): Z;
   catchMap<F>(fn: (err: E) => Either<F, T>): Either<F, T>;
   swap(): Either<T, E>;
 
-  bimap<Z, V>(leftFn: (err: E) => Z, rightFn: (val: T) => V): Either<Z, V>;
-  leftMap<F>(fn: (leftVal: E) => F): Either<F, T>;
+  bimap<Z, V>(leftFn: (err: E) => Returns<Z>, rightFn: (val: T) => Returns<V>): Either<Z, V>;
+  leftMap<F>(fn: (leftVal: E) => Returns<F>): Either<F, T>;
 
   isRight(): boolean;
   isLeft(): boolean;
@@ -279,7 +281,7 @@ export interface Validation<E, T>
   bind<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
   flatMap<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
   chain<V>(fn: (val: T) => Validation<E, V>): Validation<E, V>;
-  map<V>(fn: (val: T) => V): Validation<E, V>;
+  map<V>(fn: (val: T) => Returns<V>): Validation<E, V>;
   join<V>(): Validation<E, V>; // if T is Validation<E, V>
   takeLeft(m: Validation<E, T>): Validation<E, T>;
   takeRight(m: Validation<E, T>): Validation<E, T>;
@@ -288,13 +290,13 @@ export interface Validation<E, T>
   ap<V>(eitherFn: Validation<E, (val: T) => V>): Validation<E, V>;
 
   /* Validation specific */
-  cata<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
-  fold<Z>(failFn: (fail: E) => Z, successFn: (val: T) => Z): Z;
+  cata<Z>(failFn: (fail: E) => Returns<Z>, successFn: (val: T) => Returns<Z>): Z;
+  fold<Z>(failFn: (fail: E) => Returns<Z>, successFn: (val: T) => Returns<Z>): Z;
   catchMap<F>(fn: (fail: E) => Validation<F, T>): Validation<F, T>;
   swap(): Validation<T, E>;
 
-  bimap<F, V>(fnF: (fail: E) => F, fnS: (val: T) => V): Validation<F, V>;
-  failMap<F>(fn: (fail: E) => F): Validation<F, T>;
+  bimap<F, V>(fnF: (fail: E) => Returns<F>, fnS: (val: T) => Returns<V>): Validation<F, V>;
+  failMap<F>(fn: (fail: E) => Returns<F>): Validation<F, T>;
 
   isSuccess(): boolean;
   isFail(): boolean;
@@ -343,13 +345,13 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T>, It
   bind<V>(fn: (val: T) => List<V>): List<V>;
   flatMap<V>(fn: (val: T) => List<V>): List<V>;
   chain<V>(fn: (val: T) => List<V>): List<V>;
-  map<V>(fn: (val: T) => V): List<V>;
+  map<V>(fn: (val: T) => Returns<V>): List<V>;
   join<V>(): List<V>; // if T is List<V>
   takeLeft<V>(m: List<V>): List<T>;
   takeRight<V>(m: List<V>): List<V>;
 
   /* Inherited from Applicative */
-  ap<V>(listFn: List<(val: T) => V>): List<V>;
+  ap<V>(listFn: List<(val: T) => Returns<V>>): List<V>;
 
   /* List specific */
   filter(fn: (val: T) => boolean): List<T>;
@@ -387,7 +389,7 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T>, It
 
   toArray(): Array<T>;
   toSet(): Set<T>;
-  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => I): I;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): I;
 }
 
 export interface Nil extends List<void> {
@@ -424,7 +426,7 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   bind<V>(fn: (val: T) => NEL<V>): NEL<V>;
   flatMap<V>(fn: (val: T) => NEL<V>): NEL<V>;
   chain<V>(fn: (val: T) => NEL<V>): NEL<V>;
-  map<V>(fn: (val: T) => V): NEL<V>;
+  map<V>(fn: (val: T) => Returns<V>): NEL<V>;
   join<V>(): NEL<V>; // if T is NEL<V> | List<V>
   takeLeft<V>(m: NEL<V>): NEL<T>;
   takeRight<V>(m: NEL<V>): NEL<V>;
@@ -438,10 +440,10 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   extract(): T; // alias for head
 
   /* Inherited from Applicative */
-  ap<V>(listFn: NEL<(val: T) => V>): NEL<V>;
+  ap<V>(listFn: NEL<(val: T) => Returns<V>>): NEL<V>;
 
   /* NEL specific */
-  reduceLeft(fn: (acc: T, element: T) => T): T;
+  reduceLeft(fn: (acc: T, element: T) => Returns<T>): T;
 
   filter(fn: (val: T) => boolean): List<T>;
   filterNot(fn: (val: T) => boolean): List<T>;
@@ -467,7 +469,7 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   toArray(): Array<T>;
   toList(): List<T>;
   toSet(): Set<T>;
-  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => I): I;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): I;
 }
 
 export type NonEmptyList<T> = NEL<T>;
@@ -499,13 +501,13 @@ export interface IO<T> extends IMonad<T> {
   bind<V>(fn: (val: T) => IO<V>): IO<V>;
   flatMap<V>(fn: (val: T) => IO<V>): IO<V>;
   chain<V>(fn: (val: T) => IO<V>): IO<V>;
-  map<V>(fn: (v: T) => V): IO<V>;
+  map<V>(fn: (v: T) => Returns<V>): IO<V>;
   join<V>(): IO<V>; // if T is IO<V>
   takeLeft<X>(m: IO<X>): IO<T>;
   takeRight<V>(m: IO<V>): IO<V>;
 
   /* Inherited from Applicative: */
-  ap<V>(ioFn: IO<(v: T) => V>): IO<V>;
+  ap<V>(ioFn: IO<(v: T) => Returns<V>>): IO<V>;
 
   /* IO specific: */
   run(): T;
@@ -537,7 +539,7 @@ export interface Reader<E, A> extends IMonad<A> {
   bind<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
   flatMap<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
   chain<B>(fn: (val: A) => Reader<E, B>): Reader<E, B>;
-  map<B>(fn: (val: A) => B): Reader<E, B>;
+  map<B>(fn: (val: A) => Returns<B>): Reader<E, B>;
   join<B>(): Reader<E, B>; // if A is Reader<E, B>
   takeLeft<X>(m: Reader<E, X>): Reader<E, A>;
   takeRight<B>(m: Reader<E, B>): Reader<E, B>;
@@ -545,11 +547,11 @@ export interface Reader<E, A> extends IMonad<A> {
 
   /* Reader-specific: */
   run(config: E): A;
-  local<X>(fn: (val: X) => E): Reader<X, A>;
+  local<X>(fn: (val: X) => Returns<E>): Reader<X, A>;
 }
 
 interface IReaderFactory extends IMonadFactory {
-  <E, A>(fn: (env: E) => A): Reader<E, A>;
+  <E, A>(fn: (env: E) => Returns<A>): Reader<E, A>;
 }
 
 interface IReaderStatic extends IReaderFactory, IMonadStatic {
@@ -588,7 +590,7 @@ export interface Free<A> extends IMonad<A> {
   flatMap<V>(fn: (val: A) => Free<V>): Free<V>;
   chain<V>(fn: (val: A) => Free<V>): Free<V>;
   join<V>(): Free<V>; // only if A = Free<V> on the same functor
-  map<V>(fn: (val: A) => V): Free<V>;
+  map<V>(fn: (val: A) => Returns<V>): Free<V>;
   takeLeft<X>(other: Free<X>): Free<A>;
   takeRight<B>(other: Free<B>): Free<B>;
 
