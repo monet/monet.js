@@ -36,13 +36,13 @@ interface Bind<T> extends Chain<T> {
 
 /* Typeclass for catamorphism */
 interface Catamorphism<F, T> {
-  cata<C>(l: (e?: F) => Returns<C>, r: (v: T) => Returns<C>): C;
+  cata<C>(l: (e?: F) => Returns<C>, r: (v: T) => Returns<C>): Returns<C>;
 }
 
 /* Typeclass for traversables */
 export interface ITraversable<T> {
-  foldLeft<V>(initial: V): (fn: (acc: V, val: T) => Returns<V>) => V;
-  foldRight<V>(initial: V): (fn: (val: T, acc: V) => Returns<V>) => V;
+  foldLeft<V>(initial: V): (fn: (acc: V, val: T) => Returns<V>) => Returns<V>;
+  foldRight<V>(initial: V): (fn: (val: T, acc: V) => Returns<V>) => Returns<V>;
 }
 
 /****************************************************************
@@ -101,7 +101,7 @@ export interface Identity<T> extends IMonad<T>, Setoid<Identity<T>>, Iterable<T>
   toArray(): Array<T>;
   toSet(): Set<T>;
   toList(): List<T>;
-  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): I;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): Returns<I>;
 }
 
 interface IIdentityFactory extends IMonadFactory {
@@ -137,8 +137,8 @@ export interface Maybe<T extends NonNullable<{}>>
   ap<V extends NonNullable<{}>>(maybeFn: Maybe<(val: T) => Returns<V>>): Maybe<V>;
 
   /* Maybe specific */
-  cata<Z>(none: () => Returns<Z>, some: (val: T) => Returns<Z>): Z;
-  fold<V>(val: V): (fn: (val: T) => Returns<V>) => V;
+  cata<Z>(none: () => Returns<Z>, some: (val: T) => Returns<Z>): Returns<Z>;
+  fold<V>(val: V): (fn: (val: T) => Returns<V>) => Returns<V>;
   catchMap(fn: () => Maybe<T>): Maybe<T>;
 
   filter(fn: (val: T) => boolean): Maybe<T>;
@@ -171,7 +171,7 @@ export interface Maybe<T extends NonNullable<{}>>
   toList(): List<T>;
   toEither<E>(left?: E): Either<E, T>;
   toValidation<E>(fail?: E): Validation<E, T>;
-  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): I;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): Returns<I>;
 }
 
 interface ISomeStatic extends IMonadFactory {
@@ -224,8 +224,8 @@ export interface Either<E, T>
   ap<V>(eitherFn: Either<E, (val: T) => Returns<V>>): Either<E, V>;
 
   /* Either specific */
-  cata<Z>(leftFn: (err: E) => Returns<Z>, rightFn: (val: T) => Returns<Z>): Z;
-  fold<Z>(leftFn: (err: E) => Returns<Z>, rightFn: (val: T) => Returns<Z>): Z;
+  cata<Z>(leftFn: (err: E) => Returns<Z>, rightFn: (val: T) => Returns<Z>): Returns<Z>;
+  fold<Z>(leftFn: (err: E) => Returns<Z>, rightFn: (val: T) => Returns<Z>): Returns<Z>;
   catchMap<F>(fn: (err: E) => Either<F, T>): Either<F, T>;
   swap(): Either<T, E>;
 
@@ -290,8 +290,8 @@ export interface Validation<E, T>
   ap<V>(eitherFn: Validation<E, (val: T) => V>): Validation<E, V>;
 
   /* Validation specific */
-  cata<Z>(failFn: (fail: E) => Returns<Z>, successFn: (val: T) => Returns<Z>): Z;
-  fold<Z>(failFn: (fail: E) => Returns<Z>, successFn: (val: T) => Returns<Z>): Z;
+  cata<Z>(failFn: (fail: E) => Returns<Z>, successFn: (val: T) => Returns<Z>): Returns<Z>;
+  fold<Z>(failFn: (fail: E) => Returns<Z>, successFn: (val: T) => Returns<Z>): Returns<Z>;
   catchMap<F>(fn: (fail: E) => Validation<F, T>): Validation<F, T>;
   swap(): Validation<T, E>;
 
@@ -389,7 +389,7 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T>, It
 
   toArray(): Array<T>;
   toSet(): Set<T>;
-  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): I;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): Returns<I>;
 }
 
 export interface Nil extends List<void> {
@@ -443,7 +443,7 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   ap<V>(listFn: NEL<(val: T) => Returns<V>>): NEL<V>;
 
   /* NEL specific */
-  reduceLeft(fn: (acc: T, element: T) => Returns<T>): T;
+  reduceLeft(fn: (acc: T, element: T) => Returns<T>): Returns<T>;
 
   filter(fn: (val: T) => boolean): List<T>;
   filterNot(fn: (val: T) => boolean): List<T>;
@@ -469,7 +469,7 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   toArray(): Array<T>;
   toList(): List<T>;
   toSet(): Set<T>;
-  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): I;
+  to<I extends Iterable<T>>(ctor: (iter: Iterable<T>) => Returns<I>): Returns<I>;
 }
 
 export type NonEmptyList<T> = NEL<T>;
