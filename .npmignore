@@ -1,12 +1,10 @@
 .gitignore
 .travis.yml
-.eslintrc.json
 .npmignore
 
 CONTRIBUTING.md
-karma.conf.js
-tsconfig.json
 
+.config/
 docs/
 scripts/
 src/
