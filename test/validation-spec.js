@@ -1,4 +1,5 @@
 describe('A Validation', function () {
+    var Validation = Monet.Validation
     var sideEffectsReceiver = null
 
     beforeEach(function () {

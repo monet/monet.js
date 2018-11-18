@@ -14,18 +14,12 @@
     if (typeof define === 'function' && define.amd) {
         define(factory)
     } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(typeof global === 'object' ? global : root)
+        module.exports = factory(root)
     } else {
-        root.useMonetGlobalObject =
-            typeof root.useMonetGlobalObject === 'boolean' ?
-                root.useMonetGlobalObject :
-                true
         root.Monet = factory(root)
     }
-}(typeof self !== 'undefined' ? self : this, function (rootGlobalObject) {
+}(typeof self !== 'undefined' ? self : this, function () {
     'use strict'
-
-    var root = {}
 
     function assignImp(target, source) {
         for (var key in source) { // we need only one level of composition
@@ -242,7 +236,7 @@
         }
     }
 
-    root.List = List
+    Monet.List = List
 
     var listForEach = function (effectFn, l) {
         if (!l.isNil) {
@@ -362,9 +356,6 @@
             }, [], this)
         },
         toSet: function () {
-            if (!rootGlobalObject.Set) {
-                throw new Error('Provide polyfill or use up to date browser/node version to use "toSet" operator.')
-            }
             return new Set(this)
         },
         foldLeft: function (initialValue) {
@@ -479,7 +470,7 @@
     // backwards compatibility, deprecated
     List.prototype.each = List.prototype.forEach
 
-    Nil = root.Nil = new List.fn.init()
+    Nil = Monet.Nil = new List.fn.init()
 
     /*
      * Non-Empty List monad
@@ -499,7 +490,7 @@
         return new NEL.fn.init(head, tail)
     }
 
-    root.NEL = root.NonEmptyList = NEL
+    Monet.NEL = Monet.NonEmptyList = NEL
 
     NEL.of = function (a) {
         return NEL(a, Nil)
@@ -637,7 +628,7 @@
 
     /* Maybe Monad */
 
-    var Maybe = root.Maybe = {}
+    var Maybe = Monet.Maybe = {}
 
     Maybe.fromFalsy = function (val) {
         return !val ? Maybe.None() : Maybe.Some(val)
@@ -656,11 +647,11 @@
         return Some(a)
     }
 
-    var Some = Maybe.Just = Maybe.Some = Maybe.some = root.Some = root.Just = function (val) {
+    var Some = Maybe.Just = Maybe.Some = Maybe.some = Monet.Some = Monet.Just = function (val) {
         return new Maybe.fn.init(true, val)
     }
 
-    var None = Maybe.Nothing = Maybe.None = Maybe.none = root.None = root.Nothing = function () {
+    var None = Maybe.Nothing = Maybe.None = Maybe.none = Monet.None = Monet.Nothing = function () {
         return new Maybe.fn.init(false, null)
     }
 
@@ -730,9 +721,6 @@
             })
         },
         toSet: function () {
-            if (!rootGlobalObject.Set) {
-                throw new Error('Provide polyfill or use up to date browser/node version to use "toSet" operator.')
-            }
             return new Set(this)
         },
         toList: function () {
@@ -803,13 +791,13 @@
     Maybe.isInstance = isInstance(TYPES_NAMES.Maybe)
     Maybe.isOfType = isOfType(TYPES_NAMES.Maybe)
 
-    var Validation = root.Validation = {}
+    var Validation = Monet.Validation = {}
 
-    var Success = Validation.Success = Validation.success = root.Success = function (val) {
+    var Success = Validation.Success = Validation.success = Monet.Success = function (val) {
         return new Validation.fn.init(val, true)
     }
 
-    var Fail = Validation.Fail = Validation.fail = root.Fail = function (error) {
+    var Fail = Validation.Fail = Validation.fail = Monet.Fail = function (error) {
         return new Validation.fn.init(error, false)
     }
 
@@ -923,7 +911,7 @@
     Validation.isInstance = isInstance(TYPES_NAMES.Validation)
     Validation.isOfType = isOfType(TYPES_NAMES.Validation)
 
-    var Semigroup = root.Semigroup = {
+    var Semigroup = Monet.Semigroup = {
         append: function (a, b) {
             if (isFunction(a.concat)) {
                 return a.concat(b)
@@ -934,7 +922,7 @@
         }
     }
 
-    var MonadT = root.monadTransformer = root.MonadT = root.monadT = function (monad) {
+    var MonadT = Monet.monadTransformer = Monet.MonadT = Monet.monadT = function (monad) {
         return new MonadT.fn.init(monad)
     }
 
@@ -971,7 +959,7 @@
 
     MonadT.fn.init.prototype = MonadT.fn
 
-    var IO = root.IO = root.io = function (effectFn) {
+    var IO = Monet.IO = Monet.io = function (effectFn) {
         return new IO.fn.init(effectFn)
     }
 
@@ -1023,16 +1011,16 @@
 
     /* Either Monad */
 
-    var Either = root.Either = {}
+    var Either = Monet.Either = {}
 
     Either.of = function (a) {
         return Right(a)
     }
 
-    var Right = Either.Right = Either.right = root.Right = function (val) {
+    var Right = Either.Right = Either.right = Monet.Right = function (val) {
         return new Either.fn.init(val, true)
     }
-    var Left = Either.Left = Either.left = root.Left = function (val) {
+    var Left = Either.Left = Either.left = Monet.Left = function (val) {
         return new Either.fn.init(val, false)
     }
 
@@ -1133,7 +1121,7 @@
     Either.isInstance = isInstance(TYPES_NAMES.Either)
     Either.isOfType = isOfType(TYPES_NAMES.Either)
 
-    var Reader = root.Reader = function (fn) {
+    var Reader = Monet.Reader = function (fn) {
         return new Reader.fn.init(fn)
     }
 
@@ -1191,12 +1179,12 @@
     Reader.isInstance = isInstance(TYPES_NAMES.Reader)
     Reader.isOfType = isOfType(TYPES_NAMES.Reader)
 
-    var Free = root.Free = {}
+    var Free = Monet.Free = {}
 
-    var Suspend = Free.Suspend = root.Suspend = function (functor) {
+    var Suspend = Free.Suspend = Monet.Suspend = function (functor) {
         return new Free.fn.init(functor, true)
     }
-    var Return = Free.Return = root.Return = function (val) {
+    var Return = Free.Return = Monet.Return = function (val) {
         return new Free.fn.init(val, false)
     }
 
@@ -1285,7 +1273,7 @@
         return new Identity.fn.init(a)
     }
 
-    root.Identity = Identity
+    Monet.Identity = Identity
 
     Identity.of = function (a) {
         return new Identity(a)
@@ -1330,9 +1318,6 @@
             return List(this.get(), Nil)
         },
         toSet: function () {
-            if (!rootGlobalObject.Set) {
-                throw new Error('Provide polyfill or use up to date browser/node version to use "toSet" operator.')
-            }
             return new Set(this)
         }
     }
@@ -1429,10 +1414,6 @@
 
     function makeIterable(type) {
         if (isFunction(type.prototype.toArray)) {
-            if (!rootGlobalObject.Symbol) {
-                // eslint-disable-next-line no-console
-                console.error(new Error('Provide polyfill or use up to date browser/node version to use "Iterable" protocol.'))
-            }
             type.prototype[Symbol.iterator] = function () {
                 return this.toArray()[Symbol.iterator]()
             }
@@ -1470,11 +1451,5 @@
     decorate(Free)
     decorate(Identity)
 
-    return Maybe.fromNull(rootGlobalObject)
-        .filter(function (rootObj) { return rootObj.useMonetGlobalObject })
-        .cata(function () { return assign(Monet, root) }, function (rootObj) {
-            assign(rootObj, root)
-            rootObj.Monet = Monet
-            return Monet
-        })
+    return Monet
 }))
