@@ -7,3 +7,8 @@ function getCustomMatcher(fn) {
         }
     }
 }
+
+try {
+    // allow in node
+    global.getCustomMatcher = getCustomMatcher;
+} catch (e) {}

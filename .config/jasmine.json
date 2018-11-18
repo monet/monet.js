@@ -1,0 +1,6 @@
+{
+  "spec_files": [
+    "test/node-index.js"
+  ],
+  "oneFailurePerSpec": true
+}

@@ -1,14 +1,8 @@
-module.exports = function (config) {
-
+module.exports = files => config => {
   config.set({
-    basePath: '',
+    basePath: '../',
     frameworks: ['jasmine'],
-    files: [
-      // 'node_modules/core-js/client/core.min.js',
-      'src/monet.js',
-      'test/*-helper.js',
-      'test/*-spec.js'
-    ],
+    files,
     exclude: [],
     reporters: ['mocha'],
     port: 9876,
@@ -22,6 +16,5 @@ module.exports = function (config) {
     },
     singleRun: true,
     concurrency: 6e6
-  });
-
-};
+  })
+}
