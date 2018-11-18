@@ -1,0 +1,6 @@
+{
+  "spec_files": [
+    "prepublish-test/node-regular.js"
+  ],
+  "oneFailurePerSpec": true
+}

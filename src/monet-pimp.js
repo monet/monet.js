@@ -17,7 +17,7 @@
     if (typeof define === 'function' && define.amd) { 
         define(['monet'], factory)
     } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('monet'), root)
+        module.exports = factory(require('monet'), typeof global === 'object' ? global : root)
     } else {
         factory(root.Monet, root)
     }

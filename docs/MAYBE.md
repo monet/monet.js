@@ -257,7 +257,7 @@ Returns the value inside the `Maybe` if it is a `Some` otherwise returns `null`.
 ### orUndefined
 
 ```scala
-Maybe[A].orNull(): A | undefined
+Maybe[A].orUndefined(): A | undefined
 ```
 
 Returns the value inside the `Maybe` if it is a `Some` otherwise returns `undefined`.
