@@ -2,6 +2,10 @@
 
 ## 0.9.0
 
+### rc.3 (18 Nov 2018)
+
+- [fix] broken exports ( #196 )
+
 ### rc.2 (18 Nov 2018)
 
 - [fix] broken UMD for node imports ( #193 )
