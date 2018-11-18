@@ -56,34 +56,34 @@ describe('The Monad', function () {
     }
 
     describe('Maybe', function () {
-        test(Maybe)
+        test(Monet.Maybe)
     })
 
     describe('Either', function () {
-        test(Either)
+        test(Monet.Either)
     })
 
     describe('IO', function () {
-        test(IO)
+        test(Monet.IO)
     })
     describe('Reader', function () {
-        test(Reader)
+        test(Monet.Reader)
     })
 
     describe('List', function () {
-        test(List)
+        test(Monet.List)
     })
 
     describe('NonEmptyList', function () {
-        test(NEL)
+        test(Monet.NEL)
     })
 
     describe('Free', function () {
-        test(Free)
+        test(Monet.Free)
     })
 
     describe('Validation', function () {
-        test(Validation)
+        test(Monet.Validation)
     })
 
 })

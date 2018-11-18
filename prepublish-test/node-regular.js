@@ -1,6 +1,6 @@
 const monet = require('../dist/monet.js')
 
-describe('monet.js exports object', function () {
+describe('Node: monet.js exports object', function () {
   it('should be available', function () {
     expect(monet).toBeDefined()
     expect(monet.Maybe).toBeDefined()

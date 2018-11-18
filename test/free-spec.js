@@ -1,4 +1,9 @@
 describe('A Free monad', function () {
+    var Free = Monet.Free
+    var Suspend = Monet.Suspend
+    var Return = Monet.Return
+    var Identity = Monet.Identity
+
     it('do Ken\'s simple box example', function () {
         var s1 = Free.liftF(Identity(1));
         var s2 = Free.liftF(Identity(2));

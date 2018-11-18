@@ -1,4 +1,14 @@
 describe('An immutable list', function () {
+    var List = Monet.List
+    var Nil = Monet.Nil
+    var Some = Monet.Some
+    var None = Monet.None
+    var IO = Monet.IO
+    var Reader = Monet.Reader
+    var Right = Monet.Right
+    var Left = Monet.Left
+    var Success = Monet.Success
+    var Fail = Monet.Fail
     var sideEffectsReceiver = null
 
     function expectCalls(spiedCall, values) {

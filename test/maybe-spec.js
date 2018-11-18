@@ -1,4 +1,10 @@
 describe('A Maybe', function () {
+    var Maybe = Monet.Maybe
+    var Some = Monet.Some
+    var Just = Monet.Just
+    var None = Monet.None
+    var Nothing = Monet.Nothing
+    var Nil = Monet.Nil
     var sideEffectsReceiver
     var someString
     var none
@@ -15,8 +21,8 @@ describe('A Maybe', function () {
                 return actual.isNone()
             })
         })
-        someString = Maybe.Some('abcd')
-        none = Maybe.None()
+        someString = Some('abcd')
+        none = None()
         sideEffectsReceiver = {
             setVal: function (val) {
             }
@@ -47,25 +53,25 @@ describe('A Maybe', function () {
         })
         it('will be transformed by a bind', function () {
             expect(someString.bind(function (val) {
-                return Maybe.Some('Hello')
+                return Some('Hello')
             })).toBeSomeMaybeWith('Hello')
         })
         it('will be transformed by a flatMap', function () {
             expect(someString.flatMap(function (val) {
-                return Maybe.Some('Hello')
+                return Some('Hello')
             })).toBeSomeMaybeWith('Hello')
         })
         it('will not be transformed by a catchMap', function () {
             expect(someString.catchMap(function (val) {
-                return Maybe.Some('Hello')
+                return Some('Hello')
             })).toBeSomeMaybeWith(someString.some())
         })
         it('will be transformed to a None on bind that returns None', function () {
             expect(someString.bind(function (val) {
-                return Maybe.None()
+                return None()
             })).toBeNoneMaybe()
             expect(someString.flatMap(function (val) {
-                return Maybe.None()
+                return None()
             })).toBeNoneMaybe()
         })
         it('will return the value when orSome() is called', function () {
@@ -177,22 +183,22 @@ describe('A Maybe', function () {
         })
         it('will always return a None on bind', function () {
             expect(none.bind(function () {
-                return Maybe.Some('a')
+                return Some('a')
             })).toBeNoneMaybe()
             expect(none.flatMap(function () {
-                return Maybe.Some('a')
+                return Some('a')
             })).toBeNoneMaybe()
             expect(none.bind(function () {
-                return Maybe.None()
+                return None()
             })).toBeNoneMaybe()
             expect(none.flatMap(function () {
-                return Maybe.None()
+                return None()
             })).toBeNoneMaybe()
         })
 
         it('will be transformed by a catchMap', function () {
             expect(none.catchMap(function (val) {
-                return Maybe.Some('Hello')
+                return Some('Hello')
             })).toBeSomeMaybeWith('Hello')
         })
         it('will return the other value when orSome() is called', function () {
@@ -214,7 +220,7 @@ describe('A Maybe', function () {
             })).toBeNoneMaybe()
         })
         it('will return false on a contains', function () {
-            expect(Maybe.None().contains('test')).toBe(false)
+            expect(None().contains('test')).toBe(false)
         })
         it('will return the default value supplied to fold', function () {
             expect(none.fold('efg')(function (val) {
@@ -239,7 +245,7 @@ describe('A Maybe', function () {
             })).toBe('efg')
         })
         it('will compare for equality', function () {
-            expect(none.equals(Maybe.None())).toBe(true)
+            expect(none.equals(None())).toBe(true)
             expect(none.equals(Maybe.none())).toBe(true)
             expect(none.equals(Nothing())).toBe(true)
             expect(none.equals(Maybe.Just(1))).toBe(false)
@@ -370,7 +376,7 @@ describe('A Maybe', function () {
     describe('Some constructed without a value', function () {
         it('will throw an exception', function () {
             expect(function () {
-                Maybe.Some()
+                Some()
             }).toThrow(new Error('Can not create Some with illegal value: undefined.'))
             expect(function () {
                 Maybe.Just(null)
@@ -408,18 +414,18 @@ describe('A Maybe', function () {
         })
 
         it('will work with apply2 with one Some and a None', function () {
-            var result = Monet.apply2(Maybe.None(), maybeSurname, function (f, l) {
+            var result = Monet.apply2(None(), maybeSurname, function (f, l) {
                 return f + ' ' + l
             })
             expect(result).toBeNoneMaybe()
-            var result2 = Monet.apply2(maybeForename, Maybe.None(), function (f, l) {
+            var result2 = Monet.apply2(maybeForename, None(), function (f, l) {
                 return f + ' ' + l
             })
             expect(result2).toBeNoneMaybe()
         })
 
         it('will work with apply2 with two Nones', function () {
-            var result = Monet.apply2(Maybe.None(), maybeSurname, function (f, l) {
+            var result = Monet.apply2(None(), maybeSurname, function (f, l) {
                 return f + ' ' + l
             })
             expect(result).toBeNoneMaybe()
