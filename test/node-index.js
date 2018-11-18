@@ -1,5 +1,4 @@
-global.useMonetGlobalObject = true // run browser style tests
-require('../src/monet')
+global.Monet = require('../src/monet') // run browser style tests
 
 require('./matcher-helper')
 require('./curry-spec')

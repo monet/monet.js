@@ -3,6 +3,9 @@
  */
 
 describe('An Either', function () {
+    var Either = Monet.Either
+    var Right = Monet.Right
+    var Left = Monet.Left
     var sideEffectsReceiver = null
 
     beforeEach(function () {
@@ -113,7 +116,7 @@ describe('An Either', function () {
         it('equals to Right with the same value', function () {
             expect(rightString.equals(Either.Right('abcd'))).toBe(true)
             expect(rightString.equals(Either.right('abcd'))).toBe(true)
-            expect(Right(Just(2)).equals(Right(Just(2)))).toBe(true)
+            expect(Right(Monet.Just(2)).equals(Right(Monet.Just(2)))).toBe(true)
         })
         it('does not equal to Rights with different values or Lefts', function () {
             expect(rightString.equals(Either.Left('abcd'))).toBe(false)
@@ -227,7 +230,7 @@ describe('An Either', function () {
         it('equals to Left with the same value', function () {
             expect(leftString.equals(Either.Left('error dude'))).toBe(true)
             expect(leftString.equals(Either.left('error dude'))).toBe(true)
-            expect(Left(Just(2)).equals(Left(Just(2)))).toBe(true)
+            expect(Left(Monet.Just(2)).equals(Left(Monet.Just(2)))).toBe(true)
         })
         it('does not equal to Rights with different values or Lefts', function () {
             expect(leftString.equals(Either.Left('x'))).toBeFalsy()

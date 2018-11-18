@@ -1,4 +1,5 @@
 describe('A Reader Monad', function () {
+    var Reader = Monet.Reader
 
     var config1 = {
         url: 'http://test1.com',

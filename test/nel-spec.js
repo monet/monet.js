@@ -1,4 +1,9 @@
 describe('A Non-Empty immutable list', function () {
+    var NEL = Monet.NEL
+    var List = Monet.List
+    var Nil = Monet.Nil
+    var Some = Monet.Some
+    var None = Monet.None
     var sideEffectsReceiver = null;
 
     function expectCalls(spiedCall, values) {

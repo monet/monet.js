@@ -1,4 +1,5 @@
 describe('An IO monad', function () {
+    var IO = Monet.IO
     var effect = IO(function () {
         return 'effect';
     })
