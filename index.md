@@ -6,7 +6,7 @@ version: v0.9.0
 
 For people who wish they didn't have to programme in JavaScript.
 
-## Introduction
+### Introduction
 
 Monet is a library designed to bring great power to your JavaScript programming. It is a tool bag that assists Functional Programming by providing a rich set of Monads and other useful functions.
 
@@ -14,17 +14,17 @@ This library is inspired by those that have come before, especially the [Functio
 
 While functional programming may be alien to you, this library is a simple way to introduce monads and pure functional programming into your daily practices.
 
-## Source code
+### Source code
 
 The source code is available at [github.com/monet/monet.js](https://github.com/monet/monet.js).
 
-## Documentation
+### Documentation
 
 Full detailed documentation can be found [here](https://github.com/monet/monet.js/tree/master/docs/README.md)
 
-## Installation
+### Installation
 
-### NPM
+#### NPM
 
 ```bash
 npm install monet --save
@@ -33,11 +33,11 @@ npm install monet --save
 npm install monet@0.9.0
 ```
 
-### Download
+#### Download
 
 Download the [zip][gitZip] or [tar][gitTar] ball.
 
-### Browser
+#### Browser
 
 Simply download and add to your html pages. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
 
@@ -46,8 +46,10 @@ Simply download and add to your html pages. You can also include `monet-pimp.js`
 <!-- Optionally -->
 <script src="monet-pimp.js"></script>
 ```
+<br />
 
 ## Contents
+<hr />
 
 ### [Maybe](https://github.com/monet/monet.js/tree/master/docs/MAYBE.md)
 
@@ -89,7 +91,9 @@ The `Free` monad is a monad that is able to separate instructions from their int
 
 Please see [Ken Scambler](http://twitter.com/KenScambler)'s [excellent talk](http://www.slideshare.net/kenbot/running-free-with-the-monads) and [example project](https://github.com/kenbot/free) to get an in-depth understanding of this very useful monad.
 
-## Author
+<hr />
+
+## Authors
 
 Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers) and Jakub Strojewski [@ulfryk](https://twitter.com/ulfryk). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
 
