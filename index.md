@@ -22,7 +22,7 @@ Full detailed documentation can be found [here](https://github.com/monet/monet.j
 
 Download the [zip][gitZip] or [tar][gitTar] ball.
 
-### installation
+### Installation
 
 #### NPM
 
