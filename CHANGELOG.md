@@ -73,7 +73,7 @@
 ### alpha.0
 
 - [new] `.equals()` method added to most entities
-- [breaking] all native prototype extentions extracted to `monet-pimp.js`
+- [breaking] all native prototype extensions extracted to `monet-pimp.js`
 - [enhancement] typings compatible with TS2.x
 - [fix] updated module pattern
 

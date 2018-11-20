@@ -10,7 +10,7 @@ Monet is a library designed to bring great power to your JavaScript programming.
 
 This library is inspired by those that have come before, especially the [FunctionalJava][functionalJava] and [Scalaz][scalaz] projects.
 
-While functional programming may be alien to you, this library is a simple way to introduce monads and pure functional programming into your daily practises.
+While functional programming may be alien to you, this library is a simple way to introduce monads and pure functional programming into your daily practices.
 
 ## Documentation
 
@@ -20,23 +20,25 @@ Full detailed documentation can be found [here](docs/README.md)
 
 Download the [zip][gitZip] or [tar][gitTar] ball.
 
-## Installation
+### installation
 
-Simply download and add to your html pages or we also support [npm]. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
-
-```html
-<script type="text/javascript" src="monet.js"></script>
-<!-- Optionally -=>
-<script type="text/javascript" src="monet-pimp.js"></script>
-```
-
-### NPM installation
+#### NPM
 
 ```bash
 npm install monet --save
 
 # or to install a specific version
-npm install monet@0.9.0-rc.0
+npm install monet@0.9.0
+```
+
+#### Browser
+
+Simply download and add to your html pages or we also support [npm]. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
+
+```html
+<script type="text/javascript" src="monet.js"></script>
+<!-- Optionally -->
+<script type="text/javascript" src="monet-pimp.js"></script>
 ```
 
 ## Contents
@@ -86,7 +88,7 @@ Please see [Ken Scambler](http://twitter.com/KenScambler)'s [excellent talk](htt
 Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers) and Jakub Strojewski [@ulfryk](https://twitter.com/ulfryk). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
 
 [functionalJava]: http://functionaljava.org/
-[gitZip]: https://github.com/monet/monet.js/archive/v0.8.10.zip
-[gitTar]: https://github.com/monet/monet.js/archive/v0.8.10.tar.gz
+[gitZip]: https://github.com/monet/monet.js/archive/v0.9.0.zip
+[gitTar]: https://github.com/monet/monet.js/archive/v0.9.0.tar.gz
 [npm]: https://www.npmjs.com/
 [scalaz]: https://github.com/scalaz/scalaz
