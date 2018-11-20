@@ -18,13 +18,9 @@ While functional programming may be alien to you, this library is a simple way t
 
 Full detailed documentation can be found [here](https://github.com/monet/monet.js/tree/master/docs/README.md)
 
-## Download
+## Installation
 
-Download the [zip][gitZip] or [tar][gitTar] ball.
-
-### Installation
-
-#### NPM
+### NPM
 
 ```bash
 npm install monet --save
@@ -33,7 +29,11 @@ npm install monet --save
 npm install monet@0.9.0
 ```
 
-#### Browser
+### Download
+
+Download the [zip][gitZip] or [tar][gitTar] ball.
+
+### Browser
 
 Simply download and add to your html pages or we also support [npm]. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
 
