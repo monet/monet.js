@@ -14,6 +14,10 @@ This library is inspired by those that have come before, especially the [Functio
 
 While functional programming may be alien to you, this library is a simple way to introduce monads and pure functional programming into your daily practices.
 
+## Source code
+
+The source code is available at [github.com/monet/monet.js](https://github.com/monet/monet.js).
+
 ## Documentation
 
 Full detailed documentation can be found [here](https://github.com/monet/monet.js/tree/master/docs/README.md)
@@ -35,12 +39,12 @@ Download the [zip][gitZip] or [tar][gitTar] ball.
 
 ### Browser
 
-Simply download and add to your html pages or we also support [npm]. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
+Simply download and add to your html pages. You can also include `monet-pimp.js` which contains extra functions on the `Object.prototype` for creating monads.
 
 ```html
-<script type="text/javascript" src="monet.js"></script>
+<script src="monet.js"></script>
 <!-- Optionally -->
-<script type="text/javascript" src="monet-pimp.js"></script>
+<script src="monet-pimp.js"></script>
 ```
 
 ## Contents
