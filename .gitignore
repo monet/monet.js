@@ -3,3 +3,6 @@ _site
 .idea
 *.iml
 node_modules/
+Gemfile
+.jekyll-metadata
+Gemfile.lock
