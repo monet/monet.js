@@ -77,7 +77,7 @@
             var targetType = target[TYPE_KEY] ||
                 target.constructor && target.constructor[TYPE_KEY]
 
-            return Boolean(targetType) && 
+            return Boolean(targetType) &&
                 targetType.length >= typeName.length &&
                 targetType.indexOf(typeName) === targetType.length - typeName.length
         }
@@ -714,7 +714,7 @@
                 })
         },
         toArray: function () {
-            return this.map(function (val) { 
+            return this.map(function (val) {
                 return [val]
             }).orLazy(function () {
                 return []
@@ -1375,6 +1375,13 @@
                     })
                 })
             }
+        }
+
+        type.prototype.mapT = function(fn) {
+            return this.map(monad => monad.map(fn));
+        }
+        type.prototype.mapTT = function(fn) {
+            return this.map(monad => monad.mapT(fn));
         }
     }
 

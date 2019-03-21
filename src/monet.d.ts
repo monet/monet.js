@@ -54,6 +54,8 @@ interface IMonad<T> extends Functor<T>, Bind<T>, Applicative<T> {
   chain<V>(fn: (val: T) => IMonad<V>): IMonad<V>;
   map<V>(fn: (val: T) => V): IMonad<V>;
   join<V>(): IMonad<V>; // only if T = IMonad<V>
+  mapT<V1, V2>(fn: (val: V1) => V2): IMonad<IMonad<V2>>; // only if T = IMonad<V1>
+  mapTT<V1, V2>(fn: (val: V1) => V2): IMonad<IMonad<IMonad<V2>>>; // only if T = IMonad<IMonad<V1>>
 
   /* These are monet-Monad-specific: */
   takeLeft(m: IMonad<T>): IMonad<T>;
