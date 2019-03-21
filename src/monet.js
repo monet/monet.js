@@ -1378,10 +1378,14 @@
         }
 
         type.prototype.mapT = function(fn) {
-            return this.map(monad => monad.map(fn));
+            return this.map(function (ma) {
+                return ma.map(fn)
+            })
         }
         type.prototype.mapTT = function(fn) {
-            return this.map(monad => monad.mapT(fn));
+            return this.map(function (ma) {
+                return ma.mapT(fn)
+            })
         }
     }
 
