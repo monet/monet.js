@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/monet/monet.js.png)](https://travis-ci.org/monet/monet.js)
 
-For people who wish they didn't have to programme in JavaScript. [documentation](https://github.com/monet/monet.js/tree/master/docs/README.md)
+For people who wish they didn't have to program in JavaScript. [documentation](https://github.com/monet/monet.js/tree/master/docs/README.md)
 
 ## Introduction
 
