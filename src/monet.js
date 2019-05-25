@@ -1045,6 +1045,14 @@
         return Right(a)
     }
 
+    Either.fromTry = function(fn) {
+        try{
+            return Either.right(fn())
+        } catch(e) {
+            return Either.left(e)
+        }
+    }
+
     var Right = Either.Right = Either.right = Monet.Right = function (val) {
         return new Either.fn.init(val, true)
     }
