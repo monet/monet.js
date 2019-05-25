@@ -257,6 +257,22 @@ describe('An Either', function () {
 
     })
 
+    describe('fromTry', function () {
+        it("that it is right when no exception is thrown", function () {
+            var i = 1;
+            expect(Either.fromTry(() => i.toPrecision(3))).toBeRightWith("1.00")
+        })
+        it("that it is left when an exception is thrown", function () {
+            var i = 1;
+            expect(Either.fromTry(() => i.toPrecision(500))).toBeLeft()
+        })
+        it("that left contains the error when an exception is thrown", function () {
+            var i = 1;
+            var left = Either.fromTry(() => i.toPrecision(500)).left();
+            expect(left).toEqual(jasmine.any(RangeError))
+        })
+    })
+
     describe('swap', function () {
         it('should be symmetric', function () {
             expect(rightString.swap().swap().equals(rightString)).toBe(true)
