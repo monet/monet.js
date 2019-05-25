@@ -30,6 +30,13 @@ const success = val.right()
 const failure = 'some error'.left()
 ```
 
+### Creating an Either from an exception
+
+```javascript
+const i = 1;
+Either.fromTry(i.toPrecision(500))
+```
+
 ## Methods
 
 ### map
