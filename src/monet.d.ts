@@ -249,7 +249,7 @@ interface IEitherStatic extends IMonadStatic {
   unit: IRightStatic;
   of: IRightStatic;    // alias for unit
   pure: IRightStatic;  // alias for unit
-  fromTry<V>(fn: () => V) : Either<any,V>;
+  fromTry<V, E = Error>(fn: () => V) : Either<E,V>;
   isOfType(target: any): boolean;
   isInstance(target: any): target is Either<any, any>;
 }
