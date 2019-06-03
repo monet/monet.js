@@ -87,6 +87,30 @@
         return value == null // eslint-disable-line no-eq-null, eqeqeq
     }
 
+    /*
+    Checks if given value is its type's empty value.
+
+    Here are a few assumptions:
+    -   `null` and `undefined` are considered empty values
+    -   `''` is the empty value for String
+    -   `[]` is the empty value for Array
+    -   `{}` is the empty value for Object */
+    /* eslint-disable complexity */
+    function isEmpty(value) {
+        if (isNothing(value) || value === '') {
+            return true
+        }
+        if (Array.isArray(value) && value.length === 0) {
+            return true
+        }
+        // Assumes that an object with no enumerable properties is empty.
+        if (typeof value === 'object') {
+            return Object.keys(value).length === 0
+        }
+        return false
+    }
+    /* eslint-enable complexity */
+
     function noop() {} // eslint-disable-line no-empty-function
 
     function getArgs(args) {
@@ -641,6 +665,10 @@
     Maybe.fromUndefined = function (val) {
         // eslint-disable-next-line no-undefined
         return val === undefined ? Maybe.None() : Maybe.Some(val)
+    }
+
+    Maybe.fromEmpty = function (val) {
+        return isEmpty(val) ? Maybe.None() : Maybe.Some(val)
     }
 
     Maybe.of = function (a) {
