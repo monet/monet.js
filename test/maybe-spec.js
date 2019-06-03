@@ -516,6 +516,47 @@ describe('A Maybe', function () {
         })
     })
 
+    describe('Maybe.fromEmpty', function () {
+        describe('will create a none for', function () {
+            it('undefined', function () {
+                expect(Maybe.fromEmpty()).toBeNoneMaybe()
+                expect(Maybe.fromEmpty(undefined)).toBeNoneMaybe()
+            })
+            it('null', function () {
+                expect(Maybe.fromEmpty(null)).toBeNoneMaybe()
+            })
+            it('an empty string', function () {
+                expect(Maybe.fromEmpty('')).toBeNoneMaybe()
+            })
+            it('an empty array', function () {
+                expect(Maybe.fromEmpty([])).toBeNoneMaybe()
+            })
+            it('an empty object', function () {
+                function foo() {}
+                foo.prototype.bar = 42
+                expect(Maybe.fromEmpty(new foo())).toBeNoneMaybe()
+            })
+        })
+        describe('will create a some for', function () {
+            it('any numbers', function () {
+                expect(Maybe.fromEmpty(0)).toBeSomeMaybe()
+                expect(Maybe.fromEmpty(NaN)).toBeSomeMaybe()
+            })
+            it('any non-empty strings', function () {
+                expect(Maybe.fromEmpty('foo')).toBeSomeMaybe()
+                expect(Maybe.fromEmpty('   ')).toBeSomeMaybe()
+            })
+            it('any non-empty arrays', function () {
+                expect(Maybe.fromEmpty([1])).toBeSomeMaybe()
+            })
+            it('any non-empty objects', function () {
+                function foo() { this.value = 42 }
+                expect(Maybe.fromEmpty(new foo())).toBeSomeMaybe()
+                expect(Maybe.fromEmpty({foo: 42})).toBeSomeMaybe()
+            })
+        })
+    })
+
     // TODO: Provide additional test suite for `monet-pimp`
     xdescribe('will pimp an object', function () {
         it('with some', function () {

@@ -45,6 +45,14 @@ Maybe.fromFalsy(false)
 Maybe.fromUndefined()
 Maybe.fromUndefined(undefined)
 // => None
+
+Maybe.fromEmpty()
+Maybe.fromEmpty(undefined)
+Maybe.fromEmpty(null)
+Maybe.fromEmpty('')
+Maybe.fromEmpty([])
+Maybe.fromEmpty({})
+// => None
 ```
 
 **It's important to note that monet `Maybe` implementation treats `null` and `undefined` values in special way. Any attempt to provide `null` or `undefined` to constructor (other than `fromNull` or `fromFalsy`) will cause exception (also `fromUndefined(null)` will throw). Same will happen if it's mapped to `null` or `undefined`.**
