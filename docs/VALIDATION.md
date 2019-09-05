@@ -55,7 +55,7 @@ Fail('grr').map(val => val + 1)
 Validation[E,A].failMap(fn: E => F): Validation[F,A]
 ```
 
-This will apply the supplied function over the left side of the either, if one exists, otherwise it returns the `Either` untouched. For example:
+This will apply the supplied function over the fail side of the validation, if one exists, otherwise it returns the `Success` untouched. For example:
 
 ```javascript
 Success('lol').failMap(e => e + 1)
