@@ -24,7 +24,7 @@ One quick win would be to `curry` the `createPrettyName` function, and make `ren
 ```javascript
 const createPrettyName = name => printer => printer.write("hello " + name)
 
-const render = () => createPrettyName("Tom")
+const render = createPrettyName("Tom") // render(printer)
 ```
 
 This is better, but what if `render` wants to perform some sort of operation on the result of `createPrettyName`? It would have to apply
