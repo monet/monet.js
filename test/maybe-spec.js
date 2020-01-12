@@ -325,7 +325,7 @@ describe('A Maybe', function () {
                 expect(someThree.every(predicateAll)).toBe(true)
                 expect(someThree.every(predicateSome)).toBe(false)
                 expect(someThree.every(predicateNone)).toBe(false)
-    
+
                 expect(someThree.every(predicateAll)).toBe(someThree.forall(predicateAll))
                 expect(someThree.every(predicateSome)).toBe(someThree.forall(predicateSome))
                 expect(someThree.every(predicateNone)).toBe(someThree.forall(predicateNone))
@@ -334,7 +334,7 @@ describe('A Maybe', function () {
                 expect(aNothing.every(predicateAll)).toBe(true)
                 expect(aNothing.every(predicateSome)).toBe(true)
                 expect(aNothing.every(predicateNone)).toBe(true)
-    
+
                 expect(aNothing.every(predicateAll)).toBe(aNothing.forall(predicateAll))
                 expect(aNothing.every(predicateSome)).toBe(aNothing.forall(predicateSome))
                 expect(aNothing.every(predicateNone)).toBe(aNothing.forall(predicateNone))
@@ -532,7 +532,9 @@ describe('A Maybe', function () {
                 expect(Maybe.fromEmpty([])).toBeNoneMaybe()
             })
             it('an empty object', function () {
-                function foo() {}
+                function foo() {
+                }
+
                 foo.prototype.bar = 42
                 expect(Maybe.fromEmpty(new foo())).toBeNoneMaybe()
             })
@@ -550,7 +552,10 @@ describe('A Maybe', function () {
                 expect(Maybe.fromEmpty([1])).toBeSomeMaybe()
             })
             it('any non-empty objects', function () {
-                function foo() { this.value = 42 }
+                function foo() {
+                    this.value = 42
+                }
+
                 expect(Maybe.fromEmpty(new foo())).toBeSomeMaybe()
                 expect(Maybe.fromEmpty({foo: 42})).toBeSomeMaybe()
             })
@@ -602,5 +607,22 @@ describe('A Maybe', function () {
         })
     })
 
+    describe('Maybe.isInstance', function () {
+        it('will return true only for Maybe instances', function () {
+            expect(Maybe.isInstance(Some('hi'))).toBeTruthy();
+            expect(Maybe.isInstance(None())).toBeTruthy();
+        })
+        it('will return false for other monads', function () {
+            expect(Maybe.isInstance(Monet.Validation.Success({}))).toBeFalsy();
+            expect(Maybe.isInstance(Monet.Validation.Fail({}))).toBeFalsy();
+            expect(Maybe.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+        })
+        it('will return false on non-monads', function () {
+            expect(Maybe.isInstance({})).toBeFalsy();
+            expect(Maybe.isInstance(true)).toBeFalsy();
+            expect(Maybe.isInstance(false)).toBeFalsy();
+            expect(Maybe.isInstance('foo')).toBeFalsy();
+        })
+    })
 
 })

@@ -48,8 +48,28 @@ describe('An IO monad', function () {
             })
             expect(effect.ap(ioWithFn).run()).toBe('cool effect')
         })
-      it('and is compatible with Fantasy Land', function () {
-        expect(effect.ap).toBe(effect['fantasy-land/ap'])
-      })
+        it('and is compatible with Fantasy Land', function () {
+            expect(effect.ap).toBe(effect['fantasy-land/ap'])
+        })
+    })
+
+    describe('IO.isInstance', function () {
+        it('will return true only for IO instances', function () {
+            var instance = IO(function () {
+                return 'foo'
+            })
+            expect(IO.isInstance(instance)).toBeTruthy();
+        })
+        it('will return false for other monads', function () {
+            expect(IO.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
+            expect(IO.isInstance(Monet.Maybe.None())).toBeFalsy();
+            expect(IO.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+        })
+        it('will return false on non-monads', function () {
+            expect(IO.isInstance({})).toBeFalsy();
+            expect(IO.isInstance(true)).toBeFalsy();
+            expect(IO.isInstance(false)).toBeFalsy();
+            expect(IO.isInstance('foo')).toBeFalsy();
+        })
     })
 })

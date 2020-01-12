@@ -281,6 +281,24 @@ describe('A Validation', function () {
         })
     })
 
+    describe('Validation.isInstance', function () {
+        it('will return true only for Validation instances', function () {
+            expect(Validation.isInstance(Validation.Success('hi'))).toBeTruthy();
+            expect(Validation.isInstance(Validation.Fail({}))).toBeTruthy();
+        })
+        it('will return false for other monads', function () {
+            expect(Validation.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
+            expect(Validation.isInstance(Monet.Maybe.None())).toBeFalsy();
+            expect(Validation.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+        })
+        it('will return false on non-monads', function () {
+            expect(Validation.isInstance({})).toBeFalsy();
+            expect(Validation.isInstance(true)).toBeFalsy();
+            expect(Validation.isInstance(false)).toBeFalsy();
+            expect(Validation.isInstance('foo')).toBeFalsy();
+        })
+    })
+
     // TODO: Provide additional test suite for `monet-pimp`
     xdescribe('will pimp an object', function () {
         it('with success', function () {
