@@ -273,6 +273,23 @@ describe('A Non-Empty immutable list', function () {
         expect(NEL(1, NEL(false, Nil)).inspect()).toBe('NEL(1, false)')
     })
 
+    describe('NEL.isInstance', function () {
+        it('will return true only for NEL instances', function () {
+            expect(NEL.isInstance(NEL(1))).toBeTruthy();
+        })
+        it('will return false for other monads', function () {
+            expect(NEL.isInstance(Monet.Validation.Success({}))).toBeFalsy();
+            expect(NEL.isInstance(Monet.Validation.Fail({}))).toBeFalsy();
+            expect(NEL.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+        })
+        it('will return false on non-monads', function () {
+            expect(NEL.isInstance({})).toBeFalsy();
+            expect(NEL.isInstance(true)).toBeFalsy();
+            expect(NEL.isInstance(false)).toBeFalsy();
+            expect(NEL.isInstance('foo')).toBeFalsy();
+        })
+    })
+
     describe('can be described with collection predicates', function () {
         var predicateAll = function (e) {
             return e < 5

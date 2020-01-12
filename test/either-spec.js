@@ -311,6 +311,24 @@ describe('An Either', function () {
         })
     })
 
+    describe('Either.isInstance', function () {
+        it('will return true only for Either instances', function () {
+            expect(Either.isInstance(Either.Left([]))).toBeTruthy();
+            expect(Either.isInstance(Either.Right([]))).toBeTruthy();
+        })
+        it('will return false for other monads', function () {
+            expect(Either.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
+            expect(Either.isInstance(Monet.Maybe.None())).toBeFalsy();
+            expect(Either.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+        })
+        it('will return false on non-monads', function () {
+            expect(Either.isInstance({})).toBeFalsy();
+            expect(Either.isInstance(true)).toBeFalsy();
+            expect(Either.isInstance(false)).toBeFalsy();
+            expect(Either.isInstance('foo')).toBeFalsy();
+        })
+    })
+
     // TODO: Provide additional test suite for `monet-pimp`
     xdescribe('will pimp an object', function () {
         it('with right', function () {

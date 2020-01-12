@@ -562,4 +562,21 @@ describe('An immutable list', function () {
         expect(list.equals).toBe(list['fantasy-land/equals'])
     })
 
+    describe('List.isInstance', function () {
+        it('will return true only for List instances', function () {
+            expect(List.isInstance(List.fromArray([]))).toBeTruthy();
+        })
+        it('will return false for other monads', function () {
+            expect(List.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
+            expect(List.isInstance(Monet.Maybe.None())).toBeFalsy();
+            expect(List.isInstance(Monet.Validation.Success([]))).toBeFalsy();
+        })
+        it('will return false on non-monads', function () {
+            expect(List.isInstance({})).toBeFalsy();
+            expect(List.isInstance(true)).toBeFalsy();
+            expect(List.isInstance(false)).toBeFalsy();
+            expect(List.isInstance('foo')).toBeFalsy();
+        })
+    })
+
 })

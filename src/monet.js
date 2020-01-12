@@ -67,7 +67,7 @@
 
     function isInstance(typeName) {
         return function (target) {
-            return target[TYPE_KEY] || target.constructor[TYPE_KEY] === LIB_NAME + '/' + typeName
+            return (target[TYPE_KEY] || target.constructor[TYPE_KEY]) === LIB_NAME + '/' + typeName
         }
     }
 
@@ -1003,7 +1003,7 @@
                 throw new Error('IO requires a function.')
             }
             this.effectFn = effectFn
-            setType(Validation, TYPES_NAMES.IO)
+            setType(this, TYPES_NAMES.IO)
         },
         map: function (fn) {
             var self = this
