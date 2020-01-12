@@ -59,4 +59,22 @@ describe('A Free monad', function () {
         expect(g(1).run()).toBe(limit)
     })
 
+    describe('Free.isInstance', function () {
+        it('will return true only for Free instances', function () {
+            expect(Free.isInstance(Free.Return([]))).toBeTruthy();
+            expect(Free.isInstance(Free.Suspend([]))).toBeTruthy();
+        })
+        it('will return false for other monads', function () {
+            expect(Free.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
+            expect(Free.isInstance(Monet.Maybe.None())).toBeFalsy();
+            expect(Free.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+        })
+        it('will return false on non-monads', function () {
+            expect(Free.isInstance({})).toBeFalsy();
+            expect(Free.isInstance(true)).toBeFalsy();
+            expect(Free.isInstance(false)).toBeFalsy();
+            expect(Free.isInstance('foo')).toBeFalsy();
+        })
+    })
+
 })
