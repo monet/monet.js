@@ -282,20 +282,20 @@ describe('A Validation', function () {
     })
 
     describe('Validation.isInstance', function () {
-        it('will return true only for Validation instances', function () {
-            expect(Validation.isInstance(Validation.Success('hi'))).toBeTruthy();
-            expect(Validation.isInstance(Validation.Fail({}))).toBeTruthy();
+        it('will return true for Validation instances', function () {
+            expect(Validation.isInstance(Validation.Success('hi'))).toBe(true)
+            expect(Validation.isInstance(Validation.Fail({}))).toBe(true)
         })
         it('will return false for other monads', function () {
-            expect(Validation.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
-            expect(Validation.isInstance(Monet.Maybe.None())).toBeFalsy();
-            expect(Validation.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+            expect(Validation.isInstance(Monet.Maybe.Some({}))).toBe(false)
+            expect(Validation.isInstance(Monet.Maybe.None())).toBe(false)
+            expect(Validation.isInstance(Monet.List.fromArray([]))).toBe(false)
         })
         it('will return false on non-monads', function () {
-            expect(Validation.isInstance({})).toBeFalsy();
-            expect(Validation.isInstance(true)).toBeFalsy();
-            expect(Validation.isInstance(false)).toBeFalsy();
-            expect(Validation.isInstance('foo')).toBeFalsy();
+            expect(Validation.isInstance({})).toBe(false)
+            expect(Validation.isInstance(true)).toBe(false)
+            expect(Validation.isInstance(false)).toBe(false)
+            expect(Validation.isInstance('foo')).toBe(false)
         })
     })
 

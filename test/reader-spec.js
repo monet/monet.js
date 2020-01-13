@@ -77,22 +77,22 @@ describe('A Reader Monad', function () {
     })
 
     describe('Reader.isInstance', function () {
-        it('will return true only for Reader instances', function () {
+        it('will return true for Reader instances', function () {
             var instance = Reader(function (x) {
                 return x
             })
-            expect(Reader.isInstance(instance)).toBeTruthy();
+            expect(Reader.isInstance(instance)).toBe(true)
         })
         it('will return false for other monads', function () {
-            expect(Reader.isInstance(Monet.Validation.Success({}))).toBeFalsy();
-            expect(Reader.isInstance(Monet.Validation.Fail({}))).toBeFalsy();
-            expect(Reader.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+            expect(Reader.isInstance(Monet.Validation.Success({}))).toBe(false)
+            expect(Reader.isInstance(Monet.Validation.Fail({}))).toBe(false)
+            expect(Reader.isInstance(Monet.List.fromArray([]))).toBe(false)
         })
         it('will return false on non-monads', function () {
-            expect(Reader.isInstance({})).toBeFalsy();
-            expect(Reader.isInstance(true)).toBeFalsy();
-            expect(Reader.isInstance(false)).toBeFalsy();
-            expect(Reader.isInstance('foo')).toBeFalsy();
+            expect(Reader.isInstance({})).toBe(false)
+            expect(Reader.isInstance(true)).toBe(false)
+            expect(Reader.isInstance(false)).toBe(false)
+            expect(Reader.isInstance('foo')).toBe(false)
         })
     })
 

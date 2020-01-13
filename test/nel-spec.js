@@ -274,19 +274,19 @@ describe('A Non-Empty immutable list', function () {
     })
 
     describe('NEL.isInstance', function () {
-        it('will return true only for NEL instances', function () {
-            expect(NEL.isInstance(NEL(1))).toBeTruthy();
+        it('will return true for NEL instances', function () {
+            expect(NEL.isInstance(NEL(1))).toBe(true)
         })
         it('will return false for other monads', function () {
-            expect(NEL.isInstance(Monet.Validation.Success({}))).toBeFalsy();
-            expect(NEL.isInstance(Monet.Validation.Fail({}))).toBeFalsy();
-            expect(NEL.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+            expect(NEL.isInstance(Monet.Validation.Success({}))).toBe(false)
+            expect(NEL.isInstance(Monet.Validation.Fail({}))).toBe(false)
+            expect(NEL.isInstance(Monet.List.fromArray([]))).toBe(false)
         })
         it('will return false on non-monads', function () {
-            expect(NEL.isInstance({})).toBeFalsy();
-            expect(NEL.isInstance(true)).toBeFalsy();
-            expect(NEL.isInstance(false)).toBeFalsy();
-            expect(NEL.isInstance('foo')).toBeFalsy();
+            expect(NEL.isInstance({})).toBe(false)
+            expect(NEL.isInstance(true)).toBe(false)
+            expect(NEL.isInstance(false)).toBe(false)
+            expect(NEL.isInstance('foo')).toBe(false)
         })
     })
 
