@@ -54,22 +54,22 @@ describe('An IO monad', function () {
     })
 
     describe('IO.isInstance', function () {
-        it('will return true only for IO instances', function () {
+        it('will return true for IO instances', function () {
             var instance = IO(function () {
                 return 'foo'
             })
-            expect(IO.isInstance(instance)).toBeTruthy();
+            expect(IO.isInstance(instance)).toBe(true)
         })
         it('will return false for other monads', function () {
-            expect(IO.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
-            expect(IO.isInstance(Monet.Maybe.None())).toBeFalsy();
-            expect(IO.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+            expect(IO.isInstance(Monet.Maybe.Some({}))).toBe(false)
+            expect(IO.isInstance(Monet.Maybe.None())).toBe(false)
+            expect(IO.isInstance(Monet.List.fromArray([]))).toBe(false)
         })
         it('will return false on non-monads', function () {
-            expect(IO.isInstance({})).toBeFalsy();
-            expect(IO.isInstance(true)).toBeFalsy();
-            expect(IO.isInstance(false)).toBeFalsy();
-            expect(IO.isInstance('foo')).toBeFalsy();
+            expect(IO.isInstance({})).toBe(false)
+            expect(IO.isInstance(true)).toBe(false)
+            expect(IO.isInstance(false)).toBe(false)
+            expect(IO.isInstance('foo')).toBe(false)
         })
     })
 })

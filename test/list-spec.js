@@ -563,19 +563,19 @@ describe('An immutable list', function () {
     })
 
     describe('List.isInstance', function () {
-        it('will return true only for List instances', function () {
-            expect(List.isInstance(List.fromArray([]))).toBeTruthy();
+        it('will return true for List instances', function () {
+            expect(List.isInstance(List.fromArray([]))).toBe(true)
         })
         it('will return false for other monads', function () {
-            expect(List.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
-            expect(List.isInstance(Monet.Maybe.None())).toBeFalsy();
-            expect(List.isInstance(Monet.Validation.Success([]))).toBeFalsy();
+            expect(List.isInstance(Monet.Maybe.Some({}))).toBe(false)
+            expect(List.isInstance(Monet.Maybe.None())).toBe(false)
+            expect(List.isInstance(Monet.Validation.Success([]))).toBe(false)
         })
         it('will return false on non-monads', function () {
-            expect(List.isInstance({})).toBeFalsy();
-            expect(List.isInstance(true)).toBeFalsy();
-            expect(List.isInstance(false)).toBeFalsy();
-            expect(List.isInstance('foo')).toBeFalsy();
+            expect(List.isInstance({})).toBe(false)
+            expect(List.isInstance(true)).toBe(false)
+            expect(List.isInstance(false)).toBe(false)
+            expect(List.isInstance('foo')).toBe(false)
         })
     })
 
