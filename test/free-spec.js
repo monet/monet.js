@@ -60,20 +60,20 @@ describe('A Free monad', function () {
     })
 
     describe('Free.isInstance', function () {
-        it('will return true only for Free instances', function () {
-            expect(Free.isInstance(Free.Return([]))).toBeTruthy();
-            expect(Free.isInstance(Free.Suspend([]))).toBeTruthy();
+        it('will return true for Free instances', function () {
+            expect(Free.isInstance(Free.Return([]))).toBe(true)
+            expect(Free.isInstance(Free.Suspend([]))).toBe(true)
         })
         it('will return false for other monads', function () {
-            expect(Free.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
-            expect(Free.isInstance(Monet.Maybe.None())).toBeFalsy();
-            expect(Free.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+            expect(Free.isInstance(Monet.Maybe.Some({}))).toBe(false)
+            expect(Free.isInstance(Monet.Maybe.None())).toBe(false)
+            expect(Free.isInstance(Monet.List.fromArray([]))).toBe(false)
         })
         it('will return false on non-monads', function () {
-            expect(Free.isInstance({})).toBeFalsy();
-            expect(Free.isInstance(true)).toBeFalsy();
-            expect(Free.isInstance(false)).toBeFalsy();
-            expect(Free.isInstance('foo')).toBeFalsy();
+            expect(Free.isInstance({})).toBe(false)
+            expect(Free.isInstance(true)).toBe(false)
+            expect(Free.isInstance(false)).toBe(false)
+            expect(Free.isInstance('foo')).toBe(false)
         })
     })
 

@@ -312,20 +312,20 @@ describe('An Either', function () {
     })
 
     describe('Either.isInstance', function () {
-        it('will return true only for Either instances', function () {
-            expect(Either.isInstance(Either.Left([]))).toBeTruthy();
-            expect(Either.isInstance(Either.Right([]))).toBeTruthy();
+        it('will return true for Either instances', function () {
+            expect(Either.isInstance(Either.Left([]))).toBe(true)
+            expect(Either.isInstance(Either.Right([]))).toBe(true)
         })
         it('will return false for other monads', function () {
-            expect(Either.isInstance(Monet.Maybe.Some({}))).toBeFalsy();
-            expect(Either.isInstance(Monet.Maybe.None())).toBeFalsy();
-            expect(Either.isInstance(Monet.List.fromArray([]))).toBeFalsy();
+            expect(Either.isInstance(Monet.Maybe.Some({}))).toBe(false)
+            expect(Either.isInstance(Monet.Maybe.None())).toBe(false)
+            expect(Either.isInstance(Monet.List.fromArray([]))).toBe(false)
         })
         it('will return false on non-monads', function () {
-            expect(Either.isInstance({})).toBeFalsy();
-            expect(Either.isInstance(true)).toBeFalsy();
-            expect(Either.isInstance(false)).toBeFalsy();
-            expect(Either.isInstance('foo')).toBeFalsy();
+            expect(Either.isInstance({})).toBe(false)
+            expect(Either.isInstance(true)).toBe(false)
+            expect(Either.isInstance(false)).toBe(false)
+            expect(Either.isInstance('foo')).toBe(false)
         })
     })
 
