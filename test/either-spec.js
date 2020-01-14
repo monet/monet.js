@@ -141,6 +141,17 @@ describe('An Either', function () {
             rightString.forEachLeft(sideEffectsReceiver.setVal)
             expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
+        it('will be converted to resolved promise on toPromise', function (done) {
+            var result = {foo: 'bar'}
+            Either.Right(result).toPromise()
+                .then(function(x) {
+                    expect(x).toBe(result)
+                    done()
+                })
+                .catch(function() {
+                    done.fail('"catch" should not be called')
+                });
+        })
     })
 
     var leftString = Either.Left('error dude')
@@ -255,6 +266,17 @@ describe('An Either', function () {
             expect(sideEffectsReceiver.setVal).toHaveBeenCalledTimes(0)
         })
 
+        it('will be converted to rejected promise on toPromise', function (done) {
+            var error = new Error('test')
+            Either.Left(error).toPromise()
+                .then(function() {
+                    done.fail('"then" should not be called')
+                })
+                .catch(function(e) {
+                    expect(e).toBe(error)
+                    done()
+                });
+        })
     })
 
     describe('fromTry', function () {
@@ -326,6 +348,25 @@ describe('An Either', function () {
             expect(Either.isInstance(true)).toBe(false)
             expect(Either.isInstance(false)).toBe(false)
             expect(Either.isInstance('foo')).toBe(false)
+        })
+    })
+
+    describe('Either.fromPromise', function () {
+        it('will return Left on failure', function (done) {
+            var error = new Error('Some error')
+            return Either.fromPromise(Promise.reject(error)).then(function(result) {
+                expect(result).toBeLeftWith(error)
+                done()
+            })
+        })
+
+        it('will return Right on success', function (done) {
+            var success = {some: 'success'};
+
+            return Either.fromPromise(Promise.resolve(success)).then(function(result) {
+                expect(result).toBeRightWith(success)
+                done()
+            })
         })
     })
 
