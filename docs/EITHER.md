@@ -37,6 +37,13 @@ const i = 1;
 Either.fromTry(i.toPrecision(500))
 ```
 
+
+### Creating an Either from a Promise
+```javascript
+Either.fromPromise(Promise.resolve({foo: 'bar'})) // Promise of Either.Right
+Either.fromPromise(Promise.reject(new Error('error'))) // Promise of Either.Left
+```
+
 ## Methods
 
 ### map
@@ -219,6 +226,14 @@ Either[E,A].toMaybe(): Maybe[A]
 ```
 
 Converts to a `Maybe` dropping the left side.
+
+### toPromise
+
+```scala
+Either[E,A].toPromise(): Promise[A]
+```
+
+Converts to resolved Promise on the right side and rejected Promise on the left side.
 
 ### ...and undocumented
 - equals

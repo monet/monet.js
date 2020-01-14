@@ -7,7 +7,7 @@
  * https://monet.github.io/monet.js/
  */
 
-/* global define, Set, Symbol */
+/* global define, Set, Symbol, Promise */
 
 // eslint-disable-next-line complexity
 (function (root, factory) {
@@ -1053,6 +1053,11 @@
         }
     }
 
+
+    Either.fromPromise = function(promise) {
+        return promise.then(Either.Right, Either.Left)
+    }
+
     var Right = Either.Right = Either.right = Monet.Right = function (val) {
         return new Either.fn.init(val, true)
     }
@@ -1140,6 +1145,12 @@
             return this.cata(
                 function(left) { return 'Left(' + left + ')' },
                 function(right) { return 'Right(' + right + ')' }
+            )
+        },
+        toPromise: function () {
+            return this.cata(
+                function(left) { return Promise.reject(left) },
+                function(right) { return Promise.resolve(right) }
             )
         },
         inspect: function() {

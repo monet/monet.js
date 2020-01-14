@@ -239,6 +239,7 @@ export interface Either<E, T>
 
   toValidation(): Validation<E, T>;
   toMaybe(): Maybe<T>;
+  toPromise(): Promise<T>
 }
 
 interface IEitherStatic extends IMonadStatic {
@@ -250,6 +251,7 @@ interface IEitherStatic extends IMonadStatic {
   of: IRightStatic;    // alias for unit
   pure: IRightStatic;  // alias for unit
   fromTry<V, E = Error>(fn: () => V) : Either<E,V>;
+  fromPromise<V, E = Error>(promise: Promise<V>) : Promise<Either<E, V>>;
   isOfType(target: any): boolean;
   isInstance(target: any): target is Either<any, any>;
 }
