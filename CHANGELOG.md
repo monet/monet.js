@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.1 (15 Jan 2020)
+- [new] add `fromPromise` and `toPromise` to `Either` -- thanks to @wookieb ( #223 )
+- [fix] fix `.isInstance` method -- thanks to @wookieb ( #221 )
+- [new] add `Either.fromTry` -- thanks to @rparree ( #211 )
+- [new] add `Maybe.fromEmpty` -- thanks to @customcommander ( #214 )
+
 ## 0.9.0 (19 Nov 2018)
 
 ### rc.3 (18 Nov 2018)
