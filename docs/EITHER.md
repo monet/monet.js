@@ -34,7 +34,7 @@ const failure = 'some error'.left()
 
 ```javascript
 const i = 1;
-Either.fromTry(i.toPrecision(500))
+Either.fromTry(() => i.toPrecision(500))
 ```
 
 
