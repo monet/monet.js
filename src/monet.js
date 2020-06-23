@@ -1,5 +1,5 @@
 /**
- * Monet.js 0.9.0-rc.1
+ * Monet.js 0.9.1
  *
  * (c) 2012-2018 Chris Myers
  * @license Monet.js may be freely distributed under the MIT license.
@@ -23,7 +23,7 @@
 
     function assignImp(target, source) {
         for (var key in source) { // we need only one level of composition
-            // eslint-disable-next-line no-undefined
+            // eslint-disable-next-line no-undefined, no-prototype-builtins
             if (source.hasOwnProperty(key) && source[key] !== undefined) {
                 // yes exactly as native one - mutating target :(
                 target[key] = source[key]
