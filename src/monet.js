@@ -455,6 +455,9 @@
         ap: function (list) {
             return listAp(this, list)
         },
+        apTo: function (listWithValues){
+          return listAp(listWithValues, this)
+        },
         isNEL: falseFunction,
         toString: function () {
             return this.isNil ? 'Nil' : 'List(' + this.toArray().join(', ') + ')'
@@ -649,6 +652,7 @@
     NEL.prototype.cojoin = NEL.prototype.tails
     NEL.prototype.coflatMap = NEL.prototype.mapTails = NEL.prototype.cobind
     NEL.prototype.ap = List.prototype.ap
+    NEL.prototype.apTo = List.prototype.apTo
 
     /* Maybe Monad */
 
@@ -873,6 +877,9 @@
                     Validation.Fail(Semigroup.append(value, validationWithFn.fail()))
                     : this
         },
+        apTo: function (validationWithValue){
+            return validationWithValue.ap(this)
+        },
         acc: function () {
             var x = function () {
                 return x
@@ -1025,6 +1032,9 @@
             return ioWithFn.map(function (fn) {
                 return fn(self.effectFn())
             })
+        },
+        apTo: function(ioWithValue){
+            return ioWithValue.ap(this);
         },
         run: function () {
             return this.effectFn()
@@ -1292,7 +1302,9 @@
                 })
             })
         },
-
+        apTo: function(f){
+            return f.ap(this)
+        },
         resume: function () {
             return this.isSuspend ? Left(this.functor) : Right(this.val)
         },

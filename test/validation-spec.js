@@ -249,7 +249,6 @@ describe('A Validation', function () {
             var result = validateAddress.ap(Validation.fail(['no surname']).ap(Validation.fail('no first name').acc()))
             expect(result.fail()[0]).toBe('no surname')
             expect(result.fail()[1]).toBe('no first name')
-
         })
 
         it('should be compatible with Fantasy Land', function () {
@@ -278,6 +277,14 @@ describe('A Validation', function () {
             var result = Monet.apply2(Validation.fail(['no first name']), Validation.fail(['no surname']), createPersonString)
             expect(result.fail()[0]).toBe('no surname')
             expect(result.fail()[1]).toBe('no first name')
+        })
+        it('will produce a person object if all validations are successes(apTo)', function () {
+            var personString = Validation.of(person)
+                .apTo(validateForename)
+                .apTo(validateSurname)
+                .apTo(validateAddress)
+                .success()
+            expect(personString).toBe('Tom Baker lives at Dulwich, London')
         })
     })
 
