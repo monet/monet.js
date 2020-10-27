@@ -1211,6 +1211,9 @@
                 })
             })
         },
+        apTo: function(readerWithValue) {
+            return readerWithValue.ap(this)
+        },
         map: function (fn) {
             var self = this
             return Reader(function (config) {
