@@ -331,6 +331,33 @@ describe('An Either', function () {
         it('should be compatible with Fantasy Land', function () {
             expect(validateAddress.ap).toBe(validateAddress['fantasy-land/ap'])
         })
+
+        it('has .apTo instance method, which is the same as .ap, but has swapped `this` and `argument`', function () {
+            var personString = Either.Right(person)
+                .apTo(validateForename)
+                .apTo(validateSurname)
+                .apTo(validateAddress)
+                .right();
+            expect(personString).toBe('Tom Baker lives at Dulwich, London')
+        })
+
+        it('.apTo will not produce a person object if any validattions are left', () => {
+            var personEither = Either.Right(person)
+                .apTo(validateForename)
+                .apTo(validateSurname)
+                .apTo(Either.Left('no address'))
+
+            expect(personEither).toBeLeftWith('no address')
+        })
+
+        it('.apTo will not produce a person object if function is Left', () => {
+            var personEither = Either.Left('no address')
+                .apTo(validateForename)
+                .apTo(validateSurname)
+                .apTo(validateAddress)
+
+            expect(personEither).toBeLeftWith('no address')
+        })
     })
 
     describe('Either.isInstance', function () {
