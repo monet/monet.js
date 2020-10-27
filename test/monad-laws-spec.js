@@ -41,13 +41,26 @@ describe('The Monad', function () {
 
         })
 
-        it('must also be applicative', function () {
+        it('must also be applicative(can be applied to fn)', function () {
             var m = monad.of(123)
             var f = function (t) {
                 return 2 * t
             }
             var mf = monad.of(f)
             var a = m.ap(mf)
+            var b = m.bind(function (t) {
+                return m.unit(f(t))
+            })
+            expect(equals(a, b)).toBe(true)
+        })
+
+        it('must also be applicative(can be applied to value)', function() {
+            var m = monad.of(123)
+            var f = function (t) {
+                return 2 * t
+            }
+            var mf = monad.of(f)
+            var a = mf.apTo(m)
             var b = m.bind(function (t) {
                 return m.unit(f(t))
             })
