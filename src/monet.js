@@ -1083,6 +1083,9 @@
                 return fn(self.value)
             }) : this
         },
+        apTo: function(eitherWithValue) {
+            return eitherWithValue.ap(this);
+        },
         leftMap: function (fn) {
             return this.isLeft() ? Left(fn(this.value)) : this
         },
