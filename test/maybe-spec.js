@@ -431,7 +431,42 @@ describe('A Maybe', function () {
             expect(result).toBeNoneMaybe()
         })
 
+        it('has .apTo instance method, which is the same as .ap, but has swapped `this` and `argument`', function () {
+            var result = Maybe.of(person)
+                .apTo(maybeForename)
+                .apTo(maybeSurname)
+                .apTo(maybeAddress)
+                .just()
 
+            expect(result).toBe('Tom Baker lives at Dulwich, London')
+        })
+
+        it('.apTo returns Nothing if maybeFunction is None', function () {
+            var result = Maybe.none()
+                .apTo(maybeForename)
+                .apTo(maybeSurname)
+                .apTo(maybeAddress)
+
+            expect(result).toBeNoneMaybe()
+        })
+
+        it('.apTo returns Nothing if at least one of arguments is None', function () {
+            var result = Maybe.of(person)
+                .apTo(Maybe.none())
+                .apTo(maybeSurname)
+                .apTo(maybeAddress)
+
+            expect(result).toBeNoneMaybe()
+        })
+
+        it('.apTo returns Nothing if both arguments and function are None', function () {
+            var result = Maybe.none()
+                .apTo(Maybe.none())
+                .apTo(Maybe.none())
+                .apTo(Maybe.none())
+
+            expect(result).toBeNoneMaybe()
+        })
     })
 
     describe('Maybe.fromFalsy', function () {
