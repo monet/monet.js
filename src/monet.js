@@ -456,7 +456,7 @@
             return listAp(this, list)
         },
         apTo: function (listWithValues){
-          return listAp(listWithValues, this)
+            return listAp(listWithValues, this)
         },
         isNEL: falseFunction,
         toString: function () {
@@ -738,7 +738,7 @@
             }) : this
         },
         apTo: function(maybeWithValue){
-            return maybeWithValue.ap(this);
+            return maybeWithValue.ap(this)
         },
         equals: function (other) {
             return Maybe.isOfType(other) &&
@@ -1034,7 +1034,7 @@
             })
         },
         apTo: function(ioWithValue){
-            return ioWithValue.ap(this);
+            return ioWithValue.ap(this)
         },
         run: function () {
             return this.effectFn()
@@ -1094,7 +1094,7 @@
             }) : this
         },
         apTo: function(eitherWithValue) {
-            return eitherWithValue.ap(this);
+            return eitherWithValue.ap(this)
         },
         leftMap: function (fn) {
             return this.isLeft() ? Left(fn(this.value)) : this
