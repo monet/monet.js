@@ -77,7 +77,7 @@
             var targetType = target[TYPE_KEY] ||
                 target.constructor && target.constructor[TYPE_KEY]
 
-            return Boolean(targetType) && 
+            return Boolean(targetType) &&
                 targetType.length >= typeName.length &&
                 targetType.indexOf(typeName) === targetType.length - typeName.length
         }
@@ -733,6 +733,9 @@
                 return fn(value)
             }) : this
         },
+        apTo: function(maybeWithValue){
+            return maybeWithValue.ap(this);
+        },
         equals: function (other) {
             return Maybe.isOfType(other) &&
                 this.cata(function () {
@@ -742,7 +745,7 @@
                 })
         },
         toArray: function () {
-            return this.map(function (val) { 
+            return this.map(function (val) {
                 return [val]
             }).orLazy(function () {
                 return []
