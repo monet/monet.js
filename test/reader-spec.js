@@ -47,7 +47,16 @@ describe('A Reader Monad', function () {
 
         }))
         expect(reader.run(config1)).toBe('**POST http://test1.com:8080/something**')
+    })
 
+    it('must be applicable to another value', function () {
+        var reader = Reader(function (config) {
+            return function (c) {
+                return '**' + c + '**'
+            }
+
+        }).apTo(connect('something'))
+        expect(reader.run(config1)).toBe('**POST http://test1.com:8080/something**')
     })
 
     it('should be compatible with Fantasy Land', function () {
