@@ -1379,6 +1379,9 @@
                 return fn(value)
             })
         },
+        apTo: function (identityWithValue) {
+            return identityWithValue.ap(this)
+        },
         toArray: function () {
             return [this.get()]
         },
