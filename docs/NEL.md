@@ -274,6 +274,7 @@ List[A].to(Iterable[A] => B): B
 - takeLeft
 - takeRight
 - ap
+- apTo
 - isNEL
 - size
 - join

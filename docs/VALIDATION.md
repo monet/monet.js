@@ -147,6 +147,28 @@ Fail(['no address'])
 // => Fail(["no address", "no surname"])
 ```
 
+### apTo
+`.ap` alias with swapped this and argument. See rewriten `ap` example with usage of `apTo`
+
+```javascript
+const person = forename => surname => address =>
+  `${forename} ${surname} lives at ${address}`;
+
+const validateAddress = Success('Dulwich, London')
+const validateSurname = Success('Baker')
+const validateForename = Success('Tom')
+
+Success(person)
+    .apTo(validateForename)
+    .apTo(validateSurname)
+    .apTo(validateAddress) // => Success("Tom Baker lives at Dulwich, London")
+
+Success(person)
+    .apTo(validateForename)
+    .apTo(Fail(['no surname']))
+    .apTo(Fail(['no address'])) // => Fail(["no address", "no surname"])
+```
+
 ### cata
 **Alias:** `fold`
 
