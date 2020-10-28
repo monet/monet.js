@@ -68,6 +68,10 @@ describe('The Monad', function () {
         })
     }
 
+    describe('Identity', function () {
+        test(Monet.Identity)
+    })
+
     describe('Maybe', function () {
         test(Monet.Maybe)
     })
