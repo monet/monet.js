@@ -312,6 +312,45 @@ const personString = Some('Dulwich, London')
 
 For further reading see [this excellent article](http://learnyouahaskell.com/functors-applicative-functors-and-monoids).
 
+### apTo
+
+Common usage of Applicative Functors is applying curried n-argument function to some values:
+```haskell
+pure (+) <*> Just 3 <*> Just 5
+> 8
+```
+But(what a pity), JS has no infix operations and we cannot use `.ap`(`<*>`) in haskell style.
+`.apTo` is just alias for `.ap` with swapped arguments, for more convenient usage:
+```ecmascript 6
+const f3 = x => y => z => x + y + z
+const applicative = Maybe.of(f3)
+
+applicative
+    .apTo(Maybe.of(1)) // Maybe with partially applied f3 with 1 instead of x 
+    .apTo(Maybe.of(2)) // Maybe with 1 instead of x and 2 instead of y
+    .apTo(Maybe.of(3)) // Maybe with f3 result (6)
+
+/* Code below is equivalent of code upper. But ap cannot be chained. */
+Maybe.of(3).ap(Maybe.of(2).ap(Maybe.of(1).ap(applicative)))
+```
+When applicative itself of some argument is `Nothing` - `Nothing` returned.
+```ecmascript 6
+applicative
+    .apTo(Maybe.of(1))
+    .apTo(Maybe.of(2))
+    .apTo(Maybe.of(3)) // Just 6
+
+Maybe.Nothing()
+    .apTo(Maybe.of(1))
+    .apTo(Maybe.of(2))
+    .apTo(Maybe.of(3)) // Nothing
+
+applicative
+    .apTo(Maybe.of(1))
+    .apTo(Maybe.of(2))
+    .apTo(Maybe.Nothing()) // Nothing
+```  
+
 ### every
 
 **Alias:** `forall`

@@ -70,3 +70,5 @@ Runs the computation to the end, returning the final result, using the supplied 
 - join
 - takeLeft
 - takeRight
+- ap
+- apTo
