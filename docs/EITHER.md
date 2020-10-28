@@ -103,6 +103,12 @@ Either[E,A].ap(v: Either[E,A=>B]): Either[E,B]
 
 This takes an either that has a function on the right side of the either and then applies it to the right side of itself. This implements the applicative functor pattern.
 
+### apTo
+```scala
+Either[E,A=>B].apTo(v: Either[E,A]): Either[E,B]
+```
+This method is specific for Either with function in the right side. Takes another Either with value and applies function inside itself to value inside argument.
+
 ### cata
 **Alias:** `fold`
 

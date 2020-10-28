@@ -75,6 +75,7 @@ Evaluates the effect inside the `IO` monad. This can only be run once in your pr
 - takeLeft
 - takeRight
 - ap
+- apTo
 
 ## Examples
 Say we have a function to read from the DOM and a function to write to the DOM. *This example uses jQuery.*

@@ -86,6 +86,11 @@ Reader[E, A].ap(a: Reader[E, A=>B]): Reader[E, B]
 
 Applies the function inside the supplied `Reader` to the value `A` in the outer `Reader`. Applicative Functor pattern.
 
+### apTo
+```scala
+Reader[E, A=>B].apTo(a: Reader[E, A]): Reader[E, B]
+```
+Just an alias for ap with swapped this & argument. 
 ### run
 
 ```scala
