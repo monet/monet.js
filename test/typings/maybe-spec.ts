@@ -79,6 +79,21 @@ interface Foo {
     bar: string
 }
 
+type A = { x: "A", a: number }
+type B = { x: "B", b: string }
+type C = { x: "C", c: boolean }
+type T = A | B |C
+
+const t: T = Math.random() > 0.33
+    ? { x: "A", a: 123 }
+    : Math.random() > 0.5
+        ? { x: "B", b: "" }
+        : { x: "C", c: true }
+
+const isA = (t: T): t is A => t.x === "A"
+const isB = (t: T): t is B => t.x === "B"
+const isC = (t: T): t is C => t.x === "C"
+
 console.assert(Maybe.some(12).map(plus18).some() == 30);
 console.assert(Maybe.some(12).map<number>(plus18).some() == 30);
 console.assert(Maybe.some("hi").map<string>(String).some() == "hi");
@@ -90,6 +105,12 @@ console.assert(Maybe.none<number>().map<number>(plus18).isNone());
 console.assert(Some(11).map(plus18).isNone());
 console.assert(Maybe.of('a').flatMap(a => Some(a + 'b')).orNull() === null);
 console.assert(Maybe.of('a').filter(Boolean).orJust('b') === null);
+console.assert(Just(t).filter(isA).map(x => x.a).orJust(1) === 1);
+console.assert(Just(t).filter(isB).map(x => x.b).orJust("") === "");
+console.assert(Just(t).filter(isC).map(x => x.c).orJust(true) === true);
+console.assert(Just(t).filterNot(isB).filterNot(isC).map(x => x.a).orJust(1) === 1);
+console.assert(Just(t).filterNot(isA).filterNot(isC).map(x => x.b).orJust("") === "");
+console.assert(Just(t).filterNot(isA).filterNot(isB).map(x => x.c).orJust(true) === true);
 console.log(name, surname, message, messageCopy);
 
 // Remove comment to test NonNullable return type by forcing the type check to fail
