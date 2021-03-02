@@ -446,6 +446,9 @@
         headMaybe: function () {
             return this.isNil ? None() : Some(this.head_)
         },
+        lookup: function (i) {
+            return this.isNil ? None() : Maybe.fromUndefined(this.toArray()[i])
+        },
         tail: function () {
             return this.isNil ? Nil : this.tail_
         },
@@ -563,6 +566,10 @@
 
         head: function () {
             return this.head_
+        },
+
+        lookup: function (i) {
+            return Maybe.fromUndefined(this.toArray()[i])
         },
 
         tail: function () {

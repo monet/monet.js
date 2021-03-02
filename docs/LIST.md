@@ -97,6 +97,25 @@ List.fromArray([1,2,3]).head()
 // => 1
 ```
 
+### lookup
+
+```scala
+List[A].lookup(i: Integer): Maybe[A}]
+```
+
+Safely read a value at a particular index. For example:
+
+```javascript
+List.fromArray([1, 2, 3]).lookup(0)
+// => Just(1)
+
+List.fromArray([1, 2, 3]).lookup(3)
+// => None()
+
+List.fromArray([1, 2, 3, undefined]).lookup(3)
+// => None()
+```
+
 ### headMaybe
 
 ```scala

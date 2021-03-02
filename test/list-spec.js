@@ -579,4 +579,24 @@ describe('An immutable list', function () {
         })
     })
 
+    describe('List.lookup', function () {
+        it('will always return None when the list is empty', function () {
+            var list = List()
+            var index = Math.floor(Math.random() * 100)
+            expect(list.lookup(index)).toEqual(None())
+        })
+        it('will return the corresponding element when present', function () {
+            var list = List.fromArray([1, 2, 3, 4, 5])
+            expect(list.lookup(3)).toEqual(Some(4))
+        })
+        it('will return None if there is no corresponding element', function () {
+            var list = List.fromArray([1, 2, 3, 4, 5])
+            expect(list.lookup(5)).toEqual(None())
+        })
+        it('will return None if the corresponding element is undefined', function () {
+            var list = List.fromArray([1, 2, 3, 4, 5, undefined])
+            expect(list.lookup(5)).toEqual(None())
+        })
+    })
+
 })

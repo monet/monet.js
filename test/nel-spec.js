@@ -319,4 +319,19 @@ describe('A Non-Empty immutable list', function () {
             })
         })
     })
+
+    describe('NEL.lookup', function () {
+        it('will return the corresponding element when present', function () {
+            var nel = NEL.fromList(List.fromArray([1, 2, 3, 4, 5])).some()
+            expect(nel.lookup(3)).toEqual(Some(4))
+        })
+        it('will return None if there is no corresponding element', function () {
+            var nel = NEL.fromList(List.fromArray([1, 2, 3, 4, 5])).some()
+            expect(nel.lookup(5)).toEqual(None())
+        })
+        it('will return None if the corresponding element is undefined', function () {
+            var nel = NEL.fromList(List.fromArray([1, 2, 3, 4, 5, undefined])).some()
+            expect(nel.lookup(5)).toEqual(None())
+        })
+    })
 })

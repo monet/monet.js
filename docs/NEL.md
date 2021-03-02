@@ -91,6 +91,25 @@ NEL[A].head(): A
 
 Returns the head of the NonEmptyList. Also known as `copure` or `extract` this is part of the comonad pattern.
 
+### lookup
+
+```scala
+NEL[A].lookup(i: Integer): Maybe[A}]
+```
+
+Safely read a value at a particular index. For example:
+
+```javascript
+NEL(1, List.fromArray([2, 3])).lookup(0)
+// => Just(1)
+
+NEL(1, List.fromArray([2, 3]))).lookup(3)
+// => None()
+
+NEL(1, List.fromArray([2, 3, undefined])).lookup(3)
+// => None()
+```
+
 ### tail
 
 ```scala
