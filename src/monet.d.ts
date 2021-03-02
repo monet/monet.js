@@ -142,7 +142,9 @@ export interface Maybe<T extends NonNullable<{}>>
   fold<V>(val: V): (fn: (val: T) => V) => V;
   catchMap(fn: () => Maybe<T>): Maybe<T>;
 
+  filter<U extends T>(fn: (val: T) => val is U): Maybe<U>;
   filter(fn: (val: T) => boolean): Maybe<T>;
+  filterNot<U extends T>(fn: (val: T) => val is U): Maybe<Exclude<T, U>>;
   filterNot(fn: (val: T) => boolean): Maybe<T>;
 
   isSome(): boolean;
