@@ -372,6 +372,7 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T>, It
   size(): number;
   head(): T | undefined;
   headMaybe(): Maybe<NonNullable<T>>;
+  lookup(i: number): Maybe<T>;
   append(list: List<T>): List<T>;
   concat(list: List<T>): List<T>;
   reverse(): List<T>;
@@ -463,6 +464,7 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   isNEL(): boolean;
   size(): number;
   head(): T;
+  lookup(i: number): Maybe<T>;
   append(list: NEL<T>): NEL<T>;
   concat(list: NEL<T>): NEL<T>;
   reverse(): NEL<T>;
