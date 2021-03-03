@@ -12,7 +12,8 @@ const xx: NEL<number> = taken.tails().map(e => e.head()).mapTails(t => t.extract
 const xy: Maybe<number> = xx.find(x => x>0);
 const xz: boolean = xx.contains(0);
 const yy: NEL<string> = xx.cobind(t => t.ap(NonEmptyList(String))).coflatMap(t => t.extract()).head();
-const zz: Maybe<string> = NonEmptyList('a', List('b')).lookup(12)
+const zz1: Maybe<string> = NonEmptyList('a', List('b')).lookup(12)
+const zz2: string | undefined =  NonEmptyList('a', List('b')).nth(12)
 const foldedL: Maybe<NEL<string>> = NonEmptyList.fromList(tail).map(t =>
     t.tails().foldLeft(yy)((acc, n) => acc.concat(n.ap(NEL(String)))));
 const foldedR: NonEmptyList<boolean> = foldedL.map(f => f.cojoin()).map(ff => ff.foldRight(nelBool)((v, acc) =>

@@ -100,7 +100,7 @@ List.fromArray([1,2,3]).head()
 ### lookup
 
 ```scala
-List[A].lookup(i: Integer): Maybe[A}]
+List[A].lookup(i: Integer): Maybe[A]
 ```
 
 Safely read a value at a particular index. For example:
@@ -114,6 +114,25 @@ List.fromArray([1, 2, 3]).lookup(3)
 
 List.fromArray([1, 2, 3, undefined]).lookup(3)
 // => None()
+```
+
+### nth
+
+```scala
+List[A].nth(i: Integer): A | undefined
+```
+
+Unsafe version of `lookup`. For example:
+
+```javascript
+List.fromArray([1, 2, 3]).nth(0)
+// => 1
+
+List.fromArray([1, 2, 3]).nth(3)
+// => undefined
+
+List.fromArray([1, 2, 3, undefined]).lookup(3)
+// => undefined
 ```
 
 ### headMaybe

@@ -110,6 +110,25 @@ NEL(1, List.fromArray([2, 3, undefined])).lookup(3)
 // => None()
 ```
 
+### nth
+
+```scala
+List[A].nth(i: Integer): A | undefined
+```
+
+Unsafe version of `lookup`. For example:
+
+```javascript
+NEL(1, List.fromArray([2, 3])).nth(0)
+// => 1
+
+NEL(1, List.fromArray([2, 3]))).nth(3)
+// => undefined
+
+NEL(1, List.fromArray([2, 3, undefined])).nth(3)
+// => undefined
+```
+
 ### tail
 
 ```scala
