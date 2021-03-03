@@ -94,7 +94,7 @@ Returns the head of the NonEmptyList. Also known as `copure` or `extract` this i
 ### lookup
 
 ```scala
-NEL[A].lookup(i: Integer): Maybe[A}]
+NEL[A].lookup(i: Integer): Maybe[A]
 ```
 
 Safely read a value at a particular index. For example:
