@@ -447,7 +447,7 @@
             return this.isNil ? None() : Some(this.head_)
         },
         lookup: function (i) {
-            return this.isNil ? None() : Maybe.fromUndefined(this.toArray()[i])
+            return this.isNil || i >= this.size() ? None() : Maybe.fromNull(this.toArray()[i])
         },
         tail: function () {
             return this.isNil ? Nil : this.tail_
@@ -569,7 +569,7 @@
         },
 
         lookup: function (i) {
-            return Maybe.fromUndefined(this.toArray()[i])
+            return i >= this.size() ? None() : Maybe.fromNull(this.toArray()[i])
         },
 
         tail: function () {
