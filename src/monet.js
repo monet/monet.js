@@ -449,6 +449,9 @@
         lookup: function (i) {
             return this.isNil || i >= this.size() ? None() : Maybe.fromNull(this.toArray()[i])
         },
+        nth: function (i) {
+            return this.isNil || i >= this.size() ? undefined : this.toArray()[i]
+        },
         tail: function () {
             return this.isNil ? Nil : this.tail_
         },
@@ -570,6 +573,9 @@
 
         lookup: function (i) {
             return i >= this.size() ? None() : Maybe.fromNull(this.toArray()[i])
+        },
+        nth: function (i) {
+            return i >= this.size() ? undefined : this.toArray()[i]
         },
 
         tail: function () {

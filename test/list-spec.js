@@ -599,4 +599,24 @@ describe('An immutable list', function () {
         })
     })
 
+    describe('List.nth', function () {
+        it('will always return undefined when the list is empty', function () {
+            var list = List()
+            var index = Math.floor(Math.random() * 100)
+            expect(list.nth(index)).toEqual(undefined)
+        })
+        it('will return the corresponding element when present', function () {
+            var list = List.fromArray([1, 2, 3, 4, 5])
+            expect(list.nth(3)).toEqual(4)
+        })
+        it('will return undefined if there is no corresponding element', function () {
+            var list = List.fromArray([1, 2, 3, 4, 5])
+            expect(list.nth(5)).toEqual(undefined)
+        })
+        it('will return undefined if the corresponding element is undefined', function () {
+            var list = List.fromArray([1, 2, 3, 4, 5, undefined])
+            expect(list.nth(5)).toEqual(undefined)
+        })
+    })
+
 })
