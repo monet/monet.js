@@ -450,6 +450,7 @@
             return this.isNil || i >= this.size() ? None() : Maybe.fromNull(this.toArray()[i])
         },
         nth: function (i) {
+            // eslint-disable-next-line no-undefined
             return this.isNil || i >= this.size() ? undefined : this.toArray()[i]
         },
         tail: function () {
@@ -575,6 +576,7 @@
             return i >= this.size() ? None() : Maybe.fromNull(this.toArray()[i])
         },
         nth: function (i) {
+            // eslint-disable-next-line no-undefined
             return i >= this.size() ? undefined : this.toArray()[i]
         },
 
