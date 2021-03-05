@@ -1,10 +1,10 @@
 ---
 title: Home
 layout: index
-version: v0.9.0
+version: v0.9.2
 ---
 
-For people who wish they didn't have to programme in JavaScript.
+For people who wish they didn't have to program in JavaScript. [documentation](https://github.com/monet/monet.js/tree/master/docs/README.md)
 
 ### Introduction
 
@@ -30,7 +30,7 @@ Full detailed documentation can be found [here](https://github.com/monet/monet.j
 npm install monet --save
 
 # or to install a specific version
-npm install monet@0.9.0
+npm install monet@0.9.2
 ```
 
 #### Download
@@ -98,7 +98,7 @@ Please see [Ken Scambler](http://twitter.com/KenScambler)'s [excellent talk](htt
 Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers) and Jakub Strojewski [@ulfryk](https://twitter.com/ulfryk). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
 
 [functionalJava]: http://functionaljava.org/
-[gitZip]: https://github.com/monet/monet.js/archive/v0.9.0.zip
-[gitTar]: https://github.com/monet/monet.js/archive/v0.9.0.tar.gz
+[gitZip]: https://github.com/monet/monet.js/archive/v0.9.2.zip
+[gitTar]: https://github.com/monet/monet.js/archive/v0.9.2.tar.gz
 [npm]: https://www.npmjs.com/
 [scalaz]: https://github.com/scalaz/scalaz
