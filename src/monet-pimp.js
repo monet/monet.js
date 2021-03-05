@@ -1,9 +1,9 @@
 /**
- * monet-pimp.js 0.9.0-rc.1
+ * monet-pimp.js 0.9.2
  *
  * This file needs to be included after monet.js
  *
- * (c) 2012-2018 Chris Myers
+ * (c) 2012-2021 Chris Myers
  * @license Monet-pimp.js may be freely distributed under the MIT license.
  * For all details and documentation:
  * https://monet.github.io/monet.js/
@@ -14,7 +14,7 @@
 
 /* eslint-disable-next-line complexity */
 (function (root, factory) {
-    if (typeof define === 'function' && define.amd) { 
+    if (typeof define === 'function' && define.amd) {
         define(['monet'], factory)
     } else if (typeof module === 'object' && module.exports) {
         module.exports = factory(require('monet'), root)

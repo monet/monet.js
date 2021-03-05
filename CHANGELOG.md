@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.2 (05 Mar 2021)
+- [new] add `apTo` to all Applicatives -- thanks to @iLikeKoffee ( #233 )
+- [new] add `lookup` and `nth` to lists -- thanks to @mlrv ( #241 )
+- [enhancement] change Maybe `filter` and `filterNot` to work as type guard -- thanks to @mlrv ( #240 )
+
 ## 0.9.1 (15 Jan 2020)
 - [new] add `fromPromise` and `toPromise` to `Either` -- thanks to @wookieb ( #223 )
 - [fix] fix `.isInstance` method -- thanks to @wookieb ( #221 )
