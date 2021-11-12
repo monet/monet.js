@@ -22,7 +22,7 @@ Full detailed documentation can be found [here](https://github.com/monet/monet.j
 npm install monet --save
 
 # or to install a specific version
-npm install monet@0.9.2
+npm install monet@0.9.3
 ```
 
 ### Download
@@ -86,7 +86,7 @@ Please see [Ken Scambler](http://twitter.com/KenScambler)'s [excellent talk](htt
 Written and maintained by Chris Myers [@cwmyers](https://twitter.com/cwmyers) and Jakub Strojewski [@ulfryk](https://twitter.com/ulfryk). Follow Monet.js at [@monetjs](http://twitter.com/monetjs).
 
 [functionalJava]: http://functionaljava.org/
-[gitZip]: https://github.com/monet/monet.js/archive/v0.9.2.zip
-[gitTar]: https://github.com/monet/monet.js/archive/v0.9.2.tar.gz
+[gitZip]: https://github.com/monet/monet.js/archive/v0.9.3.zip
+[gitTar]: https://github.com/monet/monet.js/archive/v0.9.3.tar.gz
 [npm]: https://www.npmjs.com/
 [scalaz]: https://github.com/scalaz/scalaz
