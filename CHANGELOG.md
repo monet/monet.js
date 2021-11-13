@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.9.3 (12 Nov 2021)
+- [fix] add `Maybe.fromEmpty` to typings -- thanks to @tomecko ( #246 )
+
 ## 0.9.2 (05 Mar 2021)
 - [new] add `apTo` to all Applicatives -- thanks to @iLikeKoffee ( #233 )
 - [new] add `lookup` and `nth` to lists -- thanks to @mlrv ( #241 )
@@ -71,7 +74,7 @@
 - [new] add `.orNull()` to Maybe -- thanks to @emmanueltouzery ( #86 )
 - [fix] fix typings to work with `--noImplicitAny`
 - [fix] fix typings to work with `--strictNullChecks` -- thanks to @emmanueltouzery ( #86 )
- 
+
 ### alpha.2
 
 - [fix] fix List's `.size()` ( #79 )
@@ -115,4 +118,4 @@ export function getStoredData(key: string): Maybe<SomeData> {
 
 ## 0.8.7
 
-- [new] add `.cata(…)` to Maybe -- thanks to Crisson Jno-Charles @crisson 
+- [new] add `.cata(…)` to Maybe -- thanks to Crisson Jno-Charles @crisson
