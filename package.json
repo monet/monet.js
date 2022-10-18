@@ -26,17 +26,17 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "core-js": "3.9.1",
-    "eslint": "7.21.0",
-    "jasmine": "3.6.4",
-    "jasmine-core": "3.6.0",
-    "karma": "6.1.1",
-    "karma-chrome-launcher": "3.1.0",
-    "karma-firefox-launcher": "2.1.0",
-    "karma-jasmine": "4.0.1",
+    "core-js": "3.25.5",
+    "eslint": "8.25.0",
+    "jasmine": "4.4.0",
+    "jasmine-core": "4.4.0",
+    "karma": "6.4.1",
+    "karma-chrome-launcher": "3.1.1",
+    "karma-firefox-launcher": "2.1.2",
+    "karma-jasmine": "5.1.0",
     "karma-mocha-reporter": "2.2.5",
-    "typescript": "4.2.2",
-    "uglify-js": "3.13.0"
+    "typescript": "4.8.4",
+    "uglify-js": "3.17.3"
   },
   "scripts": {
     "lint": "eslint -c .config/eslintrc.json --env browser,node './src/**/*.js'",

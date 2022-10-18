@@ -122,20 +122,20 @@ export const Identity: IIdentityStatic;
  * Maybe
  */
 
-export interface Maybe<T extends NonNullable<{}>>
+export interface Maybe<T extends {}>
   extends Setoid<Maybe<T>>, ITraversable<T>, Catamorphism<undefined, T>, Iterable<T> {
   /* Inherited from Monad: */
-  bind<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
-  flatMap<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
-  chain<V extends NonNullable<{}>>(fn: (val: T) => Maybe<V>): Maybe<V>;
-  map<V extends NonNullable<{}>>(fn: (val: T) => V): Maybe<V>;
-  join<V>(): T extends Maybe<V> ? V : never;
+  bind<V extends {}>(fn: (val: T) => Maybe<V>): Maybe<V>;
+  flatMap<V extends {}>(fn: (val: T) => Maybe<V>): Maybe<V>;
+  chain<V extends {}>(fn: (val: T) => Maybe<V>): Maybe<V>;
+  map<V extends {}>(fn: (val: T) => V): Maybe<V>;
+  join<V>(): T extends Maybe<NonNullable<V>> ? V : never;
   takeLeft(m: Maybe<T>): Maybe<T>;
   takeRight(m: Maybe<T>): Maybe<T>;
 
   /* Inherited from Applicative */
-  ap<V extends NonNullable<{}>>(maybeFn: Maybe<(val: T) => V>): Maybe<V>;
-  apTo<V extends NonNullable<{}>> (value: Maybe<V>): T extends (arg: V) => any ? Maybe<ReturnType<T>> : never;
+  ap<V extends {}>(maybeFn: Maybe<(val: T) => V>): Maybe<V>;
+  apTo<V extends {}> (value: Maybe<V>): T extends (arg: V) => any ? Maybe<ReturnType<T>> : never;
 
   /* Maybe specific */
   cata<Z>(none: () => Z, some: (val: T) => Z): Z;
@@ -178,11 +178,11 @@ export interface Maybe<T extends NonNullable<{}>>
 }
 
 interface ISomeStatic extends IMonadFactory {
-  <V>(value: V): Maybe<V>;
+  <V>(value: V): Maybe<NonNullable<V>>;
 }
 
 interface INoneStatic extends IMonadFactory {
-  <V>(): Maybe<V>;
+  <V>(): Maybe<NonNullable<V>>;
 }
 
 interface IMaybeStatic extends IMonadStatic {
@@ -192,10 +192,10 @@ interface IMaybeStatic extends IMonadStatic {
   None: INoneStatic;
   none: INoneStatic;
   Nothing: INoneStatic;
-  fromFalsy<V>(val: V|null|undefined): Maybe<V>;
-  fromNull<V>(val: V|null|undefined): Maybe<V>;
-  fromUndefined<V>(val: V|undefined): Maybe<V>;
-  fromEmpty<V>(val: V|null|undefined): Maybe<V>;
+  fromFalsy<V extends {}>(val: V|null|undefined): Maybe<V>;
+  fromNull<V extends {}>(val: V|null|undefined): Maybe<V>;
+  fromUndefined<V extends {}>(val: V|undefined): Maybe<V>;
+  fromEmpty<V extends {}>(val: V|null|undefined): Maybe<V>;
   unit: ISomeStatic;
   of: ISomeStatic;    // alias for unit
   pure: ISomeStatic;  // alias for unit
@@ -245,7 +245,7 @@ export interface Either<E, T>
   forEachLeft(fn: (val: E) => void): void;
 
   toValidation(): Validation<E, T>;
-  toMaybe(): Maybe<T>;
+  toMaybe(): Maybe<NonNullable<T>>;
   toPromise(): Promise<T>
 }
 
@@ -317,7 +317,7 @@ export interface Validation<E, T>
   acc(): Validation<E, IValidationAcc>;
 
   toEither(): Either<E, T>;
-  toMaybe(): Maybe<T>;
+  toMaybe(): Maybe<NonNullable<T>>;
 }
 
 interface IValidationStatic extends IMonadStatic {
@@ -373,7 +373,7 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T>, It
   size(): number;
   head(): T | undefined;
   headMaybe(): Maybe<NonNullable<T>>;
-  lookup(i: number): Maybe<T>;
+  lookup(i: number): Maybe<NonNullable<T>>;
   nth(i: number): T | undefined;
   append(list: List<T>): List<T>;
   concat(list: List<T>): List<T>;
@@ -381,7 +381,7 @@ export interface List<T> extends IMonad<T>, Setoid<List<T>>, ITraversable<T>, It
   tail(): List<T>;
   tails(): List<List<T>>;
   flatten<V>(): List<V>;
-  flattenMaybe<V>(): T extends Maybe<V> ? List<V> : never;
+  flattenMaybe<V>(): T extends Maybe<NonNullable<V>> ? List<V> : never;
   contains(val: T): boolean;
   every(fn: (e: T) => boolean): boolean;
   forall(fn: (e: T) => boolean): boolean;
@@ -460,13 +460,13 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
 
   filter(fn: (val: T) => boolean): List<T>;
   filterNot(fn: (val: T) => boolean): List<T>;
-  find(fn: (val: T) => boolean): Maybe<T>;
+  find(fn: (val: T) => boolean): Maybe<NonNullable<T>>;
   cons(a: T): NEL<T>;
   snoc(a: T): NEL<T>;
   isNEL(): boolean;
   size(): number;
   head(): T;
-  lookup(i: number): Maybe<T>;
+  lookup(i: number): Maybe<NonNullable<T>>;
   nth(i: number): T | undefined;
   append(list: NEL<T>): NEL<T>;
   concat(list: NEL<T>): NEL<T>;
@@ -479,7 +479,7 @@ export interface NEL<T> extends IMonad<T>, Setoid<NEL<T>>, ITraversable<T>, Iter
   exists(fn: (e: T) => boolean): boolean;
   forEach(fn: (val: T) => void): void;
   flatten<V>(): T extends List<V> | NEL<V> ? List<V> : never;
-  flattenMaybe<V>(): T extends Maybe<V> ? List<V> : never;
+  flattenMaybe<V>(): T extends Maybe<NonNullable<V>> ? List<V> : never;
 
   toArray(): Array<T>;
   toList(): List<T>;

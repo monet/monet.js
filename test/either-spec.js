@@ -381,7 +381,7 @@ describe('An Either', function () {
     describe('Either.fromPromise', function () {
         it('will return Left on failure', function (done) {
             var error = new Error('Some error')
-            return Either.fromPromise(Promise.reject(error)).then(function(result) {
+            Either.fromPromise(Promise.reject(error)).then(function(result) {
                 expect(result).toBeLeftWith(error)
                 done()
             })
@@ -390,7 +390,7 @@ describe('An Either', function () {
         it('will return Right on success', function (done) {
             var success = {some: 'success'};
 
-            return Either.fromPromise(Promise.resolve(success)).then(function(result) {
+            Either.fromPromise(Promise.resolve(success)).then(function(result) {
                 expect(result).toBeRightWith(success)
                 done()
             })
