@@ -62,7 +62,7 @@ A => ()
 
 ## All monads
 
-Everything that is a monad in Monet will implement the following functions. The specific monads will be discussed in detail int their own sections.
+Everything that is a monad in Monet will implement the following functions. The specific monads will be discussed in detail in their own sections.
 
 ### bind
 **Aliases:** `flatMap`, `chain`
@@ -150,7 +150,7 @@ Checks if passed object is an instance of concrete Monet type.
 ### static isOfType
 
 ```scala
-MonadStatic.isInstance(m: Any): Boolean;
+MonadStatic.isOfType(m: Any): Boolean;
 ```
 
 Checks if passed object is an instance of some similar type. This check is based on `@@type` property attached to constructor and/or every instance of every type holding a string of shape `Monet/${name}`. Its purpose is to enable checks with other JS libraries that also use same approach (e.g. https://github.com/ramda/ramda-fantasy, https://github.com/char0n/ramda-adjunct). This method is internally used in all types that extend `Setoid` in `equals` method.
